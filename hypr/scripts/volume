@@ -1,0 +1,24 @@
+#!/bin/bash
+
+case "$1" in
+    up)
+        wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+        vol=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{printf "%.0f", $2 * 100}')
+        dunstify -r 1 "Volume" "$vol%" -h int:value:$vol
+        ;;
+    down)
+        wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+        vol=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{printf "%.0f", $2 * 100}')
+        dunstify -r 1 "Volume" "$vol%" -h int:value:$vol
+        ;;
+    toggle)
+        wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
+        muted=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | grep -o "MUTED")
+        if [ "$muted" = "MUTED" ]; then
+            dunstify -r 1 "Volume" "Muted"
+        else
+            vol=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ | awk '{printf "%.0f", $2 * 100}')
+            dunstify -r 1 "Volume" "$vol%" -h int:value:$vol
+        fi
+        ;;
+esac

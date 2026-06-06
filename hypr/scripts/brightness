@@ -1,0 +1,20 @@
+#!/bin/bash
+
+case "$1" in
+    up)
+        brightnessctl set +5%
+        brightness=$(brightnessctl get | grep -oP '\d+(?=%)')
+        if [ -z "$brightness" ]; then
+            brightness=$(brightnessctl -m | awk -F'[%]' '{print $2}')
+        fi
+        dunstify -r 2 "Brightness" "$brightness%" -h int:value:$brightness
+        ;;
+    down)
+        brightnessctl set 5%-
+        brightness=$(brightnessctl get | grep -oP '\d+(?=%)')
+        if [ -z "$brightness" ]; then
+            brightness=$(brightnessctl -m | awk -F'[%]' '{print $2}')
+        fi
+        dunstify -r 2 "Brightness" "$brightness%" -h int:value:$brightness
+        ;;
+esac

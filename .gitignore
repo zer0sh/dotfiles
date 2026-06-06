@@ -1,0 +1,11 @@
+# Logs
+*.log
+
+# Secretos
+.env
+secrets.conf
+
+# Temporales
+*.tmp
+*.swp
+.DS_Store

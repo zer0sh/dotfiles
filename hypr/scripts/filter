@@ -1,0 +1,54 @@
+#!/bin/bash
+
+SHADER_DIR="$HOME/.config/hypr/shaders"
+STATE_FILE="/tmp/hypr-bw-filter"
+
+apply_shader() {
+    local name="$1"
+    local shader="$2"
+
+    echo "$name" > "$STATE_FILE"
+    hyprctl keyword decoration:screen_shader "$shader"
+    notify-send "1930s Filter" "Filtro: $name"
+}
+
+case "$1" in
+    sepia)
+        apply_shader "Sepia Vintage" "$SHADER_DIR/sepia.glsl"
+        ;;
+    bw|grayscale)
+        apply_shader "Blanco y Negro" "$SHADER_DIR/bw.glsl"
+        ;;
+    noir)
+        apply_shader "Film Noir" "$SHADER_DIR/noir.glsl"
+        ;;
+    vintage)
+        apply_shader "Vintage" "$SHADER_DIR/vintage.glsl"
+        ;;
+    vivid)
+        apply_shader "Vívido" "$SHADER_DIR/vivid.glsl"
+        ;;
+    off|reset|none)
+        rm -f "$STATE_FILE"
+        hyprctl keyword decoration:screen_shader "$SHADER_DIR/off.glsl"
+        notify-send "1930s Filter" "Desactivado"
+        ;;
+    toggle)
+        if [ -f "$STATE_FILE" ]; then
+            "$0" off
+        else
+            "$0" sepia
+        fi
+        ;;
+    status)
+        if [ -f "$STATE_FILE" ]; then
+            echo "Filtro activo: $(cat "$STATE_FILE")"
+        else
+            echo "Filtro: desactivado"
+        fi
+        ;;
+    *)
+        echo "Uso: $0 {sepia|bw|noir|vintage|vivid|off|toggle|status}"
+        exit 1
+        ;;
+esac
