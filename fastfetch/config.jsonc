@@ -1,0 +1,23 @@
+{
+  "logo": {
+    "source": "skull"
+  },
+  "modules": [
+    "os",
+    "host",
+    "kernel",
+    "uptime",
+    "packages",
+    "shell",
+    "display",
+    "wm",
+    "cpu",
+    "gpu",
+    "memory",
+    "swap",
+    "disk",
+    "localip",
+    "battery",
+    "locale"
+  ]
+}

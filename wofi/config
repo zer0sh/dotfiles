@@ -1,0 +1,12 @@
+width=650
+height=350
+location=center
+prompt=󰗼 Run
+improved=true
+term=wezterm
+matching=fuzzy
+hide_scroll=true
+insensitive=true
+allow_markup=true
+no_actions=true
+style=/home/zero/.config/wofi/style.css

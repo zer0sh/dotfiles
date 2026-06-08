@@ -1,41 +1,60 @@
 #!/usr/bin/env bash
 
-# --- Script de Instalación de Dotfiles (Agnóstico y Seguro) ---
+# --- Script de Instalación de Dotfiles Multimódulo ---
 
-# Obtener la ruta absoluta del repositorio donde se encuentra este script
 REPO_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-DOT_HYPR="$REPO_DIR/hypr"
 CONFIG_DIR="$HOME/.config"
-TARGET_HYPR="$CONFIG_DIR/hypr"
-BACKUP_HYPR="$CONFIG_DIR/hypr.bak"
+
+# Lista de aplicaciones a vincular en ~/.config/
+# Formato: "nombre_carpeta_repo:nombre_carpeta_config"
+APPS=(
+    "hypr:hypr"
+    "waybar:waybar"
+    "quickshell:quickshell"
+    "kitty:kitty"
+    "wofi:wofi"
+    "yazi:yazi"
+    "btop:btop"
+    "fastfetch:fastfetch"
+    "bat:bat"
+)
 
 echo "🚀 Iniciando despliegue de dotfiles..."
-
-# Asegurarse de que ~/.config existe
 mkdir -p "$CONFIG_DIR"
 
-# 1. Gestión de Seguridad (Backup)
-if [ -d "$TARGET_HYPR" ]; then
-    if [ -L "$TARGET_HYPR" ]; then
-        echo "ℹ️  Nota: $TARGET_HYPR ya es un enlace simbólico. No es necesario backup."
-        # Lo eliminamos para recrearlo con la ruta actual (por si se movió el repo)
-        rm "$TARGET_HYPR"
-    else
-        echo "📦 Creando backup de la configuración actual en $BACKUP_HYPR..."
-        if [ -d "$BACKUP_HYPR" ]; then
-            TIMESTAMP=$(date +%Y%m%d_%H%M%S)
-            BACKUP_HYPR_NEW="${BACKUP_HYPR}_${TIMESTAMP}"
-            echo "⚠️  Ya existía un backup. Usando nombre: $BACKUP_HYPR_NEW"
-            mv "$TARGET_HYPR" "$BACKUP_HYPR_NEW"
+# Función para crear symlinks de forma segura
+link_config() {
+    local src="$1"
+    local dest="$2"
+    local backup="${dest}.bak"
+
+    if [ -d "$dest" ] || [ -f "$dest" ]; then
+        if [ -L "$dest" ]; then
+            rm "$dest"
         else
-            mv "$TARGET_HYPR" "$BACKUP_HYPR"
+            echo "📦 Backup: $dest -> $backup"
+            [ -e "$backup" ] && backup="${backup}_$(date +%Y%m%d_%H%M%S)"
+            mv "$dest" "$backup"
         fi
     fi
+
+    echo "🔗 Vinculando: $dest -> $src"
+    ln -s "$src" "$dest"
+}
+
+# Vincular aplicaciones de ~/.config
+for item in "${APPS[@]}"; do
+    IFS=":" read -r repo_folder config_folder <<< "$item"
+    link_config "$REPO_DIR/$repo_folder" "$CONFIG_DIR/$config_folder"
+done
+
+# Casos especiales (fuera de ~/.config)
+# Vim
+if [ -d "$REPO_DIR/vim" ]; then
+    # .vimrc
+    [ -f "$REPO_DIR/vim/vimrc" ] && link_config "$REPO_DIR/vim/vimrc" "$HOME/.vimrc"
+    # .vim directory
+    [ -d "$REPO_DIR/vim/dot-vim" ] && link_config "$REPO_DIR/vim/dot-vim" "$HOME/.vim"
 fi
 
-# 2. Creación del Symlink
-echo "🔗 Vinculando $TARGET_HYPR -> $DOT_HYPR"
-ln -s "$DOT_HYPR" "$TARGET_HYPR"
-
 echo "✅ ¡Instalación completada con éxito!"
-echo "Tu configuración de Hyprland ahora está centralizada en: $REPO_DIR"

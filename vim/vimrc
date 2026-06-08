@@ -1,0 +1,49 @@
+" === Básico ===
+set nocompatible
+syntax on
+filetype plugin indent on
+
+" === Apariencia ===
+set number
+" set relativenumber
+set cursorline
+set term=xterm-256color
+"set term=screen-256color
+if has('termguicolors')
+    set termguicolors
+endif
+
+set background=dark
+
+" === Edición ===
+set expandtab
+set shiftwidth=2
+set tabstop=2
+set smartindent
+set wrap
+
+" === Usabilidad ===
+set mouse=a
+set clipboard=unnamedplus
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+set hidden
+
+" === Plugins (vim-plug) ===
+call plug#begin("~/.vim/plugged")
+    Plug 'preservim/nerdtree'
+    Plug 'artanikin/vim-synthwave84'
+    Plug 'vim-airline/vim-airline'
+    Plug 'vim-airline/vim-airline-themes'
+call plug#end()
+
+colorscheme synthwave84
+
+" Airline
+let g:airline#extensions#branch#enabled = 1
+let g:airline_theme='synthwave'
+
+" NerdTree
+nnoremap <C-n> :NERDTreeToggle<CR>

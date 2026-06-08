@@ -1,0 +1,285 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+THEME="${1:-md3-cobalt-night}"
+
+case "$THEME" in
+  md3-cobalt-night)
+    BG="#0F1117"
+    TEXT="#E0E2F0"
+    ACCENT="#9BBDE8"
+    WARNING="#F2D479"
+    CRITICAL="#F2A8B8"
+    CHARGING="#86D5A0"
+    BORDER_ACTIVE="9BBDE8cc"
+    BORDER_INACTIVE="2E3148aa"
+    SURFACE_CONTAINER="#252740"
+    SURFACE_CONTAINER_HIGH="#2E3148"
+    SURFACE_BRIGHT="#3A3E60"
+    TEXT_SECONDARY="#8E90A8"
+    KITTY_BG="#0F1117"
+    KITTY_FG="#E0E2F0"
+    KITTY_CURSOR="#9BBDE8"
+    KITTY_SEL_BG="#1E3058"
+    KITTY_SEL_FG="#E0E2F0"
+    KITTY_COLOR0="#1A1C28"
+    KITTY_COLOR1="#F28B82"
+    KITTY_COLOR2="#6898C8"
+    KITTY_COLOR3="#F2D479"
+    KITTY_COLOR4="#7AA8D8"
+    KITTY_COLOR5="#C090F0"
+    KITTY_COLOR6="#60B8D8"
+    KITTY_COLOR7="#E0E2F0"
+    KITTY_COLOR8="#2E3148"
+    KITTY_COLOR9="#F5A0A8"
+    KITTY_COLOR10="#9BBDE8"
+    KITTY_COLOR11="#F5E090"
+    KITTY_COLOR12="#9BBDE8"
+    KITTY_COLOR13="#D8B8F8"
+    KITTY_COLOR14="#82CCEC"
+    KITTY_COLOR15="#FFFFFF"
+    ;;
+  md3-sage-forest)
+    BG="#0D1410"
+    TEXT="#DCF0E2"
+    ACCENT="#7EC996"
+    WARNING="#EDD678"
+    CRITICAL="#F2A8A8"
+    CHARGING="#72CAD0"
+    BORDER_ACTIVE="7EC996cc"
+    BORDER_INACTIVE="2A3D2Daa"
+    SURFACE_CONTAINER="#203028"
+    SURFACE_CONTAINER_HIGH="#2A3D2D"
+    SURFACE_BRIGHT="#385045"
+    TEXT_SECONDARY="#8AAE92"
+    KITTY_BG="#0D1410"
+    KITTY_FG="#DCF0E2"
+    KITTY_CURSOR="#7EC996"
+    KITTY_SEL_BG="#1A4028"
+    KITTY_SEL_FG="#DCF0E2"
+    KITTY_COLOR0="#172219"
+    KITTY_COLOR1="#F2A8A8"
+    KITTY_COLOR2="#7EC996"
+    KITTY_COLOR3="#EDD678"
+    KITTY_COLOR4="#58A870"
+    KITTY_COLOR5="#A090D8"
+    KITTY_COLOR6="#68B880"
+    KITTY_COLOR7="#DCF0E2"
+    KITTY_COLOR8="#2A3D2D"
+    KITTY_COLOR9="#F5C0C0"
+    KITTY_COLOR10="#A0DDB8"
+    KITTY_COLOR11="#F5E890"
+    KITTY_COLOR12="#90D0A8"
+    KITTY_COLOR13="#C0B0E8"
+    KITTY_COLOR14="#A8E0C0"
+    KITTY_COLOR15="#FFFFFF"
+  ;;
+  md3-rose-quartz)
+    BG="#170E12"
+    TEXT="#F0DEE5"
+    ACCENT="#EEA8C0"
+    WARNING="#F0D47A"
+    CRITICAL="#F5A0A8"
+    CHARGING="#A0C8F0"
+    BORDER_ACTIVE="EEA8C0cc"
+    BORDER_INACTIVE="4A2838aa"
+    SURFACE_CONTAINER="#381C2C"
+    SURFACE_CONTAINER_HIGH="#4A2838"
+    SURFACE_BRIGHT="#603050"
+    TEXT_SECONDARY="#A88090"
+    KITTY_BG="#170E12"
+    KITTY_FG="#F0DEE5"
+    KITTY_CURSOR="#EEA8C0"
+    KITTY_SEL_BG="#4A1C30"
+    KITTY_SEL_FG="#F0DEE5"
+    KITTY_COLOR0="#281520"
+    KITTY_COLOR1="#F5A0A8"
+    KITTY_COLOR2="#C07890"
+    KITTY_COLOR3="#F0D47A"
+    KITTY_COLOR4="#C878A0"
+    KITTY_COLOR5="#EEA8C0"
+    KITTY_COLOR6="#D898B8"
+    KITTY_COLOR7="#F0DEE5"
+    KITTY_COLOR8="#4A2838"
+    KITTY_COLOR9="#F8B8C0"
+    KITTY_COLOR10="#EEA8C0"
+    KITTY_COLOR11="#F8E898"
+    KITTY_COLOR12="#F0B8CC"
+    KITTY_COLOR13="#F8C8D8"
+    KITTY_COLOR14="#F8D0E0"
+    KITTY_COLOR15="#FFFFFF"
+  ;;
+  md3-amethyst)
+    BG="#110E18"
+    TEXT="#E8E0F5"
+    ACCENT="#C8B0F0"
+    WARNING="#F0D478"
+    CRITICAL="#F5A0A8"
+    CHARGING="#86D0C0"
+    BORDER_ACTIVE="C8B0F0cc"
+    BORDER_INACTIVE="3A3050aa"
+    SURFACE_CONTAINER="#2C2440"
+    SURFACE_CONTAINER_HIGH="#3A3050"
+    SURFACE_BRIGHT="#504068"
+    TEXT_SECONDARY="#9A90B8"
+    KITTY_BG="#110E18"
+    KITTY_FG="#E8E0F5"
+    KITTY_CURSOR="#C8B0F0"
+    KITTY_SEL_BG="#3A2870"
+    KITTY_SEL_FG="#E8E0F5"
+    KITTY_COLOR0="#1E1A2C"
+    KITTY_COLOR1="#F5A0A8"
+    KITTY_COLOR2="#9068C0"
+    KITTY_COLOR3="#F0D478"
+    KITTY_COLOR4="#8870C8"
+    KITTY_COLOR5="#C8B0F0"
+    KITTY_COLOR6="#A090D8"
+    KITTY_COLOR7="#E8E0F5"
+    KITTY_COLOR8="#3A3050"
+    KITTY_COLOR9="#F8B8C0"
+    KITTY_COLOR10="#C8B0F0"
+    KITTY_COLOR11="#F8E890"
+    KITTY_COLOR12="#B8A0F0"
+    KITTY_COLOR13="#E0D0FF"
+    KITTY_COLOR14="#D0C0F8"
+    KITTY_COLOR15="#FFFFFF"
+  ;;
+  md3-amber-dusk)
+    BG="#18120A"
+    TEXT="#F0E8D5"
+    ACCENT="#F0B87A"
+    WARNING="#F0D050"
+    CRITICAL="#F0907A"
+    CHARGING="#90C890"
+    BORDER_ACTIVE="F0B87Acc"
+    BORDER_INACTIVE="483220aa"
+    SURFACE_CONTAINER="#382818"
+    SURFACE_CONTAINER_HIGH="#483220"
+    SURFACE_BRIGHT="#604030"
+    TEXT_SECONDARY="#A88860"
+    KITTY_BG="#18120A"
+    KITTY_FG="#F0E8D5"
+    KITTY_CURSOR="#F0B87A"
+    KITTY_SEL_BG="#503018"
+    KITTY_SEL_FG="#F0E8D5"
+    KITTY_COLOR0="#281E10"
+    KITTY_COLOR1="#F0907A"
+    KITTY_COLOR2="#C08840"
+    KITTY_COLOR3="#F0D050"
+    KITTY_COLOR4="#C09050"
+    KITTY_COLOR5="#D0A0D0"
+    KITTY_COLOR6="#D0A870"
+    KITTY_COLOR7="#F0E8D5"
+    KITTY_COLOR8="#483220"
+    KITTY_COLOR9="#F8A890"
+    KITTY_COLOR10="#F0B87A"
+    KITTY_COLOR11="#F8E870"
+    KITTY_COLOR12="#F0C090"
+    KITTY_COLOR13="#E0B8E0"
+    KITTY_COLOR14="#F8D8A8"
+    KITTY_COLOR15="#FFFFFF"
+  ;;
+  md3-arctic-mist)
+    BG="#080F14"
+    TEXT="#D8EEF5"
+    ACCENT="#7ECCE8"
+    WARNING="#F0D478"
+    CRITICAL="#F2A8A8"
+    CHARGING="#90D4A8"
+    BORDER_ACTIVE="7ECCE8cc"
+    BORDER_INACTIVE="1E3848aa"
+    SURFACE_CONTAINER="#162838"
+    SURFACE_CONTAINER_HIGH="#1E3848"
+    SURFACE_BRIGHT="#2A4A60"
+    TEXT_SECONDARY="#7A9AA8"
+    KITTY_BG="#080F14"
+    KITTY_FG="#D8EEF5"
+    KITTY_CURSOR="#7ECCE8"
+    KITTY_SEL_BG="#103858"
+    KITTY_SEL_FG="#D8EEF5"
+    KITTY_COLOR0="#101C26"
+    KITTY_COLOR1="#F2A8A8"
+    KITTY_COLOR2="#50A8C8"
+    KITTY_COLOR3="#F0D478"
+    KITTY_COLOR4="#60B0D0"
+    KITTY_COLOR5="#A8A0E0"
+    KITTY_COLOR6="#50A8C8"
+    KITTY_COLOR7="#D8EEF5"
+    KITTY_COLOR8="#1E3848"
+    KITTY_COLOR9="#F8C0C0"
+    KITTY_COLOR10="#7ECCE8"
+    KITTY_COLOR11="#F8E890"
+    KITTY_COLOR12="#7ECCE8"
+    KITTY_COLOR13="#C0B8F0"
+    KITTY_COLOR14="#68C8E0"
+    KITTY_COLOR15="#FFFFFF"
+    ;;
+  *)
+    echo "Unknown theme: $THEME"
+    exit 1
+    ;;
+esac
+
+# Helper: convert #RRGGBB to "R, G, B"
+hex_to_rgb() {
+    local hex="${1#\#}"
+    printf "%d, %d, %d" "0x${hex:0:2}" "0x${hex:2:2}" "0x${hex:4:2}"
+}
+
+# A) Write Waybar colors.css
+cat > "$HOME/.config/waybar/colors.css" << CSSEOF
+/* Auto-generated by apply-theme.sh — do not edit */
+@define-color bg ${BG};
+@define-color text ${TEXT};
+@define-color accent ${ACCENT};
+@define-color warning ${WARNING};
+@define-color critical ${CRITICAL};
+@define-color charging ${CHARGING};
+CSSEOF
+pkill -SIGUSR2 waybar || true
+
+# B) Apply Kitty colors (live + persist)
+KITTY_COLORS_FILE="$HOME/.config/kitty/theme-colors.conf"
+cat > "$KITTY_COLORS_FILE" << KITTYEOF
+background ${KITTY_BG}
+foreground ${KITTY_FG}
+cursor ${KITTY_CURSOR}
+selection_background ${KITTY_SEL_BG}
+selection_foreground ${KITTY_SEL_FG}
+color0 ${KITTY_COLOR0}
+color1 ${KITTY_COLOR1}
+color2 ${KITTY_COLOR2}
+color3 ${KITTY_COLOR3}
+color4 ${KITTY_COLOR4}
+color5 ${KITTY_COLOR5}
+color6 ${KITTY_COLOR6}
+color7 ${KITTY_COLOR7}
+color8 ${KITTY_COLOR8}
+color9 ${KITTY_COLOR9}
+color10 ${KITTY_COLOR10}
+color11 ${KITTY_COLOR11}
+color12 ${KITTY_COLOR12}
+color13 ${KITTY_COLOR13}
+color14 ${KITTY_COLOR14}
+color15 ${KITTY_COLOR15}
+KITTYEOF
+kitty @ set-colors --all --configured "$KITTY_COLORS_FILE" 2>/dev/null || true
+
+# C) Apply Hyprland border colors
+hyprctl keyword general:col.active_border "rgba(${BORDER_ACTIVE})" 2>/dev/null || true
+hyprctl keyword general:col.inactive_border "rgba(${BORDER_INACTIVE})" 2>/dev/null || true
+
+# D) Write Rofi launcher colors
+cat > "$HOME/.config/rofi/themes/colors.rasi" << ROFIEOF
+* {
+    bg-panel:         rgba($(hex_to_rgb "$BG"), 80%);
+    bg-container:     rgba($(hex_to_rgb "$SURFACE_CONTAINER"), 80%);
+    bg-container-hi:  ${SURFACE_CONTAINER_HIGH};
+    bg-bright:        ${SURFACE_BRIGHT};
+    accent:           ${ACCENT};
+    accent-dim:       rgba($(hex_to_rgb "$ACCENT"), 18%);
+    text-primary:     ${TEXT};
+    text-secondary:   ${TEXT_SECONDARY};
+    separator-line:   rgba($(hex_to_rgb "$TEXT"), 10%);
+}
+ROFIEOF
