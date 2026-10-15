@@ -1,0 +1,44 @@
+#!/bin/bash
+
+set -u
+
+OUTPUT_DIR="$HOME/Videos/Recordings"
+PID_FILE="/tmp/hypr-wf-recorder.pid"
+START_FILE="/tmp/hypr-wf-recorder.started"
+LOG_FILE="/tmp/hypr-wf-recorder.log"
+
+mkdir -p "$OUTPUT_DIR"
+
+is_recording() {
+    [[ -f "$PID_FILE" ]] || return 1
+    local pid
+    pid="$(cat "$PID_FILE" 2>/dev/null || true)"
+    [[ "$pid" =~ ^[0-9]+$ ]] && kill -0 "$pid" 2>/dev/null
+}
+
+if is_recording; then
+    pid="$(cat "$PID_FILE")"
+    kill -INT "$pid"
+    rm -f "$PID_FILE"
+    rm -f "$START_FILE"
+    notify-send "Screen Recording" "Recording stopped and saved"
+    exit 0
+fi
+
+rm -f "$PID_FILE"
+output="$OUTPUT_DIR/recording-$(date +%Y-%m-%d_%H-%M-%S).mp4"
+
+wf-recorder -f "$output" >"$LOG_FILE" 2>&1 &
+recorder_pid=$!
+echo "$recorder_pid" > "$PID_FILE"
+
+sleep 0.2
+if ! kill -0 "$recorder_pid" 2>/dev/null; then
+    rm -f "$PID_FILE"
+    rm -f "$START_FILE"
+    notify-send "Screen Recording" "Could not start recording"
+    exit 1
+fi
+
+date +%s > "$START_FILE"
+notify-send "Screen Recording" "Recording started"

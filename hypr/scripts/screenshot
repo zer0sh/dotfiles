@@ -1,0 +1,15 @@
+#!/bin/bash
+DIR="$HOME/Pictures/Screenshots"
+mkdir -p "$DIR"
+FILE="$DIR/screenshot_$(date +%Y%m%d_%H%M%S).png"
+
+if [ "$1" = "area" ]; then
+    grim -g "$(slurp)" "$FILE"
+else
+    grim "$FILE"
+fi
+
+if [ -f "$FILE" ]; then
+    wl-copy < "$FILE"
+    notify-send "Screenshot" "Saved to ${FILE#$HOME/}"
+fi

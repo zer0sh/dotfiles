@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+STATE_FILE="$HOME/.config/themes/current/wallpaper"
+FALLBACK="$HOME/Pictures/walls/wallhaven-vq7do5.png"
+
+wallpaper="$FALLBACK"
+if [[ -s "$STATE_FILE" ]]; then
+    wallpaper="$(<"$STATE_FILE")"
+fi
+
+if [[ ! -f "$wallpaper" ]]; then
+    wallpaper="$FALLBACK"
+fi
+
+pkill -x swaybg 2>/dev/null || true
+
+# Apply the saved wallpaper to both configured outputs.
+swaybg -o eDP-1 -i "$wallpaper" -m fill &
+swaybg -o HDMI-A-1 -i "$wallpaper" -m fill &
+wait

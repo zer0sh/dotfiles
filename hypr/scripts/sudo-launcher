@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Launcher para apps que requieren root, con el estilo de wofi.
+# Uso: sudo-launcher
+# - Muestra una lista de apps comunes y permite escribir cualquier comando.
+# - Ejecuta la selección con pkexec (Polkit).
+#
+# Variables de entorno del entorno gráfico que pkexec debe heredar para que la
+# ventana aparezca en la sesión Wayland.
+
+WOFI_CONF="$HOME/.config/wofi/config"
+WOFI_STYLE="$HOME/.config/wofi/style.css"
+
+# nombre visible \t binario (nombre se muestra, binario se ejecuta)
+declare -A RUN=(
+    [GParted]="gparted"
+    [Synaptic]="synaptic"
+    [Timeshift]="timeshift"
+    [Gnome System Monitor]="gnome-system-monitor"
+    [Gnome Logs]="gnome-logs"
+    [Gnome Disks]="gnome-disks"
+    [Nautilus]="nautilus"
+    [Blueman Manager]="blueman-manager"
+    [Geany]="geany"
+    [Htop]="htop"
+)
+
+# Aplicaciones que viven en terminal (no abren ventana propia).
+TERMINAL_CMDS=(htop)
+
+prompt="🔐 root:"
+choice="$(
+    printf '%s\n' "${!RUN[@]}" \
+        | sort -f \
+        | wofi --conf "$WOFI_CONF" --style "$WOFI_STYLE" \
+               --dmenu --insensitive --exec-search \
+               --prompt "$prompt" \
+               --cache-file "/tmp/wofi-root"
+)"
+
+[[ -n "$choice" ]] || exit 1
+
+if [[ -n "${RUN[$choice]:-}" ]]; then
+    cmd="${RUN[$choice]}"
+else
+    cmd="$choice"
+fi
+
+run_as_root() {
+    local c="$1"
+    if [[ " ${TERMINAL_CMDS[*]} " == *" $c "* ]]; then
+        kitty --hold --title "󰞇 $c (root)" -- bash -c "pkexec $c" &
+    else
+        # Hereda el entorno de la sesión gráfica para que pkexec muestre la
+        # ventana. GDK_BACKEND/QT_QPA_PLATFORM fuerzan Wayland para que las
+        # apps GTK/Qt no intenten abrir un display X (que no existe aquí).
+        pkexec env \
+            DISPLAY="${DISPLAY:-:0}" \
+            WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-wayland-0}" \
+            XDG_RUNTIME_DIR="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}" \
+            GDK_BACKEND=wayland \
+            QT_QPA_PLATFORM=wayland \
+            "$c" &
+    fi
+}
+
+notify-send "Root Launcher" "Lanzando '${cmd}' como root…"
+run_as_root "$cmd"
+
+exit 0

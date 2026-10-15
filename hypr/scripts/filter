@@ -40,6 +40,19 @@ case "$1" in
             "$0" sepia
         fi
         ;;
+    next)
+        # Cycle through the available filters for the quick-settings button.
+        current="$(cat "$STATE_FILE" 2>/dev/null || true)"
+        case "$current" in
+            "")                 "$0" sepia ;;
+            "Sepia Vintage")    "$0" bw ;;
+            "Blanco y Negro")   "$0" noir ;;
+            "Film Noir")        "$0" vintage ;;
+            "Vintage")           "$0" vivid ;;
+            "Vívido")            "$0" off ;;
+            *)                   "$0" sepia ;;
+        esac
+        ;;
     status)
         if [ -f "$STATE_FILE" ]; then
             echo "Filtro activo: $(cat "$STATE_FILE")"
@@ -48,7 +61,7 @@ case "$1" in
         fi
         ;;
     *)
-        echo "Uso: $0 {sepia|bw|noir|vintage|vivid|off|toggle|status}"
+        echo "Uso: $0 {sepia|bw|noir|vintage|vivid|off|toggle|next|status}"
         exit 1
         ;;
 esac
