@@ -87,3 +87,27 @@ hyprctl reload
 | `vintage` | `vintage.glsl` | Sepia desgastado + grano |
 | `vivid` | `vivid.glsl` | Colores intensos + grano |
 | `off` | `off.glsl` | Sin efecto (passthrough) |
+
+## Control desde Quickshell
+
+El panel de control incluye un botón circular para los shaders:
+
+- El círculo principal funciona como **On/Off** usando `filter toggle`.
+- El botón pequeño `⋯` cambia al siguiente shader usando `filter next`.
+- La etiqueta muestra el shader activo: `Shader Off`, `Sepia`, `B&W`, `Noir`, `Vintage` o `Vivid`.
+- El estado se consulta desde `/tmp/hypr-bw-filter`, que contiene el nombre del filtro activo.
+
+El orden del botón `⋯` es:
+
+```text
+Off → Sepia → B&W → Noir → Vintage → Vivid → Off
+```
+
+La implementación visual está en:
+
+```text
+~/.config/quickshell/modules/controlcenter/CircleToggle.qml
+~/.config/quickshell/modules/controlcenter/ControlCenter.qml
+```
+
+El script también conserva los atajos existentes de Hyprland (`SUPER + CTRL + 1..5` y `SUPER + CTRL + 0`). Si se cambia el shader mediante un atajo, el panel actualiza su etiqueta al volver a abrirse o durante su consulta periódica.

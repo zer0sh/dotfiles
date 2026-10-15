@@ -1,0 +1,49 @@
+# .history — historial de trabajo sobre el entorno Hyprland de `zero`
+# (complementa el CLI/claude memory; solo resumen de estado persistente)
+
+## Objetivo
+Personalizar escritorio Hyprland (Debian 13, apt): Quickshell widgets (DeskClock, Calendario, Control Center con batería Android + Night Light + notificaciones) y barra de notificaciones/campana en Waybar.
+
+## Entorno
+- Usuario `zero`, Debian 13 (apt, NO Arch), Hyprland 0.55.2, Quickshell 0.3.1.
+- Batería `BAT0`; estado real típico "charging" (~32%).
+- Night Light: `wlsunset` FALLA (gamma control failed en esta build). Solución nativa FUNCIONAL: `hyprsunset -t 4000` (protocolo hyprland-ctm-control-v1, log "Calc CTM"). Detener con `pkill -x hyprsunset`. Toggle 100% manual (sin modo solar).
+- Notificaciones: quickshell = servidor DBus (`org.freedesktop.Notifications`); `notify-send` capturado. NotificationService.qml escribe `/tmp/qs-notif-count` + señal `RTMIN+1` a waybar.
+- Tema waybar: `@accent #c7bfff`, `@text #e5e1e9`.
+- Restart quickshell: `~/.config/quickshell/restart-quickshell.sh`. Comandos combinados `pkill`+`nohup&disown` pueden colgar → usar comandos separados.
+
+## Estado (última sesión, 2026-08-28)
+### Clipboard (portapapeles) — NUEVO
+- Módulo `~/.config/quickshell/modules/clipboard/` (estilo panel de notificaciones MD3):
+  - `ClipboardPanel.qml`: Scope + IpcHandler `target:"clipboard"` (`qs ipc call clipboard toggle`), panel deslizante inferior, header "Clipboard" + icono, lista últimos 10 textos (`cliphist list | head -10`, skip binary/empty), estado vacío, botón "Clear all" (`cliphist wipe`), ítem → click re-copia (`cliphist decode <id> | wl-copy`) + notificación "Clipboard: Copied to clipboard" (`copyNotifyProc`).
+  - `ClipboardItem.qml`: card con icono de clip + preview (2 líneas).
+- `shell.qml`: importado + instancia `clipboardPanel` + exclusividad mutua (cierra powerMenu/controlCenter/notificationCenter/appLauncher y viceversa).
+- Waybar: `custom/clipboard` (`scripts/clipboard` → `󰅌`, pastilla = Mismo estilo que notifications en `style.css` `#custom-clipboard`), `on-click: qs ipc call clipboard toggle`. Posición: modules-right tras custom/notifications.
+- Verificado: layer `quickshell:clipboard` visible al toggle; pipeline `cliphist decode | wl-copy` re-copia OK (id 114). cliphist ya tiene listeners `wl-paste --watch cliphist store` para texto e imagen; al re-copiar la entrada vieja sube al tope.
+- Instalado: cliphist, wl-paste, wl-copy en /usr/bin.
+
+## Estado (última sesión, 2026-08-27)
+### Implementado
+- **Buiteción**: `BatterySection.qml` — gráfico de barras tipo Android, altura `Layout.preferredHeight:240`, base barra `parent.height-18`=222, altura barra `Math.max(2,(parent.height-18)*pct/100)` ("Barra llena = 100%"). Sin etiquetas de hora; `Text` "Last X min" abajo; contenido centrado (spacer arriba/abajo).
+  - **Datos dummy**: `~/.cache/battery_history.log` → 24 muestras descendiendo **100% → 33%** (última en 33, `charging`), cada 5 min. Formato por línea: `timestamp pct state`. BatterySection siempree montada (se desliza con `x`) → histórico SOLO se carga en `Component.onCompleted` al arrancar quickshell (no recarga al navegar); para ver datos nuevos hay que reiniciar quickshell.
+- **Night Light**: toggle manual sincrónico con `hyprsunset -t 4000`; notificación al togglear (es/des) vía `nightLightNotifyProc`. SIN polling de estado.
+- **Toggles directos**: botones `Battery` y `Theme` ya NO tienen los 3 puntos (`hasDetail` eliminado); el clic del círculo (`onClicked`) va directo a su página.
+- **Notificaciones de toggle (inglés)**: al pulsar Wi-Fi, Bluetooth, DND, Airplane Mode, Caffeine se lanza `notify-send` con el cambio:
+  - `Process toggleNotifyProc` + `function notifyChange(title, message)` reutilizables en ControlCenter.qml.
+  - Wi-Fi: "Wi-Fi turned off/on" | Bluetooth: "Bluetooth turned off/on"
+  - DND: "Do Not Disturb enabled/disabled" | Airplane: "Airplane mode enabled/disabled"
+  - Caffeine: "Caffeine mode enabled/disabled" (en `toggleCaffeine()`).
+- **Waybar campana**: `~/.config/waybar/scripts/notifications` → count>0 imprime `󰂚 N` (class `has-notifs`), count=0 → `󰂚` (class `empty`). `style.css`: `.has-notifs` color `@accent` + fondo `alpha(@accent,0.14)`. Módulo `custom/notifications` (interval 5, signal 1, on-click `qs ipc call notifications toggle`).
+
+### Pendiente / verificar
+- **Reiniciar quickshell** para aplicar esta sesión: toggles directos (Battery/Theme sin puntos), notificaciones de toggles (WiFi/BT/DND/Airplane/Caffeine), datos dummy de batería 100→33. VALIDAR balance de llaves de ControlCenter.qml antes.
+- Confirmar visualmente campana+número en waybar con `notify-send "Hola" "Mensaje"`.
+- Registrar `battery-log.sh` en `~/.config/hypr/autostart.conf` si se desea (decisión pendiente).
+
+## Archivos clave
+- `~/.config/quickshell/modules/controlcenter/ControlCenter.qml` (toggles, notifyChange, hyprsunset, nightLightNotifyProc, Timer 8s sin statusProc).
+- `~/.config/quickshell/modules/controlcenter/BatterySection.qml` (gráfico barras).
+- `~/.config/quickshell/modules/notifications/NotificationService.qml` (cuenta/RTMIN+1).
+- `~/.config/waybar/scripts/notifications` + `~/.config/waybar/style.css` + `~/.config/waybar/config.jsonc`.
+- `~/.cache/battery_history.log` (dummy 100→33), `~/.config/themes/current/waybar.css`.
+- `~/.config/hypr/autostart.conf` (`exec-once = waybar`, `exec-once = quickshell`).
