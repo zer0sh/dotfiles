@@ -154,26 +154,36 @@ body[data-md-color-scheme="default"] {
 }
 
 .md-header__title {
-  flex: 0 0 auto !important;
-  margin: 0 1rem 0 0.4rem !important;
-  height: auto !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
   line-height: normal !important;
+  margin: 0 1rem 0 0.4rem !important;
 }
 
 .md-header__title > .md-header__ellipsis {
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
 }
 
 /* Compact, clean site title */
 .md-header__topic {
+  position: relative !important;
   font-size: 0.88rem !important;
   font-weight: 600 !important;
   letter-spacing: -0.01em !important;
-  color: var(--md-accent-fg-color) !important;
+  color: var(--md-default-fg-color, #e4e1e9) !important;
   opacity: 1 !important;
   transform: none !important;
-  display: block !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.md-header__topic:first-child {
+  opacity: 1 !important;
+  transform: none !important;
+  display: flex !important;
 }
 
 .md-header__title--active .md-header__topic:first-child {
@@ -253,56 +263,242 @@ body[data-md-color-scheme="default"] {
   .md-search__scrollwrap {
     width: 100% !important;
   }
+
+  /* Centered Magnifying Glass Icon on Desktop */
+  .md-search__icon[for="__search"] {
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    left: 0.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 1rem !important;
+    width: 1rem !important;
+    margin: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .md-search__icon[for="__search"] svg:first-child {
+    display: block !important;
+    width: 0.95rem !important;
+    height: 0.95rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .md-search__icon[for="__search"] svg:last-child {
+    display: none !important;
+  }
+
+  /* Desktop Header Elements Order */
+  .md-header__option {
+    order: 3 !important;
+    margin-left: 0.5rem !important;
+    margin-right: 0.35rem !important;
+  }
+
+  .md-header__source {
+    order: 4 !important;
+    width: auto !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+  }
 }
 
-.md-search__form {
-  position: relative !important;
-  background-color: var(--glass-bg-card) !important;
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--md-sys-radius-pill) !important;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: all 0.25s var(--md-sys-motion-standard);
-  display: flex !important;
-  align-items: center !important;
-}
+/* --- Mobile Top App Bar & Mobile Search (< 60em) --- */
+@media screen and (max-width: 59.9375em) {
+  .md-header__inner {
+    height: 3rem !important;
+    padding: 0 0.5rem !important;
+    gap: 0.2rem !important;
+    display: flex !important;
+    align-items: center !important;
+  }
 
-.md-search__form:focus-within,
-.md-search__input:focus {
-  border-color: var(--glass-border-focus);
-  box-shadow: 0 0 0 2px var(--m3-accent-container), var(--glass-shadow-sm) !important;
-}
+  /* 1. Hamburger menu button */
+  .md-header__button[for="__drawer"] {
+    order: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    border-radius: 8px !important;
+    margin: 0 !important;
+  }
 
-.md-search__input {
-  border-radius: var(--md-sys-radius-pill);
-}
+  /* 2. Brand logo */
+  .md-logo {
+    order: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 !important;
+    margin: 0 0.15rem 0 0 !important;
+  }
 
-/* Centered Magnifying Glass Icon */
-.md-search__icon[for="__search"] {
-  position: absolute !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  left: 0.75rem !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  height: 1rem !important;
-  width: 1rem !important;
-  margin: 0 !important;
-  pointer-events: none !important;
-}
+  .md-logo svg,
+  .md-logo img {
+    width: 1.15rem !important;
+    height: 1.15rem !important;
+  }
 
-.md-search__icon[for="__search"] svg:first-child {
-  display: block !important;
-  width: 0.95rem !important;
-  height: 0.95rem !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
+  /* 3. Site title: fluid flex with text-overflow ellipsis */
+  .md-header__title {
+    order: 3 !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 0.4rem 0 0.2rem !important;
+    overflow: hidden !important;
+  }
 
-.md-search__icon[for="__search"] svg:last-child {
-  display: none !important;
+  .md-header__title > .md-header__ellipsis {
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .md-header__topic {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    font-size: 0.86rem !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.01em !important;
+    color: var(--md-default-fg-color, #e4e1e9) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* 4. Search action icon */
+  .md-header__button[for="__search"] {
+    order: 4 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    margin: 0 !important;
+    border-radius: 8px !important;
+  }
+
+  .md-header__button[for="__search"] svg {
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+  }
+
+  /* 5. Theme toggle switch */
+  .md-header__option {
+    order: 5 !important;
+    margin: 0 !important;
+  }
+
+  .md-header__option label {
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    border-radius: 8px !important;
+  }
+
+  /* 6. GitHub Repository Button (Icon-Only on Mobile) */
+  .md-header__source {
+    order: 6 !important;
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+  }
+
+  .md-header__source .md-source {
+    height: 2.25rem !important;
+    width: 2.25rem !important;
+    min-width: 2.25rem !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+  }
+
+  .md-header__source .md-source__repository {
+    display: none !important;
+  }
+
+  .md-header__source .md-source__icon svg {
+    width: 1.05rem !important;
+    height: 1.05rem !important;
+  }
+
+  /* Mobile Search Overlay Sheet */
+  [data-md-toggle="search"]:checked ~ .md-header .md-search {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 100 !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__inner {
+    background: rgba(17, 18, 29, 0.96) !important;
+    backdrop-filter: blur(28px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+    padding: 0.6rem 0.8rem 0.8rem 0.8rem !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  [data-md-color-scheme="default"] [data-md-toggle="search"]:checked ~ .md-header .md-search__inner {
+    background: rgba(255, 255, 255, 0.96) !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__form {
+    height: 2.6rem !important;
+    border-radius: 24px !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__input {
+    font-size: 0.9rem !important;
+    padding-left: 2.8rem !important;
+    padding-right: 2.6rem !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__icon[for="__search"] {
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    left: 0.85rem !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 1.3rem !important;
+    height: 1.3rem !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__icon[for="__search"] svg:first-child {
+    display: none !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__icon[for="__search"] svg:last-child {
+    display: block !important;
+    width: 1.2rem !important;
+    height: 1.2rem !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__output {
+    position: fixed !important;
+    top: 4.2rem !important;
+    left: 0.75rem !important;
+    right: 0.75rem !important;
+    width: calc(100vw - 1.5rem) !important;
+    max-height: calc(100vh - 5rem) !important;
+    border-radius: 16px !important;
+    border: 1px solid var(--glass-border) !important;
+  }
 }
 
 /* Centered Clear Button */
@@ -352,11 +548,8 @@ body[data-md-color-scheme="default"] {
   background-color: var(--m3-accent-container);
 }
 
-/* --- Theme Switcher: STRICTLY SINGLE TOGGLE BUTTON (Order 3) --- */
+/* --- Theme Switcher: STRICTLY SINGLE TOGGLE BUTTON --- */
 .md-header__option {
-  order: 3 !important;
-  margin-left: 0.5rem !important;
-  margin-right: 0.35rem !important;
   display: flex !important;
   align-items: center !important;
 }
@@ -414,12 +607,10 @@ body[data-md-color-scheme="default"] {
   background: rgba(0, 0, 0, 0.08) !important;
 }
 
-/* Rightmost: Repository Badge (Order 4) */
+/* Rightmost: Repository Badge */
 .md-header__source {
-  order: 4 !important;
   width: auto !important;
   max-width: none !important;
-  margin-left: 0 !important;
 }
 
 .md-source {
@@ -573,13 +764,136 @@ body[data-md-color-scheme="default"] {
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-/* Mobile Drawer (Responsive Glass) */
+/* Mobile Drawer (Android Pure Material Design 3 Navigation Drawer) */
 @media screen and (max-width: 76.234375em) {
+  [dir="ltr"] .md-sidebar--primary,
+  .md-sidebar--primary {
+    width: 17.5rem !important;
+    left: 0 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 0 24px 24px 0 !important;
+    border-right: 1px solid var(--glass-border) !important;
+    box-shadow: 8px 0 36px rgba(0, 0, 0, 0.45) !important;
+    overflow: hidden !important;
+  }
+
+  [data-md-toggle="drawer"]:checked ~ .md-container .md-sidebar--primary {
+    transform: translateX(0) !important;
+  }
+
+  /* Prevent duplicate items when TOC label exists */
+  .md-nav--primary .md-nav__link[for="__toc"] + .md-nav__link {
+    display: none !important;
+  }
+
+  .md-sidebar--primary .md-sidebar__scrollwrap,
   .md-nav--primary,
   .md-nav--primary .md-nav {
     background-color: var(--glass-bg-elevated) !important;
-    backdrop-filter: var(--glass-blur);
-    -webkit-backdrop-filter: var(--glass-blur);
+    backdrop-filter: blur(28px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  }
+
+  /* Drawer Header */
+  .md-nav__title[for="__drawer"] {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    padding: 1.3rem 1.25rem 0.85rem 1.25rem !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: var(--md-accent-fg-color) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+    background: transparent !important;
+  }
+
+  .md-nav__title[for="__drawer"] .md-nav__button.md-logo {
+    width: 2.2rem !important;
+    height: 2.2rem !important;
+    border-radius: 10px !important;
+    background: rgba(169, 148, 249, 0.16) !important;
+    border: 1px solid rgba(169, 148, 249, 0.25) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 5px !important;
+    margin: 0 !important;
+  }
+
+  /* Repository Card in Drawer (M3 Glass Surface) */
+  .md-nav__source {
+    margin: 0.75rem 0.85rem !important;
+    border-radius: 12px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    overflow: hidden;
+  }
+
+  [data-md-color-scheme="default"] .md-nav__source {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .md-nav__source .md-source {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0.55rem 0.9rem !important;
+    color: var(--md-default-fg-color) !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .md-nav__source .md-source__repository {
+    display: block !important;
+    margin-left: 8px !important;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    color: var(--md-default-fg-color) !important;
+  }
+
+  /* Drawer Navigation Items (M3 Pill Shape & Touch Spacing) */
+  .md-nav--primary .md-nav__item {
+    padding: 2px 10px !important;
+  }
+
+  .md-nav--primary .md-nav__link {
+    border-radius: 12px !important;
+    padding: 0.6rem 0.95rem !important;
+    min-height: 2.65rem !important;
+    font-size: 0.86rem !important;
+    font-weight: 500 !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: all 0.2s ease;
+  }
+
+  .md-nav--primary .md-nav__item--active > .md-nav__link {
+    background: rgba(169, 148, 249, 0.18) !important;
+    color: #c4b5fd !important;
+    font-weight: 600 !important;
+    border: 1px solid rgba(169, 148, 249, 0.3) !important;
+  }
+
+  [data-md-color-scheme="default"] .md-nav--primary .md-nav__item--active > .md-nav__link {
+    background: rgba(103, 80, 164, 0.14) !important;
+    color: #6750a4 !important;
+    border-color: rgba(103, 80, 164, 0.25) !important;
+  }
+
+  /* Nested Navigation Submenu Lists */
+  .md-nav--primary .md-nav {
+    margin-left: 1.2rem !important;
+    border-left: 2px solid rgba(255, 255, 255, 0.08) !important;
+    padding-left: 0.35rem !important;
+  }
+
+  [data-md-color-scheme="default"] .md-nav--primary .md-nav {
+    border-left-color: rgba(0, 0, 0, 0.08) !important;
   }
 }
 
@@ -595,13 +909,6 @@ body[data-md-color-scheme="default"] {
   border-radius: 16px;
   box-shadow: var(--glass-shadow);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-@media screen and (max-width: 45em) {
-  .md-content__inner {
-    padding: 1.4rem 1.2rem;
-    border-radius: 12px;
-  }
 }
 
 .md-typeset h1 {
@@ -876,4 +1183,121 @@ body[data-md-color-scheme="default"] {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--md-default-fg-color--lighter);
+}
+
+/* --- 15. Mobile Phone Refinement (< 45em) --- */
+@media screen and (max-width: 45em) {
+  /* Main Content Glass Card */
+  .md-content__inner {
+    margin: 0.5rem 0.4rem 1.5rem 0.4rem !important;
+    padding: 1.2rem 1rem !important;
+    border-radius: 14px !important;
+    max-width: calc(100vw - 0.8rem) !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Responsive Mobile Typography */
+  .md-typeset h1 {
+    font-size: 1.5rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.8rem !important;
+  }
+
+  .md-typeset h2 {
+    font-size: 1.2rem !important;
+    line-height: 1.3 !important;
+    margin-top: 1.4rem !important;
+    margin-bottom: 0.6rem !important;
+  }
+
+  .md-typeset h3 {
+    font-size: 1.02rem !important;
+    margin-top: 1.1rem !important;
+  }
+
+  /* Spacing on Small Screens */
+  .md-typeset ul,
+  .md-typeset ol {
+    padding-left: 1.2rem !important;
+  }
+
+  .md-typeset li {
+    margin-bottom: 0.35rem !important;
+  }
+
+  /* Inline Code on Mobile */
+  .md-typeset code:not(pre code) {
+    font-size: 0.77em !important;
+    padding: 0.12em 0.35em !important;
+    border-radius: 5px !important;
+    word-break: break-all !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  /* Bento Grid Cards: Stack 1 Column Full Width */
+  .md-typeset .grid.cards > ul {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+
+  .md-typeset .grid.cards > ul > li {
+    padding: 1rem 1.1rem !important;
+  }
+
+  /* Code Blocks & Preformatted Text */
+  .highlight,
+  .highlighttable,
+  .md-typeset > pre {
+    margin: 0.85rem 0 !important;
+    border-radius: 10px !important;
+    font-size: 0.76rem !important;
+    line-height: 1.45 !important;
+    max-width: 100% !important;
+  }
+
+  .highlight pre,
+  .highlighttable pre,
+  .md-typeset .highlight pre {
+    padding: 0.75rem 0.95rem !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Code copy button touch friendly */
+  .md-clipboard {
+    top: 0.4rem !important;
+    right: 0.4rem !important;
+    opacity: 0.85 !important;
+  }
+
+  /* Tables horizontal scrolling */
+  .md-typeset table:not([class]) {
+    font-size: 0.78rem !important;
+    margin: 0.8rem 0 !important;
+    display: block !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .md-typeset table:not([class]) th,
+  .md-typeset table:not([class]) td {
+    padding: 0.45rem 0.65rem !important;
+    white-space: nowrap !important;
+  }
+
+  /* Admonition Cards */
+  .md-typeset .admonition,
+  .md-typeset details {
+    margin: 0.85rem 0 !important;
+    padding: 0.65rem 0.85rem !important;
+    border-radius: 10px !important;
+  }
+
+  /* Floating Action Button (Back To Top) */
+  .md-top {
+    bottom: 1.25rem !important;
+    right: 1rem !important;
+    width: 2.6rem !important;
+    height: 2.6rem !important;
+    border-radius: 14px !important;
+  }
 }
