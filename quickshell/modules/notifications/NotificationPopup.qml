@@ -16,7 +16,7 @@ Item {
     width:  parent ? parent.width : 360
     height: card.height
 
-    property real _slideY:  14
+    property real _slideY:  -28
     property real _opacity: 0
 
     Component.onCompleted: appearAnim.start()
@@ -25,11 +25,34 @@ Item {
         id: appearAnim
         NumberAnimation {
             target: root; property: "_slideY"
-            to: 0; duration: 220; easing.type: Easing.OutCubic
+            from: -28
+            to: 0; duration: 280; easing.type: Easing.OutCubic
         }
         NumberAnimation {
             target: root; property: "_opacity"
-            to: 1; duration: 180; easing.type: Easing.OutQuad
+            from: 0
+            to: 1; duration: 220; easing.type: Easing.OutQuad
+        }
+    }
+
+    ParallelAnimation {
+        id: disappearAnim
+        NumberAnimation {
+            target: root; property: "_slideY"
+            to: -20; duration: 180; easing.type: Easing.InQuad
+        }
+        NumberAnimation {
+            target: root; property: "_opacity"
+            to: 0; duration: 160; easing.type: Easing.InQuad
+        }
+        onFinished: root.dismissed(root.notifId)
+    }
+
+    function dismiss() {
+        if (!disappearAnim.running && _opacity > 0) {
+            disappearAnim.start()
+        } else if (_opacity <= 0) {
+            root.dismissed(root.notifId)
         }
     }
 
@@ -45,9 +68,10 @@ Item {
                          Root.Theme.panelBg.g,
                          Root.Theme.panelBg.b, 0.92)
         border.width: 1
-        border.color: Qt.rgba(Root.Theme.panelBorder.r,
-                              Root.Theme.panelBorder.g,
-                              Root.Theme.panelBorder.b, 0.45)
+        border.color: root.urgency === "CRITICAL"
+            ? Root.Theme.error
+            : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g,
+                     Root.Theme.primary.b, 0.55)
 
         Rectangle {
             visible: root.urgency === "CRITICAL"
@@ -81,7 +105,7 @@ Item {
 
                 Text {
                     text: root.appName !== "" ? root.appName : "Notification"
-                    color: Root.Theme.textSecondary
+                    color: "#E5E1E9"
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: Root.Theme.fontSizeXS
                     font.weight: Font.Medium
@@ -100,7 +124,7 @@ Item {
                     Text {
                         anchors.centerIn: parent
                         text: "󰅖"
-                        color: dismissArea.containsMouse ? Root.Theme.textPrimary : Root.Theme.textSecondary
+                        color: "#E5E1E9"
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 12
                     }
@@ -117,7 +141,7 @@ Item {
 
             Text {
                 text: root.summary
-                color: Root.Theme.textPrimary
+                color: "#E5E1E9"
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: Root.Theme.fontSizeNormal
                 font.weight: Font.DemiBold
@@ -128,7 +152,7 @@ Item {
 
             Text {
                 text: root.body
-                color: Root.Theme.textSecondary
+                color: "#E5E1E9"
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: Root.Theme.fontSizeSmall
                 wrapMode: Text.WordWrap
@@ -153,7 +177,7 @@ Item {
             anchors.fill: parent
             hoverEnabled: true
             acceptedButtons: Qt.LeftButton
-            onClicked: root.dismissed(root.notifId)
+            onClicked: root.dismiss()
         }
     }
 }

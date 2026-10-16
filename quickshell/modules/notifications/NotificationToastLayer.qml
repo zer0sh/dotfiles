@@ -12,7 +12,7 @@ Scope {
         target: NotificationService
 
         function onNewNotification(notifId, appName, summary, body, urgency, timeout) {
-            toastModel.append({
+            toastModel.insert(0, {
                 notifId:  notifId,
                 appName:  appName,
                 summary:  summary,
@@ -20,6 +20,9 @@ Scope {
                 urgency:  urgency,
                 timeout:  timeout > 0 ? timeout : 5000
             })
+            if (toastModel.count > 4) {
+                toastModel.remove(toastModel.count - 1)
+            }
         }
     }
 
@@ -32,17 +35,25 @@ Scope {
         WlrLayershell.namespace:      "quickshell:notifications-toast"
         WlrLayershell.keyboardFocus:  WlrKeyboardFocus.None
 
-        anchors.bottom: true
-        anchors.left:   true
-        anchors.right:  true
+        anchors.top:   true
+        anchors.left:  true
+        anchors.right: true
         implicitHeight: 600
 
         Column {
             id: toastCol
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom: parent.bottom
-            anchors.bottomMargin: 40
-            spacing: 8
+            anchors.top: parent.top
+            anchors.topMargin: 46
+            spacing: 10
+
+            move: Transition {
+                NumberAnimation {
+                    properties: "y"
+                    duration: 250
+                    easing.type: Easing.OutCubic
+                }
+            }
 
             Repeater {
                 model: toastModel
@@ -72,7 +83,7 @@ Scope {
                         interval:  model.timeout
                         running:   true
                         repeat:    false
-                        onTriggered: toastWin._removeById(_notifId)
+                        onTriggered: popup.dismiss()
                     }
                 }
             }

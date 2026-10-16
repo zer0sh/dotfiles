@@ -44,17 +44,17 @@ Scope {
         WlrLayershell.namespace:     "quickshell:volume-osd"
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-        // Full-width bottom strip — just tall enough to hold the card
-        anchors.bottom: true
-        anchors.left:   true
-        anchors.right:  true
-        implicitHeight: 108
+        // Full-width top strip
+        anchors.top:   true
+        anchors.left:  true
+        anchors.right: true
+        implicitHeight: 120
 
         function showOsd() {
             dismissAnim.stop()
             if (!visible) {
                 osdCard._opacity = 0
-                osdCard._slideY  = 14
+                osdCard._slideY  = -28
                 visible = true
                 appearAnim.start()
             }
@@ -69,34 +69,40 @@ Scope {
             onTriggered: dismissAnim.start()
         }
 
-        // Appear: slide up + fade in
+        // Appear: slide down + fade in
         ParallelAnimation {
             id: appearAnim
             NumberAnimation {
                 target: osdCard; property: "_opacity"
-                to: 1; duration: 180; easing.type: Easing.OutQuad
+                from: 0; to: 1; duration: 220; easing.type: Easing.OutQuad
             }
             NumberAnimation {
                 target: osdCard; property: "_slideY"
-                to: 0; duration: 220; easing.type: Easing.OutCubic
+                from: -28; to: 0; duration: 260; easing.type: Easing.OutCubic
             }
         }
 
-        // Dismiss: fade out, then hide window
+        // Dismiss: slide up + fade out, then hide window
         SequentialAnimation {
             id: dismissAnim
-            NumberAnimation {
-                target: osdCard; property: "_opacity"
-                to: 0; duration: 200; easing.type: Easing.InQuad
+            ParallelAnimation {
+                NumberAnimation {
+                    target: osdCard; property: "_opacity"
+                    to: 0; duration: 180; easing.type: Easing.InQuad
+                }
+                NumberAnimation {
+                    target: osdCard; property: "_slideY"
+                    to: -20; duration: 180; easing.type: Easing.InQuad
+                }
             }
             ScriptAction { script: osdWin.visible = false }
         }
 
-        // ── Card container — fixed position near the bottom ────
+        // ── Card container — fixed position at top center below Waybar ────
         Item {
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.bottom:           parent.bottom
-            anchors.bottomMargin:     40
+            anchors.top:              parent.top
+            anchors.topMargin:        46
             width:  360
             height: 56
 
@@ -104,7 +110,7 @@ Scope {
             Rectangle {
                 id: osdCard
                 property real _opacity: 0
-                property real _slideY:  -14
+                property real _slideY:  -28
 
                 width:   parent.width
                 height:  parent.height

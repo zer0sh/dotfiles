@@ -14,7 +14,7 @@ Scope {
 
     Timer {
         interval: 1500
-        running: true
+        running: miniPlayer.panelVisible
         repeat: true
         onTriggered: miniPlayer._refreshPlayer()
     }
@@ -56,10 +56,10 @@ Scope {
             WlrLayershell.namespace: "quickshell:miniplayer"
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-            anchors.bottom: true
-            anchors.left: true
+            anchors.top:   true
+            anchors.left:  true
             anchors.right: true
-            implicitHeight: 120
+            implicitHeight: 140
 
             MouseArea {
                 anchors.fill: parent
@@ -68,8 +68,8 @@ Scope {
 
             Item {
                 anchors.horizontalCenter: parent.horizontalCenter
-                anchors.bottom: parent.bottom
-                anchors.bottomMargin: 40
+                anchors.top:              parent.top
+                anchors.topMargin:        46
                 width: 400
                 height: 72
 
@@ -80,11 +80,32 @@ Scope {
 
                 Rectangle {
                     id: osdCard
-                    anchors.fill: parent
+                    property real _slideY: -28
+                    property real _opacity: 0
+
+                    width:   parent.width
+                    height:  parent.height
+                    y:       _slideY
+                    opacity: _opacity
+
                     radius: 27
                     color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.80)
                     border.width: 1
                     border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.45)
+
+                    Component.onCompleted: appearAnim.start()
+
+                    ParallelAnimation {
+                        id: appearAnim
+                        NumberAnimation {
+                            target: osdCard; property: "_opacity"
+                            from: 0; to: 1; duration: 220; easing.type: Easing.OutQuad
+                        }
+                        NumberAnimation {
+                            target: osdCard; property: "_slideY"
+                            from: -28; to: 0; duration: 260; easing.type: Easing.OutCubic
+                        }
+                    }
 
                     RowLayout {
                         anchors.fill: parent
