@@ -1,23 +1,108 @@
 {
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/master/doc/json_schema.json",
   "logo": {
-    "source": "skull"
+    "type": "file",
+    "source": "~/.config/fastfetch/logo.txt",
+    "color": {
+      "1": "red"
+    },
+    "padding": {
+      "right": 4
+    }
+  },
+  "display": {
+    "separator": " 󰅂 ",
+    "color": {
+      "separator": "red"
+    },
+    "percent": {
+      "type": 3
+    },
+    "bar": {
+      "char": {
+        "elapsed": "━",
+        "total": "─"
+      },
+      "border": {
+        "left": "[ ",
+        "right": " ]"
+      }
+    }
   },
   "modules": [
-    "os",
-    "host",
-    "kernel",
-    "uptime",
-    "packages",
-    "shell",
-    "display",
-    "wm",
-    "cpu",
-    "gpu",
-    "memory",
-    "swap",
-    "disk",
-    "localip",
-    "battery",
-    "locale"
+    {
+      "type": "title",
+      "format": "{#red}󰣇 {user-name}{#default}@{#red}{host-name}"
+    },
+    {
+      "type": "separator",
+      "string": "─",
+      "times": 48,
+      "outputColor": "red"
+    },
+    {
+      "type": "os",
+      "key": " OS         ",
+      "keyColor": "red"
+    },
+    {
+      "type": "kernel",
+      "key": " Kernel     ",
+      "keyColor": "red"
+    },
+    {
+      "type": "uptime",
+      "key": "󰅐 Uptime     ",
+      "keyColor": "red"
+    },
+    {
+      "type": "packages",
+      "key": "󰏖 Packages   ",
+      "keyColor": "red"
+    },
+    {
+      "type": "shell",
+      "key": " Shell      ",
+      "keyColor": "red"
+    },
+    {
+      "type": "wm",
+      "key": " WM         ",
+      "keyColor": "red"
+    },
+    {
+      "type": "cpu",
+      "key": " CPU        ",
+      "keyColor": "red"
+    },
+    {
+      "type": "gpu",
+      "key": "󰍛 GPU        ",
+      "keyColor": "red"
+    },
+    {
+      "type": "memory",
+      "key": "󰑭 Memory     ",
+      "keyColor": "red"
+    },
+    {
+      "type": "disk",
+      "key": "󰋊 Disk       ",
+      "keyColor": "red",
+      "format": "{size-percentage-bar} {size-used} / {size-total} ({size-percentage})"
+    },
+    {
+      "type": "battery",
+      "key": "󰂀 Battery    ",
+      "keyColor": "red"
+    },
+    {
+      "type": "break"
+    },
+    {
+      "type": "colors",
+      "symbol": "circle",
+      "paddingLeft": 16
+    }
   ]
 }

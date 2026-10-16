@@ -62,6 +62,7 @@ nav:
       - Notifications & OSDs: quickshell/osd-notifications.md
   - Launchers & Tools:
       - Wofi: apps/wofi.md
+      - Fastfetch: apps/fastfetch.md
   - Terminals:
       - Alacritty: terminals/alacritty.md
   - Dotfiles & Workflow:
