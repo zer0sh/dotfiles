@@ -18,6 +18,7 @@ APPS=(
     "btop:btop"
     "fastfetch:fastfetch"
     "bat:bat"
+    "matugen:matugen"
 )
 
 echo "[INFO] Starting dotfiles deployment..."

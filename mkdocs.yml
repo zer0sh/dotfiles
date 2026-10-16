@@ -66,6 +66,7 @@ nav:
   - Launchers & Tools:
       - Wofi: apps/wofi.md
       - Fastfetch: apps/fastfetch.md
+      - Matugen: apps/matugen.md
   - Terminals:
       - Alacritty: terminals/alacritty.md
       - Zsh: terminals/zsh.md

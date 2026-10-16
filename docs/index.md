@@ -21,5 +21,7 @@ Welcome to the official documentation for **zer0sh's** desktop environment, buil
 * [**Quickshell Control Center**](quickshell/index.md): One UI inspired quick-settings panel and system widgets.
 * [**Notifications & OSDs**](quickshell/osd-notifications.md): Top-center positioning, slide-down animations, and queue dynamics.
 * [**Wofi Launcher**](apps/wofi.md): Material Design 3 app launcher, presets, and toggle behavior.
+* [**Fastfetch Telemetry**](apps/fastfetch.md): Clean system information display, custom modules, and hardware specs.
+* [**Matugen Dynamic Theming**](apps/matugen.md): Material Design 3 palette generator, template mappings, and central theme store.
 * [**Dotfiles Workflow**](dotfiles/workflow.md): Repository management, local-first philosophy, and GitHub synchronization.
 * [**Release Management & SemVer**](dotfiles/releases.md): Semantic versioning, tag triggers, and release automation.

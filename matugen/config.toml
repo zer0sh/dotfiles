@@ -1,0 +1,40 @@
+# Matugen is the color generator; ~/.config/themes is the central theme store.
+
+[config]
+mode = "dark"
+type = "scheme-tonal-spot"
+source_color_index = 0
+scheme_tonal_spot_cutoff = 0.15
+scheme_contrast = 1.0
+
+[templates.waybar]
+input_path = "~/.config/matugen/templates/waybar.css"
+output_path = "~/.config/themes/current/waybar.css"
+
+[templates.wofi]
+input_path = "~/.config/matugen/templates/wofi.css"
+output_path = "~/.config/themes/current/wofi.css"
+
+[templates.kitty]
+input_path = "~/.config/matugen/templates/kitty.conf"
+output_path = "~/.config/themes/current/kitty.conf"
+
+[templates.alacritty]
+input_path = "~/.config/matugen/templates/alacritty.toml"
+output_path = "~/.config/themes/current/alacritty.toml"
+
+[templates.hyprland]
+input_path = "~/.config/matugen/templates/hyprland.conf"
+output_path = "~/.config/themes/current/hyprland.conf"
+
+[templates.hyprlock]
+input_path = "~/.config/matugen/templates/hyprlock.conf"
+output_path = "~/.config/themes/current/hyprlock.conf"
+
+[templates.palette]
+input_path = "~/.config/matugen/templates/palette.json"
+output_path = "~/.config/themes/current/palette.json"
+
+[templates.hyprtoolkit]
+input_path = "~/.config/matugen/templates/hyprtoolkit.conf"
+output_path = "~/.config/hypr/hyprtoolkit.conf"
