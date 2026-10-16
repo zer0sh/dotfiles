@@ -42,3 +42,11 @@ output_path = "~/.config/hypr/hyprtoolkit.conf"
 [templates.btop]
 input_path = "~/.config/matugen/templates/btop.theme"
 output_path = "~/.config/themes/current/btop.theme"
+
+[templates.gtk3]
+input_path = "~/.config/matugen/templates/gtk-3.0.css"
+output_path = "~/.config/themes/current/gtk-3.0.css"
+
+[templates.gtk4]
+input_path = "~/.config/matugen/templates/gtk-4.0.css"
+output_path = "~/.config/themes/current/gtk-4.0.css"

@@ -56,6 +56,11 @@ if [ -d "$CONFIG_DIR/btop/themes" ]; then
     ln -sf "$CONFIG_DIR/themes/current/btop.theme" "$CONFIG_DIR/btop/themes/matugen.theme"
 fi
 
+# GTK 3 & GTK 4 Matugen themes
+mkdir -p "$CONFIG_DIR/gtk-3.0" "$CONFIG_DIR/gtk-4.0"
+ln -sf "$CONFIG_DIR/themes/current/gtk-3.0.css" "$CONFIG_DIR/gtk-3.0/gtk.css"
+ln -sf "$CONFIG_DIR/themes/current/gtk-4.0.css" "$CONFIG_DIR/gtk-4.0/gtk.css"
+
 # Vim
 if [ -d "$REPO_DIR/vim" ]; then
     echo "[INFO] Setting up Vim configuration..."

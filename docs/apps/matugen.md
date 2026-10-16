@@ -25,6 +25,8 @@ Wallpaper Image (.png / .jpg)
    ├── hyprland.conf   --> sourced by Hyprland for active/inactive borders
    ├── hyprlock.conf   --> sourced by ~/.config/hypr/hyprlock.conf
    ├── btop.theme       --> linked by ~/.config/btop/themes/matugen.theme
+   ├── gtk-3.0.css     --> linked by ~/.config/gtk-3.0/gtk.css
+   ├── gtk-4.0.css     --> linked by ~/.config/gtk-4.0/gtk.css
    └── palette.json    --> consumed by Quickshell Control Center & Widgets
 ```
 
@@ -79,6 +81,14 @@ output_path = "~/.config/hypr/hyprtoolkit.conf"
 [templates.btop]
 input_path = "~/.config/matugen/templates/btop.theme"
 output_path = "~/.config/themes/current/btop.theme"
+
+[templates.gtk3]
+input_path = "~/.config/matugen/templates/gtk-3.0.css"
+output_path = "~/.config/themes/current/gtk-3.0.css"
+
+[templates.gtk4]
+input_path = "~/.config/matugen/templates/gtk-4.0.css"
+output_path = "~/.config/themes/current/gtk-4.0.css"
 ```
 
 ---
@@ -95,6 +105,8 @@ output_path = "~/.config/themes/current/btop.theme"
 | **[Hyprland](../hyprland/index.md)** | `themes/current/hyprland.conf` | `col.active_border`, `col.inactive_border` | `hyprctl reload` or `hyprctl keyword` |
 | **[Hyprlock](../hyprland/hyprlock.md)** | `themes/current/hyprlock.conf` | Lockscreen text, ring accent, error and warning colors | Next screen lock event |
 | **[btop](btop.md)** | `themes/current/btop.theme` | Box outlines, graphs, text, selection, gradient metrics | Next launch / live theme switch |
+| **GNOME Classic (GTK 3)** | `themes/current/gtk-3.0.css` | Window, headerbar, inputs, buttons, selection, accent | Next app launch |
+| **GNOME Modern (GTK 4 / Libadwaita)** | `themes/current/gtk-4.0.css` | Libadwaita named colors: accent, window_bg, headerbar, cards | Next app launch |
 
 ---
 
