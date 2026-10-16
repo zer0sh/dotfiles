@@ -38,3 +38,7 @@ output_path = "~/.config/themes/current/palette.json"
 [templates.hyprtoolkit]
 input_path = "~/.config/matugen/templates/hyprtoolkit.conf"
 output_path = "~/.config/hypr/hyprtoolkit.conf"
+
+[templates.btop]
+input_path = "~/.config/matugen/templates/btop.theme"
+output_path = "~/.config/themes/current/btop.theme"

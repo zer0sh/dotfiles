@@ -24,6 +24,7 @@ Wallpaper Image (.png / .jpg)
    ├── kitty.conf      --> included by ~/.config/kitty/kitty.conf
    ├── hyprland.conf   --> sourced by Hyprland for active/inactive borders
    ├── hyprlock.conf   --> sourced by ~/.config/hypr/hyprlock.conf
+   ├── btop.theme       --> linked by ~/.config/btop/themes/matugen.theme
    └── palette.json    --> consumed by Quickshell Control Center & Widgets
 ```
 
@@ -74,6 +75,10 @@ output_path = "~/.config/themes/current/palette.json"
 [templates.hyprtoolkit]
 input_path = "~/.config/matugen/templates/hyprtoolkit.conf"
 output_path = "~/.config/hypr/hyprtoolkit.conf"
+
+[templates.btop]
+input_path = "~/.config/matugen/templates/btop.theme"
+output_path = "~/.config/themes/current/btop.theme"
 ```
 
 ---
@@ -89,6 +94,7 @@ output_path = "~/.config/hypr/hyprtoolkit.conf"
 | **Kitty** | `themes/current/kitty.conf` | ANSI 16 palette, foreground, background, cursor | `kitty @ set-colors` or new instance |
 | **[Hyprland](../hyprland/index.md)** | `themes/current/hyprland.conf` | `col.active_border`, `col.inactive_border` | `hyprctl reload` or `hyprctl keyword` |
 | **[Hyprlock](../hyprland/hyprlock.md)** | `themes/current/hyprlock.conf` | Lockscreen text, ring accent, error and warning colors | Next screen lock event |
+| **[btop](btop.md)** | `themes/current/btop.theme` | Box outlines, graphs, text, selection, gradient metrics | Next launch / live theme switch |
 
 ---
 

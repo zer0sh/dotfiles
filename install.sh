@@ -50,6 +50,12 @@ for item in "${APPS[@]}"; do
     link_config "$REPO_DIR/$repo_folder" "$CONFIG_DIR/$config_folder"
 done
 
+# Btop Matugen theme link
+if [ -d "$CONFIG_DIR/btop/themes" ]; then
+    mkdir -p "$CONFIG_DIR/themes/current"
+    ln -sf "$CONFIG_DIR/themes/current/btop.theme" "$CONFIG_DIR/btop/themes/matugen.theme"
+fi
+
 # Vim
 if [ -d "$REPO_DIR/vim" ]; then
     echo "[INFO] Setting up Vim configuration..."

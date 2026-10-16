@@ -75,6 +75,7 @@ nav:
       - Fastfetch: apps/fastfetch.md
       - Matugen: apps/matugen.md
       - Bat: apps/bat.md
+      - Btop: apps/btop.md
   - Terminals:
       - Alacritty: terminals/alacritty.md
       - Zsh: terminals/zsh.md
