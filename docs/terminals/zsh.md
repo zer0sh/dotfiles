@@ -87,7 +87,7 @@ The shell dynamically verifies and activates installed modern CLI utilities:
 * **`fzf`:** Activated via `eval "$(fzf --zsh)"` providing fuzzy reverse search (`Ctrl + R`) and fuzzy path completion (`Ctrl + T`).
 * **`zoxide`:** Smart directory jumper activated via `eval "$(zoxide init zsh)"` using the `z` command.
 * **`lsd`:** Modern `ls` alternative with icons, tree views, and color schemes aliased to `ls`, `ll` (`lsd -la`), and `lt` (`lsd --tree`).
-* **`batcat` / `bat`:** Syntax-highlighted pager replacement aliased to `cat`.
+* **[`batcat` / `bat`](../apps/bat.md):** Syntax-highlighted pager replacement aliased to `cat` (see [Bat Configuration](../apps/bat.md)).
 
 ---
 
@@ -117,7 +117,7 @@ A two-line aesthetic prompt:
 | `ls` | `lsd` | Directory listing with icons |
 | `ll` | `lsd -la` | Detailed directory listing |
 | `lt` | `lsd --tree` | Tree directory representation |
-| `cat` | `batcat` | File inspection with syntax highlighting |
+| `cat` | `batcat` | File inspection with syntax highlighting (see [Bat](../apps/bat.md)) |
 | `v` | `vim` | Fast text editor launch |
 | `gs` | `git status` | Short Git status |
 | `ga` | `git add` | Stage changes |
@@ -133,6 +133,7 @@ A two-line aesthetic prompt:
 ## Related Documentation
 
 * [Alacritty Terminal](alacritty.md): Monospace configuration, font rendering, and live config reload.
+* [Bat Syntax Pager](../apps/bat.md): Code viewer, git diff badges, and CLI formatting flags.
 * [Fastfetch Telemetry](../apps/fastfetch.md): System hardware diagnostics and desktop branding.
 * [Hyprland Keybindings Catalog](../hyprland/keybinds.md): Keyboard shortcuts for spawning terminals and quick runners.
 * [Dotfiles Workflow & Architecture](../dotfiles/workflow.md): Git backup, symlink strategies, and installation scripting.

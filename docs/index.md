@@ -80,6 +80,7 @@ Explore the complete modular guide:
     * [Wofi M3 Launcher](apps/wofi.md)
     * [Matugen Theming Engine](apps/matugen.md)
     * [Fastfetch System Telemetry](apps/fastfetch.md)
+    * [Bat Syntax Pager](apps/bat.md)
 
 -   :material-console:{ .lg .middle } **Terminals & Shell**
 

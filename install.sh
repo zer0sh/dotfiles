@@ -90,4 +90,11 @@ if [ -d "$REPO_DIR/zsh" ]; then
     done
 fi
 
+# Bat symlink for Debian/Ubuntu (batcat -> bat)
+if command -v batcat >/dev/null 2>&1 && [ ! -L "$HOME/.local/bin/bat" ] && [ ! -f "$HOME/.local/bin/bat" ]; then
+    mkdir -p "$HOME/.local/bin"
+    ln -sf "$(command -v batcat)" "$HOME/.local/bin/bat"
+    echo "[LINK] Created bat symlink: ~/.local/bin/bat -> $(command -v batcat)"
+fi
+
 echo "[INFO] Installation completed successfully."
