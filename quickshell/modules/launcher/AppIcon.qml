@@ -31,10 +31,15 @@ Item {
     }
 
     // ── Colored circle background ─────────────────────────────
+    // Theme-derived icon surfaces. The launcher used to have a fixed
+    // rainbow palette, which made it ignore the active global theme.
     readonly property var palette: [
-        "#E57373", "#64B5F6", "#81C784", "#FFB74D",
-        "#BA68C8", "#4DD0E1", "#F06292", "#AED581",
-        "#7986CB", "#FFD54F", "#4DB6AC", "#A1887F"
+        Root.Theme.primary,
+        Root.Theme.primaryContainer,
+        Root.Theme.surfaceContainerHigh,
+        Root.Theme.secondaryContainer,
+        Root.Theme.surfaceBright,
+        Root.Theme.connected
     ]
 
     property color circleColor: {

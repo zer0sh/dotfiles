@@ -38,8 +38,8 @@ Item {
                     }
                 }
                 
-                Text { 
-                    text: "Theme"; color: Root.Theme.textPrimary
+                Text {
+                    text: "Theme"; color: "#E5E1E9"; opacity: 1.0
                     font.family: Root.Theme.fontFamily; font.pixelSize: 18; font.bold: true
                     Layout.fillWidth: true 
                 }
@@ -97,7 +97,8 @@ Item {
                                 
                                 Text {
                                     text: Root.Theme._themes[model.themeKey].name
-                                    color: Root.Theme.textPrimary
+                                    color: "#E5E1E9"
+                                    opacity: 1.0
                                     font.family: Root.Theme.fontFamily
                                     font.pixelSize: 18
                                     font.bold: true

@@ -30,8 +30,11 @@ Item {
         height: cardContent.implicitHeight + 24  // 12 top + 12 bottom
         radius: 16
         color: Qt.rgba(0x0D/255, 0x11/255, 0x1F/255, 0.9)
-        border.width: urgency === "CRITICAL" ? 1 : 0
-        border.color: Root.Theme.error
+        border.width: 1
+        border.color: urgency === "CRITICAL"
+            ? Root.Theme.error
+            : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g,
+                     Root.Theme.primary.b, 0.55)
 
         ColumnLayout {
             id: cardContent
@@ -60,7 +63,7 @@ Item {
                 // App name
                 Text {
                     text: appName
-                    color: Root.Theme.textSecondary
+                    color: "#E5E1E9"
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: Root.Theme.fontSizeXS
                     font.weight: Font.Medium
@@ -72,7 +75,7 @@ Item {
                 // Timestamp
                 Text {
                     text: timeAgo
-                    color: Qt.rgba(Root.Theme.textSecondary.r, Root.Theme.textSecondary.g, Root.Theme.textSecondary.b, 0.6)
+                    color: "#E5E1E9"
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: Root.Theme.fontSizeXS
                     visible: timeAgo !== ""
@@ -89,7 +92,7 @@ Item {
                     Text {
                         anchors.centerIn: parent
                         text: "󰅖"
-                        color: dismissArea.containsMouse ? Root.Theme.textPrimary : Root.Theme.textSecondary
+                        color: "#E5E1E9"
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 13
                     }
@@ -107,7 +110,7 @@ Item {
             // ── Summary (title) ──────────────────────────────
             Text {
                 text: summary
-                color: Root.Theme.textPrimary
+                color: "#E5E1E9"
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: Root.Theme.fontSizeNormal
                 font.weight: Font.DemiBold
@@ -119,7 +122,7 @@ Item {
             // ── Body text (3 lines max) ──────────────────────
             Text {
                 text: root.body
-                color: Root.Theme.textSecondary
+                color: "#E5E1E9"
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: 15
                 wrapMode: Text.WordWrap

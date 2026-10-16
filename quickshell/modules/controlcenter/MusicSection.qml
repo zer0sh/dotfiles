@@ -11,10 +11,11 @@ Item {
     implicitWidth: parent ? parent.width : 300
 
     property MprisPlayer _player: null
+    property bool panelVisible: false
 
     Timer {
         interval: 2000
-        running: true
+        running: root.panelVisible
         repeat: true
         onTriggered: root._refreshPlayer()
     }

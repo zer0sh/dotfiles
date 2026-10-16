@@ -6,6 +6,7 @@ import QtQuick.Layouts
 import Quickshell.Io
 import Quickshell.Wayland
 import "../.." as Root
+import "../notifications" as Notifications
 
 Scope {
     id: controlCenter
@@ -19,7 +20,11 @@ Scope {
     property bool wifiEnabled: true
     property bool btEnabled: true
     property int btConnectedCount: 0
-    property bool dndEnabled: false
+    readonly property bool dndEnabled: Notifications.NotificationService.dndEnabled
+    property bool caffeineEnabled: false
+    property string powerProfile: "balanced"
+    property bool nightLightEnabled: false
+    property string shaderName: "Off"
     readonly property bool airplaneModeEnabled: !wifiEnabled && !btEnabled
     property bool brightnessAvailable: false
     property QtObject powerMenuRef: null
@@ -30,8 +35,9 @@ Scope {
             wifiStatusProc.running = true
             btStatusProc.running = true
             btConnectedProc.running = true
-            dndStatusProc.running = true
             brightnessCheckProc.running = true
+            powerProfileProc.running = true
+            shaderStatusProc.running = true
         } else {
             _panelOpen = false
             resetPageTimer.running = true
@@ -111,17 +117,6 @@ Scope {
         }
     }
 
-    // DND status: dunstctl is-paused
-    Process {
-        id: dndStatusProc
-        command: ["dunstctl", "is-paused"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                controlCenter.dndEnabled = text.trim() === "true"
-            }
-        }
-    }
-
     // Brightness hardware detection
     Process {
         id: brightnessCheckProc
@@ -135,10 +130,14 @@ Scope {
 
     // ── Toggle actions ────────────────────────────────────────────
 
+    // Reusable notify-send for quick toggles (Wi-Fi, BT, DND, Airplane, Caffeine)
     Process {
-        id: dndToggleProc
-        command: ["dunstctl", "set-paused", controlCenter.dndEnabled ? "false" : "true"]
-        onExited: dndStatusProc.running = true
+        id: toggleNotifyProc
+    }
+
+    function notifyChange(title, message) {
+        toggleNotifyProc.command = ["/usr/bin/notify-send", title, message]
+        toggleNotifyProc.running = true
     }
 
     Process {
@@ -165,6 +164,141 @@ Scope {
         onExited: btStatusProc.running = true
     }
 
+    // Power profiles provided by power-profiles-daemon / GNOME.
+    Process {
+        id: powerProfileProc
+        command: ["powerprofilesctl", "get"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var profile = text.trim()
+                if (profile === "power-saver" || profile === "balanced" || profile === "performance")
+                    controlCenter.powerProfile = profile
+            }
+        }
+    }
+
+    Process {
+        id: setPowerProfileProc
+        onExited: powerProfileProc.running = true
+    }
+
+    function powerProfileLabel() {
+        if (powerProfile === "power-saver") return "Power Saver"
+        if (powerProfile === "performance") return "Performance"
+        return "Balanced"
+    }
+
+    function powerProfileIcon() {
+        if (powerProfile === "power-saver") return "󰂎"
+        if (powerProfile === "performance") return "󰓅"
+        return "󰾅"
+    }
+
+    function cyclePowerProfile() {
+        var next = "balanced"
+        if (powerProfile === "balanced") next = "performance"
+        else if (powerProfile === "performance") next = "power-saver"
+        setPowerProfileProc.command = ["powerprofilesctl", "set", next]
+        setPowerProfileProc.running = true
+        powerProfile = next
+    }
+
+    // Caffeine: keep the session awake while the toggle is active.
+    Process {
+        id: caffeineProc
+        command: ["systemd-inhibit", "--what=idle:sleep", "--who=Quickshell",
+                  "--why=Caffeine mode", "sleep", "infinity"]
+        onExited: controlCenter.caffeineEnabled = false
+    }
+
+    function toggleCaffeine() {
+        if (controlCenter.caffeineEnabled) {
+            caffeineProc.running = false
+            controlCenter.caffeineEnabled = false
+            notifyChange("Caffeine", "Caffeine mode disabled")
+        } else {
+            controlCenter.caffeineEnabled = true
+            caffeineProc.running = true
+            notifyChange("Caffeine", "Caffeine mode enabled")
+        }
+    }
+
+    // Night Light: toggle 100 % manual y sincrónico. Usa hyprsunset (nativo de
+    // Hyprland) porque wlsunset falla en esta build ("gamma control failed").
+    // hyprsunset aplica la temperatura de forma constante (sin modo automático
+    // por sol). El estado del botón se controla en la UI; hyprsunset como efecto.
+    Process {
+        id: nightLightProc
+        command: ["/bin/sh", "-c", "setsid nohup hyprsunset -t 4000 >/dev/null 2>&1 < /dev/null &"]
+    }
+
+    Process {
+        id: nightLightStopProc
+        command: ["/bin/sh", "-c", "pkill -x hyprsunset 2>/dev/null; true"]
+    }
+
+    Process {
+        id: nightLightNotifyProc
+    }
+
+    function toggleNightLight() {
+        if (controlCenter.nightLightEnabled) {
+            // apagar
+            nightLightStopProc.running = true
+            controlCenter.nightLightEnabled = false
+            nightLightNotifyProc.command = ["/usr/bin/notify-send", "Night light", "Light color filter disabled"]
+        } else {
+            // encender
+            nightLightProc.running = true
+            controlCenter.nightLightEnabled = true
+            nightLightNotifyProc.command = ["/usr/bin/notify-send", "Night light", "Light color filter enabled (4000K)"]
+        }
+        nightLightNotifyProc.running = true
+    }
+
+    Process {
+        id: shaderStatusProc
+        command: ["/home/zero/.config/hypr/scripts/filter", "status"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var result = text.trim()
+                if (result.indexOf("Filtro activo:") === 0)
+                    controlCenter.shaderName = result.substring("Filtro activo:".length).trim()
+                else
+                    controlCenter.shaderName = "Off"
+            }
+        }
+    }
+
+    Process {
+        id: shaderNextProc
+        command: ["/home/zero/.config/hypr/scripts/filter", "next"]
+        onExited: shaderStatusProc.running = true
+    }
+
+    Process {
+        id: shaderToggleProc
+        command: ["/home/zero/.config/hypr/scripts/filter", "toggle"]
+        onExited: shaderStatusProc.running = true
+    }
+
+    function shaderLabel() {
+        if (shaderName === "Sepia Vintage") return "Sepia"
+        if (shaderName === "Blanco y Negro") return "B&W"
+        if (shaderName === "Film Noir") return "Noir"
+        if (shaderName === "Vívido") return "Vivid"
+        if (shaderName === "Vintage") return "Vintage"
+        return "Shader Off"
+    }
+
+    function cycleShader() {
+        shaderNextProc.running = true
+    }
+
+    function toggleShader() {
+        shaderToggleProc.running = true
+    }
+
 
 
     // ── Theme persistence ────────────────────────────────────────
@@ -175,13 +309,18 @@ Scope {
 
     Process {
         id: themeApplyProc
-        command: ["/bin/sh", "-c", "~/.config/quickshell/scripts/apply-theme.sh " + Root.Theme.currentTheme]
+        command: ["/home/zero/.config/quickshell/scripts/apply-theme.sh", Root.Theme.currentTheme]
     }
 
     Connections {
         target: Root.Theme
         function onCurrentThemeChanged() {
             themeSaveProc.running = true;
+            if (Root.Theme.currentTheme === "matugen") {
+                themeApplyProc.command = ["/home/zero/.config/themes/apply-matugen.sh"];
+            } else {
+                themeApplyProc.command = ["/home/zero/.config/quickshell/scripts/apply-theme.sh", Root.Theme.currentTheme];
+            }
             themeApplyProc.running = true;
         }
     }
@@ -195,8 +334,8 @@ Scope {
             wifiStatusProc.running = true
             btStatusProc.running = true
             btConnectedProc.running = true
-            dndStatusProc.running = true
             brightnessCheckProc.running = true
+            shaderStatusProc.running = true
         }
     }
 
@@ -208,6 +347,19 @@ Scope {
         function toggle(): void { controlCenter.panelVisible = !controlCenter.panelVisible }
         function show(): void { controlCenter.panelVisible = true }
         function hide(): void { controlCenter.panelVisible = false }
+    }
+
+    IpcHandler {
+        target: "wallpaper"
+
+        function toggle(): void {
+            if (controlCenter.panelVisible && controlCenter.currentPage === "wallpaper") {
+                controlCenter.panelVisible = false
+            } else {
+                controlCenter.panelVisible = true
+                controlCenter.currentPage = "wallpaper"
+            }
+        }
     }
 
     // ── Overlay window / panel ────────────────────────────────────
@@ -327,12 +479,15 @@ Scope {
                     ]
 
                 radius: Root.Theme.panelRadius
-                color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.78)
+                // The layer rule in Hyprland blurs the content behind this
+                // translucent surface (namespace: quickshell:controlcenter).
+                // Dark translucent surface with Hyprland blur behind it.
+                color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.80)
                 border.width: 1
                 border.color: Qt.rgba(Root.Theme.panelBorder.r,
                                        Root.Theme.panelBorder.g,
                                        Root.Theme.panelBorder.b,
-                                       0.5)
+                                       0.68)
                 clip: true
 
                 // block click-through to overlay close area
@@ -438,77 +593,134 @@ Scope {
                                 }
                             }
 
+                            // One UI-style primary row: four independent
+                            // circular controls across the panel.
                             GridLayout {
-                                columns: 2
+                                columns: 4
                                 columnSpacing: Root.Theme.spacingSmall
-                                rowSpacing: Root.Theme.spacingSmall
+                                rowSpacing: Root.Theme.spacingLarge
                                 Layout.fillWidth: true
 
-                                FeatureTile {
+                                CircleToggle {
                                     Layout.fillWidth: true
                                     active: controlCenter.wifiEnabled
                                     icon: controlCenter.wifiEnabled ? "󰖩" : "󰖪"
                                     label: "Wi-Fi"
-                                    subtitle: {
-                                        if (!controlCenter.wifiEnabled)
-                                            return "Disabled"
-                                        if (controlCenter.wifiStatus !== "")
-                                            return controlCenter.wifiStatus
-                                        return "Not connected"
-                                    }
                                     hasDetail: true
-                                    onClicked: wifiToggleProc.running = true
+                                    onClicked: {
+                                        wifiToggleProc.running = true
+                                        if (controlCenter.wifiEnabled)
+                                            notifyChange("Wi-Fi", "Wi-Fi turned off")
+                                        else
+                                            notifyChange("Wi-Fi", "Wi-Fi turned on")
+                                    }
                                     onDetailClicked: controlCenter.currentPage = "wifi"
                                 }
 
-                                FeatureTile {
+                                CircleToggle {
                                     Layout.fillWidth: true
                                     active: controlCenter.btEnabled
                                     icon: controlCenter.btEnabled ? "󰂯" : "󰂲"
                                     label: "Bluetooth"
-                                    subtitle: {
-                                        if (!controlCenter.btEnabled)
-                                            return "Disabled"
-                                        if (controlCenter.btConnectedCount > 0)
-                                            return controlCenter.btConnectedCount + " connected"
-                                        return "No devices"
-                                    }
                                     hasDetail: true
-                                    onClicked: btToggleProc.running = true
+                                    onClicked: {
+                                        btToggleProc.running = true
+                                        if (controlCenter.btEnabled)
+                                            notifyChange("Bluetooth", "Bluetooth turned off")
+                                        else
+                                            notifyChange("Bluetooth", "Bluetooth turned on")
+                                    }
                                     onDetailClicked: controlCenter.currentPage = "bluetooth"
                                 }
 
-                                FeatureTile {
+                                CircleToggle {
                                     Layout.fillWidth: true
                                     active: controlCenter.dndEnabled
                                     icon: controlCenter.dndEnabled ? "󰂛" : "󰂚"
-                                    label: "Do Not Disturb"
-                                    subtitle: controlCenter.dndEnabled ? "Paused" : "Active"
-                                    hasDetail: false
-                                    onClicked: dndToggleProc.running = true
+                                    label: "DND"
+                                    onClicked: {
+                                        var next = !Notifications.NotificationService.dndEnabled
+                                        Notifications.NotificationService.dndEnabled = next
+                                        if (next)
+                                            notifyChange("Do Not Disturb", "Do Not Disturb enabled")
+                                        else
+                                            notifyChange("Do Not Disturb", "Do Not Disturb disabled")
+                                    }
                                 }
 
-                                FeatureTile {
+                                CircleToggle {
                                     Layout.fillWidth: true
                                     active: controlCenter.airplaneModeEnabled
                                     icon: "󰀝"
-                                    label: "Airplane Mode"
-                                    subtitle: controlCenter.airplaneModeEnabled ? "Enabled" : "Disabled"
-                                    hasDetail: false
+                                    label: "Airplane"
                                     onClicked: {
                                         airplaneWifiProc.running = true
                                         airplaneBtProc.running = true
+                                        if (controlCenter.airplaneModeEnabled)
+                                            notifyChange("Airplane Mode", "Airplane mode disabled")
+                                        else
+                                            notifyChange("Airplane Mode", "Airplane mode enabled")
                                     }
+                                }
+
+                                CircleToggle {
+                                    Layout.fillWidth: true
+                                    active: controlCenter.caffeineEnabled
+                                    icon: "󰅶"
+                                    label: "Caffeine"
+                                    onClicked: controlCenter.toggleCaffeine()
+                                }
+
+                                CircleToggle {
+                                    Layout.fillWidth: true
+                                    active: controlCenter.powerProfile === "performance"
+                                    icon: controlCenter.powerProfileIcon()
+                                    label: controlCenter.powerProfileLabel()
+                                    onClicked: controlCenter.cyclePowerProfile()
+                                }
+
+                                CircleToggle {
+                                    Layout.fillWidth: true
+                                    active: controlCenter.nightLightEnabled
+                                    icon: controlCenter.nightLightEnabled ? "󰖔" : "󰖙"
+                                    label: "Night Light"
+                                    onClicked: controlCenter.toggleNightLight()
+                                }
+
+                                CircleToggle {
+                                    Layout.fillWidth: true
+                                    active: controlCenter.shaderName !== "Off"
+                                    icon: "󱎴"
+                                    label: controlCenter.shaderLabel()
+                                    hasDetail: true
+                                    onClicked: controlCenter.toggleShader()
+                                    onDetailClicked: controlCenter.cycleShader()
+                                }
+
+                                CircleToggle {
+                                    Layout.fillWidth: true
+                                    active: true
+                                    icon: "󰉼"
+                                    label: "Theme"
+                                    onClicked: controlCenter.currentPage = "theme"
+                                }
+
+                                CircleToggle {
+                                    Layout.fillWidth: true
+                                    active: true
+                                    icon: "󰁹"
+                                    label: "Battery"
+                                    onClicked: controlCenter.currentPage = "battery"
                                 }
 
                             }
 
-                            FeatureTile {
-                                Layout.fillWidth: true
+                            CircleToggle {
+                                Layout.alignment: Qt.AlignHCenter
+                                Layout.preferredWidth: 76
                                 active: true
                                 icon: "󰓃"
                                 label: "Audio"
-                                subtitle: "Output / Input"
                                 hasDetail: true
                                 onDetailClicked: controlCenter.currentPage = "audio"
                             }
@@ -523,6 +735,7 @@ Scope {
                             }
 
                             MusicSection {
+                                panelVisible: controlCenter.panelVisible
                                 Layout.fillWidth: true
                             }
                         }
@@ -590,6 +803,42 @@ Scope {
                         width: pageContainer.width
                         height: pageContainer.height
                         x: controlCenter.currentPage === "theme" ? 0 : pageContainer.width
+
+                        Behavior on x {
+                            NumberAnimation {
+                                duration: Root.Theme.animDuration
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+
+                        onBack: {
+                            controlCenter.currentPage = "main"
+                        }
+                    }
+
+                    // WALLPAPER SUB-PAGE
+                    WallpaperSection {
+                        width: pageContainer.width
+                        height: pageContainer.height
+                        x: controlCenter.currentPage === "wallpaper" ? 0 : pageContainer.width
+
+                        Behavior on x {
+                            NumberAnimation {
+                                duration: Root.Theme.animDuration
+                                easing.type: Easing.OutCubic
+                            }
+                        }
+
+                        onBack: {
+                            controlCenter.currentPage = "main"
+                        }
+                    }
+
+                    // BATTERY SUB-PAGE
+                    BatterySection {
+                        width: pageContainer.width
+                        height: pageContainer.height
+                        x: controlCenter.currentPage === "battery" ? 0 : pageContainer.width
 
                         Behavior on x {
                             NumberAnimation {

@@ -54,12 +54,12 @@ Item {
             Layout.fillWidth: true
         }
 
-        // Pill track
+        // One UI-style volume capsule
         Rectangle {
             Layout.fillWidth: true
-            height: 28
-            radius: Root.Theme.sliderHeight / 2
-            color: Root.Theme.sliderTrack
+            height: 46
+            radius: height / 2
+            color: Root.Theme.surfaceContainerHigh
             clip: true
 
             // Active fill — dims when muted
@@ -76,27 +76,40 @@ Item {
                 Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
             }
 
-            // Volume icon (left, click = mute toggle)
-            Text {
+            // Circular icon control (left, click = mute toggle)
+            Rectangle {
+                id: volumeIconButton
+                width: 36
+                height: 36
                 anchors.left: parent.left
-                anchors.leftMargin: 14
+                anchors.leftMargin: 5
                 anchors.verticalCenter: parent.verticalCenter
-                text: root.volumeIcon(root.currentVolume, root.currentMuted)
-                font.family: Root.Theme.fontFamily
-                font.pixelSize: 21
-                color: Root.Theme.bg
+                radius: width / 2
+                color: root.currentMuted
+                    ? Root.Theme.surfaceContainer
+                    : Root.Theme.textPrimary
                 z: 1
+
+                Text {
+                    anchors.centerIn: parent
+                    text: root.volumeIcon(root.currentVolume, root.currentMuted)
+                    font.family: Root.Theme.fontFamily
+                    font.pixelSize: 21
+                    color: root.currentMuted ? Root.Theme.textPrimary : Root.Theme.tileActiveText
+                }
             }
 
             // Percentage or "Muted" (right)
             Text {
                 anchors.right: parent.right
-                anchors.rightMargin: 14
+                anchors.rightMargin: 18
                 anchors.verticalCenter: parent.verticalCenter
                 text: root.currentMuted ? "Muted" : root.volumePercent + "%"
                 font.family: Root.Theme.fontFamily
-                font.pixelSize: Root.Theme.fontSizeNormal
-                color: root.currentVolume > 0.85 ? Root.Theme.bg : Root.Theme.textSecondary
+                font.pixelSize: Root.Theme.fontSizeSmall
+                font.weight: Font.DemiBold
+                color: root.currentVolume > 0.72 && !root.currentMuted
+                    ? Root.Theme.tileActiveText : Root.Theme.textPrimary
                 z: 1
             }
 

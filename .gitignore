@@ -17,3 +17,6 @@ site/
 .zcompdump*
 .zsh_history
 *.backup
+backups/
+*.bak
+*.bak_*

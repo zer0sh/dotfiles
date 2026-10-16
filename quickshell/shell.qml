@@ -5,9 +5,12 @@ import Quickshell.Io
 import "modules/powermenu" as PowerMenu
 import "modules/controlcenter" as ControlCenter
 import "modules/notifications" as Notifications
+import "modules/clipboard" as Clipboard
 import "modules/launcher" as Launcher
 import "modules/osd" as Osd
 import "modules/shortcuts" as Shortcuts
+import "modules/deskclock" as DeskClock
+import "modules/calendar" as Calendar
 
 ShellRoot {
     id: root
@@ -49,6 +52,10 @@ ShellRoot {
         id: notificationToasts
     }
 
+    Clipboard.ClipboardPanel {
+        id: clipboardPanel
+    }
+
     Launcher.Launcher {
         id: appLauncher
     }
@@ -70,8 +77,20 @@ ShellRoot {
         id: miniPlayer
     }
 
+    Osd.RecordingIndicator {
+        id: recordingIndicator
+    }
+
     Shortcuts.ShortcutsOverlay {
         id: shortcutsOverlay
+    }
+
+    DeskClock.DeskClock {
+        id: deskClock
+    }
+
+    Calendar.Calendar {
+        id: calendar
     }
 
     // --- Mutual Exclusivity ---
@@ -83,6 +102,7 @@ ShellRoot {
                 controlCenter.panelVisible = false;
                 notificationCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
+                clipboardPanel.panelVisible = false;
             }
         }
     }
@@ -94,6 +114,7 @@ ShellRoot {
                 powerMenu.menuOpen = false;
                 notificationCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
+                clipboardPanel.panelVisible = false;
             }
         }
     }
@@ -105,6 +126,7 @@ ShellRoot {
                 powerMenu.menuOpen = false;
                 controlCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
+                clipboardPanel.panelVisible = false;
             }
         }
     }
@@ -116,6 +138,19 @@ ShellRoot {
                 powerMenu.menuOpen = false;
                 controlCenter.panelVisible = false;
                 notificationCenter.panelVisible = false;
+                clipboardPanel.panelVisible = false;
+            }
+        }
+    }
+
+    Connections {
+        target: clipboardPanel
+        function onPanelVisibleChanged() {
+            if (clipboardPanel.panelVisible) {
+                powerMenu.menuOpen = false;
+                controlCenter.panelVisible = false;
+                notificationCenter.panelVisible = false;
+                appLauncher.panelVisible = false;
             }
         }
     }

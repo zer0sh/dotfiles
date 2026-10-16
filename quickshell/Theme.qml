@@ -1,9 +1,14 @@
 pragma Singleton
 import QtQuick
+import "." as Local
 
 QtObject {
+    // Generated palette is available for the next migration step. Manual
+    // palettes remain the visual source until this flag is intentionally used.
+    readonly property bool matugenPaletteAvailable: Local.MatugenPalette.available
+
     // ── Active theme name ──────────────────────────────────────────
-    property string currentTheme: "md3-cobalt-night"
+    property string currentTheme: "matugen"
 
     // ── Theme definitions ──────────────────────────────────────────
     readonly property var _themes: ({
@@ -20,32 +25,6 @@ QtObject {
             secondaryContainer: "#1E3058", textOnSecondaryContainer: "#C8D8F5",
             shelfBg: "#0F1117"
         },
-        "md3-sage-forest": {
-            name: "Sage Forest",
-            panelBg: "#0D1410", panelBorder: "#203028", surface: "#172219",
-            surfaceContainer: "#203028", surfaceContainerHigh: "#2A3D2D", surfaceBright: "#385045",
-            primary: "#7EC996", primaryContainer: "#1A4028", onPrimaryContainer: "#B8E8C8",
-            tileActive: "#7EC996", tileActiveText: "#0D1410",
-            tileInactive: "#2A3D2D", tileInactiveText: "#DCF0E2",
-            sliderTrack: "#2A3D2D", sliderActiveTrack: "#7EC996", sliderThumb: "#7EC996",
-            textPrimary: "#DCF0E2", textSecondary: "#8AAE92",
-            toggleOff: "#3A5040", connected: "#72CAD0", error: "#F2A8A8",
-            secondaryContainer: "#1A4028", textOnSecondaryContainer: "#B8E8C8",
-            shelfBg: "#0D1410"
-        },
-        "md3-rose-quartz": {
-            name: "Rose Quartz",
-            panelBg: "#170E12", panelBorder: "#381C2C", surface: "#281520",
-            surfaceContainer: "#381C2C", surfaceContainerHigh: "#4A2838", surfaceBright: "#603050",
-            primary: "#EEA8C0", primaryContainer: "#4A1C30", onPrimaryContainer: "#F5D0E0",
-            tileActive: "#EEA8C0", tileActiveText: "#170E12",
-            tileInactive: "#4A2838", tileInactiveText: "#F0DEE5",
-            sliderTrack: "#4A2838", sliderActiveTrack: "#EEA8C0", sliderThumb: "#EEA8C0",
-            textPrimary: "#F0DEE5", textSecondary: "#A88090",
-            toggleOff: "#603048", connected: "#A0C8F0", error: "#F5A0A8",
-            secondaryContainer: "#4A1C30", textOnSecondaryContainer: "#F5D0E0",
-            shelfBg: "#170E12"
-        },
         "md3-amethyst": {
             name: "Amethyst",
             panelBg: "#110E18", panelBorder: "#2C2440", surface: "#1E1A2C",
@@ -59,19 +38,6 @@ QtObject {
             secondaryContainer: "#3A2870", textOnSecondaryContainer: "#E8D8FF",
             shelfBg: "#110E18"
         },
-        "md3-amber-dusk": {
-            name: "Amber Dusk",
-            panelBg: "#18120A", panelBorder: "#382818", surface: "#281E10",
-            surfaceContainer: "#382818", surfaceContainerHigh: "#483220", surfaceBright: "#604030",
-            primary: "#F0B87A", primaryContainer: "#503018", onPrimaryContainer: "#F8DEB8",
-            tileActive: "#F0B87A", tileActiveText: "#18120A",
-            tileInactive: "#483220", tileInactiveText: "#F0E8D5",
-            sliderTrack: "#483220", sliderActiveTrack: "#F0B87A", sliderThumb: "#F0B87A",
-            textPrimary: "#F0E8D5", textSecondary: "#A88860",
-            toggleOff: "#604030", connected: "#90C890", error: "#F0907A",
-            secondaryContainer: "#503018", textOnSecondaryContainer: "#F8DEB8",
-            shelfBg: "#18120A"
-        },
         "md3-arctic-mist": {
             name: "Arctic Mist",
             panelBg: "#080F14", panelBorder: "#162838", surface: "#101C26",
@@ -84,11 +50,67 @@ QtObject {
             toggleOff: "#2A4A60", connected: "#90D4A8", error: "#F2A8A8",
             secondaryContainer: "#103858", textOnSecondaryContainer: "#C0E4F5",
             shelfBg: "#080F14"
+        },
+        "cyberpunk": {
+            name: "Cyberpunk",
+            panelBg: "#0B0A14", panelBorder: "#3A165C", surface: "#141126",
+            surfaceContainer: "#21183A", surfaceContainerHigh: "#302252", surfaceBright: "#49326B",
+            primary: "#00F5D4", primaryContainer: "#3A165C", onPrimaryContainer: "#FFD6FF",
+            tileActive: "#00F5D4", tileActiveText: "#07131B",
+            tileInactive: "#21183A", tileInactiveText: "#F6EFFF",
+            sliderTrack: "#21183A", sliderActiveTrack: "#00F5D4", sliderThumb: "#00F5D4",
+            textPrimary: "#F6EFFF", textSecondary: "#BBA9D1",
+            toggleOff: "#49326B", connected: "#B8FF6A", error: "#FF4D8D",
+            secondaryContainer: "#3A165C", textOnSecondaryContainer: "#FFD6FF",
+            shelfBg: "#0B0A14"
+        },
+        "matugen": {
+            name: "Wallpaper (Matugen)",
+            panelBg: "#141318", panelBorder: "#47464F", surface: "#141318",
+            surfaceContainer: "#201F25", surfaceContainerHigh: "#2A292F", surfaceBright: "#3A383E",
+            primary: "#C7BFFF", primaryContainer: "#463F77", onPrimaryContainer: "#E5DEFF",
+            tileActive: "#C7BFFF", tileActiveText: "#2F295F",
+            tileInactive: "#2A292F", tileInactiveText: "#E5E1E9",
+            sliderTrack: "#2A292F", sliderActiveTrack: "#C7BFFF", sliderThumb: "#C7BFFF",
+            textPrimary: "#E5E1E9", textSecondary: "#C9C5D0",
+            toggleOff: "#47464F", connected: "#ECB8CE", error: "#FFB4AB",
+            secondaryContainer: "#474459", textOnSecondaryContainer: "#E5DFF9",
+            shelfBg: "#141318"
         }
     })
 
     // ── Active theme reference ─────────────────────────────────────
-    readonly property var _t: _themes[currentTheme] || _themes["md3-cobalt-night"]
+    readonly property var _generated: Local.MatugenPalette.available ? ({
+        name: "Wallpaper (Matugen)",
+        panelBg: Local.MatugenPalette.background,
+        panelBorder: Local.MatugenPalette.outlineVariant,
+        surface: Local.MatugenPalette.surface,
+        surfaceContainer: Local.MatugenPalette.surfaceContainer,
+        surfaceContainerHigh: Local.MatugenPalette.surfaceContainerHigh,
+        surfaceBright: Local.MatugenPalette.surfaceContainerHigh,
+        primary: Local.MatugenPalette.primary,
+        primaryContainer: Local.MatugenPalette.primaryContainer,
+        onPrimaryContainer: Local.MatugenPalette.onSurface,
+        tileActive: Local.MatugenPalette.primary,
+        // Keep active control labels/icons light, matching the manual themes.
+        tileActiveText: Local.MatugenPalette.onPrimary,
+        tileInactive: Local.MatugenPalette.surfaceContainerHigh,
+        tileInactiveText: Local.MatugenPalette.onSurface,
+        sliderTrack: Local.MatugenPalette.surfaceContainerHigh,
+        sliderActiveTrack: Local.MatugenPalette.primary,
+        sliderThumb: Local.MatugenPalette.primary,
+        textPrimary: Local.MatugenPalette.onSurface,
+        textSecondary: Local.MatugenPalette.onSurfaceVariant,
+        toggleOff: Local.MatugenPalette.outlineVariant,
+        connected: Local.MatugenPalette.tertiary,
+        error: Local.MatugenPalette.error,
+        secondaryContainer: Local.MatugenPalette.surfaceContainerHigh,
+        textOnSecondaryContainer: Local.MatugenPalette.onSurface,
+        shelfBg: Local.MatugenPalette.background
+    }) : null
+    readonly property var _t: currentTheme === "matugen" && _generated
+        ? _generated
+        : (_themes[currentTheme] || _themes["md3-cobalt-night"])
 
     // ── Themed color properties ────────────────────────────────────
     // Surface colors
@@ -102,17 +124,20 @@ QtObject {
     // Primary colors
     readonly property color primary: _t.primary
     readonly property color primaryContainer: _t.primaryContainer
-    readonly property color textOnPrimaryContainer: _t.onPrimaryContainer
+    readonly property color textOnPrimaryContainer: currentTheme === "matugen"
+        ? "#E5E1E9" : _t.onPrimaryContainer
 
     // Secondary colors
     readonly property color secondaryContainer: _t.secondaryContainer
-    readonly property color textOnSecondaryContainer: _t.textOnSecondaryContainer
+    readonly property color textOnSecondaryContainer: currentTheme === "matugen"
+        ? "#E5E1E9" : _t.textOnSecondaryContainer
 
     // Tile states
     readonly property color tileActive: _t.tileActive
     readonly property color tileActiveText: _t.tileActiveText
     readonly property color tileInactive: _t.tileInactive
-    readonly property color tileInactiveText: _t.tileInactiveText
+    readonly property color tileInactiveText: currentTheme === "matugen"
+        ? "#E5E1E9" : _t.tileInactiveText
 
     // Slider colors
     readonly property color sliderTrack: _t.sliderTrack
@@ -120,8 +145,10 @@ QtObject {
     readonly property color sliderThumb: _t.sliderThumb
 
     // Text colors
-    readonly property color textPrimary: _t.textPrimary
-    readonly property color textSecondary: _t.textSecondary
+    readonly property color textPrimary: currentTheme === "matugen"
+        ? "#E5E1E9" : _t.textPrimary
+    readonly property color textSecondary: currentTheme === "matugen"
+        ? "#C9C5D0" : _t.textSecondary
 
     // Semantic colors
     readonly property color connected: _t.connected
@@ -149,10 +176,11 @@ QtObject {
     readonly property int fontSizeXS: 10
 
     // ── Spacing ────────────────────────────────────────────────────
-    readonly property int radiusSmall: 10
-    readonly property int radiusLarge: 16
+    // One UI-inspired geometry: generous spacing and pill-like surfaces.
+    readonly property int radiusSmall: 16
+    readonly property int radiusLarge: 24
     readonly property int paddingNormal: 14
-    readonly property int paddingLarge: 22
+    readonly property int paddingLarge: 20
     readonly property int padding: 18
     readonly property int paddingSmall: 10
 
@@ -160,11 +188,11 @@ QtObject {
     readonly property int shelfHeight: 54
 
     // ── Layout constants ───────────────────────────────────────────
-    readonly property int panelWidth: 400
-    readonly property int panelRadius: 24
-    readonly property int tileRadius: 16
-    readonly property int tileHeight: 72
-    readonly property int sliderHeight: 24
+    readonly property int panelWidth: 410
+    readonly property int panelRadius: 32
+    readonly property int tileRadius: 22
+    readonly property int tileHeight: 70
+    readonly property int sliderHeight: 28
 
     // ── Spacing scale ──────────────────────────────────────────────
     readonly property int spacingSmall: 10

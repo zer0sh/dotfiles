@@ -141,10 +141,10 @@ Scope {
                     radius: Root.Theme.panelRadius
                     color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.78)
                     border.width: 1
-                    border.color: Qt.rgba(Root.Theme.panelBorder.r,
-                                           Root.Theme.panelBorder.g,
-                                           Root.Theme.panelBorder.b,
-                                           0.5)
+                    border.color: Qt.rgba(Root.Theme.primary.r,
+                                           Root.Theme.primary.g,
+                                           Root.Theme.primary.b,
+                                           0.55)
                     clip: true
 
                     // Block click-through
@@ -172,7 +172,7 @@ Scope {
 
                             Text {
                                 text: "󰂚"
-                                color: Root.Theme.textSecondary
+                                color: "#E5E1E9"
                                 font.family: Root.Theme.fontFamily
                                 font.pixelSize: 60
                                     opacity: 0.3
@@ -181,7 +181,7 @@ Scope {
 
                                 Text {
                                     text: "No notifications"
-                                    color: Root.Theme.textSecondary
+                                    color: "#E5E1E9"
                                     font.family: Root.Theme.fontFamily
                                     font.pixelSize: Root.Theme.fontSizeNormal
                                     opacity: 0.5
@@ -250,7 +250,7 @@ Scope {
                                     id: clearAllLabel
                                     anchors.centerIn: parent
                                     text: "Clear all"
-                                    color: Root.Theme.textSecondary
+                                    color: "#E5E1E9"
                                     font.family: Root.Theme.fontFamily
                                     font.pixelSize: Root.Theme.fontSizeNormal
                                     font.weight: Font.DemiBold

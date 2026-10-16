@@ -10,6 +10,8 @@ QtObject {
     // Exposed notification list (JS array of parsed notification objects)
     property var notifications: []
     property int count: notifications.length
+    // Suppresses toast popups while keeping notifications in history.
+    property bool dndEnabled: false
 
     // Internal map of id → Notification object (for tracked=false on remove)
     property var _notifMap: ({})
@@ -29,12 +31,13 @@ QtObject {
             // Keep in tracked list for history
             notif.tracked = true
             root._notifMap[notif.id] = notif
+            var displayApp = root._displayAppName(notif.appName)
 
             // Prepend to history array
             var newList = root.notifications.slice()
             newList.unshift({
                 id: notif.id,
-                appName: notif.appName,
+                appName: displayApp,
                 summary: notif.summary,
                 body: notif.body,
                 urgency: root._urgencyStr(notif.urgency),
@@ -44,8 +47,10 @@ QtObject {
             root.notifications = newList
 
             var ms = notif.expireTimeout > 0 ? Math.round(notif.expireTimeout) : 5000
-            root.newNotification(notif.id, notif.appName, notif.summary,
-                                 notif.body, root._urgencyStr(notif.urgency), ms)
+            if (!root.dndEnabled) {
+                root.newNotification(notif.id, displayApp, notif.summary,
+                                     notif.body, root._urgencyStr(notif.urgency), ms)
+            }
 
             root._updateWaybar()
         }
@@ -70,6 +75,17 @@ QtObject {
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────
+    function _displayAppName(appName) {
+        var name = (appName || "").toString().trim()
+        var normalized = name.toLowerCase().replace(/[_ ]/g, "-")
+        if (normalized === "notify-send" ||
+            normalized === "org.freedesktop.notifications" ||
+            normalized === "freedesktop-notifications") {
+            return "System"
+        }
+        return name !== "" ? name : "System"
+    }
+
     function _urgencyStr(urgency) {
         if (urgency === NotificationUrgency.Critical) return "CRITICAL"
         if (urgency === NotificationUrgency.Low)      return "LOW"

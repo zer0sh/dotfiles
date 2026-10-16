@@ -3,8 +3,8 @@ import QtQuick.Layouts
 import "../.." as Root
 
 // FeatureTile — reusable toggle tile for quick settings grid
-// active: primaryContainer bg with light text
-// inactive: surfaceContainerHigh bg with dim text
+// active: primary surface with high-contrast text
+// inactive: neutral surface with dim text
 // hasDetail: splits tap zone — left 72% = toggle, right 28% = drill-in (chevron)
 Rectangle {
     id: tile
@@ -69,17 +69,6 @@ Rectangle {
                 elide: Text.ElideRight
                 Layout.fillWidth: true
             }
-        }
-
-        // Divider before chevron
-        Rectangle {
-            visible: hasDetail
-            width: 1
-            height: 40
-            color: tile.active
-                ? Qt.rgba(Root.Theme.tileActiveText.r, Root.Theme.tileActiveText.g, Root.Theme.tileActiveText.b, 0.2)
-                : Qt.rgba(Root.Theme.tileInactiveText.r, Root.Theme.tileInactiveText.g, Root.Theme.tileInactiveText.b, 0.2)
-            Layout.alignment: Qt.AlignVCenter
         }
 
         // Chevron icon

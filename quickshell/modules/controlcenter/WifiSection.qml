@@ -19,6 +19,7 @@ Item {
     property string pendingSSID: ""
     property string pendingSecurity: ""
     property bool showConnect: false
+    property bool tryingSavedConnection: false
 
 
     // ── Processes ────────────────────────────────────────────────
@@ -73,6 +74,26 @@ Item {
                 wifiPanel.errorMessage = "";
                 wifiPanel.showConnect = false;
                 wifiPanel.pendingSSID = "";
+            }
+            listNetworksProc.running = true;
+        }
+    }
+
+    // First try NetworkManager's existing profile. This avoids asking for a
+    // password again on networks that are already known.
+    Process {
+        id: savedConnectProc
+        stdout: StdioCollector {}
+        onExited: (exitCode, exitStatus) => {
+            wifiPanel.tryingSavedConnection = false;
+            if (exitCode === 0) {
+                wifiPanel.errorMessage = "";
+                wifiPanel.showConnect = false;
+                wifiPanel.pendingSSID = "";
+            } else {
+                wifiPanel.showConnect = true;
+                wifiPanel.errorMessage = "";
+                Qt.callLater(() => passwordField.forceActiveFocus());
             }
             listNetworksProc.running = true;
         }
@@ -171,6 +192,16 @@ Item {
             connectProc.command = ["nmcli", "dev", "wifi", "connect", ssid];
         }
         connectProc.running = true;
+    }
+
+    function selectNetwork(ssid, security) {
+        pendingSSID = ssid;
+        pendingSecurity = security;
+        errorMessage = "";
+        showConnect = false;
+        tryingSavedConnection = true;
+        savedConnectProc.command = ["nmcli", "connection", "up", "id", ssid];
+        savedConnectProc.running = true;
     }
 
     function signalIcon(strength) {
@@ -471,12 +502,8 @@ Item {
                                         wifiPanel.showConnect = false;
                                         wifiPanel.pendingSSID = "";
                                     } else {
-                                        wifiPanel.showConnect = true;
-                                        wifiPanel.pendingSSID = ssid;
-                                        wifiPanel.pendingSecurity = security;
-                                        wifiPanel.errorMessage = "";
                                         passwordField.text = "";
-                                        passwordField.forceActiveFocus();
+                                        wifiPanel.selectNetwork(ssid, security);
                                     }
                                 }
                             }
