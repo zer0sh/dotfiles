@@ -8,6 +8,7 @@ Wofi is the primary application launcher and menu runner used in this environmen
 
 * **Live Source of Truth:** `~/.config/wofi/` is a real physical directory on the system.
 * **Repository Mirror:** `~/dotfiles/wofi/` stores the tracked version control copy.
+* **Typography:** `BlexMono Nerd Font` (matching Alacritty terminal), falling back to `JetBrainsMono Nerd Font` and `monospace`.
 * **Theme Integration:** The style automatically imports the current system color palette via `@import url("/home/zero/.config/themes/current/wofi.css");`.
 
 ---

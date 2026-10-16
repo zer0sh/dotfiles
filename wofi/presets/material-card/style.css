@@ -17,7 +17,7 @@
 @import url("/home/zero/.config/themes/current/wofi.css");
 
 * {
-    font-family: "Roboto", "Cantarell", "JetBrainsMono Nerd Font", "FiraCode Nerd Font", sans-serif;
+    font-family: "BlexMono Nerd Font", "JetBrainsMono Nerd Font", monospace;
 }
 
 window {

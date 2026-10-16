@@ -1,0 +1,525 @@
+/* ==========================================================================
+   Android Pure (Material Design 3 / Material You) + Glassmorphism Theme
+   Designed for zer0sh Dotfiles Documentation
+   ========================================================================== */
+
+/* --- 1. Root & Design Tokens --- */
+:root {
+  --md-sys-motion-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-radius-xs: 4px;
+  --md-sys-radius-sm: 8px;
+  --md-sys-radius-md: 14px;
+  --md-sys-radius-lg: 20px;
+  --md-sys-radius-xl: 28px;
+  --md-sys-radius-pill: 9999px;
+}
+
+/* --- Dark Theme Tokens (Slate / Cobalt Night Glass) --- */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: transparent;
+  --md-default-fg-color: #e2e1ec;
+  --md-default-fg-color--light: #9a9cb2;
+  --md-default-fg-color--lighter: #63667c;
+  --md-primary-fg-color: #9bbde8;
+  --md-accent-fg-color: #c7bfff;
+
+  /* Glass Surface Tokens */
+  --glass-bg-base: rgba(13, 15, 23, 0.72);
+  --glass-bg-card: rgba(20, 24, 36, 0.62);
+  --glass-bg-card-hover: rgba(28, 34, 52, 0.78);
+  --glass-bg-elevated: rgba(28, 33, 50, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-border-focus: rgba(199, 191, 255, 0.5);
+  --glass-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.45);
+  --glass-shadow-sm: 0 4px 20px 0 rgba(0, 0, 0, 0.28);
+  --glass-blur: blur(20px) saturate(180%);
+
+  /* Material You Semantic Accents */
+  --m3-accent-container: rgba(199, 191, 255, 0.16);
+  --m3-accent-on-container: #e5deff;
+  --m3-primary-container: rgba(155, 189, 232, 0.16);
+  --m3-code-bg: rgba(13, 15, 24, 0.82);
+  --m3-table-header: rgba(28, 33, 49, 0.7);
+}
+
+/* --- Light Theme Tokens (Material You Daylight Glass) --- */
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: transparent;
+  --md-default-fg-color: #1a1b24;
+  --md-default-fg-color--light: #525466;
+  --md-default-fg-color--lighter: #898c9f;
+  --md-primary-fg-color: #554a8a;
+  --md-accent-fg-color: #6750a4;
+
+  /* Glass Surface Tokens */
+  --glass-bg-base: rgba(247, 248, 252, 0.75);
+  --glass-bg-card: rgba(255, 255, 255, 0.72);
+  --glass-bg-card-hover: rgba(255, 255, 255, 0.9);
+  --glass-bg-elevated: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-border-focus: rgba(103, 80, 164, 0.45);
+  --glass-shadow: 0 14px 36px 0 rgba(40, 48, 70, 0.12);
+  --glass-shadow-sm: 0 4px 18px 0 rgba(40, 48, 70, 0.07);
+  --glass-blur: blur(20px) saturate(180%);
+
+  /* Material You Semantic Accents */
+  --m3-accent-container: rgba(103, 80, 164, 0.12);
+  --m3-accent-on-container: #21005d;
+  --m3-primary-container: rgba(85, 74, 138, 0.12);
+  --m3-code-bg: rgba(240, 242, 248, 0.85);
+  --m3-table-header: rgba(230, 233, 243, 0.75);
+}
+
+/* --- 2. Ambient Wallpaper Background --- */
+html {
+  background-color: #0b0d14;
+}
+
+body {
+  min-height: 100vh;
+  transition: background-color 0.35s var(--md-sys-motion-standard);
+  -webkit-font-smoothing: antialiased;
+}
+
+body[data-md-color-scheme="slate"] {
+  background-color: #0a0c13 !important;
+  background-image:
+    radial-gradient(circle at 10% 15%, rgba(155, 189, 232, 0.16) 0%, transparent 36%),
+    radial-gradient(circle at 90% 20%, rgba(199, 191, 255, 0.14) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(134, 213, 160, 0.09) 0%, transparent 48%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+body[data-md-color-scheme="default"] {
+  background-color: #f4f5fa !important;
+  background-image:
+    radial-gradient(circle at 12% 14%, rgba(103, 80, 164, 0.10) 0%, transparent 38%),
+    radial-gradient(circle at 88% 22%, rgba(155, 189, 232, 0.15) 0%, transparent 42%),
+    radial-gradient(circle at 50% 82%, rgba(200, 176, 240, 0.09) 0%, transparent 50%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.md-container,
+.md-main {
+  background-color: transparent !important;
+}
+
+/* Selection */
+::selection {
+  background-color: var(--md-accent-fg-color);
+  color: #000;
+}
+
+/* --- 3. Top App Bar (Header & Glass Navbar) --- */
+.md-header {
+  background-color: var(--glass-bg-base) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-sm);
+  transition: all 0.3s var(--md-sys-motion-standard);
+}
+
+.md-header__topic {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.md-header__button {
+  border-radius: var(--md-sys-radius-pill);
+  transition: background-color 0.2s var(--md-sys-motion-standard), transform 0.15s ease;
+}
+
+.md-header__button:hover {
+  background-color: var(--glass-border);
+  transform: scale(1.05);
+}
+
+/* --- 4. Navigation Tabs (Material You Pill Bar) --- */
+.md-tabs {
+  background-color: var(--glass-bg-base) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.md-tabs__list {
+  padding: 0.35rem 0;
+  display: flex;
+  gap: 0.35rem;
+}
+
+.md-tabs__item {
+  height: auto;
+}
+
+.md-tabs__link {
+  border-radius: var(--md-sys-radius-pill);
+  padding: 0.4rem 1.15rem;
+  font-weight: 500;
+  font-size: 0.82rem;
+  letter-spacing: 0.01em;
+  opacity: 0.85;
+  transition: all 0.25s var(--md-sys-motion-standard);
+}
+
+.md-tabs__link:hover {
+  opacity: 1;
+  background-color: var(--glass-border);
+  color: var(--md-accent-fg-color) !important;
+}
+
+.md-tabs__item--active .md-tabs__link {
+  opacity: 1;
+  background-color: var(--m3-accent-container);
+  color: var(--md-accent-fg-color) !important;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--glass-border);
+}
+
+/* --- 5. Android Search Bar (Pill Glass) --- */
+.md-search__form {
+  background-color: var(--glass-bg-card) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--md-sys-radius-pill) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.25s var(--md-sys-motion-standard);
+}
+
+.md-search__form:focus-within,
+.md-search__input:focus {
+  border-color: var(--glass-border-focus);
+  box-shadow: 0 0 0 3px var(--m3-accent-container), var(--glass-shadow-sm) !important;
+}
+
+.md-search__input {
+  border-radius: var(--md-sys-radius-pill);
+}
+
+.md-search__overlay {
+  background-color: rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.md-search__scrollwrap {
+  background-color: transparent !important;
+}
+
+.md-search__output {
+  background-color: var(--glass-bg-elevated) !important;
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--md-sys-radius-xl) !important;
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+}
+
+.md-search-result__meta {
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--glass-border);
+  font-weight: 600;
+}
+
+.md-search-result__item {
+  border-radius: var(--md-sys-radius-md);
+  margin: 0.2rem 0.5rem;
+  transition: background-color 0.2s ease;
+}
+
+.md-search-result__item:hover {
+  background-color: var(--m3-accent-container);
+}
+
+/* --- 6. Navigation Sidebars (Drawer & Table of Contents) --- */
+.md-sidebar {
+  padding-top: 1rem;
+}
+
+.md-sidebar--primary,
+.md-sidebar--secondary {
+  background-color: transparent !important;
+}
+
+.md-nav__title {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.md-nav__link {
+  border-radius: var(--md-sys-radius-md);
+  padding: 0.4rem 0.85rem;
+  margin: 0.1rem 0;
+  transition: all 0.2s var(--md-sys-motion-standard);
+}
+
+.md-nav__link:hover {
+  background-color: var(--glass-border);
+  color: var(--md-accent-fg-color) !important;
+}
+
+.md-nav__item--active > .md-nav__link {
+  background-color: var(--m3-accent-container) !important;
+  color: var(--md-accent-fg-color) !important;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--glass-border);
+}
+
+/* Mobile Drawer (Responsive Glass) */
+@media screen and (max-width: 76.234375em) {
+  .md-nav--primary,
+  .md-nav--primary .md-nav {
+    background-color: var(--glass-bg-elevated) !important;
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+  }
+}
+
+/* --- 7. Main Article & Glass Card Container --- */
+.md-content__inner {
+  margin-top: 1.2rem;
+  margin-bottom: 2rem;
+  padding: 2.2rem 2.5rem;
+  background-color: var(--glass-bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--md-sys-radius-xl);
+  box-shadow: var(--glass-shadow);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+@media screen and (max-width: 45em) {
+  .md-content__inner {
+    padding: 1.5rem 1.2rem;
+    border-radius: var(--md-sys-radius-lg);
+    background-color: var(--glass-bg-base);
+  }
+}
+
+/* Typography Enhancements */
+.md-typeset h1 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: 1.2rem;
+  color: var(--md-accent-fg-color);
+}
+
+.md-typeset h2 {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 0.4rem;
+  margin-top: 2rem;
+}
+
+.md-typeset hr {
+  border-bottom: 1px solid var(--glass-border);
+  margin: 2rem 0;
+}
+
+/* --- 8. Code Blocks (Frosted Glass Terminal) --- */
+.highlight,
+.highlighttable,
+.md-typeset pre {
+  background-color: var(--m3-code-bg) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--md-sys-radius-lg) !important;
+  box-shadow: var(--glass-shadow-sm);
+  overflow: hidden;
+}
+
+.md-clipboard {
+  border-radius: var(--md-sys-radius-pill);
+  transition: all 0.2s var(--md-sys-motion-standard);
+}
+
+.md-clipboard:hover {
+  background-color: var(--glass-border);
+  color: var(--md-accent-fg-color);
+}
+
+/* Inline code pill */
+.md-typeset code:not(pre code) {
+  background-color: var(--m3-accent-container);
+  color: var(--md-accent-fg-color);
+  border-radius: var(--md-sys-radius-sm);
+  padding: 0.15em 0.45em;
+  font-size: 0.85em;
+  border: 1px solid var(--glass-border);
+}
+
+/* --- 9. Material You Admonitions (Notification Cards) --- */
+.md-typeset .admonition,
+.md-typeset details {
+  background-color: var(--glass-bg-card) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border) !important;
+  border-left-width: 5px !important;
+  border-radius: var(--md-sys-radius-lg) !important;
+  box-shadow: var(--glass-shadow-sm);
+  overflow: hidden;
+  margin: 1.5rem 0;
+  transition: transform 0.2s var(--md-sys-motion-standard), box-shadow 0.2s ease;
+}
+
+.md-typeset .admonition:hover,
+.md-typeset details:hover {
+  box-shadow: var(--glass-shadow);
+}
+
+.md-typeset .admonition-title,
+.md-typeset summary {
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--glass-border);
+  font-weight: 600;
+  padding: 0.6rem 1rem;
+}
+
+/* Specific Callout Color Accents */
+.md-typeset .admonition.note,
+.md-typeset .admonition.info {
+  border-left-color: #9bbde8 !important;
+}
+
+.md-typeset .admonition.tip,
+.md-typeset .admonition.success {
+  border-left-color: #86d5a0 !important;
+}
+
+.md-typeset .admonition.warning,
+.md-typeset .admonition.caution {
+  border-left-color: #f2d479 !important;
+}
+
+.md-typeset .admonition.danger,
+.md-typeset .admonition.critical {
+  border-left-color: #f2a8b8 !important;
+}
+
+/* --- 10. Tables (Frosted Glass Surface) --- */
+.md-typeset table:not([class]) {
+  background-color: var(--glass-bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--md-sys-radius-lg);
+  box-shadow: var(--glass-shadow-sm);
+  overflow: hidden;
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.5rem 0;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--m3-table-header);
+  font-weight: 600;
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0.8rem 1rem;
+}
+
+.md-typeset table:not([class]) td {
+  border-top: 1px solid var(--glass-border);
+  padding: 0.75rem 1rem;
+}
+
+.md-typeset table:not([class]) tr:hover td {
+  background-color: var(--m3-accent-container);
+}
+
+/* --- 11. Buttons & Badges (Material 3 Pill Elements) --- */
+.md-typeset .md-button {
+  border-radius: var(--md-sys-radius-pill);
+  padding: 0.55rem 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background-color: var(--glass-bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-sm);
+  transition: all 0.25s var(--md-sys-motion-standard);
+}
+
+.md-typeset .md-button--primary {
+  background-color: var(--md-accent-fg-color) !important;
+  color: #12131a !important;
+  border: none;
+}
+
+.md-typeset .md-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glass-shadow);
+  border-color: var(--glass-border-focus);
+}
+
+/* Keyboard keys */
+.md-typeset kbd {
+  background-color: var(--glass-bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--md-sys-radius-sm);
+  box-shadow: 0 2px 0 var(--glass-border);
+  padding: 0.15rem 0.45rem;
+  font-size: 0.82em;
+}
+
+/* --- 12. Footer (Glass) --- */
+.md-footer {
+  background-color: var(--glass-bg-base) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1px solid var(--glass-border);
+}
+
+.md-footer-meta {
+  background-color: transparent !important;
+}
+
+/* --- 13. Floating Action Button (Back To Top FAB) --- */
+.md-top {
+  border-radius: var(--md-sys-radius-pill);
+  background-color: var(--glass-bg-elevated) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: all 0.25s var(--md-sys-motion-standard);
+}
+
+.md-top:hover {
+  transform: scale(1.1) translateY(-2px);
+  background-color: var(--m3-accent-container) !important;
+  color: var(--md-accent-fg-color);
+}
+
+/* --- 14. Minimal Android Scrollbar --- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--glass-border);
+  border-radius: var(--md-sys-radius-pill);
+  backdrop-filter: blur(4px);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-default-fg-color--lighter);
+}
