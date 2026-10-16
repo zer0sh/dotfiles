@@ -168,6 +168,28 @@ sudo ~/dotfiles/scripts/sync-root-theme.sh
 
 Because these are live symlinks targeting `~/.config/themes/current/`, subsequent wallpaper or palette changes made via Quickshell will automatically reflect in root applications without re-executing the synchronization script.
 
+### Synchronization & Cleanup Flags
+
+The `sync-root-theme.sh` utility provides flags to manage synchronization or easily restore default themes:
+
+| Flag | Privilege | Description |
+| :--- | :--- | :--- |
+| `--sync` (default) | `sudo` | Synchronize root GTK and btop themes from active user theme. |
+| `--cleanup-user` | User | Revert user GTK3 and GTK4 stylesheets to system defaults. |
+| `--cleanup-root` | `sudo` | Remove root theme symlinks and restore original settings. |
+| `--cleanup-all` | `sudo` | Revert both user and root configurations to factory defaults. |
+
+```bash
+# Revert user theme only (no sudo required)
+~/dotfiles/scripts/sync-root-theme.sh --cleanup-user
+
+# Revert root theme only
+sudo ~/dotfiles/scripts/sync-root-theme.sh --cleanup-root
+
+# Revert both user and root to system defaults
+sudo ~/dotfiles/scripts/sync-root-theme.sh --cleanup-all
+```
+
 ---
 
 ## Related Documentation
