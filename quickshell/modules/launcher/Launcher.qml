@@ -188,7 +188,7 @@ Scope {
 
     // ── Modo Activo ──────────────────────────────────────────────
     readonly property string currentMode: {
-        if (searchText.startsWith(">wallpaper") || searchText.startsWith(">fondo")) {
+        if (searchText.startsWith(">wallpaper") || searchText.startsWith(">fondo") || searchText.startsWith(">wall")) {
             return "wallpaper";
         } else if (searchText.startsWith(">")) {
             return "actions";
@@ -247,8 +247,8 @@ Scope {
     }
 
     function openWallpapers() {
-        panelVisible = true;
         searchText = ">wallpaper ";
+        panelVisible = true;
         var curIdx = 0;
         for (var i = 0; i < wallpapers.length; i++) {
             if (wallpapers[i].path === currentWallpaper) {
@@ -263,7 +263,9 @@ Scope {
     onPanelVisibleChanged: {
         if (panelVisible) {
             _showing = true;
-            selectedIndex = 0;
+            if (currentMode !== "wallpaper") {
+                selectedIndex = 0;
+            }
             if (allApps.length === 0) appsReadProc.running = true;
             refreshWallpapers();
         } else {
@@ -351,12 +353,12 @@ Scope {
                 anchors.bottomMargin: 28
 
                 width: {
-                    if (launcher.currentMode === "wallpaper") return 880;
+                    if (launcher.currentMode === "wallpaper") return Math.min(1080, parent.width - 60);
                     return 580;
                 }
 
                 height: {
-                    if (launcher.currentMode === "wallpaper") return 270;
+                    if (launcher.currentMode === "wallpaper") return 330;
                     if (launcher.currentMode === "actions") {
                         var actCount = launcher.filteredActions.length;
                         return Math.min(460, Math.max(140, actCount * 50 + 76));
@@ -369,7 +371,10 @@ Scope {
                 color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.88)
                 border.width: 1
                 border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.35)
-                clip: true
+                clip: launcher.currentMode !== "wallpaper"
+
+                focus: true
+                Keys.forwardTo: [searchInput]
 
                 Behavior on width {
                     NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
@@ -395,9 +400,9 @@ Scope {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.bottom: searchContainer.top
-                    anchors.margins: 12
+                    anchors.margins: 14
                     anchors.bottomMargin: 6
-                    clip: true
+                    clip: launcher.currentMode !== "wallpaper"
 
                     // --- VISTA 1: Carrusel de Wallpapers (Horizontal) ---
                     Item {
@@ -405,30 +410,58 @@ Scope {
                         visible: launcher.currentMode === "wallpaper"
                         anchors.fill: parent
 
+                        function scrollToCard(index, immediate) {
+                            var itemWidth = 236 + 16;
+                            var targetX = index * itemWidth + 118 - (wallCarousel.width / 2);
+                            var maxX = Math.max(0, wallCarousel.contentWidth - wallCarousel.width);
+                            targetX = Math.max(0, Math.min(maxX, targetX));
+                            if (immediate) {
+                                scrollAnim.stop();
+                                wallCarousel.contentX = targetX;
+                            } else {
+                                scrollAnim.to = targetX;
+                                scrollAnim.restart();
+                            }
+                        }
+
+                        NumberAnimation {
+                            id: scrollAnim
+                            target: wallCarousel
+                            property: "contentX"
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+
                         ListView {
                             id: wallCarousel
                             anchors.fill: parent
+                            anchors.topMargin: 8
+                            anchors.bottomMargin: 4
                             orientation: ListView.Horizontal
-                            spacing: 14
-                            clip: true
+                            spacing: 16
+                            clip: false
 
-                            // Elemento 0 es el botón "+ Add", luego los wallpapers
+                            flickDeceleration: 1800
+                            maximumFlickVelocity: 3000
+                            boundsBehavior: Flickable.StopAtBounds
+                            highlightRangeMode: ListView.NoHighlightRange
+
                             model: launcher.filteredWallpapers.length + 1
-
                             currentIndex: launcher.selectedIndex
-                            preferredHighlightBegin: 0.1
-                            preferredHighlightEnd: 0.9
-                            highlightRangeMode: ListView.ApplyRange
 
                             delegate: Item {
-                                width: 190
-                                height: 180
+                                width: 236
+                                height: 226
+                                z: (cardItem && cardItem.isHovered) ? 100 : (launcher.selectedIndex === index ? 20 : 1)
 
                                 readonly property bool isAdd: index === launcher.filteredWallpapers.length
                                 readonly property var wallData: !isAdd ? launcher.filteredWallpapers[index] : null
 
                                 WallpaperCard {
-                                    anchors.fill: parent
+                                    id: cardItem
+                                    anchors.centerIn: parent
+                                    width: 224
+                                    height: 214
                                     isAddCard: isAdd
                                     wallPath: wallData ? wallData.path : ""
                                     wallTitle: wallData ? wallData.title : ""
@@ -437,6 +470,7 @@ Scope {
                                     isSelected: launcher.selectedIndex === index
 
                                     onActivated: {
+                                        launcher.selectedIndex = index;
                                         if (isAdd) {
                                             browseWallProc.running = true;
                                         } else if (wallData) {
@@ -446,21 +480,30 @@ Scope {
                                 }
                             }
 
-                            // Desplazamiento horizontal con rueda del mouse
-                            MouseArea {
-                                anchors.fill: parent
-                                propagateComposedEvents: true
-                                onWheel: function(wheel) {
-                                    if (wheel.angleDelta.y < 0 || wheel.angleDelta.x < 0) {
-                                        if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
-                                            launcher.selectedIndex++;
-                                        }
-                                    } else {
-                                        if (launcher.selectedIndex > 0) {
-                                            launcher.selectedIndex--;
-                                        }
-                                    }
-                                    wheel.accepted = true;
+                            // Desplazamiento horizontal fluido y directo sin saltos de índice
+                            WheelHandler {
+                                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                                onWheel: function(event) {
+                                    var delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
+                                    var step = delta * 1.8;
+                                    var targetX = wallCarousel.contentX - step;
+                                    var maxX = Math.max(0, wallCarousel.contentWidth - wallCarousel.width);
+                                    wallCarousel.contentX = Math.max(0, Math.min(maxX, targetX));
+                                }
+                            }
+
+                            Component.onCompleted: {
+                                if (launcher.currentMode === "wallpaper") {
+                                    wallpaperView.scrollToCard(launcher.selectedIndex, true);
+                                }
+                            }
+                        }
+
+                        Connections {
+                            target: launcher
+                            function onSelectedIndexChanged() {
+                                if (launcher.currentMode === "wallpaper" && wallCarousel) {
+                                    wallpaperView.scrollToCard(launcher.selectedIndex, false);
                                 }
                             }
                         }
@@ -611,37 +654,51 @@ Scope {
                             // ── Atajos de Teclado y Navegación ──────────
                             Keys.onEscapePressed: launcher.panelVisible = false
 
-                            Keys.onLeftPressed: {
+                            Keys.onLeftPressed: function(event) {
                                 if (launcher.currentMode === "wallpaper") {
                                     if (launcher.selectedIndex > 0) launcher.selectedIndex--;
+                                    event.accepted = true;
                                 }
                             }
 
-                            Keys.onRightPressed: {
+                            Keys.onRightPressed: function(event) {
                                 if (launcher.currentMode === "wallpaper") {
                                     if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
                                         launcher.selectedIndex++;
                                     }
+                                    event.accepted = true;
                                 }
                             }
 
-                            Keys.onUpPressed: {
-                                if (launcher.currentMode === "actions") {
+                            Keys.onUpPressed: function(event) {
+                                if (launcher.currentMode === "wallpaper") {
                                     if (launcher.selectedIndex > 0) launcher.selectedIndex--;
+                                    event.accepted = true;
+                                } else if (launcher.currentMode === "actions") {
+                                    if (launcher.selectedIndex > 0) launcher.selectedIndex--;
+                                    event.accepted = true;
                                 } else if (launcher.currentMode === "apps") {
                                     if (launcher.selectedIndex > 0) launcher.selectedIndex--;
+                                    event.accepted = true;
                                 }
                             }
 
-                            Keys.onDownPressed: {
-                                if (launcher.currentMode === "actions") {
+                            Keys.onDownPressed: function(event) {
+                                if (launcher.currentMode === "wallpaper") {
+                                    if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
+                                        launcher.selectedIndex++;
+                                    }
+                                    event.accepted = true;
+                                } else if (launcher.currentMode === "actions") {
                                     if (launcher.selectedIndex < launcher.filteredActions.length - 1) {
                                         launcher.selectedIndex++;
                                     }
+                                    event.accepted = true;
                                 } else if (launcher.currentMode === "apps") {
                                     if (launcher.selectedIndex < launcher.filteredApps.length - 1) {
                                         launcher.selectedIndex++;
                                     }
+                                    event.accepted = true;
                                 }
                             }
 

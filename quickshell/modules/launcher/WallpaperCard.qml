@@ -12,45 +12,59 @@ Item {
     property bool isCurrentWall: false
     property bool isSelected: false
 
+    readonly property bool isHovered: mouseArea.containsMouse
+
     signal activated()
 
-    width: 190
-    height: 180
+    width: 224
+    height: 214
 
-    scale: isSelected ? 1.05 : (mouseArea.containsMouse ? 1.02 : 1.0)
+    // Escala dinámica y elevación: hover pronunciado y fluido con efecto muelle (OutBack)
+    scale: mouseArea.containsMouse ? 1.10 : (isSelected ? 1.05 : 1.0)
+    y: mouseArea.containsMouse ? -10 : (isSelected ? -4 : 0)
+    z: mouseArea.containsMouse ? 100 : (isSelected ? 20 : 1)
+
     Behavior on scale {
-        NumberAnimation { duration: 150; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: 240; easing.type: Easing.OutBack; easing.overshoot: 1.3 }
+    }
+    Behavior on y {
+        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
     }
 
     Rectangle {
         id: bgCard
         anchors.fill: parent
-        radius: 16
+        radius: 18
         color: cardRoot.isSelected
             ? Root.Theme.surfaceContainerHigh
-            : (mouseArea.containsMouse ? Root.Theme.surfaceContainer : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.6))
+            : (mouseArea.containsMouse
+                ? Qt.rgba(Root.Theme.surfaceContainerHighest.r, Root.Theme.surfaceContainerHighest.g, Root.Theme.surfaceContainerHighest.b, 0.95)
+                : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.65))
 
-        border.width: cardRoot.isSelected ? 2 : (cardRoot.isCurrentWall ? 1.5 : 1)
-        border.color: cardRoot.isSelected
+        border.width: (mouseArea.containsMouse || cardRoot.isSelected) ? 2 : (cardRoot.isCurrentWall ? 1.5 : 1)
+        border.color: (mouseArea.containsMouse || cardRoot.isSelected)
             ? Root.Theme.primary
             : (cardRoot.isCurrentWall
                 ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.6)
                 : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.3))
 
-        Behavior on color { ColorAnimation { duration: 150 } }
-        Behavior on border.color { ColorAnimation { duration: 150 } }
+        Behavior on color { ColorAnimation { duration: 180 } }
+        Behavior on border.color { ColorAnimation { duration: 180 } }
 
-        // Glow behind selected card
+        // Halo de resplandor exterior dinámico
         Rectangle {
             anchors.fill: parent
-            anchors.margins: -4
-            radius: 20
+            anchors.margins: mouseArea.containsMouse ? -8 : -5
+            radius: 24
             color: "transparent"
-            border.width: 1
-            border.color: cardRoot.isSelected
-                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.4)
+            border.width: mouseArea.containsMouse ? 2 : 1
+            border.color: (mouseArea.containsMouse || cardRoot.isSelected)
+                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, mouseArea.containsMouse ? 0.6 : 0.35)
                 : "transparent"
-            visible: cardRoot.isSelected
+            visible: mouseArea.containsMouse || cardRoot.isSelected
+
+            Behavior on anchors.margins { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+            Behavior on border.color { ColorAnimation { duration: 200 } }
         }
 
         // --- Contenido según tipo de tarjeta ---
@@ -68,30 +82,43 @@ Item {
             anchors.fill: parent
 
             Rectangle {
+                id: addThumbBox
                 anchors.top: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
-                height: 100
-                radius: 10
-                color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.08)
+                height: 120
+                radius: 12
+                color: mouseArea.containsMouse
+                    ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.16)
+                    : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.08)
                 border.width: 1
-                border.color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.3)
+                border.color: mouseArea.containsMouse
+                    ? Root.Theme.primary
+                    : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35)
+
+                Behavior on color { ColorAnimation { duration: 180 } }
+                Behavior on border.color { ColorAnimation { duration: 180 } }
 
                 ColumnLayout {
                     anchors.centerIn: parent
-                    spacing: 4
+                    spacing: 6
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
                         text: "󰐕"
                         font.family: Root.Theme.fontFamily
-                        font.pixelSize: 28
+                        font.pixelSize: 32
                         color: Root.Theme.primary
+                        scale: mouseArea.containsMouse ? 1.15 : 1.0
+
+                        Behavior on scale {
+                            NumberAnimation { duration: 200; easing.type: Easing.OutBack }
+                        }
                     }
 
                     Text {
                         Layout.alignment: Qt.AlignHCenter
-                        text: "Browse"
+                        text: "Browse Local"
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 11
                         font.weight: Font.DemiBold
@@ -102,13 +129,13 @@ Item {
 
             Text {
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 6
+                anchors.bottomMargin: 8
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Add Local File..."
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: 12
-                font.weight: Font.Medium
-                color: cardRoot.isSelected ? Root.Theme.primary : Root.Theme.textPrimary
+                font.weight: (mouseArea.containsMouse || cardRoot.isSelected) ? Font.Bold : Font.Medium
+                color: (mouseArea.containsMouse || cardRoot.isSelected) ? Root.Theme.primary : Root.Theme.textPrimary
             }
         }
     }
@@ -125,8 +152,8 @@ Item {
                 anchors.top: parent.top
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width
-                height: 100
-                radius: 10
+                height: 120
+                radius: 12
                 clip: true
                 color: Root.Theme.surface
 
@@ -138,9 +165,16 @@ Item {
                     smooth: true
                     asynchronous: true
 
+                    // Zoom sutil interno de la imagen al hacer hover sobre la tarjeta
+                    scale: mouseArea.containsMouse ? 1.08 : 1.0
+                    transformOrigin: Item.Center
+
+                    Behavior on scale {
+                        NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
+                    }
+
                     onStatusChanged: {
                         if (status === Image.Error && cardRoot.wallPath !== "") {
-                            // Fallback al archivo original si la miniatura falla
                             source = "file://" + cardRoot.wallPath;
                         }
                     }
@@ -152,18 +186,29 @@ Item {
                     anchors.top: parent.top
                     anchors.right: parent.right
                     anchors.margins: 6
-                    width: 54
-                    height: 18
-                    radius: 9
+                    width: 58
+                    height: 20
+                    radius: 10
                     color: Root.Theme.primary
 
-                    Text {
+                    Row {
                         anchors.centerIn: parent
-                        text: "Active"
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: 10
-                        font.weight: Font.Bold
-                        color: Root.Theme.tileActiveText
+                        spacing: 3
+
+                        Text {
+                            text: "󰄬"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 10
+                            color: Root.Theme.tileActiveText
+                        }
+
+                        Text {
+                            text: "Active"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 10
+                            font.weight: Font.Bold
+                            color: Root.Theme.tileActiveText
+                        }
                     }
                 }
             }
@@ -171,14 +216,14 @@ Item {
             // Título / nombre del archivo
             Text {
                 anchors.top: thumbContainer.bottom
-                anchors.topMargin: 8
+                anchors.topMargin: 10
                 anchors.horizontalCenter: parent.horizontalCenter
                 width: parent.width - 4
                 text: cardRoot.wallTitle
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: 12
-                font.weight: cardRoot.isSelected ? Font.Bold : Font.Normal
-                color: cardRoot.isSelected ? Root.Theme.primary : Root.Theme.textPrimary
+                font.weight: (mouseArea.containsMouse || cardRoot.isSelected) ? Font.Bold : Font.Normal
+                color: (mouseArea.containsMouse || cardRoot.isSelected) ? Root.Theme.primary : Root.Theme.textPrimary
                 elide: Text.ElideMiddle
                 horizontalAlignment: Text.AlignHCenter
             }

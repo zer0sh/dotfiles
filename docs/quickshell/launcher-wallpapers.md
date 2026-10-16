@@ -18,10 +18,11 @@ The system consists of two coordinated Quickshell modules:
      * **Wallpaper Carousel (`>wallpaper` / `SUPER + W`):** Horizontal card carousel featuring 16:9 previews, active wallpaper glow, and a local file explorer.
 2. **Desktop Background Engine (`modules/background/Background.qml`):**
    * Placed on `WlrLayershell.layer: WlrLayer.Background` on all connected displays (`Quickshell.screens`).
+   * Implements a double-buffer (ping-pong) layer switching architecture, guaranteeing reliable consecutive wallpaper transitions without QML property binding degradation.
    * Manages smooth cross-image animations, replacing static background setters like `swaybg`.
    * Applies the "Zoom & Blur" (Emergence) transition:
-     * Outgoing wallpaper scales from 1.0 to 1.15 while fading opacity from 1.0 to 0.0.
-     * Incoming wallpaper scales from 0.88 to 1.0 while fading opacity from 0.0 to 1.0.
+     * Outgoing wallpaper scales from 1.0 to 1.15 while fading opacity from 1.0 to 0.0 in 750 ms (`Easing.InOutQuad`).
+     * Incoming wallpaper scales from 0.88 to 1.0 while fading opacity from 0.0 to 1.0 in 750 ms (`Easing.InOutQuad`).
    * Triggers `apply-matugen.sh` asynchronously to regenerate system palettes across Hyprland, Waybar, Alacritty, and Quickshell.
 
 ---
@@ -65,10 +66,16 @@ Typing `>` filters available system commands:
 
 ### 3. Wallpaper Carousel Mode
 Typing `>wallpaper ` or pressing `SUPER + W` opens the horizontal carousel:
-* Displays 16:9 cards generated from `/home/zero/Pictures/walls/` and cached in `~/.cache/wallpapers/`.
-* Active wallpaper is marked with an "Active" badge and a primary color glow border.
+* Expanded floating card container (1080 px width, 330 px height) offering comfortable horizontal and vertical headroom.
+* Displays 16:9 cards (224x214 px with 120 px thumbnail height) generated from `/home/zero/Pictures/walls/` and cached in `~/.cache/wallpapers/`.
+* **Enhanced Hover & Focus Animations:**
+  * Dynamic elevation: Cards lift upward by -10 px on mouse hover.
+  * Elastic scale expansion: Scales to 1.10 using `Easing.OutBack` with 1.3 overshoot.
+  * Internal parallax zoom: The 16:9 thumbnail subtly zooms to 1.08 within rounded clipping bounds.
+  * Vibrant halo glow: Border widens to 2 px with primary color illumination and expanded glow margins.
+* **Active Badge:** The currently active desktop wallpaper is highlighted with an "Active" badge and a focused double border.
 * **Add Local File Card:** Positioned at the end of the carousel. Clicking or pressing `Enter` opens a native file dialog (`zenity`) to import external images, automatically caching thumbnails and applying the wallpaper.
-* Keyboard navigation: `Left` / `Right` arrows select adjacent wallpapers, mouse wheel scrolls horizontally, `Enter` or mouse click applies the selected wallpaper with the Zoom & Blur transition.
+* **Snappy Keyboard & Scroll Navigation:** `Left` / `Right` arrows instantly navigate adjacent wallpapers with 140 ms highlight transitions (`highlightMoveDuration: 140`), `WheelHandler` provides fluid scrolling without intercepting hover states, and `Enter` or mouse click applies the selected wallpaper with the Zoom & Blur transition.
 
 ---
 
