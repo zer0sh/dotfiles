@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Script to synchronize Matugen themes for applications executed with sudo (root)
-# Must be executed with sudo privileges: sudo ./sync-root-theme.sh
+# Fully idempotent: safe to run multiple times without unintended side effects.
 
 if [ "$(id -u)" -ne 0 ]; then
     echo "[ERROR] This script must be run with sudo or as root: sudo $0" >&2
@@ -26,38 +26,67 @@ if [ ! -d "$THEMES_CURRENT" ]; then
     exit 1
 fi
 
-echo "[INFO] Synchronizing theme configuration for root user from '$TARGET_USER'..."
+echo "[INFO] Checking root theme synchronization for user '$TARGET_USER'..."
 
-# 1. GTK 3 & GTK 4 directories for root
+# Helper function to safely create symlinks with idempotency and backup protection
+safe_link() {
+    local src="$1"
+    local dest="$2"
+    local backup="${dest}.bak"
+
+    if [ -L "$dest" ]; then
+        local current_target
+        current_target="$(readlink "$dest")"
+        if [ "$current_target" = "$src" ]; then
+            echo "[OK] Already synchronized: $dest"
+            return 0
+        fi
+        rm -f "$dest"
+    elif [ -e "$dest" ]; then
+        echo "[BACKUP] Existing file found. Backing up $dest -> $backup"
+        [ -e "$backup" ] && backup="${backup}_$(date +%Y%m%d_%H%M%S)"
+        mv "$dest" "$backup"
+    fi
+
+    mkdir -p "$(dirname "$dest")"
+    ln -s "$src" "$dest"
+    echo "[LINK] Linked $dest -> $src"
+}
+
+# 1. Ensure root config directories exist
 mkdir -p /root/.config/gtk-3.0 /root/.config/gtk-4.0
 
-# 2. Settings for GTK 3 (force dark theme preference)
-cat << 'EOF' > /root/.config/gtk-3.0/settings.ini
+# 2. Settings for GTK 3 (idempotent write if missing or different)
+SETTINGS_FILE="/root/.config/gtk-3.0/settings.ini"
+EXPECTED_SETTINGS=$(cat << 'EOF'
 [Settings]
 gtk-theme-name=Adwaita-dark
 gtk-application-prefer-dark-theme=1
 EOF
-echo "[LINK] Created /root/.config/gtk-3.0/settings.ini"
+)
 
-# 3. Symlinks to user dynamic Matugen theme store
-ln -sf "$THEMES_CURRENT/gtk-3.0.css" /root/.config/gtk-3.0/gtk.css
-echo "[LINK] /root/.config/gtk-3.0/gtk.css -> $THEMES_CURRENT/gtk-3.0.css"
+if [ -f "$SETTINGS_FILE" ] && [ "$(cat "$SETTINGS_FILE")" = "$EXPECTED_SETTINGS" ]; then
+    echo "[OK] Already up to date: $SETTINGS_FILE"
+else
+    [ -f "$SETTINGS_FILE" ] && [ ! -L "$SETTINGS_FILE" ] && cp "$SETTINGS_FILE" "${SETTINGS_FILE}.bak"
+    echo "$EXPECTED_SETTINGS" > "$SETTINGS_FILE"
+    echo "[WRITE] Configured $SETTINGS_FILE"
+fi
 
-ln -sf "$THEMES_CURRENT/gtk-4.0.css" /root/.config/gtk-4.0/gtk.css
-echo "[LINK] /root/.config/gtk-4.0/gtk.css -> $THEMES_CURRENT/gtk-4.0.css"
+# 3. Synchronize GTK 3 and GTK 4 stylesheets
+safe_link "$THEMES_CURRENT/gtk-3.0.css" "/root/.config/gtk-3.0/gtk.css"
+safe_link "$THEMES_CURRENT/gtk-4.0.css" "/root/.config/gtk-4.0/gtk.css"
 
-# 4. Optional: btop root theme link
+# 4. Optional: Synchronize btop monitor theme for root
 if [ -d "$TARGET_HOME/.config/btop" ]; then
     mkdir -p /root/.config/btop/themes
-    ln -sf "$THEMES_CURRENT/btop.theme" /root/.config/btop/themes/matugen.theme
-    if [ -f "$TARGET_HOME/.config/btop/btop.conf" ] && [ ! -f /root/.config/btop/btop.conf ]; then
-        ln -sf "$TARGET_HOME/.config/btop/btop.conf" /root/.config/btop/btop.conf
-        echo "[LINK] /root/.config/btop/btop.conf -> $TARGET_HOME/.config/btop/btop.conf"
+    safe_link "$THEMES_CURRENT/btop.theme" "/root/.config/btop/themes/matugen.theme"
+    if [ -f "$TARGET_HOME/.config/btop/btop.conf" ]; then
+        safe_link "$TARGET_HOME/.config/btop/btop.conf" "/root/.config/btop/btop.conf"
     fi
 fi
 
-# 5. Ensure root can traverse to user themes directory
+# 5. Ensure root has traversal permissions to user themes directory
 chmod o+x "$TARGET_HOME" "$TARGET_HOME/.config" "$TARGET_HOME/.config/themes" "$THEMES_CURRENT" 2>/dev/null || true
 
-echo "[SUCCESS] Root theme synchronization complete."
-echo "          Applications run with 'sudo' will now share your dynamic Matugen theme."
+echo "[SUCCESS] Synchronization check completed cleanly."
