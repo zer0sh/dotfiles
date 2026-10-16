@@ -10,7 +10,7 @@ All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr
 | :--- | :--- | :--- |
 | `SUPER + Enter` | Open terminal | `alacritty` |
 | `SUPER + E` | Open file manager | `nautilus` |
-| `SUPER + Space` | Application launcher | `wofi --show drun` |
+| `SUPER + Space` | Application launcher | `scripts/toggle-menu` (Wofi toggle) |
 | `SUPER + Q` | Close active window | `killactive` |
 | `SUPER + SHIFT + R` | Reload Hyprland config | `hyprctl reload` |
 | `SUPER + L` | Lock screen | `hyprlock` |

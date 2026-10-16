@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Toggle launcher para Wofi
+# Si ya existe una instancia abierta la cierra; de lo contrario abre el menú.
+# ==============================================================================
+
+if pidof wofi >/dev/null 2>&1; then
+    killall wofi
+else
+    exec wofi --show drun
+fi

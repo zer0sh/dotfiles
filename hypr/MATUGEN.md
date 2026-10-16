@@ -11,7 +11,7 @@ La integración dinámica todavía no está activada. Actualmente:
   verdad del panel de control.
 - `quickshell/scripts/apply-theme.sh` traduce una paleta manual a Waybar,
   Kitty, Rofi y los bordes activos de Hyprland.
-- Wofi (`wofi/style.css`) todavía tiene colores locales.
+- Wofi (`wofi/style.css`) importa `themes/current/wofi.css` dinámicamente con estilos Material Design 3.
 - El fondo se cambia desde `WallpaperSection.qml` usando `swaybg`.
 
 Matugen está instalado y se usará para generar una paleta a partir del fondo,
