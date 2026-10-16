@@ -145,6 +145,15 @@ listener {
 
 ## Keybindings & Manual Invocation
 
-| Shortcut | Action | Target Command |
-| :--- | :--- | :--- |
-| `SUPER + L` | Lock screen immediately | `hyprlock` |
+| Shortcut | Action | Target Command | Reference |
+| :--- | :--- | :--- | :--- |
+| `SUPER + L` | Lock screen immediately | `hyprlock` | [Keybindings Catalog](keybinds.md) |
+
+---
+
+## Related Documentation
+
+* [Hyprland Architecture](index.md): Master orchestrator, `autostart.conf`, and window management.
+* [Hyprland Keybindings](keybinds.md): System lock shortcuts and window actions.
+* [Matugen Theming Engine](../apps/matugen.md): Generating `hyprlock.conf` color roles dynamically from wallpapers.
+* [Quickshell Control Center](../quickshell/index.md): Power menu integration and session control.

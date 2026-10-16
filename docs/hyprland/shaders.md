@@ -19,10 +19,19 @@ The setup includes custom GLSL shaders applied directly by the Hyprland composit
 
 ## Quickshell Integration
 
-Inside the Quickshell Control Center:
+Inside the [Quickshell Control Center](../quickshell/index.md):
 * The main circular toggle button serves as an **On / Off** switch (`filter toggle`).
 * The three-dot button `⋯` cycles to the next available shader (`filter next`):
   ```text
-  Off → Sepia → B&W → Noir → Vintage → Vivid → Off
+  Off -> Sepia -> B&W -> Noir -> Vintage -> Vivid -> Off
   ```
 * Active state is persisted in `/tmp/hypr-bw-filter` for real-time widget label synchronization.
+* Shaders can also be triggered directly using keyboard shortcuts configured in [Keybindings](keybinds.md#screen-filters-and-shaders) (`SUPER + B`, `SUPER + CTRL + [1-5]`).
+
+---
+
+## Related Documentation
+
+* [Hyprland Keybindings](keybinds.md): Keybindings for toggling and selecting GLSL screen shaders.
+* [Quickshell Control Center](../quickshell/index.md): FeatureTile toggles, sliders, and ambient desktop integration.
+* [Hyprland Architecture](index.md): Master orchestrator and decoration configuration.

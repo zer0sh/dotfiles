@@ -1,6 +1,6 @@
 # Fastfetch Configuration
 
-Fastfetch is a lightweight, ultra-fast system information tool configured to display system hardware, environment telemetry, and desktop branding in terminal sessions.
+Fastfetch is a lightweight, ultra-fast system information tool configured to display system hardware, environment telemetry, and desktop branding across [Alacritty](../terminals/alacritty.md) and other terminal sessions.
 
 ---
 
@@ -35,12 +35,12 @@ The configuration leverages custom braille ASCII art alongside structured teleme
 * **Kernel:** Active Linux kernel build and architecture.
 * **Uptime:** Session elapsed time.
 * **Packages:** Total dpkg package count.
-* **Shell:** Current interactive shell binary.
-* **Window Manager:** Hyprland compositor version and protocol.
+* **Shell:** Current interactive shell binary ([Zsh Shell Configuration](../terminals/zsh.md)).
+* **Window Manager:** [Hyprland Compositor Architecture](../hyprland/index.md) version and protocol.
 * **Hardware:** CPU model and maximum frequency, integrated GPU chipset.
 * **Memory & Storage:** Real-time RAM and storage consumption.
 * **Battery:** Charge percentage and charging status.
-* **Terminal Palette:** 8 circular color swatches positioned at the base.
+* **Terminal Palette:** 8 circular color swatches positioned at the base, reflecting the active [Matugen Color Palette](matugen.md).
 
 ---
 
@@ -51,3 +51,14 @@ To invoke fastfetch using this configuration:
 ```bash
 fastfetch
 ```
+
+Fastfetch can also be hooked into your interactive shell greeting inside `.zshrc` (see [Zsh Configuration](../terminals/zsh.md)).
+
+---
+
+## Related Documentation
+
+* [Alacritty Terminal](../terminals/alacritty.md): Monospace font rendering and color palette integration.
+* [Zsh Shell](../terminals/zsh.md): Interactive shell environment and command aliases.
+* [Hyprland Architecture](../hyprland/index.md): Compositor runtime information reported by Fastfetch.
+* [Matugen Theming Engine](matugen.md): Generating dynamic terminal color schemes.

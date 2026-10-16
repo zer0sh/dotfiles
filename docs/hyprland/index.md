@@ -48,8 +48,18 @@ source = $HOME/.config/hypr/autostart.conf
 
 ## Startup Services (`autostart.conf`)
 
-* **Quickshell:** Loads desktop widgets, OSD layers, and the control center.
-* **Waybar:** Top system status bar.
+* **[Quickshell](../quickshell/index.md):** Loads desktop widgets, [top-center OSD layers & notifications](../quickshell/osd-notifications.md), and the One UI control center.
+* **Waybar:** Top system status bar running alongside Quickshell widgets.
 * **Polkit Agent:** `systemctl --user start hyprpolkitagent` for GUI privilege escalation.
-* **Cliphist:** Text and image clipboard history daemons.
-* **Wallpaper:** Automatic restoration using `$HOME/.config/hypr/scripts/restore-wallpaper`.
+* **Cliphist:** Text and image clipboard history daemons integrated with Quickshell clipboard drawer.
+* **Wallpaper & Theme:** Automatic restoration via `$HOME/.config/hypr/scripts/restore-wallpaper` and [Matugen theming engine](../apps/matugen.md).
+
+---
+
+## Related Documentation
+
+* [Keybindings Catalog](keybinds.md): Complete table of window management, screenshot, and application shortcuts.
+* [GLSL Screen Shaders](shaders.md): Real-time compositor shader filters and Quickshell toggles.
+* [Screen Locking & Idle](hyprlock.md): Lock screen layout with Hyprlock and power savings via Hypridle.
+* [Matugen Theming Engine](../apps/matugen.md): How border colors and system palettes are dynamically injected.
+* [Dotfiles Workflow](../dotfiles/workflow.md): Managing live changes between `~/.config/hypr` and `~/dotfiles`.

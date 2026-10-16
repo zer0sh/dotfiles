@@ -1,6 +1,6 @@
 # Notifications & OSDs
 
-This guide details the architecture, screen positioning, and animation dynamics for **floating notification toasts** and **on-screen display (OSD) cards** (Volume, Brightness, Music, and Mini Player) in Quickshell for Hyprland.
+This guide details the architecture, screen positioning, and animation dynamics for **floating notification toasts** and **on-screen display (OSD) cards** (Volume, Brightness, Music, and Mini Player) in [Quickshell](index.md) running on the [Hyprland compositor](../hyprland/index.md).
 
 ---
 
@@ -10,11 +10,12 @@ All floating indicators follow a standardized behavioral contract:
 
 1. **Screen Placement:** Top of the screen, horizontally centered (`anchors.top: true`, `anchors.horizontalCenter: parent.horizontalCenter`).
 2. **Top Margin:** `topMargin: 46 px` (reserves a comfortable visual gap beneath Waybar's 36 px height).
-3. **Entrance Animation (Downward Slide):**
+3. **Theming:** Colors, translucency, and borders are rendered using [Matugen Dynamic Palette Tokens](../apps/matugen.md#core-color-roles) (`surface_container`, `outline`, `on_surface`).
+4. **Entrance Animation (Downward Slide):**
    * Translates from `_slideY: -28` to `0` over 260–280 ms using `Easing.OutCubic` acceleration.
    * Fades in opacity from `0` to `1` over 220 ms using `Easing.OutQuad`.
-4. **Queue Dynamics:** When a new notification arrives, it occupies the top slot and fluidly pushes older active notifications downward using `move: Transition`.
-5. **Dismissal Animation:** Gently moves upward (`to: -20`) and fades out (`opacity: 0`) before unmounting from the model.
+5. **Queue Dynamics:** When a new notification arrives, it occupies the top slot and fluidly pushes older active notifications downward using `move: Transition`.
+6. **Dismissal Animation:** Gently moves upward (`to: -20`) and fades out (`opacity: 0`) before unmounting from the model.
 
 ---
 
@@ -27,7 +28,7 @@ All floating indicators follow a standardized behavioral contract:
 | **Volume OSD** | `modules/osd/VolumeOsd.qml` | Listens to PipeWire sink changes and animates top-center card. |
 | **Brightness OSD** | `modules/osd/BrightnessOsd.qml` | Listens to `brightnessctl` and animates top-center card. |
 | **Music Track Toast** | `modules/osd/MusicOsd.qml` | Automatic top-center popup on MPRIS track transition. |
-| **Mini Music Player** | `modules/osd/MiniPlayer.qml` | Interactive player triggered via `SUPER + M`. |
+| **Mini Music Player** | `modules/osd/MiniPlayer.qml` | Interactive player triggered via `SUPER + M` (see [Keybindings Catalog](../hyprland/keybinds.md#quickshell-and-desktop-overlays)). |
 
 ---
 
@@ -57,3 +58,13 @@ NumberAnimation {
   ```bash
   wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
   ```
+
+---
+
+## Related Documentation
+
+* [Quickshell Overview](index.md): Main widget architecture, Control Center, and component index.
+* [Hyprland Keybindings](../hyprland/keybinds.md): Audio, brightness, and utility shortcut bindings.
+* [Hyprland Architecture](../hyprland/index.md): Autostart order and compositor lifecycle hooks.
+* [Matugen Theming Engine](../apps/matugen.md): Dynamic surface and accent token definitions.
+* [Screen Shaders](../hyprland/shaders.md): Visual filters toggled from the notification drawer and control center.

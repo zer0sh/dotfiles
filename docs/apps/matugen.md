@@ -82,13 +82,13 @@ output_path = "~/.config/hypr/hyprtoolkit.conf"
 
 | Target Application | Destination File | Consumed Tokens | Reload Method |
 | :--- | :--- | :--- | :--- |
-| **Quickshell** | `themes/current/palette.json` | Surfaces, containers, primary accents, semantic states | Automatic filesystem watcher / panel restart |
+| **[Quickshell](../quickshell/index.md)** | `themes/current/palette.json` | Surfaces, containers, primary accents, semantic states | Automatic filesystem watcher / panel restart |
 | **Waybar** | `themes/current/waybar.css` | Background, text, accent, warning, critical, charging | `pkill -SIGUSR2 waybar` |
-| **Wofi** | `themes/current/wofi.css` | Panel backdrop, input field, text, selection, outline | Next instance invocation |
-| **Alacritty** | `themes/current/alacritty.toml` | Normal, bright, primary, cursor, and selection colors | Automatic live reload |
+| **[Wofi](wofi.md)** | `themes/current/wofi.css` | Panel backdrop, input field, text, selection, outline | Next instance invocation |
+| **[Alacritty](../terminals/alacritty.md)** | `themes/current/alacritty.toml` | Normal, bright, primary, cursor, and selection colors | Automatic live reload |
 | **Kitty** | `themes/current/kitty.conf` | ANSI 16 palette, foreground, background, cursor | `kitty @ set-colors` or new instance |
-| **Hyprland** | `themes/current/hyprland.conf` | `col.active_border`, `col.inactive_border` | `hyprctl reload` or `hyprctl keyword` |
-| **Hyprlock** | `themes/current/hyprlock.conf` | Lockscreen text, ring accent, error and warning colors | Next screen lock event |
+| **[Hyprland](../hyprland/index.md)** | `themes/current/hyprland.conf` | `col.active_border`, `col.inactive_border` | `hyprctl reload` or `hyprctl keyword` |
+| **[Hyprlock](../hyprland/hyprlock.md)** | `themes/current/hyprlock.conf` | Lockscreen text, ring accent, error and warning colors | Next screen lock event |
 
 ---
 
@@ -127,3 +127,14 @@ Optionally adjust the contrast level using `--contrast`:
 # Increase contrast for accessibility or higher distinction (-1.0 to 1.0)
 matugen image "/path/to/wallpaper.jpg" --mode dark --contrast 0.2
 ```
+
+---
+
+## Related Documentation
+
+* [Hyprland Compositor](../hyprland/index.md): Window manager border theming and configuration modularity.
+* [Hyprlock Screen Locker](../hyprland/hyprlock.md): Lockscreen surfaces and authentication colors.
+* [Quickshell Control Center](../quickshell/index.md): Real-time wallpaper selector and QML theme integration.
+* [Wofi Application Launcher](wofi.md): Material Design 3 launcher CSS imports.
+* [Alacritty Terminal](../terminals/alacritty.md): Live terminal palette reload configuration.
+* [Fastfetch Telemetry](fastfetch.md): Hardware display with terminal palette swatches.

@@ -66,3 +66,12 @@ flowchart LR
 1. **Release Notes:** GitHub automatically categorizes commits into Features, Bug Fixes, and Maintenance based on Conventional Commits.
 2. **Packaged Assets:** Generates clean `dotfiles-vX.Y.Z.tar.gz` and `dotfiles-vX.Y.Z.zip` archives attached to the release for easy distribution or disaster recovery.
 3. **Wiki Deployment:** Compiles and deploys the latest MkDocs documentation to [zer0sh.github.io/dotfiles](https://zer0sh.github.io/dotfiles/).
+
+---
+
+## Related Documentation
+
+* [Dotfiles Workflow & Architecture](workflow.md): Managing live configurations, backing up changes, and running local documentation servers.
+* [Hyprland Architecture](../hyprland/index.md): Compositor layout and modular split configuration.
+* [Quickshell Overview](../quickshell/index.md): QML desktop framework and Control Center.
+* [Documentation Home](../index.md): Central navigation portal for the entire dotfiles documentation.

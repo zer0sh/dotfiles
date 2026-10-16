@@ -46,32 +46,56 @@ Welcome to the official documentation for **zer0sh's** desktop environment, buil
 
 ## Documentation Overview
 
-Explore the core modules of the environment:
+Explore the complete modular guide:
 
 <div class="grid cards" markdown>
 
--   :material-dock-window:{ .lg .middle } **[Hyprland Architecture](hyprland/index.md)**
+-   :material-dock-window:{ .lg .middle } **Hyprland Ecosystem**
 
     ---
 
-    Modular structure, monitor layouts, keybindings, window rules, and custom GLSL post-processing shaders.
+    Wayland tiling compositor configuration, modular orchestrator, and display layouts.
 
--   :material-view-dashboard-outline:{ .lg .middle } **[Quickshell & System OSD](quickshell/index.md)**
+    * [Architecture Overview](hyprland/index.md)
+    * [Keybindings Catalog](hyprland/keybinds.md)
+    * [GLSL Post-Processing Shaders](hyprland/shaders.md)
+    * [Hyprlock & Idle Security](hyprland/hyprlock.md)
 
-    ---
-
-    One UI inspired control center, system telemetry widgets, audio sliders, and fluid top-center notification queue.
-
--   :material-rocket-launch-outline:{ .lg .middle } **[Launchers & System Tools](apps/wofi.md)**
-
-    ---
-
-    Material Design 3 application launcher with dynamic presets, Swaync notification service, and Fastfetch hardware telemetry.
-
--   :material-console:{ .lg .middle } **[Terminals & Shell](terminals/alacritty.md)**
+-   :material-view-dashboard-outline:{ .lg .middle } **Quickshell & Widgets**
 
     ---
 
-    Hardware-accelerated terminal emulation with Alacritty and Kitty, powered by dynamic palettes and Zsh Prezto workflow.
+    Wayland-native QML interface layer with One UI inspired control cards and telemetry.
+
+    * [Control Center Architecture](quickshell/index.md)
+    * [Top-Center OSDs & Notifications](quickshell/osd-notifications.md)
+
+-   :material-rocket-launch-outline:{ .lg .middle } **Launchers & Styling Engine**
+
+    ---
+
+    Application execution, dynamic color palette generation, and telemetry displays.
+
+    * [Wofi M3 Launcher](apps/wofi.md)
+    * [Matugen Theming Engine](apps/matugen.md)
+    * [Fastfetch System Telemetry](apps/fastfetch.md)
+
+-   :material-console:{ .lg .middle } **Terminals & Shell**
+
+    ---
+
+    Hardware-accelerated terminal emulation and lightning-fast interactive shell workflow.
+
+    * [Alacritty Terminal](terminals/alacritty.md)
+    * [Zsh Shell Configuration](terminals/zsh.md)
+
+-   :material-git:{ .lg .middle } **Dotfiles & Version Control**
+
+    ---
+
+    Backup methodology, live source of truth workflow, and automated release pipeline.
+
+    * [Philosophy & Workflow](dotfiles/workflow.md)
+    * [Release Management & SemVer](dotfiles/releases.md)
 
 </div>

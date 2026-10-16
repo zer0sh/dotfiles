@@ -1,6 +1,6 @@
 # Zsh Shell Configuration
 
-Zsh serves as the interactive login shell across all terminal sessions, optimized for instant startup times, intelligent history handling, asynchronous-like autosuggestions, and streamlined Git integration.
+Zsh serves as the interactive login shell across all terminal sessions (such as [Alacritty](alacritty.md)), optimized for instant startup times, intelligent history handling, asynchronous-like autosuggestions, and streamlined Git integration within the [Dotfiles Architecture](../dotfiles/workflow.md).
 
 ---
 
@@ -9,7 +9,7 @@ Zsh serves as the interactive login shell across all terminal sessions, optimize
 * **Configuration root:** `~/dotfiles/zsh/zshrc` -> `~/.zshrc`
 * **Aliases:** `~/dotfiles/zsh/zshrc_aliases` -> `~/.zshrc_aliases`
 * **Custom Prompts:** `~/dotfiles/zsh/prompts/` -> `~/.zsh/prompts/`
-* **Plugin storage:** `~/.zsh/plugins/` (managed via `~/dotfiles/install.sh`)
+* **Plugin storage:** `~/.zsh/plugins/` (managed via `~/dotfiles/install.sh`, see [Dotfiles Workflow](../dotfiles/workflow.md))
 * **Private overrides:** `~/.zshrc_private` (local machine only, unversioned)
 
 ---
@@ -126,4 +126,14 @@ A two-line aesthetic prompt:
 | `gl` | `git pull` | Pull from remote |
 | `gd` | `git diff` | Diff working directory |
 | `glog` | `git log --oneline --graph --decorate` | Compact Git graph history |
-| `cwd` | `pwd \| wl-copy \| cliphist store` | Copy current path to Wayland clipboard |
+| `cwd` | `pwd \| wl-copy \| cliphist store` | Copy current path to Wayland clipboard (integrated with [Quickshell Clipboard Manager](../quickshell/index.md)) |
+
+---
+
+## Related Documentation
+
+* [Alacritty Terminal](alacritty.md): Monospace configuration, font rendering, and live config reload.
+* [Fastfetch Telemetry](../apps/fastfetch.md): System hardware diagnostics and desktop branding.
+* [Hyprland Keybindings Catalog](../hyprland/keybinds.md): Keyboard shortcuts for spawning terminals and quick runners.
+* [Dotfiles Workflow & Architecture](../dotfiles/workflow.md): Git backup, symlink strategies, and installation scripting.
+* [Quickshell Overview](../quickshell/index.md): One UI desktop widgets, notifications, and clipboard manager.
