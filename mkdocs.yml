@@ -25,6 +25,7 @@ theme:
         name: Switch to dark mode
   features:
     - navigation.tabs
+    - navigation.tabs.sticky
     - navigation.sections
     - navigation.top
     - search.suggest
@@ -37,6 +38,7 @@ extra_css:
 
 markdown_extensions:
   - admonition
+  - md_in_html
   - pymdownx.details
   - pymdownx.superfences:
       custom_fences:
@@ -51,6 +53,9 @@ markdown_extensions:
   - pymdownx.snippets
   - pymdownx.tabbed:
       alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - tables
   - attr_list
 
@@ -60,6 +65,7 @@ nav:
       - Architecture: hyprland/index.md
       - Keybindings: hyprland/keybinds.md
       - Shaders & Filters: hyprland/shaders.md
+      - Screen Locking & Idle: hyprland/hyprlock.md
   - Quickshell:
       - Control Center: quickshell/index.md
       - Notifications & OSDs: quickshell/osd-notifications.md
