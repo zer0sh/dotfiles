@@ -1,28 +1,28 @@
-# Shaders y Filtros de Pantalla
+# Screen Shaders & Filters
 
-El entorno incluye shaders GLSL personalizados aplicados directamente por el compositor Hyprland mediante la directiva `hyprctl keyword decoration:screen_shader`.
+The setup includes custom GLSL shaders applied directly by the Hyprland compositor via `hyprctl keyword decoration:screen_shader`.
 
 ---
 
-## Shaders Disponibles
+## Available Shaders
 
-| Shader | Archivo GLSL | Efecto visual |
+| Shader | GLSL File | Visual Description |
 | :--- | :--- | :--- |
-| **Sepia** | `sepia.glsl` | Tono cálido clásico inspirado en fotografía de los años 30. |
-| **Blanco y Negro** | `bw.glsl` | Escala de grises pura sin grano. |
-| **Film Noir** | `noir.glsl` | Alto contraste dramático con grano cinematográfico. |
-| **Vintage** | `vintage.glsl` | Sepia envejecido con viñeta y textura. |
-| **Vivid** | `vivid.glsl` | Saturación realzada y tonos vibrantes. |
-| **Off** | `off.glsl` | Passthrough sin efectos (pantalla natural). |
+| **Sepia** | `sepia.glsl` | Warm, golden 1930s style tone. |
+| **Black & White** | `bw.glsl` | Crisp, clean grayscale without added grain. |
+| **Film Noir** | `noir.glsl` | Dramatic, high-contrast monochrome with film grain. |
+| **Vintage** | `vintage.glsl` | Faded aged sepia with subtle vignette and texture. |
+| **Vivid** | `vivid.glsl` | Boosted saturation and heightened contrast. |
+| **Off** | `off.glsl` | Passthrough shader with zero color alteration. |
 
 ---
 
-## Control desde el Panel de Quickshell
+## Quickshell Integration
 
-En el panel de control de Quickshell:
-* El botón circular actúa como interruptor **On / Off**.
-* El botón de tres puntos `⋯` rota al siguiente filtro (`filter next`):
+Inside the Quickshell Control Center:
+* The main circular toggle button serves as an **On / Off** switch (`filter toggle`).
+* The three-dot button `⋯` cycles to the next available shader (`filter next`):
   ```text
   Off → Sepia → B&W → Noir → Vintage → Vivid → Off
   ```
-* El estado actual se persiste en `/tmp/hypr-bw-filter`.
+* Active state is persisted in `/tmp/hypr-bw-filter` for real-time widget label synchronization.

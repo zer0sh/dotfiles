@@ -1,5 +1,5 @@
 site_name: zer0sh Dotfiles
-site_description: Documentación oficial del entorno Hyprland, Quickshell y dotfiles
+site_description: Official documentation for zer0sh's Hyprland, Quickshell, and terminal environment
 site_author: zer0sh
 site_url: https://zer0sh.github.io/dotfiles/
 repo_url: https://github.com/zer0sh/dotfiles
@@ -7,22 +7,22 @@ repo_name: zer0sh/dotfiles
 
 theme:
   name: material
-  language: es
+  language: en
   palette:
-    # Modo oscuro por defecto
+    # Default dark mode
     - scheme: slate
       primary: deep purple
       accent: deep purple
       toggle:
         icon: material/brightness-4
-        name: Cambiar a modo claro
-    # Modo claro
+        name: Switch to light mode
+    # Light mode
     - scheme: default
       primary: deep purple
       accent: deep purple
       toggle:
         icon: material/brightness-7
-        name: Cambiar a modo oscuro
+        name: Switch to dark mode
   features:
     - navigation.tabs
     - navigation.sections
@@ -52,13 +52,15 @@ markdown_extensions:
   - attr_list
 
 nav:
-  - Inicio: index.md
+  - Home: index.md
   - Hyprland:
-      - Arquitectura: hyprland/index.md
-      - Atajos de Teclado: hyprland/keybinds.md
-      - Shaders y Filtros: hyprland/shaders.md
+      - Architecture: hyprland/index.md
+      - Keybindings: hyprland/keybinds.md
+      - Shaders & Filters: hyprland/shaders.md
   - Quickshell:
-      - Centro de Control: quickshell/index.md
-      - Notificaciones y OSDs: quickshell/osd-notifications.md
-  - Dotfiles y Flujo:
-      - Estructura y Filosofía: dotfiles/workflow.md
+      - Control Center: quickshell/index.md
+      - Notifications & OSDs: quickshell/osd-notifications.md
+  - Terminals:
+      - Alacritty: terminals/alacritty.md
+  - Dotfiles & Workflow:
+      - Philosophy & Workflow: dotfiles/workflow.md

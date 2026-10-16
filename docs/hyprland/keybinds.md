@@ -1,54 +1,54 @@
-# Atajos de Teclado (Keybindings)
+# Keybindings
 
-Todos los atajos se encuentran centralizados en [`binds.conf`](file:///home/zero/.config/hypr/binds.conf). La tecla modificadora principal es `SUPER` (`$mainMod`).
-
----
-
-## 🚀 Aplicaciones y Sistema
-
-| Atajo | Acción | Comando / Destino |
-| :--- | :--- | :--- |
-| `SUPER + Enter` | Abrir terminal | `alacritty` |
-| `SUPER + E` | Abrir explorador de archivos | `nautilus` |
-| `SUPER + Space` | Lanzador de aplicaciones | `wofi --show drun` |
-| `SUPER + Q` | Cerrar ventana activa | `killactive` |
-| `SUPER + SHIFT + R` | Recargar Hyprland | `hyprctl reload` |
-| `SUPER + L` | Bloquear pantalla | `hyprlock` |
-| `SUPER + P` | Editor gráfico de monitores | `nwg-displays` |
-| `SUPER + X` | Ejecutar app con permisos root | `scripts/sudo-launcher` |
+All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr/binds.conf). The primary modifier key is `SUPER` (`$mainMod`).
 
 ---
 
-## 📸 Capturas y Grabación
+## 🚀 Applications & System
 
-| Atajo | Acción | Script / Herramienta |
+| Shortcut | Action | Target / Command |
 | :--- | :--- | :--- |
-| `Print` | Captura de pantalla completa | `scripts/screenshot` (guarda + portapapeles) |
-| `SUPER + S` | Capturar área seleccionada | `scripts/screenshot area` |
-| `SUPER + SHIFT + O` | Reconocimiento de texto (OCR) | `scripts/ocr` |
-| `SUPER + ALT + R` | Alternar grabación de pantalla | `scripts/record` |
+| `SUPER + Enter` | Open terminal | `alacritty` |
+| `SUPER + E` | Open file manager | `nautilus` |
+| `SUPER + Space` | Application launcher | `wofi --show drun` |
+| `SUPER + Q` | Close active window | `killactive` |
+| `SUPER + SHIFT + R` | Reload Hyprland config | `hyprctl reload` |
+| `SUPER + L` | Lock screen | `hyprlock` |
+| `SUPER + P` | Display layout editor | `nwg-displays` |
+| `SUPER + X` | Launch app as root | `scripts/sudo-launcher` |
 
 ---
 
-## 🎛️ Quickshell y Widgets
+## 📸 Screen Capture & Recording
 
-| Atajo | Acción | Evento IPC |
+| Shortcut | Action | Tool / Helper Script |
 | :--- | :--- | :--- |
-| `CTRL + ALT + Del` | Menú de apagado (Power Menu) | `quickshell ipc call powermenu toggle` |
-| `SUPER + W` | Selector de fondo de pantalla | `quickshell ipc call wallpaper toggle` |
-| `SUPER + M` | Mini reproductor de música | `quickshell ipc call miniplayer toggle` |
-| `F1` | Overlay de atajos rápidos | `quickshell ipc call shortcuts toggle` |
+| `Print` | Fullscreen screenshot | `scripts/screenshot` (saves to disk + copies to clipboard) |
+| `SUPER + S` | Capture selected area | `scripts/screenshot area` |
+| `SUPER + SHIFT + O` | Optical Character Recognition (OCR) | `scripts/ocr` (extracts text to clipboard) |
+| `SUPER + ALT + R` | Toggle screen recording | `scripts/record` (saves MP4 with audio) |
 
 ---
 
-## 🎨 Filtros y Shaders de Pantalla
+## 🎛️ Quickshell & Desktop Overlays
 
-| Atajo | Filtro aplicado | Script |
+| Shortcut | Action | IPC Command |
 | :--- | :--- | :--- |
-| `SUPER + B` | Alternar shader ON / OFF | `scripts/filter toggle` |
-| `SUPER + CTRL + 1` | Sepia Vintage | `scripts/filter sepia` |
-| `SUPER + CTRL + 2` | Blanco y Negro | `scripts/filter bw` |
+| `CTRL + ALT + Del` | Power menu | `quickshell ipc call powermenu toggle` |
+| `SUPER + W` | Wallpaper picker | `quickshell ipc call wallpaper toggle` |
+| `SUPER + M` | Mini music player | `quickshell ipc call miniplayer toggle` |
+| `F1` | Shortcut cheatsheet overlay | `quickshell ipc call shortcuts toggle` |
+
+---
+
+## 🎨 Screen Filters & Shaders
+
+| Shortcut | Applied Shader | Helper Script |
+| :--- | :--- | :--- |
+| `SUPER + B` | Toggle active shader ON / OFF | `scripts/filter toggle` |
+| `SUPER + CTRL + 1` | Vintage Sepia | `scripts/filter sepia` |
+| `SUPER + CTRL + 2` | Black & White | `scripts/filter bw` |
 | `SUPER + CTRL + 3` | Film Noir | `scripts/filter noir` |
-| `SUPER + CTRL + 4` | Vintage desgastado | `scripts/filter vintage` |
-| `SUPER + CTRL + 5` | Colores vívidos | `scripts/filter vivid` |
-| `SUPER + CTRL + 0` | Desactivar filtros | `scripts/filter off` |
+| `SUPER + CTRL + 4` | Aged Vintage | `scripts/filter vintage` |
+| `SUPER + CTRL + 5` | Vivid Colors | `scripts/filter vivid` |
+| `SUPER + CTRL + 0` | Disable shaders | `scripts/filter off` |

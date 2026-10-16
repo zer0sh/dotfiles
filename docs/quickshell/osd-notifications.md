@@ -1,46 +1,46 @@
-# Notificaciones y OSDs
+# Notifications & OSDs
 
-Esta guía documenta la arquitectura, el posicionamiento y el sistema de animaciones para las **notificaciones flotantes (toasts)** y los **OSDs** (Volumen, Brillo, Música y MiniPlayer) en Quickshell para Hyprland.
-
----
-
-## 📐 Parámetros de Diseño y Comportamiento
-
-Todos los elementos emergentes comparten una especificación unificada:
-
-1. **Posición en pantalla:** Parte superior centrada horizontalmente (`anchors.top: true`, `anchors.horizontalCenter: parent.horizontalCenter`).
-2. **Margen superior:** `topMargin: 46 px` (deja un respiro visual debajo de Waybar).
-3. **Animación de entrada (Slide Down):**
-   * Desplazamiento desde `_slideY: -28` hasta `0` en 260–280 ms con aceleración `Easing.OutCubic`.
-   * Desvanecimiento de opacidad progresivo de `0` a `1` en 220 ms con `Easing.OutQuad`.
-4. **Desplazamiento fluido en cola:** Al recibir una notificación nueva, esta toma la posición superior y empuja automáticamente las notificaciones anteriores hacia abajo mediante `move: Transition`.
-5. **Animación de salida:** Retroceso suave hacia arriba (`to: -20`) y desvanecimiento (`opacity: 0`) antes de desmontarse.
+This guide details the architecture, screen positioning, and animation dynamics for **floating notification toasts** and **on-screen display (OSD) cards** (Volume, Brightness, Music, and Mini Player) in Quickshell for Hyprland.
 
 ---
 
-## 📂 Archivos Involucrados
+## 📐 Design Parameters & Dynamics
 
-| Componente | Archivo Fuente | Propósito |
+All floating indicators follow a standardized behavioral contract:
+
+1. **Screen Placement:** Top of the screen, horizontally centered (`anchors.top: true`, `anchors.horizontalCenter: parent.horizontalCenter`).
+2. **Top Margin:** `topMargin: 46 px` (reserves a comfortable visual gap beneath Waybar's 36 px height).
+3. **Entrance Animation (Downward Slide):**
+   * Translates from `_slideY: -28` to `0` over 260–280 ms using `Easing.OutCubic` acceleration.
+   * Fades in opacity from `0` to `1` over 220 ms using `Easing.OutQuad`.
+4. **Queue Dynamics:** When a new notification arrives, it occupies the top slot and fluidly pushes older active notifications downward using `move: Transition`.
+5. **Dismissal Animation:** Gently moves upward (`to: -20`) and fades out (`opacity: 0`) before unmounting from the model.
+
+---
+
+## 📂 Source Files Map
+
+| Component | Source File | Responsibility |
 | :--- | :--- | :--- |
-| **Contenedor Toasts** | `modules/notifications/NotificationToastLayer.qml` | Ventana overlay, inserción al inicio y transición de la columna. |
-| **Tarjeta Notificación** | `modules/notifications/NotificationPopup.qml` | Diseño de la tarjeta, animación slide-down y fade-out al descartar. |
-| **OSD de Volumen** | `modules/osd/VolumeOsd.qml` | OSD que responde a cambios en PipeWire / audio. |
-| **OSD de Brillo** | `modules/osd/BrightnessOsd.qml` | OSD que responde a `brightnessctl`. |
-| **OSD de Canción** | `modules/osd/MusicOsd.qml` | Toast automático al cambiar de pista en MPRIS. |
-| **Mini Reproductor** | `modules/osd/MiniPlayer.qml` | Widget interactivo de reproducción (`SUPER + M`). |
+| **Toast Window** | `modules/notifications/NotificationToastLayer.qml` | Overlay window, model prepending (`insert(0)`), and column move transition. |
+| **Notification Card** | `modules/notifications/NotificationPopup.qml` | Card styling, slide-down appearance, and dismissal animations. |
+| **Volume OSD** | `modules/osd/VolumeOsd.qml` | Listens to PipeWire sink changes and animates top-center card. |
+| **Brightness OSD** | `modules/osd/BrightnessOsd.qml` | Listens to `brightnessctl` and animates top-center card. |
+| **Music Track Toast** | `modules/osd/MusicOsd.qml` | Automatic top-center popup on MPRIS track transition. |
+| **Mini Music Player** | `modules/osd/MiniPlayer.qml` | Interactive player triggered via `SUPER + M`. |
 
 ---
 
-## 🛠️ Ajustes Futuros
+## 🛠️ Making Future Adjustments
 
-### Cambiar la distancia superior
-Modifica `topMargin` en el contenedor `Item` o `toastCol`:
+### Adjusting Vertical Distance
+Edit `topMargin` in the container `Item` or `toastCol`:
 ```qml
-anchors.topMargin: 46 // Aumentar para bajar, reducir para subir
+anchors.topMargin: 46 // Increase to push further down, decrease to lift closer to bar
 ```
 
-### Cambiar la velocidad de la animación
-En el bloque `appearAnim`:
+### Changing Animation Speed
+Inside the `appearAnim` block:
 ```qml
 NumberAnimation {
     target: osdCard; property: "_slideY"
@@ -48,12 +48,12 @@ NumberAnimation {
 }
 ```
 
-### Pruebas en vivo
-* **Notificaciones:**
+### Live Testing
+* **Trigger notification:**
   ```bash
-  notify-send "Prueba" "Desplazamiento suave hacia abajo"
+  notify-send "Test" "Smooth slide-down animation"
   ```
-* **Volumen:**
+* **Trigger volume OSD:**
   ```bash
   wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
   ```

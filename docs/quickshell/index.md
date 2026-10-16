@@ -1,36 +1,36 @@
-# Quickshell y Centro de Control
+# Quickshell & Control Center
 
-Quickshell es el motor de widgets gráficos sobre Wayland utilizado en este entorno. Proporciona una interfaz inspirada en One UI con superficies translúcidas, esquinas redondeadas y controles interactivos.
-
----
-
-## 📱 Módulos de Quickshell
-
-* **Centro de Control (`modules/controlcenter/`):**
-  * Toggles de Wi-Fi, Bluetooth, DND, Modo Avión, Cafeína, Perfiles de Energía, Night Light y Shaders.
-  * Sliders continuos de volumen y brillo.
-  * Acceso directo a selector de temas y estado de batería.
-* **Notificaciones y Toasts (`modules/notifications/`):**
-  * Servidor DBus propio (`org.freedesktop.Notifications`).
-  * Capa flotante superior central para notificaciones en vivo.
-  * Historial acumulado accesible desde Waybar o atajo de teclado.
-* **Portapapeles (`modules/clipboard/`):**
-  * Historial visual integrado con `cliphist`.
-* **DeskClock y Calendario (`modules/deskclock/`, `modules/calendar/`):**
-  * Reloj decorativo de escritorio y visualizador de eventos de calendario.
-* **Mini Reproductor (`modules/osd/MiniPlayer.qml`):**
-  * Control compacto de reproducción musical MPRIS en pantalla.
+Quickshell is the Wayland-native QML widget framework driving this desktop environment. It provides a One UI inspired control center featuring translucent cards, rounded pill toggles, and reactive sliders.
 
 ---
 
-## 🔄 Recarga y Validación
+## 📱 Modules Overview
 
-Para verificar la integridad del código QML o reiniciar el entorno:
+* **Control Center (`modules/controlcenter/`):**
+  * Toggles for Wi-Fi, Bluetooth, DND, Airplane Mode, Caffeine, Power Profiles, Night Light, and Screen Shaders.
+  * Interactive volume and brightness sliders.
+  * Direct access to wallpaper changer and battery diagnostics.
+* **Notifications & Toasts (`modules/notifications/`):**
+  * Native DBus notification server (`org.freedesktop.Notifications`).
+  * Top-center floating toast layer with smooth downward entrance animations.
+  * Persistent notification drawer accessible via Waybar or keyboard shortcuts.
+* **Clipboard Manager (`modules/clipboard/`):**
+  * Visual history and search for text and images integrated with `cliphist`.
+* **DeskClock & Calendar (`modules/deskclock/`, `modules/calendar/`):**
+  * Ambient desktop clock surface and expandable calendar panel.
+* **Mini Music Player (`modules/osd/MiniPlayer.qml`):**
+  * Compact MPRIS playback controller triggered with `SUPER + M`.
+
+---
+
+## 🔄 Validation & Live Reload
+
+To validate QML syntax or restart Quickshell without crashing your Wayland session:
 
 ```bash
-# Validar sintaxis sin reiniciar
+# Validate QML syntax without restarting
 ~/.config/quickshell/restart-quickshell.sh --validate
 
-# Reiniciar Quickshell en vivo
+# Restart Quickshell live
 ~/.config/quickshell/restart-quickshell.sh
 ```

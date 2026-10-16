@@ -1,50 +1,52 @@
-# Flujo de Trabajo de Dotfiles
+# Dotfiles Workflow & Architecture
 
-Esta guía explica cómo está organizado el sistema de dotfiles y cómo mantener sincronizadas tus configuraciones entre tu sistema local y GitHub.
-
----
-
-## 🏛️ Filosofía: Fuente de Verdad Directa
-
-* **Hyprland:** La carpeta `~/.config/hypr` es una **carpeta física real**. Puedes modificar tus archivos directamente sin preocuparte por symlinks o inconsistencias.
-* **Repositorio Dotfiles:** La carpeta `~/dotfiles` actúa como el repositorio de control de versiones y copias de seguridad conectado a GitHub (`zer0sh/dotfiles`).
+This guide explains how configuration files are structured between your active system and the version-controlled repository on GitHub.
 
 ---
 
-## 🔄 Cómo respaldar cambios de Hyprland
+## 🏛️ Direct Source of Truth Philosophy
 
-Cuando realices ajustes y quieras guardarlos en el repositorio:
+* **Hyprland:** `~/.config/hypr` is a **real physical directory** (not a symlink). You can edit configuration files directly in place without risk of symlink breakage or intermediate layer issues.
+* **Dotfiles Repository:** `~/dotfiles` serves as the Git repository and backup hub connected to [github.com/zer0sh/dotfiles](https://github.com/zer0sh/dotfiles).
 
-1. **Copiar la configuración de Hyprland al repositorio:**
+---
+
+## 🔄 How to Backup Hyprland Changes
+
+Whenever you test and stabilize adjustments in your Hyprland configuration and want to commit them to your repository:
+
+1. **Copy live configuration into the dotfiles directory:**
    ```bash
    cp -r ~/.config/hypr/* ~/dotfiles/hypr/
    ```
-2. **Revisar cambios y hacer commit:**
+2. **Review diffs and create atomic commits:**
    ```bash
    cd ~/dotfiles
    git status
    git add hypr/
-   git commit -m "feat(hypr): describir los cambios"
+   git commit -m "feat(hypr): describe your changes"
    ```
-3. **Subir a GitHub:**
+3. **Push to GitHub:**
    ```bash
    git push origin main
    ```
 
 ---
 
-## 📦 Despliegue de la Documentación (MkDocs)
+## 📦 Documentation Deployment (MkDocs)
 
-Para compilar y previsualizar la documentación localmente:
+To preview the documentation locally with live-reload:
 
 ```bash
 cd ~/dotfiles
 mkdocs serve
 ```
 
-Para publicar la documentación automáticamente a GitHub Pages:
+To build and deploy changes directly to GitHub Pages:
 
 ```bash
 cd ~/dotfiles
 mkdocs gh-deploy
 ```
+
+*(Note: Pushing to `main` also automatically triggers the GitHub Actions workflow defined in `.github/workflows/deploy-docs.yml`).*
