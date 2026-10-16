@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Toggle launcher para Wofi
-# Si ya existe una instancia abierta la cierra; de lo contrario abre el menú.
+# Toggle launcher para Quickshell Caelestia (con fallback a Wofi)
 # ==============================================================================
 
-if pidof wofi >/dev/null 2>&1; then
-    killall wofi
+if pgrep -x quickshell >/dev/null 2>&1 || pgrep -f "qs.*shell.qml" >/dev/null 2>&1; then
+    quickshell ipc call launcher toggle
 else
-    exec wofi --conf "$HOME/.config/wofi/config" --style "$HOME/.config/wofi/style.css" --show drun
+    if pidof wofi >/dev/null 2>&1; then
+        killall wofi
+    else
+        exec wofi --conf "$HOME/.config/wofi/config" --style "$HOME/.config/wofi/style.css" --show drun
+    fi
 fi

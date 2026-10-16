@@ -350,7 +350,7 @@ Scope {
     }
 
     IpcHandler {
-        target: "wallpaper"
+        target: "controlcenter_wallpaper"
 
         function toggle(): void {
             if (controlCenter.panelVisible && controlCenter.currentPage === "wallpaper") {

@@ -10,16 +10,11 @@ Scope {
 
     property bool panelVisible: false
     property bool _showing: false
-    property bool _panelOpen: false
     property string searchText: ""
+    property int selectedIndex: 0
+    property var backgroundRef: null
 
-    // ── Keyboard navigation state ────────────────────────────────
-    property int kbSection: 0   // 0 = recent row, 1 = app grid
-    property int kbIndex: 0
-    property int gridColumns: 5
-    property bool gridFocused: false  // true = arrow keys navigate grid; false = search input
-
-    // ── Icon path cache (icon name -> file path) ─────────────────
+    // ── Icon Cache ───────────────────────────────────────────────
     property var iconCache: ({})
 
     Process {
@@ -40,189 +35,282 @@ Scope {
         }
     }
 
-    Component.onCompleted: {
-        iconResolveProc.running = true;
-        recentReadProc.running = true;
-    }
-
     function resolveIcon(iconName) {
         if (!iconName) return "";
         if (iconName.startsWith("/")) return "file://" + iconName;
-        var path = iconCache[iconName];
-        if (path) return "file://" + path;
+        var p = iconCache[iconName];
+        if (p) return "file://" + p;
+        try {
+            var qp = Quickshell.iconPath(iconName, "");
+            if (qp) return qp;
+        } catch (e) {}
         return "";
     }
 
-    // ── Recent apps ──────────────────────────────────────────────
-    property var recentAppNames: []
-    property int maxRecent: 5
+    // ── Wallpapers Model & State ─────────────────────────────────
+    property string wallpaperDir: "/home/zero/Pictures/walls/"
+    property string cacheDir: "/home/zero/.cache/wallpapers/"
+    property string currentWallpaper: ""
+    property var wallpapers: []
 
     Process {
-        id: recentReadProc
-        command: ["/bin/sh", "-c", "cat ~/.cache/quickshell/recent-apps.txt 2>/dev/null || true"]
+        id: readCurrentWallProc
+        command: ["/bin/sh", "-c", "cat ~/.config/themes/current/wallpaper 2>/dev/null || echo '/home/zero/Pictures/walls/wa1.png'"]
         stdout: StdioCollector {
             onStreamFinished: {
-                var names = [];
-                if (text.trim() !== "") {
-                    var lines = text.trim().split("\n");
-                    for (var i = 0; i < lines.length && i < launcher.maxRecent; i++) {
-                        var n = lines[i].trim();
-                        if (n !== "") names.push(n);
+                var w = text.trim();
+                if (w !== "") launcher.currentWallpaper = w;
+            }
+        }
+    }
+
+    Process {
+        id: listWallsProc
+        command: ["find", "/home/zero/Pictures/walls", "-maxdepth", "1", "-type", "f",
+            "(", "-iname", "*.jpg", "-o", "-iname", "*.jpeg", "-o", "-iname", "*.png",
+            "-o", "-iname", "*.gif", "-o", "-iname", "*.bmp", "-o", "-iname", "*.webp", ")"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var lines = text.trim().split("\n");
+                var items = [];
+                for (var i = 0; i < lines.length; i++) {
+                    var file = lines[i].trim();
+                    if (file !== "") {
+                        var base = file.split("/").pop();
+                        items.push({
+                            path: file,
+                            title: base,
+                            thumb: launcher.cacheDir + base + ".jpg"
+                        });
                     }
                 }
-                launcher.recentAppNames = names;
+                // Ordenar alfabéticamente
+                items.sort(function(a, b) {
+                    return a.title.localeCompare(b.title);
+                });
+                launcher.wallpapers = items;
             }
         }
     }
 
-    function recordRecentApp(appName) {
-        var names = recentAppNames.slice();
-        // Remove duplicate
-        var idx = names.indexOf(appName);
-        if (idx >= 0) names.splice(idx, 1);
-        // Prepend
-        names.unshift(appName);
-        // Trim
-        if (names.length > maxRecent) names = names.slice(0, maxRecent);
-        recentAppNames = names;
-        // Write to file
-        recentWriteProc.command = ["/bin/sh", "-c",
-            "mkdir -p ~/.cache/quickshell && printf '%s\\n' " +
-            names.map(function(n) { return "'" + n.replace(/'/g, "'\\''") + "'"; }).join(" ") +
-            " > ~/.cache/quickshell/recent-apps.txt"];
-        recentWriteProc.running = true;
-    }
-
-    Process { id: recentWriteProc }
-
-    // Map recent names back to plain data objects {name, icon, entry}
-    // (plain JS objects avoid QObject property access issues from inside Loader)
-    property var recentApps: {
-        var result = [];
-        var names = recentAppNames;
-        for (var i = 0; i < names.length; i++) {
-            for (var j = 0; j < allApps.length; j++) {
-                if (allApps[j].name === names[i]) {
-                    var e = allApps[j];
-                    result.push({ name: e.name, icon: e.icon, entry: e });
-                    break;
+    Process {
+        id: browseWallProc
+        command: ["/home/zero/.config/quickshell/scripts/browse-wallpaper.sh"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var newPath = text.trim();
+                if (newPath !== "") {
+                    applyWallpaper(newPath);
+                    refreshWallpapers();
                 }
             }
         }
-        return result;
     }
 
-    // ── Filtered app list ────────────────────────────────────────
-    property var allApps: {
-        var apps = [];
-        var seen = {};
-        var entries = DesktopEntries.applications.values;
-        for (var i = 0; i < entries.length; i++) {
-            var entry = entries[i];
-            if (entry && !entry.noDisplay && entry.name !== "" && !seen[entry.name]) {
-                seen[entry.name] = true;
-                apps.push(entry);
+    function refreshWallpapers() {
+        readCurrentWallProc.running = true;
+        listWallsProc.running = true;
+    }
+
+    function applyWallpaper(path) {
+        if (!path || path === "") return;
+        if (launcher.backgroundRef && launcher.backgroundRef.changeWallpaper) {
+            launcher.backgroundRef.changeWallpaper(path);
+        } else {
+            wallSetIpcProc.command = ["quickshell", "ipc", "call", "wallpaper", "set", path];
+            wallSetIpcProc.running = true;
+        }
+        launcher.currentWallpaper = path;
+        launcher.panelVisible = false;
+    }
+
+    Process { id: wallSetIpcProc }
+    Process { id: actionExecProc }
+
+    // ── Lista de Aplicaciones Desktop ────────────────────────────
+    property var allApps: []
+
+    Process {
+        id: appsReadProc
+        command: ["/home/zero/.config/quickshell/scripts/list-apps.py"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                try {
+                    launcher.allApps = JSON.parse(text);
+                } catch (e) {
+                    launcher.allApps = [];
+                }
             }
         }
-        apps.sort(function(a, b) {
-            return a.name.localeCompare(b.name);
-        });
-        return apps;
+    }
+
+    function launchApp(app) {
+        if (!app || !app.exec) return;
+        var cmd = app.exec.replace(/%[a-zA-Z]/g, "").trim();
+        actionExecProc.command = ["/bin/sh", "-c", cmd + " >/dev/null 2>&1 &"];
+        actionExecProc.running = true;
+        launcher.panelVisible = false;
     }
 
     property var filteredApps: {
+        if (currentMode !== "apps") return [];
         if (searchText === "") return allApps;
         var query = searchText.toLowerCase();
-        return allApps.filter(function(entry) {
-            if (entry.name.toLowerCase().indexOf(query) >= 0) return true;
-            if (entry.genericName && entry.genericName.toLowerCase().indexOf(query) >= 0) return true;
-            if (entry.comment && entry.comment.toLowerCase().indexOf(query) >= 0) return true;
-            if (entry.keywords) {
-                for (var k = 0; k < entry.keywords.length; k++) {
-                    if (entry.keywords[k].toLowerCase().indexOf(query) >= 0) return true;
-                }
-            }
+        return allApps.filter(function(app) {
+            if (app.name.toLowerCase().indexOf(query) >= 0) return true;
+            if (app.comment && app.comment.toLowerCase().indexOf(query) >= 0) return true;
             return false;
         });
     }
 
-    // Launch app and record it
-    function launchApp(entry) {
-        recordRecentApp(entry.name);
-        entry.execute();
-        panelVisible = false;
+    // ── Lista de Comandos / Acciones ─────────────────────────────
+    readonly property var allActions: [
+        { id: "wallpaper", name: "Wallpaper Carousel", desc: "Explorar y cambiar fondo de pantalla con animación", icon: "󰸉" },
+        { id: "theme", name: "Cambiar Tema", desc: "Alternar paleta de color (Matugen / Cobalt / Amethyst / Cyberpunk)", icon: "󰏤" },
+        { id: "light", name: "Modo Claro", desc: "Cambiar esquema Matugen a modo claro", icon: "󰚝" },
+        { id: "dark", name: "Modo Oscuro", desc: "Cambiar esquema Matugen a modo oscuro", icon: "󰖔" },
+        { id: "lock", name: "Bloquear Pantalla", desc: "Bloquear la sesión con Hyprlock", icon: "󰌾" },
+        { id: "sleep", name: "Suspender", desc: "Suspender el sistema a RAM", icon: "󰒲" },
+        { id: "reboot", name: "Reiniciar Sistema", desc: "Reiniciar el equipo", icon: "󰜉" },
+        { id: "shutdown", name: "Apagar Equipo", desc: "Apagar el sistema", icon: "󰐥" }
+    ]
+
+    property var filteredActions: {
+        if (currentMode !== "actions") return [];
+        var query = searchText.slice(1).trim().toLowerCase();
+        if (query === "") return allActions;
+        return allActions.filter(function(a) {
+            return a.name.toLowerCase().indexOf(query) >= 0 ||
+                   a.desc.toLowerCase().indexOf(query) >= 0 ||
+                   a.id.toLowerCase().indexOf(query) >= 0;
+        });
     }
 
-    // ── Keyboard navigation ───────────────────────────────────────
-    function handleNavKey(dir) {
-        var recentVisible = recentApps.length > 0 && searchText === "";
-        var recentCount = recentApps.length;
-        var gridCount = filteredApps.length;
-        var cols = gridColumns;
-
-        if (recentVisible && kbSection === 0) {
-            // Recent row (horizontal)
-            if (dir === "left") {
-                if (kbIndex > 0) kbIndex--;
-            } else if (dir === "right") {
-                if (kbIndex < recentCount - 1) kbIndex++;
-            } else if (dir === "down") {
-                if (gridCount > 0) { kbSection = 1; kbIndex = 0; }
-            }
-            // up in recent row: do nothing
+    // ── Modo Activo ──────────────────────────────────────────────
+    readonly property string currentMode: {
+        if (searchText.startsWith(">wallpaper") || searchText.startsWith(">fondo")) {
+            return "wallpaper";
+        } else if (searchText.startsWith(">")) {
+            return "actions";
         } else {
-            // App grid (2D)
-            if (dir === "left") {
-                if (kbIndex > 0) kbIndex--;
-            } else if (dir === "right") {
-                if (kbIndex < gridCount - 1) kbIndex++;
-            } else if (dir === "up") {
-                var upIdx = kbIndex - cols;
-                if (upIdx >= 0) {
-                    kbIndex = upIdx;
-                } else if (recentVisible) {
-                    kbSection = 0; kbIndex = 0;
-                }
-            } else if (dir === "down") {
-                var downIdx = kbIndex + cols;
-                if (downIdx < gridCount) kbIndex = downIdx;
-            }
+            return "apps";
         }
     }
 
-    function getKeyboardSelectedApp() {
-        if (kbSection === 0 && kbIndex < recentApps.length)
-            return recentApps[kbIndex].entry;
-        if (kbSection === 1 && kbIndex < filteredApps.length)
-            return filteredApps[kbIndex];
-        return null;
+    // ── Filtrado de Wallpapers en Modo Carrusel ──────────────────
+    property var filteredWallpapers: {
+        if (currentMode !== "wallpaper") return [];
+        var prefix = searchText.startsWith(">wallpaper") ? ">wallpaper" : ">fondo";
+        var query = searchText.slice(prefix.length).trim().toLowerCase();
+        if (query === "") return wallpapers;
+        return wallpapers.filter(function(w) {
+            return w.title.toLowerCase().indexOf(query) >= 0;
+        });
+    }
+
+    function executeAction(act) {
+        if (!act) return;
+        if (act.id === "wallpaper") {
+            searchText = ">wallpaper ";
+            selectedIndex = 0;
+            return;
+        }
+
+        launcher.panelVisible = false;
+
+        if (act.id === "theme") {
+            var themes = ["matugen", "md3-cobalt-night", "md3-amethyst", "md3-arctic-mist", "cyberpunk"];
+            var currentIdx = themes.indexOf(Root.Theme.currentTheme);
+            var nextTheme = themes[(currentIdx + 1) % themes.length];
+            Root.Theme.currentTheme = nextTheme;
+            actionExecProc.command = ["/bin/sh", "-c", "printf '%s\\n' '" + nextTheme + "' > ~/.config/quickshell/current-theme"];
+            actionExecProc.running = true;
+        } else if (act.id === "light") {
+            actionExecProc.command = ["/bin/sh", "-c", "matugen image \"$(cat ~/.config/themes/current/wallpaper)\" --mode light --quiet && hyprctl reload"];
+            actionExecProc.running = true;
+        } else if (act.id === "dark") {
+            actionExecProc.command = ["/bin/sh", "-c", "matugen image \"$(cat ~/.config/themes/current/wallpaper)\" --mode dark --quiet && hyprctl reload"];
+            actionExecProc.running = true;
+        } else if (act.id === "lock") {
+            actionExecProc.command = ["hyprlock"];
+            actionExecProc.running = true;
+        } else if (act.id === "sleep") {
+            actionExecProc.command = ["systemctl", "suspend"];
+            actionExecProc.running = true;
+        } else if (act.id === "reboot") {
+            actionExecProc.command = ["reboot"];
+            actionExecProc.running = true;
+        } else if (act.id === "shutdown") {
+            actionExecProc.command = ["poweroff"];
+            actionExecProc.running = true;
+        }
+    }
+
+    function openWallpapers() {
+        panelVisible = true;
+        searchText = ">wallpaper ";
+        var curIdx = 0;
+        for (var i = 0; i < wallpapers.length; i++) {
+            if (wallpapers[i].path === currentWallpaper) {
+                curIdx = i;
+                break;
+            }
+        }
+        selectedIndex = curIdx;
+        refreshWallpapers();
     }
 
     onPanelVisibleChanged: {
         if (panelVisible) {
             _showing = true;
-            searchText = "";
-            gridFocused = false;
-            // Default selection: first recent app (or first grid app if no recent)
-            kbSection = recentApps.length > 0 ? 0 : 1;
-            kbIndex = 0;
+            selectedIndex = 0;
+            if (allApps.length === 0) appsReadProc.running = true;
+            refreshWallpapers();
         } else {
-            _panelOpen = false;
+            searchText = "";
         }
     }
 
-    // ── IPC handlers ─────────────────────────────────────────────
-    IpcHandler {
-        target: "launcher"
-
-        function toggle(): void { launcher.panelVisible = !launcher.panelVisible }
-        function show(): void { launcher.panelVisible = true }
-        function hide(): void { launcher.panelVisible = false }
+    Component.onCompleted: {
+        iconResolveProc.running = true;
+        appsReadProc.running = true;
+        refreshWallpapers();
     }
 
-    // ── Overlay window ───────────────────────────────────────────
+    // ── IPC Handlers ─────────────────────────────────────────────
+    IpcHandler {
+        target: "launcher"
+        function toggle(): void {
+            launcher.panelVisible = !launcher.panelVisible;
+            if (launcher.panelVisible) launcher.searchText = "";
+        }
+        function wallpaper(): void {
+            launcher.openWallpapers();
+        }
+        function search(query: string): void {
+            launcher.panelVisible = true;
+            launcher.searchText = query;
+        }
+        function show(): void {
+            launcher.panelVisible = true;
+            launcher.searchText = "";
+        }
+        function hide(): void {
+            launcher.panelVisible = false;
+        }
+    }
+
+    // Compatibilidad adicional con atajo SUPER + W
+    IpcHandler {
+        target: "wallpaperpicker"
+        function toggle(): void { launcher.openWallpapers(); }
+        function show(): void { launcher.openWallpapers(); }
+        function hide(): void { launcher.panelVisible = false; }
+    }
+
+    // ── Ventana Flotante Caelestia ───────────────────────────────
     Loader {
-        active: launcher._showing
+        active: launcher.panelVisible
 
         sourceComponent: PanelWindow {
             id: panelWindow
@@ -242,352 +330,381 @@ Scope {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
-            Component.onCompleted: openDelayTimer.start()
-
-            Timer {
-                id: openDelayTimer
-                interval: 16
-                repeat: false
-                onTriggered: if (launcher.panelVisible) launcher._panelOpen = true
-            }
-
-            Shortcut {
-                sequence: "Escape"
-                onActivated: launcher.panelVisible = false
-            }
-
-            // Click-outside to close
-            MouseArea {
+            // Fondo semitransparente oscuro con clic exterior para cerrar
+            Rectangle {
                 anchors.fill: parent
-                onClicked: launcher.panelVisible = false
+                color: Qt.rgba(0, 0, 0, 0.4)
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: launcher.panelVisible = false
+                }
             }
 
-            // ── Clip region (below shelf/waybar) ─────────────────
-            Item {
-                id: panelClip
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
+            // ── Contenedor Flotante Inferior Central ──────────────────
+            Rectangle {
+                id: floatingCard
+                z: 10
+
+                anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
-                anchors.topMargin: Root.Theme.shelfHeight
+                anchors.bottomMargin: 28
+
+                width: {
+                    if (launcher.currentMode === "wallpaper") return 880;
+                    return 580;
+                }
+
+                height: {
+                    if (launcher.currentMode === "wallpaper") return 270;
+                    if (launcher.currentMode === "actions") {
+                        var actCount = launcher.filteredActions.length;
+                        return Math.min(460, Math.max(140, actCount * 50 + 76));
+                    }
+                    var appCount = launcher.filteredApps.length;
+                    return Math.min(480, Math.max(140, appCount * 52 + 76));
+                }
+
+                radius: 22
+                color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.88)
+                border.width: 1
+                border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.35)
                 clip: true
 
-                // ── Launcher panel — top-left, ChromeOS style ─
+                Behavior on width {
+                    NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                }
+                Behavior on height {
+                    NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                }
+
+                // Resplandor exterior sutil
                 Rectangle {
-                    id: panel
-
-                    property real cellW: 130
-                    property real panelW: launcher.gridColumns * cellW + 56
-                    property real panelH: Math.min(panelClip.height * 0.78, 780)
-
-                    width: panelW
-                    height: panelH
-
-                    // Top-left positioning
-                    anchors.left: parent.left
-                    anchors.leftMargin: 16
-
-                    states: [
-                        State {
-                            name: "visible"
-                            when: launcher._panelOpen
-                            PropertyChanges {
-                                target: panel
-                                y: 10
-                                opacity: 1
-                            }
-                        },
-                        State {
-                            name: "hidden"
-                            when: !launcher._panelOpen
-                            PropertyChanges {
-                                target: panel
-                                y: -panel.height - 20
-                                opacity: 0
-                            }
-                        }
-                    ]
-
-                    transitions: [
-                        Transition {
-                            from: "hidden"
-                            to: "visible"
-                            ParallelAnimation {
-                                NumberAnimation {
-                                    property: "y"
-                                    duration: 200
-                                    easing.type: Easing.OutCubic
-                                }
-                                NumberAnimation {
-                                    property: "opacity"
-                                    duration: 200
-                                    easing.type: Easing.OutCubic
-                                }
-                            }
-                        },
-                        Transition {
-                            from: "visible"
-                            to: "hidden"
-                            SequentialAnimation {
-                                ParallelAnimation {
-                                    NumberAnimation {
-                                        property: "y"
-                                        duration: 200
-                                        easing.type: Easing.InCubic
-                                    }
-                                    NumberAnimation {
-                                        property: "opacity"
-                                        duration: 200
-                                        easing.type: Easing.InCubic
-                                    }
-                                }
-                                ScriptAction {
-                                    script: launcher._showing = false
-                                }
-                            }
-                        }
-                    ]
-
-                    radius: 28
-                    color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.85)
+                    anchors.fill: parent
+                    anchors.margins: -3
+                    radius: 25
+                    color: "transparent"
                     border.width: 1
-                    border.color: Qt.rgba(Root.Theme.panelBorder.r,
-                                           Root.Theme.panelBorder.g,
-                                           Root.Theme.panelBorder.b, 0.3)
+                    border.color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.2)
+                }
 
-                    // Block click-through
-                    MouseArea {
+                // ── Área de Contenido Superior ─────────────────────────
+                Item {
+                    id: contentArea
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: searchContainer.top
+                    anchors.margins: 12
+                    anchors.bottomMargin: 6
+                    clip: true
+
+                    // --- VISTA 1: Carrusel de Wallpapers (Horizontal) ---
+                    Item {
+                        id: wallpaperView
+                        visible: launcher.currentMode === "wallpaper"
                         anchors.fill: parent
+
+                        ListView {
+                            id: wallCarousel
+                            anchors.fill: parent
+                            orientation: ListView.Horizontal
+                            spacing: 14
+                            clip: true
+
+                            // Elemento 0 es el botón "+ Add", luego los wallpapers
+                            model: launcher.filteredWallpapers.length + 1
+
+                            currentIndex: launcher.selectedIndex
+                            preferredHighlightBegin: 0.1
+                            preferredHighlightEnd: 0.9
+                            highlightRangeMode: ListView.ApplyRange
+
+                            delegate: Item {
+                                width: 190
+                                height: 180
+
+                                readonly property bool isAdd: index === launcher.filteredWallpapers.length
+                                readonly property var wallData: !isAdd ? launcher.filteredWallpapers[index] : null
+
+                                WallpaperCard {
+                                    anchors.fill: parent
+                                    isAddCard: isAdd
+                                    wallPath: wallData ? wallData.path : ""
+                                    wallTitle: wallData ? wallData.title : ""
+                                    wallThumb: wallData ? wallData.thumb : ""
+                                    isCurrentWall: wallData ? (wallData.path === launcher.currentWallpaper) : false
+                                    isSelected: launcher.selectedIndex === index
+
+                                    onActivated: {
+                                        if (isAdd) {
+                                            browseWallProc.running = true;
+                                        } else if (wallData) {
+                                            launcher.applyWallpaper(wallData.path);
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Desplazamiento horizontal con rueda del mouse
+                            MouseArea {
+                                anchors.fill: parent
+                                propagateComposedEvents: true
+                                onWheel: function(wheel) {
+                                    if (wheel.angleDelta.y < 0 || wheel.angleDelta.x < 0) {
+                                        if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
+                                            launcher.selectedIndex++;
+                                        }
+                                    } else {
+                                        if (launcher.selectedIndex > 0) {
+                                            launcher.selectedIndex--;
+                                        }
+                                    }
+                                    wheel.accepted = true;
+                                }
+                            }
+                        }
+
+                        // Estado vacío si la búsqueda de fondos no coincide
+                        Text {
+                            visible: launcher.filteredWallpapers.length === 0
+                            anchors.centerIn: parent
+                            text: "No wallpapers match your query"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 13
+                            color: Root.Theme.textSecondary
+                        }
                     }
 
-                    // ── Content layout ───────────────────────────
-                    ColumnLayout {
+                    // --- VISTA 2: Lista de Acciones / Comandos (Vertical) ---
+                    Item {
+                        id: actionsView
+                        visible: launcher.currentMode === "actions"
                         anchors.fill: parent
-                        anchors.topMargin: 20
-                        anchors.bottomMargin: 20
-                        anchors.leftMargin: 24
-                        anchors.rightMargin: 24
-                        spacing: 16
 
-                        // ── Search bar (ChromeOS pill) ───────────
-                        Rectangle {
-                            id: searchBar
+                        ListView {
+                            id: actionsList
+                            anchors.fill: parent
+                            spacing: 4
+                            clip: true
+                            model: launcher.filteredActions
+                            currentIndex: launcher.selectedIndex
+
+                            delegate: ActionItem {
+                                width: actionsList.width
+                                isSelected: launcher.selectedIndex === index
+                                onActivated: launcher.executeAction(modelData)
+                            }
+                        }
+
+                        Text {
+                            visible: launcher.filteredActions.length === 0
+                            anchors.centerIn: parent
+                            text: "No commands found"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 13
+                            color: Root.Theme.textSecondary
+                        }
+                    }
+
+                    // --- VISTA 3: Lista de Aplicaciones (Vertical) ---
+                    Item {
+                        id: appsView
+                        visible: launcher.currentMode === "apps"
+                        anchors.fill: parent
+
+                        ListView {
+                            id: appsList
+                            anchors.fill: parent
+                            spacing: 4
+                            clip: true
+                            model: launcher.filteredApps
+                            currentIndex: launcher.selectedIndex
+
+                            delegate: AppItem {
+                                width: appsList.width
+                                iconPath: launcher.resolveIcon(modelData.icon)
+                                isSelected: launcher.selectedIndex === index
+                                onActivated: launcher.launchApp(modelData)
+                            }
+                        }
+
+                        Text {
+                            visible: launcher.filteredApps.length === 0
+                            anchors.centerIn: parent
+                            text: "No applications found"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 13
+                            color: Root.Theme.textSecondary
+                        }
+                    }
+                }
+
+                // ── Barra de Búsqueda Inferior Estilo Caelestia ────────
+                Rectangle {
+                    id: searchContainer
+
+                    anchors.bottom: parent.bottom
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.margins: 12
+                    height: 48
+
+                    radius: 14
+                    color: Root.Theme.surfaceContainer
+                    border.width: searchInput.activeFocus ? 1.5 : 1
+                    border.color: searchInput.activeFocus
+                        ? Root.Theme.primary
+                        : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.3)
+
+                    RowLayout {
+                        anchors.fill: parent
+                        anchors.leftMargin: 14
+                        anchors.rightMargin: 14
+                        spacing: 10
+
+                        // Icono indicador de modo
+                        Text {
+                            text: {
+                                if (launcher.currentMode === "wallpaper") return "󰸉";
+                                if (launcher.currentMode === "actions") return "󰘳";
+                                return "󰍉";
+                            }
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 18
+                            color: launcher.currentMode === "apps" ? Root.Theme.textSecondary : Root.Theme.primary
+                        }
+
+                        // Campo de texto principal
+                        TextInput {
+                            id: searchInput
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 44
-                    radius: 22
-                            color: Root.Theme.surfaceContainer
-                            opacity: launcher.gridFocused ? 0.5 : 1.0
-                            Behavior on opacity { NumberAnimation { duration: 150 } }
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 14
+                            color: Root.Theme.textPrimary
+                            selectByMouse: true
+                            selectionColor: Root.Theme.primary
+                            selectedTextColor: Root.Theme.tileActiveText
+                            text: launcher.searchText
 
-                            RowLayout {
-                                anchors.fill: parent
-                                anchors.leftMargin: 20
-                                anchors.rightMargin: 20
-                                spacing: 14
+                            onTextChanged: {
+                                launcher.searchText = text;
+                                launcher.selectedIndex = 0;
+                            }
 
-                                Text {
-                                    text: "\uf002"
-                                    font.pixelSize: 15
-                                    font.family: Root.Theme.fontFamily
-                                    color: Root.Theme.textSecondary
+                            Component.onCompleted: forceActiveFocus()
+
+                            // Placeholder
+                            Text {
+                                anchors.verticalCenter: parent.verticalCenter
+                                text: {
+                                    if (launcher.currentMode === "wallpaper") return "Filter wallpapers or press Enter...";
+                                    if (launcher.currentMode === "actions") return "Type command name or press Enter...";
+                                    return "Type \">\" for commands...";
                                 }
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: 14
+                                color: Root.Theme.textSecondary
+                                visible: searchInput.text === ""
+                            }
 
-                                TextInput {
-                                    id: searchInput
-                                    Layout.fillWidth: true
-                                    font.pixelSize: 14
-                                    font.family: Root.Theme.fontFamily
-                                    color: Root.Theme.textPrimary
-                                    clip: true
-                                    selectByMouse: true
-                                    selectionColor: Root.Theme.primary
+                            // ── Atajos de Teclado y Navegación ──────────
+                            Keys.onEscapePressed: launcher.panelVisible = false
 
-                                    onTextChanged: {
-                                        launcher.searchText = text;
-                                        launcher.gridFocused = false;
-                                        // Reset kb selection on search change
-                                        if (text !== "") {
-                                            launcher.kbSection = 1;
-                                            launcher.kbIndex = 0;
-                                        } else {
-                                            launcher.kbSection = launcher.recentApps.length > 0 ? 0 : 1;
-                                            launcher.kbIndex = 0;
-                                        }
+                            Keys.onLeftPressed: {
+                                if (launcher.currentMode === "wallpaper") {
+                                    if (launcher.selectedIndex > 0) launcher.selectedIndex--;
+                                }
+                            }
+
+                            Keys.onRightPressed: {
+                                if (launcher.currentMode === "wallpaper") {
+                                    if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
+                                        launcher.selectedIndex++;
                                     }
+                                }
+                            }
 
-                                    // Auto-focus when component loads
-                                    Component.onCompleted: focusTimer.start()
+                            Keys.onUpPressed: {
+                                if (launcher.currentMode === "actions") {
+                                    if (launcher.selectedIndex > 0) launcher.selectedIndex--;
+                                } else if (launcher.currentMode === "apps") {
+                                    if (launcher.selectedIndex > 0) launcher.selectedIndex--;
+                                }
+                            }
 
-                                    Timer {
-                                        id: focusTimer
-                                        interval: 50
-                                        repeat: false
-                                        onTriggered: searchInput.forceActiveFocus()
+                            Keys.onDownPressed: {
+                                if (launcher.currentMode === "actions") {
+                                    if (launcher.selectedIndex < launcher.filteredActions.length - 1) {
+                                        launcher.selectedIndex++;
                                     }
-
-                                    Text {
-                                        anchors.fill: parent
-                                        text: "Search your apps..."
-                                        font: searchInput.font
-                                        color: Root.Theme.textSecondary
-                                        visible: !searchInput.text
-                                        verticalAlignment: Text.AlignVCenter
+                                } else if (launcher.currentMode === "apps") {
+                                    if (launcher.selectedIndex < launcher.filteredApps.length - 1) {
+                                        launcher.selectedIndex++;
                                     }
+                                }
+                            }
 
-                                    // ── Unified key handler ──────────────
-                                    Keys.onPressed: (event) => {
-                                        if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                                            var app = launcher.getKeyboardSelectedApp();
-                                            if (app) launcher.launchApp(app);
-                                            event.accepted = true;
-                                        } else if (event.key === Qt.Key_Tab || event.key === Qt.Key_Backtab) {
-                                            launcher.gridFocused = !launcher.gridFocused;
-                                            event.accepted = true;
-                                        } else if (launcher.gridFocused) {
-                                            if (event.key === Qt.Key_Up) {
-                                                launcher.handleNavKey("up");
-                                                event.accepted = true;
-                                            } else if (event.key === Qt.Key_Down) {
-                                                launcher.handleNavKey("down");
-                                                event.accepted = true;
-                                            } else if (event.key === Qt.Key_Left) {
-                                                launcher.handleNavKey("left");
-                                                event.accepted = true;
-                                            } else if (event.key === Qt.Key_Right) {
-                                                launcher.handleNavKey("right");
-                                                event.accepted = true;
-                                            } else if (event.text !== "" && event.key !== Qt.Key_Escape) {
-                                                // Printable character: switch back to search input
-                                                launcher.gridFocused = false;
-                                            }
-                                        }
+                            Keys.onTabPressed: {
+                                if (launcher.currentMode === "actions") {
+                                    if (launcher.selectedIndex < launcher.filteredActions.length - 1) {
+                                        launcher.selectedIndex++;
+                                    } else {
+                                        launcher.selectedIndex = 0;
+                                    }
+                                } else if (launcher.currentMode === "apps") {
+                                    if (launcher.selectedIndex < launcher.filteredApps.length - 1) {
+                                        launcher.selectedIndex++;
+                                    } else {
+                                        launcher.selectedIndex = 0;
+                                    }
+                                }
+                            }
+
+                            Keys.onReturnPressed: {
+                                if (launcher.currentMode === "wallpaper") {
+                                    if (launcher.selectedIndex === launcher.filteredWallpapers.length) {
+                                        browseWallProc.running = true;
+                                    } else if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
+                                        var selectedWall = launcher.filteredWallpapers[launcher.selectedIndex];
+                                        if (selectedWall) launcher.applyWallpaper(selectedWall.path);
+                                    }
+                                } else if (launcher.currentMode === "actions") {
+                                    if (launcher.selectedIndex < launcher.filteredActions.length) {
+                                        launcher.executeAction(launcher.filteredActions[launcher.selectedIndex]);
+                                    }
+                                } else if (launcher.currentMode === "apps") {
+                                    if (launcher.selectedIndex < launcher.filteredApps.length) {
+                                        launcher.launchApp(launcher.filteredApps[launcher.selectedIndex]);
                                     }
                                 }
                             }
                         }
 
-                        // ── Scrollable content (recent apps + app grid) ─
-                        Item {
-                            id: scrollContainer
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-
-                            // Scroll to keep keyboard-selected item visible
-                            function scrollToSelected() {
-                                var recentH = recentSection.visible
-                                    ? recentSection.height + scrollContent.spacing
-                                    : 0;
-                                var targetY, itemH;
-                                if (launcher.kbSection === 0) {
-                                    targetY = 0;
-                                    itemH = 100;
-                                } else {
-                                    var row = Math.floor(launcher.kbIndex / launcher.gridColumns);
-                                    targetY = recentH + row * 110;
-                                    itemH = 110;
-                                }
-                                var viewH = appFlickable.height;
-                                if (targetY < appFlickable.contentY)
-                                    appFlickable.contentY = targetY;
-                                else if (targetY + itemH > appFlickable.contentY + viewH)
-                                    appFlickable.contentY = Math.max(0, targetY + itemH - viewH);
-                            }
-
-                            Connections {
-                                target: launcher
-                                function onKbIndexChanged() { scrollContainer.scrollToSelected() }
-                                function onKbSectionChanged() { scrollContainer.scrollToSelected() }
-                            }
-
-                            Flickable {
-                                id: appFlickable
-                                anchors.fill: parent
-                                contentWidth: width
-                                contentHeight: scrollContent.height
-                                clip: true
-                                boundsBehavior: Flickable.StopAtBounds
-                                flickDeceleration: 3000
-
-                                Column {
-                                    id: scrollContent
-                                    width: appFlickable.width
-                                    spacing: 10
-
-                                    // ── Recent apps section (only when not searching) ─
-                                    Column {
-                                        id: recentSection
-                                        width: parent.width
-                                        spacing: 10
-                                        visible: launcher.recentApps.length > 0 && launcher.searchText === ""
-
-                                        Text {
-                                            text: "Recent"
-                                            font.pixelSize: 14
-                                            font.family: Root.Theme.fontFamily
-                                            color: Root.Theme.textSecondary
-                                        }
-
-                                Row {
-                                    spacing: 4
-
-                                             Repeater {
-                                                model: launcher.recentApps
-
-                                                AppIcon {
-                                                    required property var modelData
-                                                    required property int index
-                                                    appName: modelData.name
-                                                    iconSource: launcher.resolveIcon(modelData.icon)
-                                                    isSelected: launcher.gridFocused && launcher.kbSection === 0 && launcher.kbIndex === index
-                                                    onClicked: launcher.launchApp(modelData.entry)
-                                                }
-                                            }
-                                        }
-
-                                        // Separator
-                                        Rectangle {
-                                            width: parent.width
-                                            height: 1
-                                            color: Qt.rgba(Root.Theme.textSecondary.r, Root.Theme.textSecondary.g, Root.Theme.textSecondary.b, 0.3)
-                                        }
-                                    }
-
-                                    // ── App grid ─────────────────────────
-                                    Flow {
-                                        id: appGrid
-                                        width: parent.width
-
-                                        property real cellWidth: width / launcher.gridColumns
-
-                                        Repeater {
-                                            model: launcher.filteredApps
-
-                                            Item {
-                                                required property var modelData
-                                                required property int index
-                                                width: appGrid.cellWidth
-                                                height: 130
-
-                                                AppIcon {
-                                                    anchors.centerIn: parent
-                                                    appName: modelData.name
-                                                    iconSource: launcher.resolveIcon(modelData.icon)
-                                                    isSelected: launcher.gridFocused && launcher.kbSection === 1 && launcher.kbIndex === index
-                                                    onClicked: launcher.launchApp(modelData)
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
+                        // Botón de limpiar o badge de modo
+                        Rectangle {
+                            visible: searchInput.text !== ""
+                            width: 22
+                            height: 22
+                            radius: 11
+                            color: Root.Theme.surfaceContainerHigh
 
                             Text {
                                 anchors.centerIn: parent
-                                text: "No apps found"
-                                font.pixelSize: Root.Theme.fontSizeNormal
+                                text: "󰅖"
                                 font.family: Root.Theme.fontFamily
+                                font.pixelSize: 12
                                 color: Root.Theme.textSecondary
-                                visible: launcher.filteredApps.length === 0
+                            }
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: {
+                                    searchInput.text = "";
+                                    launcher.searchText = "";
+                                    launcher.selectedIndex = 0;
+                                }
                             }
                         }
                     }
