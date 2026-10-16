@@ -4,7 +4,7 @@ This guide details the architecture, screen positioning, and animation dynamics 
 
 ---
 
-## 📐 Design Parameters & Dynamics
+## Design Parameters and Dynamics
 
 All floating indicators follow a standardized behavioral contract:
 
@@ -18,7 +18,7 @@ All floating indicators follow a standardized behavioral contract:
 
 ---
 
-## 📂 Source Files Map
+## Source Files Map
 
 | Component | Source File | Responsibility |
 | :--- | :--- | :--- |
@@ -31,7 +31,7 @@ All floating indicators follow a standardized behavioral contract:
 
 ---
 
-## 🛠️ Making Future Adjustments
+## Making Future Adjustments
 
 ### Adjusting Vertical Distance
 Edit `topMargin` in the container `Item` or `toastCol`:

@@ -4,7 +4,7 @@ All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr
 
 ---
 
-## 🚀 Applications & System
+## Applications and System
 
 | Shortcut | Action | Target / Command |
 | :--- | :--- | :--- |
@@ -19,7 +19,7 @@ All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr
 
 ---
 
-## 📸 Screen Capture & Recording
+## Screen Capture and Recording
 
 | Shortcut | Action | Tool / Helper Script |
 | :--- | :--- | :--- |
@@ -30,7 +30,7 @@ All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr
 
 ---
 
-## 🎛️ Quickshell & Desktop Overlays
+## Quickshell and Desktop Overlays
 
 | Shortcut | Action | IPC Command |
 | :--- | :--- | :--- |
@@ -41,7 +41,7 @@ All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr
 
 ---
 
-## 🎨 Screen Filters & Shaders
+## Screen Filters and Shaders
 
 | Shortcut | Applied Shader | Helper Script |
 | :--- | :--- | :--- |

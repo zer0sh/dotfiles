@@ -4,7 +4,7 @@ This repository follows [Semantic Versioning 2.0.0](https://semver.org/) (`vMAJO
 
 ---
 
-## 🏷️ Versioning Scheme
+## Versioning Scheme
 
 * **MAJOR (`vX.0.0`):** Incompatible architectural overhauls (e.g. switching compositor, complete directory reshuffling).
 * **MINOR (`v1.X.0`):** New features, widgets, or apps added backward-compatibly (e.g. adding an OCR tool, new Quickshell modules).
@@ -12,7 +12,7 @@ This repository follows [Semantic Versioning 2.0.0](https://semver.org/) (`vMAJO
 
 ---
 
-## 🚀 How to Trigger a Release
+## How to Trigger a Release
 
 You have two convenient ways to cut a new release:
 
@@ -49,7 +49,7 @@ The script will:
 
 ---
 
-## ⚙️ Automated Pipeline (What Happens on Release)
+## Automated Pipeline (What Happens on Release)
 
 When a release tag is pushed (`v*.*.*`):
 

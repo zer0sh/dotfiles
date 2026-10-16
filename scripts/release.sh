@@ -7,7 +7,7 @@ cd "$DOTFILES_DIR"
 
 # 1. Check clean git working tree
 if [[ -n "$(git status --porcelain)" ]]; then
-    echo "⚠️  Working tree has uncommitted changes. Please commit or stash before releasing."
+    echo "Error: Working tree has uncommitted changes. Please commit or stash before releasing."
     git status -s
     exit 1
 fi
@@ -17,7 +17,7 @@ LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
 CURRENT_VERSION="${LATEST_TAG#v}"
 IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_VERSION"
 
-echo "📌 Current version: $LATEST_TAG"
+echo "Current version: $LATEST_TAG"
 
 # 3. Determine next version
 BUMP_ARG="${1:-}"
@@ -61,13 +61,13 @@ case "$BUMP" in
         NEW_TAG="v$BUMP"
         ;;
     *)
-        echo "❌ Invalid version format: $BUMP (expected: patch, minor, major, or vX.Y.Z)"
+        echo "Error: Invalid version format: $BUMP (expected: patch, minor, major, or vX.Y.Z)"
         exit 1
         ;;
 esac
 
 echo ""
-echo "🚀 Target release: $NEW_TAG"
+echo "Target release: $NEW_TAG"
 read -rp "Proceed with tagging and pushing to GitHub? [y/N]: " CONFIRM
 if [[ "${CONFIRM,,}" != "y" && "${CONFIRM,,}" != "yes" ]]; then
     echo "Aborted."
@@ -76,15 +76,15 @@ fi
 
 # 4. Create annotated tag
 git tag -a "$NEW_TAG" -m "Release $NEW_TAG"
-echo "✅ Created tag $NEW_TAG"
+echo "Created tag $NEW_TAG"
 
 # 5. Push to GitHub
-echo "📤 Pushing to GitHub..."
+echo "Pushing to GitHub..."
 git push origin main
 git push origin "$NEW_TAG"
 
 echo ""
-echo "🎉 Release $NEW_TAG triggered successfully!"
-echo "   GitHub Actions will package assets, create the release, and deploy the wiki:"
-echo "   https://github.com/zer0sh/dotfiles/releases/tag/$NEW_TAG"
-echo "   Wiki: https://zer0sh.github.io/dotfiles/"
+echo "Release $NEW_TAG triggered successfully."
+echo "GitHub Actions will package assets, create the release, and deploy the wiki:"
+echo "https://github.com/zer0sh/dotfiles/releases/tag/$NEW_TAG"
+echo "Wiki: https://zer0sh.github.io/dotfiles/"

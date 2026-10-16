@@ -4,7 +4,7 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
 
 ---
 
-## 📱 Modules Overview
+## Modules Overview
 
 * **Control Center (`modules/controlcenter/`):**
   * Toggles for Wi-Fi, Bluetooth, DND, Airplane Mode, Caffeine, Power Profiles, Night Light, and Screen Shaders.
@@ -23,7 +23,7 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
 
 ---
 
-## 🔄 Validation & Live Reload
+## Validation and Live Reload
 
 To validate QML syntax or restart Quickshell without crashing your Wayland session:
 

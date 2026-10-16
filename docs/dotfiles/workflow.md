@@ -4,14 +4,14 @@ This guide explains how configuration files are structured between your active s
 
 ---
 
-## 🏛️ Direct Source of Truth Philosophy
+## Direct Source of Truth Philosophy
 
 * **Hyprland:** `~/.config/hypr` is a **real physical directory** (not a symlink). You can edit configuration files directly in place without risk of symlink breakage or intermediate layer issues.
 * **Dotfiles Repository:** `~/dotfiles` serves as the Git repository and backup hub connected to [github.com/zer0sh/dotfiles](https://github.com/zer0sh/dotfiles).
 
 ---
 
-## 🔄 How to Backup Hyprland Changes
+## How to Backup Hyprland Changes
 
 Whenever you test and stabilize adjustments in your Hyprland configuration and want to commit them to your repository:
 
@@ -33,7 +33,7 @@ Whenever you test and stabilize adjustments in your Hyprland configuration and w
 
 ---
 
-## 📦 Documentation Deployment (MkDocs)
+## Documentation Deployment (MkDocs)
 
 To preview the documentation locally with live-reload:
 
