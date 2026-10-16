@@ -1,5 +1,6 @@
 /* ===== ChromeOS Shelf — Waybar Theme ===== */
 @import "colors.css";
+@import "battery-alert.css";
 
 * {
     font-family: "JetBrainsMono Nerd Font", sans-serif;
@@ -112,20 +113,8 @@ window#waybar {
     color: @text;
 }
 
-/* ----- Date pill (standalone) ----- */
-#custom-date {
-    padding: 0 16px 0;
-    margin: 4px;
-    border-radius: 18px;
-    background: alpha(@text, 0.08);
-    color: @text;
-}
-
-#custom-date:hover {
-    background: alpha(@text, 0.12);
-}
-
-/* ----- System status pill group: clock | audio | net | bt | battery/power ----- */
+/* ----- System status pill group: date | clock | audio | net | bt | battery/power ----- */
+#custom-date,
 #clock,
 #pulseaudio,
 #network,
@@ -140,6 +129,7 @@ window#waybar {
     transition: background 0.2s ease;
 }
 
+#custom-date:hover,
 #clock:hover,
 #pulseaudio:hover,
 #network:hover,
@@ -150,9 +140,13 @@ window#waybar {
 }
 
 /* First in group — left rounded */
-#clock {
+#custom-date {
     border-radius: 18px 0 0 18px;
     padding-left: 14px;
+    margin-left: 4px;
+}
+
+#clock {
     font-weight: 700;
 }
 

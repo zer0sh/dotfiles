@@ -77,7 +77,7 @@
   "battery": {
     "full-at": 95,
     "states": {
-      "warning": 35,
+      "warning": 30,
       "critical": 10
     },
     "format": "{icon} {capacity}%",
