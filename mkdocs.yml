@@ -70,6 +70,7 @@ nav:
       - Control Center: quickshell/index.md
       - Notifications & OSDs: quickshell/osd-notifications.md
   - Launchers & Tools:
+      - Waybar: apps/waybar.md
       - Wofi: apps/wofi.md
       - Fastfetch: apps/fastfetch.md
       - Matugen: apps/matugen.md

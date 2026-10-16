@@ -76,6 +76,7 @@ Explore the complete modular guide:
 
     Application execution, dynamic color palette generation, and telemetry displays.
 
+    * [Waybar Status Bar](apps/waybar.md)
     * [Wofi M3 Launcher](apps/wofi.md)
     * [Matugen Theming Engine](apps/matugen.md)
     * [Fastfetch System Telemetry](apps/fastfetch.md)

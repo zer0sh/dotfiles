@@ -9,7 +9,7 @@ This guide details the architecture, screen positioning, and animation dynamics 
 All floating indicators follow a standardized behavioral contract:
 
 1. **Screen Placement:** Top of the screen, horizontally centered (`anchors.top: true`, `anchors.horizontalCenter: parent.horizontalCenter`).
-2. **Top Margin:** `topMargin: 46 px` (reserves a comfortable visual gap beneath Waybar's 36 px height).
+2. **Top Margin:** `topMargin: 46 px` (reserves a comfortable visual gap beneath [Waybar's](../apps/waybar.md) 36 px height).
 3. **Theming:** Colors, translucency, and borders are rendered using [Matugen Dynamic Palette Tokens](../apps/matugen.md#core-color-roles) (`surface_container`, `outline`, `on_surface`).
 4. **Entrance Animation (Downward Slide):**
    * Translates from `_slideY: -28` to `0` over 260–280 ms using `Easing.OutCubic` acceleration.
@@ -63,6 +63,7 @@ NumberAnimation {
 
 ## Related Documentation
 
+* [Waybar Status Bar](../apps/waybar.md): Top status bar geometry and vertical alignment with floating toasts.
 * [Quickshell Overview](index.md): Main widget architecture, Control Center, and component index.
 * [Hyprland Keybindings](../hyprland/keybinds.md): Audio, brightness, and utility shortcut bindings.
 * [Hyprland Architecture](../hyprland/index.md): Autostart order and compositor lifecycle hooks.

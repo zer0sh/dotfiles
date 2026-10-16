@@ -14,7 +14,7 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
 * **Notifications & Toasts (`modules/notifications/`):**
   * Native DBus notification server (`org.freedesktop.Notifications`).
   * Top-center floating toast layer with smooth downward entrance animations.
-  * Persistent notification drawer accessible via Waybar or keyboard shortcuts.
+  * Persistent notification drawer accessible via [Waybar](../apps/waybar.md) or keyboard shortcuts.
   * Full design parameters and easing curves detailed in the [Notifications & OSDs Guide](osd-notifications.md).
 * **Clipboard Manager (`modules/clipboard/`):**
   * Visual history and search for text and images integrated with `cliphist`.
@@ -55,6 +55,7 @@ To validate QML syntax or restart Quickshell without crashing your Wayland sessi
 ## Related Documentation
 
 * [Notifications & OSD Dynamics](osd-notifications.md): Animation curves, screen positioning, and source maps for toasts and OSD popups.
+* [Waybar Status Bar](../apps/waybar.md): Top status bar shell integrating with Quickshell notification signals and launcher.
 * [Hyprland Architecture](../hyprland/index.md): Compositor startup hooks, autostart services, and display arrangements.
 * [Hyprland Keybindings](../hyprland/keybinds.md): Global hotkeys for invoking Quickshell panels, toggles, and tools.
 * [GLSL Screen Shaders](../hyprland/shaders.md): Shader pipeline controlled directly from the Control Center.

@@ -83,7 +83,7 @@ output_path = "~/.config/hypr/hyprtoolkit.conf"
 | Target Application | Destination File | Consumed Tokens | Reload Method |
 | :--- | :--- | :--- | :--- |
 | **[Quickshell](../quickshell/index.md)** | `themes/current/palette.json` | Surfaces, containers, primary accents, semantic states | Automatic filesystem watcher / panel restart |
-| **Waybar** | `themes/current/waybar.css` | Background, text, accent, warning, critical, charging | `pkill -SIGUSR2 waybar` |
+| **[Waybar](waybar.md)** | `themes/current/waybar.css` | Background, text, accent, warning, critical, charging | `pkill -SIGUSR2 waybar` |
 | **[Wofi](wofi.md)** | `themes/current/wofi.css` | Panel backdrop, input field, text, selection, outline | Next instance invocation |
 | **[Alacritty](../terminals/alacritty.md)** | `themes/current/alacritty.toml` | Normal, bright, primary, cursor, and selection colors | Automatic live reload |
 | **Kitty** | `themes/current/kitty.conf` | ANSI 16 palette, foreground, background, cursor | `kitty @ set-colors` or new instance |
@@ -135,6 +135,7 @@ matugen image "/path/to/wallpaper.jpg" --mode dark --contrast 0.2
 * [Hyprland Compositor](../hyprland/index.md): Window manager border theming and configuration modularity.
 * [Hyprlock Screen Locker](../hyprland/hyprlock.md): Lockscreen surfaces and authentication colors.
 * [Quickshell Control Center](../quickshell/index.md): Real-time wallpaper selector and QML theme integration.
+* [Waybar Status Bar](waybar.md): Top status bar stylesheet imports and live reload signals.
 * [Wofi Application Launcher](wofi.md): Material Design 3 launcher CSS imports.
 * [Alacritty Terminal](../terminals/alacritty.md): Live terminal palette reload configuration.
 * [Fastfetch Telemetry](fastfetch.md): Hardware display with terminal palette swatches.
