@@ -1,0 +1,136 @@
+name: Release & Deploy
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version_bump:
+        description: 'Semantic Version bump type'
+        required: true
+        type: choice
+        default: 'patch'
+        options:
+          - patch
+          - minor
+          - major
+      custom_version:
+        description: 'Or enter custom version (e.g. v1.0.0, overrides bump type)'
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  tag:
+    name: Determine and Create Tag (Manual Dispatch)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    outputs:
+      release_tag: ${{ steps.tag_step.outputs.release_tag }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Calculate Next SemVer
+        id: tag_step
+        run: |
+          if [ -n "${{ github.event.inputs.custom_version }}" ]; then
+            TAG="${{ github.event.inputs.custom_version }}"
+            [[ "$TAG" =~ ^v ]] || TAG="v$TAG"
+          else
+            LATEST=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+            echo "Latest tag: $LATEST"
+            VERSION="${LATEST#v}"
+            IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+            case "${{ github.event.inputs.version_bump }}" in
+              major)
+                MAJOR=$((MAJOR + 1))
+                MINOR=0
+                PATCH=0
+                ;;
+              minor)
+                MINOR=$((MINOR + 1))
+                PATCH=0
+                ;;
+              patch)
+                PATCH=$((PATCH + 1))
+                ;;
+            esac
+            TAG="v$MAJOR.$MINOR.$PATCH"
+          fi
+          echo "Determined release tag: $TAG"
+          echo "release_tag=$TAG" >> "$GITHUB_OUTPUT"
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+
+  release:
+    name: Create GitHub Release
+    needs: [tag]
+    if: |
+      always() &&
+      (github.event_name == 'push' || needs.tag.result == 'success')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Determine Tag
+        id: get_tag
+        run: |
+          if [ "${{ github.event_name }}" = "push" ]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+          else
+            TAG="${{ needs.tag.outputs.release_tag }}"
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.get_tag.outputs.tag }}
+          fetch-depth: 0
+
+      - name: Package Dotfiles Assets
+        run: |
+          VERSION="${{ steps.get_tag.outputs.tag }}"
+          mkdir -p dist
+          git archive --format=tar.gz --prefix=dotfiles-${VERSION}/ -o dist/dotfiles-${VERSION}.tar.gz HEAD
+          git archive --format=zip --prefix=dotfiles-${VERSION}/ -o dist/dotfiles-${VERSION}.zip HEAD
+          ls -lh dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.get_tag.outputs.tag }}
+          name: "Release ${{ steps.get_tag.outputs.tag }}"
+          generate_release_notes: true
+          files: |
+            dist/dotfiles-*.tar.gz
+            dist/dotfiles-*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy_docs:
+    name: Deploy Documentation
+    needs: [release]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: 3.x
+
+      - run: pip install mkdocs-material
+
+      - run: mkdocs gh-deploy --force

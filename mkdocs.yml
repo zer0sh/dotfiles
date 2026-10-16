@@ -64,3 +64,4 @@ nav:
       - Alacritty: terminals/alacritty.md
   - Dotfiles & Workflow:
       - Philosophy & Workflow: dotfiles/workflow.md
+      - Release & SemVer: dotfiles/releases.md
