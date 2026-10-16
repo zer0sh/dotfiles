@@ -65,6 +65,7 @@ nav:
       - Fastfetch: apps/fastfetch.md
   - Terminals:
       - Alacritty: terminals/alacritty.md
+      - Zsh: terminals/zsh.md
   - Dotfiles & Workflow:
       - Philosophy & Workflow: dotfiles/workflow.md
       - Release & SemVer: dotfiles/releases.md

@@ -1,0 +1,21 @@
+alias ls='lsd'
+alias cat='batcat'
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ~='cd ~'
+
+alias ll='lsd -la'
+alias lt='lsd --tree'
+
+alias v='vim'
+
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit -m'
+alias gp='git push'
+alias gl='git pull'
+alias gd='git diff'
+alias glog='git log --oneline --graph --decorate'
+
+alias cwd='pwd | wl-copy | cliphist store'

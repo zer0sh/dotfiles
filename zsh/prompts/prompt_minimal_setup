@@ -1,0 +1,76 @@
+# Minimal - Tema Zsh limpio en una sola línea (ruta resumida + git + RPROMPT)
+# Archivo: ~/.zsh/prompts/prompt_minimal_setup
+
+emulate -L zsh
+autoload -Uz vcs_info
+
+zstyle ":vcs_info:*" enable git
+zstyle ":vcs_info:git*" check-for-changes true
+zstyle ":vcs_info:git*" unstagedstr "%F{yellow}*%f"
+zstyle ":vcs_info:git*" stagedstr "%F{green}+%f"
+zstyle ":vcs_info:git*" formats "%F{red}%b%f%u%c"
+zstyle ":vcs_info:git*" actionformats "%F{red}%b%f %F{yellow}(%a)%f%u%c"
+
+# Acortar rutas intermedias (~/Documentos/Proyectos/App -> ~/D/P/App)
+_shrink_path() {
+    local p="${PWD/#$HOME/~}"
+    local -a parts=("${(@s:/:)p}")
+    local len=${#parts}
+    if (( len <= 2 )); then
+        print -r -- "$p"
+        return
+    fi
+    local result=""
+    for (( i=1; i < len; i++ )); do
+        local part="${parts[i]}"
+        if [[ "$part" == "~" || -z "$part" ]]; then
+            result+="$part/"
+        elif [[ "$part" == .* ]]; then
+            result+="${part[1,2]}/"
+        else
+            result+="${part[1]}/"
+        fi
+    done
+    result+="${parts[len]}"
+    print -r -- "$result"
+}
+
+prompt_minimal_setup() {
+    setopt prompt_subst
+
+    precmd() {
+        local exit_code=$?
+
+        # Estado del comando anterior
+        local symbol err_info
+        if (( exit_code == 0 )); then
+            symbol="%F{green}›%f"
+            err_info=""
+        else
+            symbol="%F{red}›%f"
+            err_info="%F{red}[${exit_code}]%f "
+        fi
+
+        # Actualizar Git
+        vcs_info
+        local vi=${vcs_info_msg_0_}
+        local git_info=""
+        if [[ -n $vi ]]; then
+            git_info=" [git:${vi}]"
+        fi
+
+        # Ruta acortada
+        local dir_display="$(_shrink_path)"
+
+        # Prompt de una sola línea
+        PROMPT="%F{magenta}${dir_display}%f${git_info} ${symbol} "
+
+        # RPROMPT: código de error si existe + hora en gris
+        local hora="%F{242}%D{%H:%M}%f"
+        RPROMPT="${err_info}${hora}"
+    }
+
+    precmd
+}
+
+prompt_minimal_setup "$@"

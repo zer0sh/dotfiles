@@ -1,0 +1,95 @@
+# ─── Tema y Prompt ──────────────────────────────────────────
+fpath=(~/.zsh/prompts $fpath)
+autoload -Uz promptinit
+promptinit
+prompt minimal
+
+# ─── Autocompletado extendido ──────────────────────────────
+# Añadir zsh-completions al fpath ANTES de compinit
+[[ -d ~/.zsh/plugins/zsh-completions/src ]] && fpath=(~/.zsh/plugins/zsh-completions/src $fpath)
+
+# Autocompletado optimizado (con comprobación de caché para arranque ultrarrápido)
+autoload -Uz compinit
+setopt extendedglob
+if [[ -n ${ZDOTDIR:-$HOME}/.zcompdump(#qN.mh+24) ]]; then
+    compinit
+else
+    compinit -C
+fi
+
+# Configuración de apariencia del menú de autocompletado
+zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' completer _expand _complete _correct _approximate
+zstyle ':completion:*' format 'Completing %d'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' menu select=2
+eval "$(dircolors -b)"
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
+zstyle ':completion:*' menu select=long
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' use-compctl false
+zstyle ':completion:*' verbose true
+
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+
+# ─── Historial Inteligente ─────────────────────────────────
+HISTSIZE=20000
+SAVEHIST=20000
+HISTFILE=~/.zsh_history
+
+setopt hist_ignore_all_dups     # No duplicar comandos en historial
+setopt hist_save_no_dups        # Evitar guardar comandos idénticos seguidos
+setopt hist_ignore_space        # Comandos que inician con espacio no se guardan (útil para secretos)
+setopt hist_reduce_blanks       # Limpiar espacios en blanco superfluos
+setopt share_history            # Compartir historial entre pestañas/sesiones
+setopt inc_append_history       # Escribir comandos en el archivo inmediatamente
+
+# ─── Modo y Atajos de teclado ──────────────────────────────
+bindkey -e
+
+# Aceptar sugerencia de autosuggestions con Ctrl + Espacio
+bindkey '^ ' autosuggest-accept
+
+# ─── Integraciones CLI instaladas en Debian ────────────────
+# Búsqueda difusa interactiva con fzf (Ctrl+R para historial, Ctrl+T para archivos)
+command -v fzf >/dev/null 2>&1 && eval "$(fzf --zsh)"
+
+# Navegación rápida entre directorios con zoxide (comando: z)
+command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
+
+# ─── Plugins Zsh ───────────────────────────────────────────
+# 1. zsh-autosuggestions (sugerencias estilo Fish)
+ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
+[[ -f ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh ]] && \
+    source ~/.zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+
+# 2. zsh-history-substring-search (buscar en historial con lo que empieces a escribir)
+if [[ -f ~/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh ]]; then
+    source ~/.zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+    bindkey '^[[A' history-substring-search-up
+    bindkey '^[[B' history-substring-search-down
+    [[ -n "${terminfo[kcuu1]}" ]] && bindkey "${terminfo[kcuu1]}" history-substring-search-up
+    [[ -n "${terminfo[kcud1]}" ]] && bindkey "${terminfo[kcud1]}" history-substring-search-down
+fi
+
+# 3. zsh-syntax-highlighting (coloreado en tiempo real - SIEMPRE al final de los plugins)
+[[ -f ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] && \
+    source ~/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# ─── Rutas y variables de entorno del usuario ──────────────
+export PATH="$HOME/.npm-global/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
+[[ -d "$HOME/.spicetify" ]] && export PATH="$PATH:$HOME/.spicetify"
+[[ -d "$HOME/.opencode/bin" ]] && export PATH="$HOME/.opencode/bin:$PATH"
+[[ -f "$HOME/.cargo/env" ]] && source "$HOME/.cargo/env"
+
+# Aliases
+[[ -f ~/.zshrc_aliases ]] && source ~/.zshrc_aliases
+
+# Configuración privada / secretos locales (no versionados en git)
+[[ -f ~/.zshrc_private ]] && source ~/.zshrc_private

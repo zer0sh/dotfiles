@@ -1,0 +1,41 @@
+# macbar - tema zsh local estilo macOS (dos líneas + git)
+# Archivo: ~/.zsh/prompts/prompt_macbar_setup
+# Activación en ~/.zshrc.d/prompt.zsh
+
+emulate -L zsh
+autoload -Uz vcs_info
+zstyle ':vcs_info:*' enable git
+zstyle ':vcs_info:git*' formats '%F{red}%b%f'
+zstyle ':vcs_info:git*' actionformats '%F{red}%b%f %F{yellow}(%a)%f'
+
+prompt_macbar_setup () {
+    RPROMPT=''
+
+    precmd () {
+        vcs_info
+        local vi=${vcs_info_msg_0_}
+
+        # ── LÍNEA 1: directorio + [rama git] ───────────────────────────────
+        PROMPT=$'\u000a'
+        PROMPT+=" %F{magenta}%~%f"
+        if [[ -n $vi ]]; then
+            PROMPT+=" [ ${vi} ]"
+        fi
+        PROMPT+=$'\u000a'
+
+        # ── LÍNEA 2: símbolo de prompt indentado 4 espacios ────────────────
+        PROMPT+='    %(?.%F{green}λ%f.%F{red}λ%f) '
+
+        # ── LADO DERECHO: icono git + hora (estilo powerlevel10k) ──────────
+        local hora='%F{242}%D{%H:%M}%f'
+        if [[ -n $vi ]]; then
+            RPROMPT="%F{red}󰊢%f ${hora}"
+        else
+            RPROMPT="${hora}"
+        fi
+    }
+
+    precmd
+}
+
+prompt_macbar_setup "$@"
