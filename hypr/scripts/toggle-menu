@@ -7,5 +7,5 @@
 if pidof wofi >/dev/null 2>&1; then
     killall wofi
 else
-    exec wofi --show drun
+    exec wofi --conf "$HOME/.config/wofi/config" --style "$HOME/.config/wofi/style.css" --show drun
 fi
