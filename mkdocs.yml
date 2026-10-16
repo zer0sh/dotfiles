@@ -1,0 +1,64 @@
+site_name: zer0sh Dotfiles
+site_description: Documentación oficial del entorno Hyprland, Quickshell y dotfiles
+site_author: zer0sh
+site_url: https://zer0sh.github.io/dotfiles/
+repo_url: https://github.com/zer0sh/dotfiles
+repo_name: zer0sh/dotfiles
+
+theme:
+  name: material
+  language: es
+  palette:
+    # Modo oscuro por defecto
+    - scheme: slate
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/brightness-4
+        name: Cambiar a modo claro
+    # Modo claro
+    - scheme: default
+      primary: deep purple
+      accent: deep purple
+      toggle:
+        icon: material/brightness-7
+        name: Cambiar a modo oscuro
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - tables
+  - attr_list
+
+nav:
+  - Inicio: index.md
+  - Hyprland:
+      - Arquitectura: hyprland/index.md
+      - Atajos de Teclado: hyprland/keybinds.md
+      - Shaders y Filtros: hyprland/shaders.md
+  - Quickshell:
+      - Centro de Control: quickshell/index.md
+      - Notificaciones y OSDs: quickshell/osd-notifications.md
+  - Dotfiles y Flujo:
+      - Estructura y Filosofía: dotfiles/workflow.md

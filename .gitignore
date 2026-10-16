@@ -9,3 +9,10 @@ secrets.conf
 *.tmp
 *.swp
 .DS_Store
+site/
+
+# Shell y Privados
+.zshrc_private
+*.zshrc_private
+.zcompdump*
+.zsh_history
