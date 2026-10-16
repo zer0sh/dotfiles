@@ -148,6 +148,28 @@ matugen image "/path/to/wallpaper.jpg" --mode dark --contrast 0.2
 
 ---
 
+## Privileged Applications Theming (sudo / root)
+
+By default, applications executed with `sudo` (such as administrative tools, file managers, or system monitors) read configuration files from `/root/.config/` and do not inherit user-level CSS overrides.
+
+To synchronize your active Matugen theme with the root user:
+
+```bash
+sudo ~/dotfiles/scripts/sync-root-theme.sh
+```
+
+### Mechanism and Persistence:
+1. Creates `/root/.config/gtk-3.0/` and `/root/.config/gtk-4.0/`.
+2. Configures `Adwaita-dark` preference in `/root/.config/gtk-3.0/settings.ini`.
+3. Symlinks root GTK stylesheets directly to the user's central theme store:
+   * `/root/.config/gtk-3.0/gtk.css` -> `~/.config/themes/current/gtk-3.0.css`
+   * `/root/.config/gtk-4.0/gtk.css` -> `~/.config/themes/current/gtk-4.0.css`
+4. Symlinks root btop monitor theme (`/root/.config/btop/themes/matugen.theme`).
+
+Because these are live symlinks targeting `~/.config/themes/current/`, subsequent wallpaper or palette changes made via Quickshell will automatically reflect in root applications without re-executing the synchronization script.
+
+---
+
 ## Related Documentation
 
 * [Hyprland Compositor](../hyprland/index.md): Window manager border theming and configuration modularity.

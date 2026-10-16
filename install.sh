@@ -122,4 +122,10 @@ if command -v batcat >/dev/null 2>&1 && [ ! -L "$HOME/.local/bin/bat" ] && [ ! -
     echo "[LINK] Created bat symlink: ~/.local/bin/bat -> $(command -v batcat)"
 fi
 
+# Root themes reminder
+if [ -f "$REPO_DIR/scripts/sync-root-theme.sh" ]; then
+    echo "[NOTE] To synchronize dynamic themes for applications launched with sudo (root):"
+    echo "       sudo $REPO_DIR/scripts/sync-root-theme.sh"
+fi
+
 echo "[INFO] Installation completed successfully."
