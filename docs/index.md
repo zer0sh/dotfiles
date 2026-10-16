@@ -1,27 +1,77 @@
+---
+hide:
+  - navigation
+---
+
 # zer0sh Dotfiles
 
 Welcome to the official documentation for **zer0sh's** desktop environment, built on **Hyprland** (Wayland) and customized with **Quickshell**, **Waybar**, **Kitty / Alacritty**, and **Zsh**.
+
+[Quick Install](dotfiles/workflow.md){ .md-button .md-button--primary }
+[View Repository](https://github.com/zer0sh/dotfiles){ .md-button }
 
 ---
 
 ## Design Philosophy
 
-* **Strict Modularity:** No monolithic configuration files. Every concern (keybindings, monitor layouts, animations, autostart services) is isolated into its own dedicated file.
-* **Direct Live Source of Truth:** The live Hyprland configuration resides directly in `~/.config/hypr/` as a real, independent directory, allowing seamless live edits without symlink friction.
-* **Cohesive Visual Integration:** Centralized palettes generated across Quickshell, Hyprland borders, Waybar, and terminal emulators.
-* **Fluid Modern OSDs & Notifications:** Floating surfaces anchored at the top-center of the screen, featuring smooth downward slide-in transitions and fluid stack displacement.
+<div class="grid cards" markdown>
+
+-   :material-puzzle-outline:{ .lg .middle } **Strict Modularity**
+
+    ---
+
+    No monolithic configuration files. Every concern (keybindings, monitor layouts, animations, autostart services) is isolated into its own dedicated file.
+
+-   :material-database-sync-outline:{ .lg .middle } **Direct Live Source of Truth**
+
+    ---
+
+    The live Hyprland configuration resides directly in `~/.config/hypr/` as a real, independent directory, allowing seamless live edits without symlink friction.
+
+-   :material-palette-swatch-outline:{ .lg .middle } **Cohesive Visual Integration**
+
+    ---
+
+    Centralized palettes generated across Quickshell, Hyprland borders, Waybar, and terminal emulators.
+
+-   :material-layers-triple-outline:{ .lg .middle } **Fluid Modern OSDs & Notifications**
+
+    ---
+
+    Floating surfaces anchored at the top-center of the screen, featuring smooth downward slide-in transitions and fluid stack displacement.
+
+</div>
 
 ---
 
 ## Documentation Overview
 
-* [**Hyprland Architecture**](hyprland/index.md): Modular structure, monitor layout, and window rules.
-* [**Keybindings**](hyprland/keybinds.md): Comprehensive shortcut cheatsheet for apps, utilities, and widgets.
-* [**Shaders & Screen Filters**](hyprland/shaders.md): Custom post-processing GLSL shaders (Sepia, Noir, Vintage, Vivid).
-* [**Quickshell Control Center**](quickshell/index.md): One UI inspired quick-settings panel and system widgets.
-* [**Notifications & OSDs**](quickshell/osd-notifications.md): Top-center positioning, slide-down animations, and queue dynamics.
-* [**Wofi Launcher**](apps/wofi.md): Material Design 3 app launcher, presets, and toggle behavior.
-* [**Fastfetch Telemetry**](apps/fastfetch.md): Clean system information display, custom modules, and hardware specs.
-* [**Matugen Dynamic Theming**](apps/matugen.md): Material Design 3 palette generator, template mappings, and central theme store.
-* [**Dotfiles Workflow**](dotfiles/workflow.md): Repository management, local-first philosophy, and GitHub synchronization.
-* [**Release Management & SemVer**](dotfiles/releases.md): Semantic versioning, tag triggers, and release automation.
+Explore the core modules of the environment:
+
+<div class="grid cards" markdown>
+
+-   :material-dock-window:{ .lg .middle } **[Hyprland Architecture](hyprland/index.md)**
+
+    ---
+
+    Modular structure, monitor layouts, keybindings, window rules, and custom GLSL post-processing shaders.
+
+-   :material-view-dashboard-outline:{ .lg .middle } **[Quickshell & System OSD](quickshell/index.md)**
+
+    ---
+
+    One UI inspired control center, system telemetry widgets, audio sliders, and fluid top-center notification queue.
+
+-   :material-rocket-launch-outline:{ .lg .middle } **[Launchers & System Tools](apps/wofi.md)**
+
+    ---
+
+    Material Design 3 application launcher with dynamic presets, Swaync notification service, and Fastfetch hardware telemetry.
+
+-   :material-console:{ .lg .middle } **[Terminals & Shell](terminals/alacritty.md)**
+
+    ---
+
+    Hardware-accelerated terminal emulation with Alacritty and Kitty, powered by dynamic palettes and Zsh Prezto workflow.
+
+</div>

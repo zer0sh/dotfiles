@@ -1,6 +1,6 @@
 /* ==========================================================================
-   Android Pure (Material Design 3 / Material You) + Glassmorphism Theme
-   Designed for zer0sh Dotfiles Documentation
+   zer0sh Dotfiles - Material 3 + Glassmorphism Theme
+   UX/UI Optimized Documentation Stylesheet
    ========================================================================== */
 
 /* --- 1. Root & Design Tokens --- */
@@ -8,9 +8,9 @@
   --md-sys-motion-standard: cubic-bezier(0.2, 0, 0, 1);
   --md-sys-radius-xs: 4px;
   --md-sys-radius-sm: 8px;
-  --md-sys-radius-md: 14px;
-  --md-sys-radius-lg: 20px;
-  --md-sys-radius-xl: 28px;
+  --md-sys-radius-md: 12px;
+  --md-sys-radius-lg: 16px;
+  --md-sys-radius-xl: 24px;
   --md-sys-radius-pill: 9999px;
 }
 
@@ -25,20 +25,20 @@
 
   /* Glass Surface Tokens */
   --glass-bg-base: rgba(13, 15, 23, 0.72);
-  --glass-bg-card: rgba(20, 24, 36, 0.62);
-  --glass-bg-card-hover: rgba(28, 34, 52, 0.78);
-  --glass-bg-elevated: rgba(28, 33, 50, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.09);
-  --glass-border-focus: rgba(199, 191, 255, 0.5);
-  --glass-shadow: 0 16px 40px 0 rgba(0, 0, 0, 0.45);
-  --glass-shadow-sm: 0 4px 20px 0 rgba(0, 0, 0, 0.28);
-  --glass-blur: blur(20px) saturate(180%);
+  --glass-bg-card: rgba(17, 18, 29, 0.78);
+  --glass-bg-card-hover: rgba(28, 32, 50, 0.85);
+  --glass-bg-elevated: rgba(24, 27, 42, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-focus: rgba(199, 191, 255, 0.45);
+  --glass-shadow: 0 12px 32px 0 rgba(0, 0, 0, 0.45);
+  --glass-shadow-sm: 0 4px 16px 0 rgba(0, 0, 0, 0.25);
+  --glass-blur: blur(18px) saturate(180%);
 
   /* Material You Semantic Accents */
-  --m3-accent-container: rgba(199, 191, 255, 0.16);
+  --m3-accent-container: rgba(169, 148, 249, 0.18);
   --m3-accent-on-container: #e5deff;
   --m3-primary-container: rgba(155, 189, 232, 0.16);
-  --m3-code-bg: rgba(13, 15, 24, 0.82);
+  --m3-code-bg: rgba(13, 15, 24, 0.88);
   --m3-table-header: rgba(28, 33, 49, 0.7);
 }
 
@@ -52,25 +52,29 @@
   --md-accent-fg-color: #6750a4;
 
   /* Glass Surface Tokens */
-  --glass-bg-base: rgba(247, 248, 252, 0.75);
-  --glass-bg-card: rgba(255, 255, 255, 0.72);
-  --glass-bg-card-hover: rgba(255, 255, 255, 0.9);
-  --glass-bg-elevated: rgba(255, 255, 255, 0.88);
+  --glass-bg-base: rgba(247, 248, 252, 0.78);
+  --glass-bg-card: rgba(255, 255, 255, 0.78);
+  --glass-bg-card-hover: rgba(255, 255, 255, 0.92);
+  --glass-bg-elevated: rgba(255, 255, 255, 0.9);
   --glass-border: rgba(0, 0, 0, 0.08);
   --glass-border-focus: rgba(103, 80, 164, 0.45);
-  --glass-shadow: 0 14px 36px 0 rgba(40, 48, 70, 0.12);
-  --glass-shadow-sm: 0 4px 18px 0 rgba(40, 48, 70, 0.07);
-  --glass-blur: blur(20px) saturate(180%);
+  --glass-shadow: 0 12px 32px 0 rgba(40, 48, 70, 0.1);
+  --glass-shadow-sm: 0 4px 16px 0 rgba(40, 48, 70, 0.06);
+  --glass-blur: blur(18px) saturate(180%);
 
   /* Material You Semantic Accents */
   --m3-accent-container: rgba(103, 80, 164, 0.12);
   --m3-accent-on-container: #21005d;
   --m3-primary-container: rgba(85, 74, 138, 0.12);
-  --m3-code-bg: rgba(240, 242, 248, 0.85);
+  --m3-code-bg: rgba(240, 242, 248, 0.88);
   --m3-table-header: rgba(230, 233, 243, 0.75);
 }
 
-/* --- 2. Ambient Wallpaper Background --- */
+/* --- 2. Layout Width & Ambient Wallpaper Background --- */
+.md-grid {
+  max-width: 1340px !important;
+}
+
 html {
   background-color: #0b0d14;
 }
@@ -84,9 +88,9 @@ body {
 body[data-md-color-scheme="slate"] {
   background-color: #0a0c13 !important;
   background-image:
-    radial-gradient(circle at 10% 15%, rgba(155, 189, 232, 0.16) 0%, transparent 36%),
-    radial-gradient(circle at 90% 20%, rgba(199, 191, 255, 0.14) 0%, transparent 40%),
-    radial-gradient(circle at 50% 80%, rgba(134, 213, 160, 0.09) 0%, transparent 48%);
+    radial-gradient(circle at 10% 15%, rgba(155, 189, 232, 0.14) 0%, transparent 36%),
+    radial-gradient(circle at 90% 20%, rgba(199, 191, 255, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(134, 213, 160, 0.08) 0%, transparent 48%);
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-size: cover;
@@ -108,13 +112,12 @@ body[data-md-color-scheme="default"] {
   background-color: transparent !important;
 }
 
-/* Selection */
 ::selection {
   background-color: var(--md-accent-fg-color);
   color: #000;
 }
 
-/* --- 3. Top App Bar (Clean Material 3 & Glass Header) --- */
+/* --- 3. Top App Bar (Compact Header & Actions) --- */
 .md-header {
   background-color: var(--glass-bg-base) !important;
   backdrop-filter: var(--glass-blur);
@@ -128,14 +131,31 @@ body[data-md-color-scheme="default"] {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
-  padding: 0.35rem 1.25rem !important;
-  max-width: 1440px !important;
+  padding: 0.2rem 1rem !important;
+  height: 2.75rem !important;
+  max-width: 1340px !important;
 }
 
-/* Brand & Title (Left Cluster) */
+/* Left Cluster: Logo & Brand Title (Order 1) */
+.md-logo,
+.md-header__button[for="__drawer"],
+.md-header__title {
+  order: 1 !important;
+}
+
+.md-logo {
+  padding: 0.15rem !important;
+}
+
+.md-logo svg,
+.md-logo img {
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+}
+
 .md-header__title {
   flex: 0 0 auto !important;
-  margin: 0 1.5rem 0 0.5rem !important;
+  margin: 0 1rem 0 0.4rem !important;
   height: auto !important;
   line-height: normal !important;
 }
@@ -145,55 +165,89 @@ body[data-md-color-scheme="default"] {
   align-items: center;
 }
 
+/* Compact, clean site title */
 .md-header__topic {
-  font-size: 1.05rem !important;
-  font-weight: 700 !important;
-  letter-spacing: -0.02em !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
   color: var(--md-accent-fg-color) !important;
+  opacity: 1 !important;
+  transform: none !important;
+  display: block !important;
 }
 
-/* Hide secondary jumping page-title in header to eliminate clutter */
+.md-header__title--active .md-header__topic:first-child {
+  opacity: 1 !important;
+  transform: none !important;
+  pointer-events: auto !important;
+}
+
+/* Hide secondary shifting page-name */
 .md-header__topic[data-md-component="header-topic"] {
   display: none !important;
 }
 
-.md-header__button {
-  border-radius: var(--md-sys-radius-pill);
-  transition: background-color 0.2s var(--md-sys-motion-standard), transform 0.15s ease;
+/* Base header button style */
+.md-header__button.md-icon {
+  background: transparent !important;
+  border: none !important;
+  border-radius: var(--md-sys-radius-sm) !important;
+  margin: 0 2px;
+  padding: 0.25rem !important;
+  transition: background-color 0.2s ease, transform 0.15s ease;
 }
 
-.md-header__button:hover {
-  background-color: var(--glass-border);
-  transform: scale(1.05);
+.md-header__button.md-icon svg {
+  width: 1.1rem !important;
+  height: 1.1rem !important;
 }
 
-/* --- 4. Android Search Bar (Prominent Centered Pill) --- */
+.md-header__button.md-icon:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-md-color-scheme="default"] .md-header__button.md-icon:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* --- 4. Android Pill Search Bar (Order 2 - Centered & Compact) --- */
 @media screen and (min-width: 60em) {
-  .md-search {
+  .md-search,
+  .md-search[hidden] {
+    display: block !important;
+    order: 2 !important;
     flex: 1 1 auto !important;
-    max-width: 480px !important;
+    max-width: 420px !important;
     margin: 0 auto !important;
     padding: 0 !important;
   }
 
   .md-search__inner {
+    display: block !important;
     float: none !important;
     width: 100% !important;
+    height: auto !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    position: relative !important;
+    transform: none !important;
   }
 
   .md-search__form {
     width: 100% !important;
-    height: 2.35rem !important;
+    height: 2rem !important;
   }
 
   .md-search__input {
-    font-size: 0.85rem !important;
-    padding-left: 2.6rem !important;
+    font-size: 0.78rem !important;
+    padding-left: 2.3rem !important;
+    padding-right: 1.8rem !important;
+    height: 100% !important;
   }
 
   .md-search__output {
     width: 100% !important;
-    top: 2.7rem !important;
+    top: 2.35rem !important;
   }
 
   .md-search__scrollwrap {
@@ -202,6 +256,7 @@ body[data-md-color-scheme="default"] {
 }
 
 .md-search__form {
+  position: relative !important;
   background-color: var(--glass-bg-card) !important;
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -209,16 +264,55 @@ body[data-md-color-scheme="default"] {
   border-radius: var(--md-sys-radius-pill) !important;
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
   transition: all 0.25s var(--md-sys-motion-standard);
+  display: flex !important;
+  align-items: center !important;
 }
 
 .md-search__form:focus-within,
 .md-search__input:focus {
   border-color: var(--glass-border-focus);
-  box-shadow: 0 0 0 3px var(--m3-accent-container), var(--glass-shadow-sm) !important;
+  box-shadow: 0 0 0 2px var(--m3-accent-container), var(--glass-shadow-sm) !important;
 }
 
 .md-search__input {
   border-radius: var(--md-sys-radius-pill);
+}
+
+/* Centered Magnifying Glass Icon */
+.md-search__icon[for="__search"] {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  left: 0.75rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 1rem !important;
+  width: 1rem !important;
+  margin: 0 !important;
+  pointer-events: none !important;
+}
+
+.md-search__icon[for="__search"] svg:first-child {
+  display: block !important;
+  width: 0.95rem !important;
+  height: 0.95rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.md-search__icon[for="__search"] svg:last-child {
+  display: none !important;
+}
+
+/* Centered Clear Button */
+.md-search__options {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  right: 0.65rem !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
 .md-search__overlay {
@@ -236,7 +330,7 @@ body[data-md-color-scheme="default"] {
   backdrop-filter: blur(24px) saturate(190%);
   -webkit-backdrop-filter: blur(24px) saturate(190%);
   border: 1px solid var(--glass-border);
-  border-radius: var(--md-sys-radius-xl) !important;
+  border-radius: var(--md-sys-radius-lg) !important;
   box-shadow: var(--glass-shadow);
   overflow: hidden;
 }
@@ -245,11 +339,12 @@ body[data-md-color-scheme="default"] {
   background-color: transparent !important;
   border-bottom: 1px solid var(--glass-border);
   font-weight: 600;
+  font-size: 0.78rem;
 }
 
 .md-search-result__item {
-  border-radius: var(--md-sys-radius-md);
-  margin: 0.2rem 0.5rem;
+  border-radius: var(--md-sys-radius-sm);
+  margin: 0.2rem 0.4rem;
   transition: background-color 0.2s ease;
 }
 
@@ -257,93 +352,152 @@ body[data-md-color-scheme="default"] {
   background-color: var(--m3-accent-container);
 }
 
-/* Actions (Right Cluster: Palette & Repository) */
+/* --- Theme Switcher: STRICTLY SINGLE TOGGLE BUTTON (Order 3) --- */
 .md-header__option {
-  margin-right: 0.5rem;
+  order: 3 !important;
+  margin-left: 0.5rem !important;
+  margin-right: 0.35rem !important;
+  display: flex !important;
+  align-items: center !important;
 }
 
-.md-header__option .md-header__button {
-  width: 38px;
-  height: 38px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--md-sys-radius-pill);
-  background-color: var(--glass-bg-card);
-  border: 1px solid var(--glass-border);
+/* Hide all toggle labels by default */
+.md-header__option label {
+  display: none !important;
 }
 
-.md-header__option .md-header__button:hover {
-  background-color: var(--m3-accent-container);
-  border-color: var(--glass-border-focus);
+/* In Dark Mode (slate): show ONLY the toggle button to light mode (__palette_1) */
+[data-md-color-scheme="slate"] .md-header__option label[for="__palette_1"],
+:root:not([data-md-color-scheme="default"]) .md-header__option label[for="__palette_1"] {
+  display: flex !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.2s var(--md-sys-motion-standard);
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
+/* In Light Mode (default): show ONLY the toggle button to dark mode (__palette_0) */
+[data-md-color-scheme="default"] .md-header__option label[for="__palette_0"] {
+  display: flex !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.2s var(--md-sys-motion-standard);
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.md-header__option label svg {
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+.md-header__option label:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: var(--glass-border-focus) !important;
+  transform: translateY(-1px);
+}
+
+[data-md-color-scheme="default"] .md-header__option label:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Rightmost: Repository Badge (Order 4) */
 .md-header__source {
+  order: 4 !important;
   width: auto !important;
   max-width: none !important;
-  margin-left: 0.25rem !important;
+  margin-left: 0 !important;
 }
 
 .md-source {
-  width: auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 2rem !important;
+  padding: 0 11px !important;
+  min-width: fit-content !important;
   max-width: none !important;
-  display: flex;
-  align-items: center;
-  padding: 0.35rem 0.75rem;
-  border-radius: var(--md-sys-radius-pill);
-  background-color: var(--glass-bg-card);
-  border: 1px solid var(--glass-border);
-  transition: all 0.2s var(--md-sys-motion-standard);
+  width: auto !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  box-sizing: border-box !important;
 }
 
 .md-source:hover {
-  background-color: var(--m3-accent-container);
-  border-color: var(--glass-border-focus);
-  transform: scale(1.03);
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: var(--glass-border-focus) !important;
+  transform: translateY(-1px);
+}
+
+[data-md-color-scheme="default"] .md-source {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
 }
 
 .md-source__icon {
-  width: 1.15rem;
-  height: 1.15rem;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: auto !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.md-source__icon svg {
+  width: 0.95rem !important;
+  height: 0.95rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+}
+
+.md-source__icon + .md-source__repository {
+  padding-left: 0 !important;
+  margin-left: 6px !important;
 }
 
 .md-source__repository {
-  font-size: 0.78rem;
-  font-weight: 500;
-  margin-left: 0.45rem;
-  max-width: 110px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: inline-block !important;
+  max-width: none !important;
+  width: auto !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  font-size: 0.76rem !important;
+  font-weight: 500 !important;
+  line-height: normal !important;
+  letter-spacing: 0.01em !important;
 }
 
-@media screen and (max-width: 72em) {
-  .md-source__repository {
-    display: none;
-  }
-  .md-source {
-    padding: 0.4rem;
-    border-radius: 50%;
-    width: 38px;
-    height: 38px;
-    justify-content: center;
-  }
-}
-
-/* --- 5. Navigation Tabs (Centered Material You Chips) --- */
+/* --- 5. Navigation Tabs (Compact Centered Tabs Bar) --- */
 .md-tabs {
   background-color: var(--glass-bg-base) !important;
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border-bottom: 1px solid var(--glass-border);
-  padding: 0.2rem 0;
+  padding: 0.12rem 0 !important;
 }
 
 .md-tabs__list {
-  padding: 0.2rem 0;
+  padding: 0.1rem 0 !important;
   display: flex;
   justify-content: center !important;
-  gap: 0.45rem;
+  gap: 6px;
 }
 
 .md-tabs__item {
@@ -351,36 +505,31 @@ body[data-md-color-scheme="default"] {
 }
 
 .md-tabs__link {
-  border-radius: var(--md-sys-radius-pill);
-  padding: 0.4rem 1.15rem;
+  border-radius: 6px !important;
+  padding: 4px 11px !important;
   font-weight: 500;
-  font-size: 0.82rem;
-  letter-spacing: 0.01em;
-  opacity: 0.85;
-  transition: all 0.25s var(--md-sys-motion-standard);
+  font-size: 0.76rem !important;
+  transition: all 0.2s ease;
 }
 
 .md-tabs__link:hover {
-  opacity: 1;
   background-color: var(--glass-border);
   color: var(--md-accent-fg-color) !important;
 }
 
 .md-tabs__item--active .md-tabs__link {
-  opacity: 1;
-  background-color: var(--m3-accent-container);
-  color: var(--md-accent-fg-color) !important;
+  background: rgba(169, 148, 249, 0.18) !important;
+  color: #c4b5fd !important;
+  border: 1px solid rgba(169, 148, 249, 0.35);
   font-weight: 600;
-  box-shadow: inset 0 0 0 1px var(--glass-border);
 }
 
-/* --- 6. Navigation Sidebars (Drawer & Table of Contents) --- */
+/* --- 6. Navigation Sidebars (Drawer & TOC) --- */
 .md-sidebar {
   padding-top: 1rem;
 }
 
-.md-sidebar--primary,
-.md-sidebar--secondary {
+.md-sidebar--primary {
   background-color: transparent !important;
 }
 
@@ -408,6 +557,22 @@ body[data-md-color-scheme="default"] {
   box-shadow: inset 0 0 0 1px var(--glass-border);
 }
 
+/* Right Table of Contents (TOC Card) */
+.md-sidebar--secondary .md-sidebar__scrollwrap {
+  background: rgba(17, 18, 29, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 0.75rem;
+  box-shadow: var(--glass-shadow-sm);
+}
+
+[data-md-color-scheme="default"] .md-sidebar--secondary .md-sidebar__scrollwrap {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
 /* Mobile Drawer (Responsive Glass) */
 @media screen and (max-width: 76.234375em) {
   .md-nav--primary,
@@ -418,29 +583,27 @@ body[data-md-color-scheme="default"] {
   }
 }
 
-/* --- 7. Main Article & Glass Card Container --- */
+/* --- 7. Main Content Glass Container --- */
 .md-content__inner {
   margin-top: 1.2rem;
   margin-bottom: 2rem;
-  padding: 2.2rem 2.5rem;
+  padding: 1.8rem 2.5rem;
   background-color: var(--glass-bg-card);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
-  border-radius: var(--md-sys-radius-xl);
+  border-radius: 16px;
   box-shadow: var(--glass-shadow);
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 @media screen and (max-width: 45em) {
   .md-content__inner {
-    padding: 1.5rem 1.2rem;
-    border-radius: var(--md-sys-radius-lg);
-    background-color: var(--glass-bg-base);
+    padding: 1.4rem 1.2rem;
+    border-radius: 12px;
   }
 }
 
-/* Typography Enhancements */
 .md-typeset h1 {
   font-weight: 700;
   letter-spacing: -0.025em;
@@ -458,10 +621,10 @@ body[data-md-color-scheme="default"] {
 
 .md-typeset hr {
   border-bottom: 1px solid var(--glass-border);
-  margin: 2rem 0;
+  margin: 1.8rem 0;
 }
 
-/* --- 8. Code Blocks & Terminal (Single Clean Container, No Inner Radii) --- */
+/* --- 8. Code Blocks & Terminal (Single Clean Container) --- */
 .highlight,
 .highlighttable,
 .md-typeset > pre {
@@ -475,7 +638,6 @@ body[data-md-color-scheme="default"] {
   margin: 1.2rem 0;
 }
 
-/* Strip any duplicate/nested border and radius from inner pre elements */
 .highlight pre,
 .highlighttable pre,
 .md-typeset .highlight pre {
@@ -490,7 +652,6 @@ body[data-md-color-scheme="default"] {
   padding: 0.85rem 1.15rem !important;
 }
 
-/* Strip any duplicate styling from code elements inside code blocks */
 .highlight code,
 .highlight pre code,
 .highlighttable code,
@@ -515,18 +676,46 @@ body[data-md-color-scheme="default"] {
   color: var(--md-accent-fg-color);
 }
 
-/* Clean Inline Code (Subtle background, no heavy pill border) */
+/* Clean Inline Code */
 .md-typeset code:not(pre code) {
-  background-color: var(--m3-accent-container) !important;
-  color: var(--md-accent-fg-color) !important;
-  border-radius: 4px !important;
+  background-color: rgba(169, 148, 249, 0.12) !important;
+  color: #d8b4fe !important;
+  border: 1px solid rgba(169, 148, 249, 0.2) !important;
+  border-radius: 6px !important;
   padding: 0.15em 0.4em !important;
-  font-size: 0.84em !important;
-  border: none !important;
-  box-shadow: none !important;
+  font-size: 0.85em !important;
 }
 
-/* --- 9. Material You Admonitions (Notification Cards) --- */
+[data-md-color-scheme="default"] .md-typeset code:not(pre code) {
+  background-color: rgba(103, 80, 164, 0.1) !important;
+  color: #4f378b !important;
+  border: 1px solid rgba(103, 80, 164, 0.2) !important;
+}
+
+/* --- 9. Bento Grid Cards --- */
+.md-typeset .grid.cards > ul > li {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.md-typeset .grid.cards > ul > li:hover {
+  transform: translateY(-2px);
+  border-color: rgba(169, 148, 249, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+[data-md-color-scheme="default"] .md-typeset .grid.cards > ul > li {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+[data-md-color-scheme="default"] .md-typeset .grid.cards > ul > li:hover {
+  border-color: rgba(103, 80, 164, 0.4);
+}
+
+/* --- 10. Material You Admonitions --- */
 .md-typeset .admonition,
 .md-typeset details {
   background-color: var(--glass-bg-card) !important;
@@ -554,7 +743,6 @@ body[data-md-color-scheme="default"] {
   padding: 0.6rem 1rem;
 }
 
-/* Specific Callout Color Accents */
 .md-typeset .admonition.note,
 .md-typeset .admonition.info {
   border-left-color: #9bbde8 !important;
@@ -575,7 +763,7 @@ body[data-md-color-scheme="default"] {
   border-left-color: #f2a8b8 !important;
 }
 
-/* --- 10. Tables (Frosted Glass Surface) --- */
+/* --- 11. Tables --- */
 .md-typeset table:not([class]) {
   background-color: var(--glass-bg-card);
   backdrop-filter: var(--glass-blur);
@@ -607,7 +795,7 @@ body[data-md-color-scheme="default"] {
   background-color: var(--m3-accent-container);
 }
 
-/* --- 11. Buttons & Badges (Material 3 Pill Elements) --- */
+/* --- 12. Buttons & Badges --- */
 .md-typeset .md-button {
   border-radius: var(--md-sys-radius-pill);
   padding: 0.55rem 1.4rem;
@@ -633,7 +821,6 @@ body[data-md-color-scheme="default"] {
   border-color: var(--glass-border-focus);
 }
 
-/* Keyboard keys */
 .md-typeset kbd {
   background-color: var(--glass-bg-card);
   border: 1px solid var(--glass-border);
@@ -643,7 +830,7 @@ body[data-md-color-scheme="default"] {
   font-size: 0.82em;
 }
 
-/* --- 12. Footer (Glass) --- */
+/* --- 13. Footer & FAB --- */
 .md-footer {
   background-color: var(--glass-bg-base) !important;
   backdrop-filter: var(--glass-blur);
@@ -655,7 +842,6 @@ body[data-md-color-scheme="default"] {
   background-color: transparent !important;
 }
 
-/* --- 13. Floating Action Button (Back To Top FAB) --- */
 .md-top {
   border-radius: var(--md-sys-radius-pill);
   background-color: var(--glass-bg-elevated) !important;
@@ -672,7 +858,7 @@ body[data-md-color-scheme="default"] {
   color: var(--md-accent-fg-color);
 }
 
-/* --- 14. Minimal Android Scrollbar --- */
+/* --- 14. Scrollbar --- */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
