@@ -52,8 +52,22 @@ done
 
 # Vim
 if [ -d "$REPO_DIR/vim" ]; then
+    echo "[INFO] Setting up Vim configuration..."
     [ -f "$REPO_DIR/vim/vimrc" ] && link_config "$REPO_DIR/vim/vimrc" "$HOME/.vimrc"
     [ -d "$REPO_DIR/vim/dot-vim" ] && link_config "$REPO_DIR/vim/dot-vim" "$HOME/.vim"
+
+    # Debian & Wayland clipboard dependencies check
+    vim_deps=()
+    if ! vim --version 2>/dev/null | grep -q '\+clipboard'; then
+        vim_deps+=("vim-gtk3")
+    fi
+    if ! command -v wl-copy >/dev/null 2>&1; then
+        vim_deps+=("wl-clipboard")
+    fi
+    if [ ${#vim_deps[@]} -gt 0 ]; then
+        echo "[NOTE] To enable system clipboard integration on Wayland (Debian), consider installing:"
+        echo "       sudo apt install ${vim_deps[*]}"
+    fi
 fi
 
 # Zsh

@@ -1,3 +1,11 @@
+" === Dependencias del Sistema (Debian / Wayland) ===
+" Para soporte completo de portapapeles (+clipboard) y sincronizacion con Wayland:
+"   sudo apt install vim-gtk3 wl-clipboard
+"
+" - vim-gtk3: Provee el binario de Vim compilado con +clipboard para la terminal.
+" - wl-clipboard: Provee wl-copy y wl-paste para el portapapeles en Hyprland.
+" - git, curl: Requeridos para gestionar plugins con vim-plug.
+
 " === Básico ===
 set nocompatible
 syntax on
@@ -43,7 +51,59 @@ colorscheme synthwave84
 
 " Airline
 let g:airline#extensions#branch#enabled = 1
-let g:airline_theme='synthwave'
+let g:airline_theme='synthwave84'
 
 " NerdTree
 nnoremap <C-n> :NERDTreeToggle<CR>
+
+" === Ayuda Rápida / Atajos en Ventana Flotante ===
+function! s:AtajosFilter(winid, key)
+    if a:key ==? 'q' || a:key ==# "\<Esc>" || a:key ==# "\<CR>"
+        call popup_close(a:winid)
+        return 1
+    endif
+    return 1
+endfunction
+
+function! MostrarAtajos()
+    let l:contenido = [
+    \ "  MOVIMIENTO",
+    \ "  h, j, k, l         : Izquierda, abajo, arriba, derecha",
+    \ "  w / b              : Siguiente palabra / palabra anterior",
+    \ "  0 / $              : Inicio / fin de línea",
+    \ "  gg / G             : Primera línea / última línea del archivo",
+    \ "",
+    \ "  EDICIÓN",
+    \ "  i / a              : Insertar antes / después del cursor",
+    \ "  o / O              : Nueva línea abajo / arriba",
+    \ "  u / Ctrl+r         : Deshacer / rehacer cambio",
+    \ "  x / dd             : Borrar carácter / borrar línea completa",
+    \ "  dw / ciw           : Borrar palabra / cambiar palabra actual",
+    \ "  yy / p             : Copiar línea / pegar después del cursor",
+    \ "",
+    \ "  GUARDAR Y SALIR",
+    \ "  :w / :q            : Guardar / salir",
+    \ "  :wq / :q!          : Guardar y salir / forzar salida sin guardar",
+    \ "",
+    \ "  PLUGINS",
+    \ "  Ctrl+n             : Abrir o cerrar NERDTree",
+    \ "",
+    \ "  [Presiona 'q', 'Esc' o 'Enter' para cerrar]"
+    \ ]
+
+    if exists('*popup_create')
+        let l:opts = {
+        \ 'title': ' Atajos Esenciales de Vim ',
+        \ 'border': [],
+        \ 'padding': [1, 2, 1, 2],
+        \ 'pos': 'center',
+        \ 'filter': function('s:AtajosFilter')
+        \ }
+        call popup_create(l:contenido, l:opts)
+    else
+        echo join(l:contenido, "\n")
+    endif
+endfunction
+
+command! Atajos call MostrarAtajos()
+nnoremap <F1> :Atajos<CR>
