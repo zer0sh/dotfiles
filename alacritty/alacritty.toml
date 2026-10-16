@@ -1,0 +1,16 @@
+# Alacritty usa la paleta generada por Matugen.
+[general]
+import = ["/home/zero/.config/themes/current/alacritty.toml"]
+live_config_reload = true
+
+[window]
+opacity = 0.92
+padding = { x = 15, y = 15 }
+
+[cursor]
+style = { shape = "Underline", blinking = "On" }
+
+[font]
+normal = { family = "BlexMono Nerd Font", style = "Bold" }
+bold   = { family = "BlexMono Nerd Font", style = "Bold" }
+italic = { family = "BlexMono Nerd Font", style = "Bold Italic" }

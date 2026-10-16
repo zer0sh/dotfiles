@@ -1,17 +1,18 @@
 #!/usr/bin/env bash
 
-# --- Script de Instalación de Dotfiles Multimódulo ---
+# Multi-module Dotfiles Installation Script
 
 REPO_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 CONFIG_DIR="$HOME/.config"
 
-# Lista de aplicaciones a vincular en ~/.config/
-# Formato: "nombre_carpeta_repo:nombre_carpeta_config"
+# Applications to link into ~/.config/
+# Format: "repo_folder_name:config_folder_name"
 APPS=(
     "hypr:hypr"
     "waybar:waybar"
     "quickshell:quickshell"
     "kitty:kitty"
+    "alacritty:alacritty"
     "wofi:wofi"
     "yazi:yazi"
     "btop:btop"
@@ -19,10 +20,10 @@ APPS=(
     "bat:bat"
 )
 
-echo "🚀 Iniciando despliegue de dotfiles..."
+echo "[INFO] Starting dotfiles deployment..."
 mkdir -p "$CONFIG_DIR"
 
-# Función para crear symlinks de forma segura
+# Function to safely create symlinks with backups
 link_config() {
     local src="$1"
     local dest="$2"
@@ -32,29 +33,60 @@ link_config() {
         if [ -L "$dest" ]; then
             rm "$dest"
         else
-            echo "📦 Backup: $dest -> $backup"
+            echo "[BACKUP] $dest -> $backup"
             [ -e "$backup" ] && backup="${backup}_$(date +%Y%m%d_%H%M%S)"
             mv "$dest" "$backup"
         fi
     fi
 
-    echo "🔗 Vinculando: $dest -> $src"
+    echo "[LINK] $dest -> $src"
     ln -s "$src" "$dest"
 }
 
-# Vincular aplicaciones de ~/.config
+# Link applications into ~/.config
 for item in "${APPS[@]}"; do
     IFS=":" read -r repo_folder config_folder <<< "$item"
     link_config "$REPO_DIR/$repo_folder" "$CONFIG_DIR/$config_folder"
 done
 
-# Casos especiales (fuera de ~/.config)
 # Vim
 if [ -d "$REPO_DIR/vim" ]; then
-    # .vimrc
     [ -f "$REPO_DIR/vim/vimrc" ] && link_config "$REPO_DIR/vim/vimrc" "$HOME/.vimrc"
-    # .vim directory
     [ -d "$REPO_DIR/vim/dot-vim" ] && link_config "$REPO_DIR/vim/dot-vim" "$HOME/.vim"
 fi
 
-echo "✅ ¡Instalación completada con éxito!"
+# Zsh
+if [ -d "$REPO_DIR/zsh" ]; then
+    echo "[INFO] Setting up Zsh configuration..."
+    [ -f "$REPO_DIR/zsh/zshrc" ] && link_config "$REPO_DIR/zsh/zshrc" "$HOME/.zshrc"
+    [ -f "$REPO_DIR/zsh/zshrc_aliases" ] && link_config "$REPO_DIR/zsh/zshrc_aliases" "$HOME/.zshrc_aliases"
+    
+    mkdir -p "$HOME/.zsh"
+    [ -d "$REPO_DIR/zsh/prompts" ] && link_config "$REPO_DIR/zsh/prompts" "$HOME/.zsh/prompts"
+
+    # Auto-clone lightweight plugins
+    ZSH_PLUGINS_DIR="$HOME/.zsh/plugins"
+    mkdir -p "$ZSH_PLUGINS_DIR"
+    PLUGINS=(
+        "https://github.com/zsh-users/zsh-autosuggestions.git|zsh-autosuggestions"
+        "https://github.com/zsh-users/zsh-syntax-highlighting.git|zsh-syntax-highlighting"
+        "https://github.com/zsh-users/zsh-completions.git|zsh-completions"
+        "https://github.com/zsh-users/zsh-history-substring-search.git|zsh-history-substring-search"
+    )
+    for item in "${PLUGINS[@]}"; do
+        IFS="|" read -r plugin_url plugin_name <<< "$item"
+        if [ ! -d "$ZSH_PLUGINS_DIR/$plugin_name" ]; then
+            echo "[INFO] Downloading plugin: $plugin_name..."
+            git clone --depth 1 "$plugin_url" "$ZSH_PLUGINS_DIR/$plugin_name"
+        fi
+    done
+
+    # Optional utilities check
+    for cmd in fzf zoxide; do
+        if ! command -v "$cmd" >/dev/null 2>&1; then
+            echo "[NOTE] '$cmd' is not installed. Consider installing it for full functionality (e.g., sudo apt install $cmd)."
+        fi
+    done
+fi
+
+echo "[INFO] Installation completed successfully."
