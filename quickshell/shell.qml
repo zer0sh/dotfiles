@@ -11,6 +11,7 @@ import "modules/osd" as Osd
 import "modules/shortcuts" as Shortcuts
 import "modules/deskclock" as DeskClock
 import "modules/calendar" as Calendar
+import "modules/background" as Background
 
 ShellRoot {
     id: root
@@ -35,6 +36,11 @@ ShellRoot {
     // Each component manages its own visibility and IPC handler internally.
     // Nothing auto-opens on startup.
 
+    Background.Background {
+        id: desktopBackground
+        onRequestWallpaperPicker: appLauncher.openWallpapers()
+    }
+
     PowerMenu.PowerMenu {
         id: powerMenu
     }
@@ -58,6 +64,7 @@ ShellRoot {
 
     Launcher.Launcher {
         id: appLauncher
+        backgroundRef: desktopBackground
     }
 
     Osd.VolumeOsd {
@@ -79,6 +86,10 @@ ShellRoot {
 
     Osd.RecordingIndicator {
         id: recordingIndicator
+    }
+
+    Osd.BatteryAlertOsd {
+        id: batteryAlertOsd
     }
 
     Shortcuts.ShortcutsOverlay {

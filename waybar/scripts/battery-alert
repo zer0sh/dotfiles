@@ -66,6 +66,16 @@ is_charging_or_ac() {
     return 1
 }
 
+trigger_qs_alert() {
+    local level="$1"
+    local pct="$2"
+    local title="$3"
+    local msg="$4"
+
+    quickshell ipc call battery alert "$level" "$pct" "$title" "$msg" 2>/dev/null || \
+    qs ipc call battery alert "$level" "$pct" "$title" "$msg" 2>/dev/null || true
+}
+
 apply_blink_style() {
     local level="$1"
     local duration="1.0s"
@@ -138,6 +148,9 @@ while true; do
             notify-send -u normal -i battery-full-charging \
                 "Cargador conectado" \
                 "La batería se está cargando (Nivel actual: ${capacity}%)."
+            trigger_qs_alert "charging" "$capacity" \
+                "Cargador conectado" \
+                "La batería se está cargando (${capacity}%)"
             CHARGING_NOTIFIED=1
         fi
 
@@ -172,6 +185,9 @@ while true; do
                 notify-send -u critical -i battery-empty \
                     "Ultimátum de batería" \
                     "Nivel crítico: ${capacity}%. Conecta el cargador inmediatamente para evitar el apagado."
+                trigger_qs_alert "ultimatum" "$capacity" \
+                    "Ultimátum de batería" \
+                    "Nivel crítico al ${capacity}% — Conecta el cargador inmediatamente"
                 NOTIFIED_5=1
                 NOTIFIED_10=1
                 NOTIFIED_30=1
@@ -182,6 +198,9 @@ while true; do
                 notify-send -u critical -i battery-low \
                     "Batería crítica" \
                     "Nivel actual: ${capacity}%. Conecta el cargador pronto para evitar que el equipo se suspenda."
+                trigger_qs_alert "critical" "$capacity" \
+                    "Batería crítica" \
+                    "Nivel al ${capacity}% — Conecta el cargador pronto"
                 NOTIFIED_10=1
                 NOTIFIED_30=1
             fi
@@ -191,6 +210,9 @@ while true; do
                 notify-send -u normal -i battery-caution \
                     "Batería baja" \
                     "Nivel actual: ${capacity}%. Considera conectar el cargador."
+                trigger_qs_alert "warning" "$capacity" \
+                    "Batería baja" \
+                    "Nivel al ${capacity}% — Considera conectar el cargador pronto"
                 NOTIFIED_30=1
             fi
         else

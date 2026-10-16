@@ -27,6 +27,7 @@ All floating indicators follow a standardized behavioral contract:
 | **Notification Card** | `modules/notifications/NotificationPopup.qml` | Card styling, slide-down appearance, and dismissal animations. |
 | **Volume OSD** | `modules/osd/VolumeOsd.qml` | Listens to PipeWire sink changes and animates top-center card. |
 | **Brightness OSD** | `modules/osd/BrightnessOsd.qml` | Listens to `brightnessctl` and animates top-center card. |
+| **Battery Alert OSD** | `modules/osd/BatteryAlertOsd.qml` | Animated battery status cards (warning, critical, ultimatum, charging) with pulsing glyphs, level progress bar, and IPC endpoints. |
 | **Music Track Toast** | `modules/osd/MusicOsd.qml` | Automatic top-center popup on MPRIS track transition. |
 | **Mini Music Player** | `modules/osd/MiniPlayer.qml` | Interactive player triggered via `SUPER + M` (see [Keybindings Catalog](../hyprland/keybinds.md#quickshell-and-desktop-overlays)). |
 
@@ -57,6 +58,13 @@ NumberAnimation {
 * **Trigger volume OSD:**
   ```bash
   wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+  ```
+* **Trigger battery alert cards:**
+  ```bash
+  qs ipc call battery test           # 30% warning alert
+  qs ipc call battery testCritical   # 10% critical alert
+  qs ipc call battery testUltimatum  # 5% ultimatum alert
+  qs ipc call battery testCharging   # charging connected alert
   ```
 
 ---
