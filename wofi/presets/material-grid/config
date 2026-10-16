@@ -1,0 +1,16 @@
+width=760
+height=480
+location=center
+columns=2
+prompt=󰀻  Explorador de Aplicaciones
+improved=true
+term=alacritty
+matching=fuzzy
+hide_scroll=true
+insensitive=true
+allow_images=true
+image_size=36
+allow_markup=true
+no_actions=true
+gtk_dark=true
+style=/home/zero/.config/wofi/style.css

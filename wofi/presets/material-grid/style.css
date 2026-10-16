@@ -1,0 +1,102 @@
+/* ==========================================================================
+   Wofi Theme - Material Design 3 (Bento Grid Edition)
+   Diseño estilo cajón de apps con fichas en 2 columnas
+   ========================================================================== */
+
+@define-color bg_panel #0F1117;
+@define-color bg_input #252740;
+@define-color bg_selection #9BBDE8;
+@define-color text #E0E2F0;
+@define-color text_secondary #8E90A8;
+@define-color text_selection #0F1117;
+@define-color outline #3A3E60;
+
+@import url("/home/zero/.config/themes/current/wofi.css");
+
+* {
+    font-family: "Roboto", "JetBrainsMono Nerd Font", sans-serif;
+}
+
+window {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: transparent;
+}
+
+#outer-box {
+    margin: 18px 18px 24px 18px;
+    padding: 16px;
+    border-radius: 28px;
+    background-color: alpha(@bg_panel, 0.90);
+    border: 1px solid alpha(@outline, 0.3);
+    box-shadow: 0 12px 24px 0 rgba(0, 0, 0, 0.6),
+                0 2px 8px 0 rgba(0, 0, 0, 0.35);
+}
+
+#input {
+    margin: 4px 6px 14px 6px;
+    padding: 12px 20px;
+    border-radius: 24px;
+    background-color: alpha(@bg_input, 0.7);
+    color: @text;
+    font-size: 15px;
+    border: 1px solid alpha(@outline, 0.22);
+}
+
+#input:focus {
+    border: 1px solid @bg_selection;
+    box-shadow: 0 0 0 2px alpha(@bg_selection, 0.25), 0 4px 14px alpha(@bg_selection, 0.2);
+    background-color: alpha(@bg_input, 0.95);
+}
+
+#scroll {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+    border: none;
+}
+
+#inner-box {
+    margin: 0;
+    padding: 4px;
+    background: transparent;
+    border: none;
+}
+
+#entry {
+    margin: 4px 6px;
+    padding: 10px 14px;
+    border-radius: 18px;
+    background-color: alpha(@bg_input, 0.4);
+    border: none;
+    transition: all 120ms ease;
+}
+
+#entry:hover {
+    background-color: alpha(@bg_input, 0.75);
+    border: none;
+}
+
+#entry:selected {
+    background-color: alpha(@bg_selection, 0.22);
+    border: none;
+    box-shadow: none;
+}
+
+#img {
+    margin-right: 12px;
+    background-color: transparent;
+}
+
+#text {
+    margin: 0;
+    color: @text;
+    font-size: 13.5px;
+    font-weight: 500;
+}
+
+#entry:selected #text {
+    color: @text;
+    font-weight: 600;
+}

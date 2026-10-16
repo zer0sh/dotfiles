@@ -1,0 +1,15 @@
+width=640
+height=500
+location=center
+prompt=󰍉  Buscar aplicaciones...
+improved=true
+term=alacritty
+matching=fuzzy
+hide_scroll=true
+insensitive=true
+allow_images=true
+image_size=32
+allow_markup=true
+no_actions=true
+gtk_dark=true
+style=/home/zero/.config/wofi/style.css

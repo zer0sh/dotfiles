@@ -16,3 +16,4 @@ site/
 *.zshrc_private
 .zcompdump*
 .zsh_history
+*.backup
