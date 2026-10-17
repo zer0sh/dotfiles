@@ -1,7 +1,8 @@
 import QtQuick
+import QtQuick.Layouts
 import "../.." as Root
 
-// Large circular quick-setting button used by the first control row.
+// Material You Pixel Glassmorphism Quick Toggle
 Item {
     id: control
 
@@ -13,88 +14,104 @@ Item {
     signal clicked()
     signal detailClicked()
 
-    implicitWidth: 68
-    implicitHeight: 90
+    implicitWidth: 96
+    implicitHeight: 104
+    Layout.preferredWidth: 96
+    Layout.fillWidth: true
 
+    FontLoader {
+        id: materialSymbolsLoader
+        source: "../../fonts/MaterialSymbolsRounded.ttf"
+    }
+
+    // Main circular button
     Rectangle {
         id: button
-        width: 60
-        height: 60
+        width: 66
+        height: 66
         anchors.horizontalCenter: parent.horizontalCenter
         radius: width / 2
-        color: control.active ? Root.Theme.tileActive : Root.Theme.tileInactive
+
+        color: control.active
+            ? Root.Theme.primary
+            : Qt.rgba(255, 255, 255, 0.08)
+
         border.width: control.active ? 0 : 1
-        border.color: Qt.rgba(Root.Theme.textPrimary.r, Root.Theme.textPrimary.g,
-                              Root.Theme.textPrimary.b, 0.08)
+        border.color: Qt.rgba(255, 255, 255, 0.14)
+
+        scale: btnMouse.pressed ? 0.93 : (btnMouse.containsMouse ? 1.04 : 1.0)
 
         Behavior on color {
             ColorAnimation { duration: Root.Theme.animDurationFast }
         }
+        Behavior on scale {
+            NumberAnimation { duration: 120; easing.type: Easing.OutCubic }
+        }
 
+        // Material Symbols Rounded Icon
         Text {
             anchors.centerIn: parent
             text: control.icon
-            font.family: Root.Theme.fontFamily
+            font.family: materialSymbolsLoader.name !== "" ? materialSymbolsLoader.name : Root.Theme.iconFont
             font.pixelSize: 28
-            color: control.active ? Root.Theme.tileActiveText : Root.Theme.tileInactiveText
-        }
+            color: control.active
+                ? Root.Theme.tileActiveText
+                : Qt.rgba(255, 255, 255, 0.85)
 
-        // Detail affordance: the main circle toggles, while this small
-        // three-dot button opens the secondary page (Wi-Fi/Bluetooth).
-        Rectangle {
-            visible: control.hasDetail
-            width: 20
-            height: 20
-            anchors.top: parent.top
-            anchors.right: parent.right
-            anchors.topMargin: 2
-            anchors.rightMargin: 2
-            radius: width / 2
-            color: Qt.rgba(1, 1, 1, 0.76)
-            z: 2
-
-            Text {
-                anchors.centerIn: parent
-                text: "⋯"
-                y: -1
-                font.family: Root.Theme.fontFamily
-                font.pixelSize: 13
-                font.weight: Font.Bold
-                color: Root.Theme.panelBg
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: control.detailClicked()
+            Behavior on color {
+                ColorAnimation { duration: Root.Theme.animDurationFast }
             }
         }
 
         MouseArea {
+            id: btnMouse
             anchors.fill: parent
+            hoverEnabled: true
             cursorShape: Qt.PointingHandCursor
             onClicked: control.clicked()
         }
     }
 
-    Text {
-        id: labelText
+    // Label and integrated chevron below the circular button
+    RowLayout {
+        id: labelRow
         anchors.top: button.bottom
-        anchors.topMargin: 6
-        anchors.left: parent.left
-        anchors.right: parent.right
-        text: control.label
-        horizontalAlignment: Text.AlignHCenter
-        elide: Text.ElideRight
-        font.family: Root.Theme.fontFamily
-        font.pixelSize: Root.Theme.fontSizeXS
-        color: control.active ? Root.Theme.textPrimary : Root.Theme.textSecondary
+        anchors.topMargin: 8
+        anchors.horizontalCenter: parent.horizontalCenter
+        spacing: 2
 
-        MouseArea {
-            anchors.fill: parent
+        Text {
+            id: labelText
+            text: control.label
+            font.family: Root.Theme.fontFamily
+            font.pixelSize: 12
+            font.weight: control.active ? Font.Medium : Font.Normal
+            color: control.active ? Root.Theme.textPrimary : Root.Theme.textSecondary
+            elide: Text.ElideRight
+            width: Math.min(implicitWidth, control.hasDetail ? (control.width - 20) : control.width)
+        }
+
+        Text {
             visible: control.hasDetail
-            cursorShape: Qt.PointingHandCursor
-            onClicked: control.detailClicked()
+            text: "expand_more"
+            font.family: materialSymbolsLoader.name !== "" ? materialSymbolsLoader.name : Root.Theme.iconFont
+            font.pixelSize: 16
+            font.weight: Font.Bold
+            color: control.active ? Root.Theme.primary : Root.Theme.textSecondary
+            Layout.alignment: Qt.AlignVCenter
+        }
+    }
+
+    MouseArea {
+        anchors.fill: labelRow
+        anchors.margins: -4
+        hoverEnabled: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: {
+            if (control.hasDetail)
+                control.detailClicked()
+            else
+                control.clicked()
         }
     }
 }

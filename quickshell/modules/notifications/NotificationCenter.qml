@@ -7,7 +7,7 @@ import Quickshell.Wayland
 import "../.." as Root
 
 // Notification Center — bottom-sliding panel (ChromeOS / MD3 style)
-// Displays dunst notification history in a scrollable card list.
+// Displays notification history in a scrollable card list.
 Scope {
     id: notifCenter
 

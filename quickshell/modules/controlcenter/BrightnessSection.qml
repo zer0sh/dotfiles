@@ -3,11 +3,12 @@ import QtQuick.Layouts
 import Quickshell.Io
 import "../.." as Root
 
-Item {
+// Vertical Glassmorphic Brightness Capsule (Material You Pixel style)
+Rectangle {
     id: root
 
-    implicitHeight: contentColumn.implicitHeight
-    implicitWidth: parent ? parent.width : 300
+    implicitWidth: 60
+    implicitHeight: 310
 
     property real brightness: 0.5
     property bool brightnessAvailable: true
@@ -18,7 +19,6 @@ Item {
         command: ["brightnessctl", "--class=backlight", "-m"]
         stdout: StdioCollector {
             onStreamFinished: {
-                // format: device,class,current,percentage%,max
                 var parts = text.trim().split(",");
                 if (parts.length >= 5) {
                     var current = parseFloat(parts[2]);
@@ -49,92 +49,75 @@ Item {
     }
 
     function brightnessIcon(level) {
-        if (level < 0.33) return "󰃞";
-        if (level < 0.66) return "󰃟";
-        return "󰃠";
+        if (level < 0.33) return "brightness_low";
+        if (level < 0.66) return "brightness_medium";
+        return "brightness_high";
     }
 
-    // ── UI Layout ──
-    ColumnLayout {
-        id: contentColumn
+    radius: width / 2
+    color: Qt.rgba(0, 0, 0, 0.22)
+    border.width: 1
+    border.color: Qt.rgba(255, 255, 255, 0.08)
+    clip: true
+    visible: root.brightnessAvailable
+
+    // Vertical Progress Fill (bottom to top)
+    Rectangle {
+        id: progressFill
+        anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        spacing: Root.Theme.spacingSmall
+        height: Math.max(0, parent.height * root.brightness)
+        radius: parent.radius
+        color: Root.Theme.primary
 
-        // Sink name (Brightness label)
-        Text {
-            text: "Screen Brightness"
-            font.family: Root.Theme.fontFamily
-            font.pixelSize: Root.Theme.fontSizeSmall
-            color: Root.Theme.textSecondary
-            elide: Text.ElideRight
-            Layout.fillWidth: true
+        Behavior on height { NumberAnimation { duration: 60 } }
+    }
+
+    // Top Percentage
+    Text {
+        id: percentText
+        anchors.top: parent.top
+        anchors.topMargin: 16
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: Math.round(root.brightness * 100) + "%"
+        font.family: Root.Theme.fontFamily
+        font.pixelSize: 13
+        font.weight: Font.DemiBold
+        color: root.brightness > 0.88 ? Root.Theme.tileActiveText : Root.Theme.textPrimary
+        z: 2
+
+        Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+    }
+
+    // Bottom Brightness Icon
+    Text {
+        id: iconText
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 16
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: root.brightnessIcon(root.brightness)
+        font.family: Root.Theme.iconFont
+        font.pixelSize: 24
+        color: root.brightness > 0.14 ? Root.Theme.tileActiveText : Root.Theme.textPrimary
+        z: 2
+
+        Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+    }
+
+    // Interaction
+    MouseArea {
+        anchors.fill: parent
+        preventStealing: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: (mouse) => updateBrightness(mouse.y)
+        onPressed: (mouse) => updateBrightness(mouse.y)
+        onPositionChanged: (mouse) => {
+            if (pressed) updateBrightness(mouse.y);
         }
-
-        // One UI-style brightness capsule
-        Rectangle {
-            Layout.fillWidth: true
-            height: 46
-            radius: height / 2
-            color: Root.Theme.surfaceContainerHigh
-            clip: true
-            visible: root.brightnessAvailable
-
-            // Active fill
-            Rectangle {
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                width: Math.max(parent.height, parent.width * root.brightness)
-                radius: parent.radius
-                color: Root.Theme.sliderActiveTrack
-                Behavior on width { NumberAnimation { duration: 80 } }
-            }
-
-            // Circular brightness icon surface
-            Rectangle {
-                width: 36
-                height: 36
-                anchors.left: parent.left
-                anchors.leftMargin: 5
-                anchors.verticalCenter: parent.verticalCenter
-                radius: width / 2
-                color: Root.Theme.textPrimary
-                z: 1
-
-                Text {
-                    anchors.centerIn: parent
-                    text: root.brightnessIcon(root.brightness)
-                    font.family: Root.Theme.fontFamily
-                    font.pixelSize: 21
-                    color: Root.Theme.tileActiveText
-                }
-            }
-
-            // Percentage text (right)
-            Text {
-                anchors.right: parent.right
-                anchors.rightMargin: 18
-                anchors.verticalCenter: parent.verticalCenter
-                text: Math.round(root.brightness * 100) + "%"
-                font.family: Root.Theme.fontFamily
-                font.pixelSize: Root.Theme.fontSizeSmall
-                font.weight: Font.DemiBold
-                color: root.brightness > 0.72 ? Root.Theme.tileActiveText : Root.Theme.textPrimary
-                z: 1
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                preventStealing: true
-                cursorShape: Qt.PointingHandCursor
-                onPressed: (mouse) => { if (mouse.x >= 56) updateBrightness(mouse.x) }
-                onPositionChanged: (mouse) => { if (pressed && mouse.x >= 56) updateBrightness(mouse.x) }
-                function updateBrightness(mx) {
-                    var val = Math.min(Math.max(mx / width, 0.0), 1.0);
-                    root.setBrightness(val);
-                }
-            }
+        function updateBrightness(my) {
+            var val = Math.min(Math.max((height - my) / height, 0.0), 1.0);
+            root.setBrightness(val);
         }
     }
 }

@@ -168,12 +168,13 @@ QtObject {
     readonly property color textDisabled: Qt.rgba(textSecondary.r, textSecondary.g, textSecondary.b, 0.35)
 
     // ── Font properties ────────────────────────────────────────────
-    readonly property string fontFamily: "JetBrainsMono Nerd Font"
-    readonly property int fontSizeNormal: 14
-    readonly property int fontSizeLarge: 18
+    readonly property string fontFamily: "Google Sans"
+    readonly property string iconFont: "Material Symbols Rounded"
+    readonly property int fontSizeNormal: 15
+    readonly property int fontSizeLarge: 19
     readonly property int fontSizeXL: 28
-    readonly property int fontSizeSmall: 12
-    readonly property int fontSizeXS: 10
+    readonly property int fontSizeSmall: 13
+    readonly property int fontSizeXS: 11
 
     // ── Spacing ────────────────────────────────────────────────────
     // One UI-inspired geometry: generous spacing and pill-like surfaces.
@@ -188,7 +189,7 @@ QtObject {
     readonly property int shelfHeight: 54
 
     // ── Layout constants ───────────────────────────────────────────
-    readonly property int panelWidth: 410
+    readonly property int panelWidth: 880
     readonly property int panelRadius: 32
     readonly property int tileRadius: 22
     readonly property int tileHeight: 70

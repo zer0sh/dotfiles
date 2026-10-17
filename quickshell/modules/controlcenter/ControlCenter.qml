@@ -1,8 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Controls
 import Quickshell
-import QtQuick
-import QtQuick.Layouts
 import Quickshell.Io
 import Quickshell.Wayland
 import "../.." as Root
@@ -15,6 +14,7 @@ Scope {
     property bool _showing: false
     property bool _panelOpen: false
     property string currentPage: "main"
+    property bool notificationsExpanded: false
 
     property string wifiStatus: ""
     property bool wifiEnabled: true
@@ -50,7 +50,25 @@ Scope {
         id: resetPageTimer
         interval: 300
         repeat: false
-        onTriggered: controlCenter.currentPage = "main"
+        onTriggered: {
+            controlCenter.currentPage = "main"
+            controlCenter.notificationsExpanded = false
+        }
+    }
+
+    function toggleNotifications() {
+        if (!panelVisible) {
+            currentPage = "main"
+            notificationsExpanded = true
+            panelVisible = true
+        } else {
+            if (notificationsExpanded) {
+                panelVisible = false
+            } else {
+                currentPage = "main"
+                notificationsExpanded = true
+            }
+        }
     }
 
     // ── Status processes ──────────────────────────────────────────
@@ -428,6 +446,22 @@ Scope {
         function toggle(): void {
             controlCenter.panelVisible = false
             launchThemeProc.running = true
+        }
+    }
+
+    IpcHandler {
+        target: "notifications"
+
+        function toggle(): void {
+            controlCenter.toggleNotifications()
+        }
+        function show(): void {
+            controlCenter.currentPage = "main"
+            controlCenter.notificationsExpanded = true
+            controlCenter.panelVisible = true
+        }
+        function hide(): void {
+            controlCenter.notificationsExpanded = false
         }
     }
 
@@ -859,6 +893,212 @@ Scope {
                                 WeatherWidget {
                                     Layout.preferredWidth: 200
                                     Layout.fillHeight: true
+                                }
+                            }
+
+                            // Notifications Collapsible Section
+                            Rectangle {
+                                id: notifCard
+                                Layout.fillWidth: true
+                                radius: 24
+                                color: Qt.rgba(255, 255, 255, 0.08)
+                                border.width: 1
+                                border.color: Qt.rgba(255, 255, 255, 0.14)
+                                clip: true
+
+                                implicitHeight: controlCenter.notificationsExpanded
+                                    ? (notifHeaderRow.height + notifBody.implicitHeight)
+                                    : notifHeaderRow.height
+
+                                Behavior on implicitHeight {
+                                    NumberAnimation { duration: 250; easing.type: Easing.OutCubic }
+                                }
+
+                                Item {
+                                    id: notifHeaderRow
+                                    anchors.top: parent.top
+                                    anchors.left: parent.left
+                                    anchors.right: parent.right
+                                    height: 48
+
+                                    RowLayout {
+                                        anchors.fill: parent
+                                        anchors.leftMargin: 18
+                                        anchors.rightMargin: 14
+                                        spacing: 10
+
+                                        Text {
+                                            text: "󰂚"
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 18
+                                            color: Notifications.NotificationService.count > 0 ? Root.Theme.primary : Root.Theme.textSecondary
+                                        }
+
+                                        Text {
+                                            text: "Notifications • ( " + Notifications.NotificationService.count + " )"
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 14
+                                            font.weight: Font.DemiBold
+                                            color: Root.Theme.textPrimary
+                                            Layout.fillWidth: true
+                                        }
+
+                                        // Botón Clear All
+                                        Rectangle {
+                                            visible: controlCenter.notificationsExpanded && Notifications.NotificationService.count > 0
+                                            width: clearAllText.implicitWidth + 20
+                                            height: 28
+                                            radius: 14
+                                            color: clearAllMouse.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
+
+                                            Behavior on color { ColorAnimation { duration: 100 } }
+
+                                            Text {
+                                                id: clearAllText
+                                                anchors.centerIn: parent
+                                                text: "Clear all"
+                                                font.family: Root.Theme.fontFamily
+                                                font.pixelSize: 12
+                                                font.weight: Font.DemiBold
+                                                color: Root.Theme.textSecondary
+                                            }
+
+                                            MouseArea {
+                                                id: clearAllMouse
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: Notifications.NotificationService.clearAll()
+                                            }
+                                        }
+
+                                        // Botón pequeño de flecha hacia abajo
+                                        Rectangle {
+                                            width: 32
+                                            height: 32
+                                            radius: 16
+                                            color: notifToggleMouse.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
+
+                                            Behavior on color { ColorAnimation { duration: 100 } }
+
+                                            Text {
+                                                anchors.centerIn: parent
+                                                text: "󰅀"
+                                                font.family: Root.Theme.fontFamily
+                                                font.pixelSize: 18
+                                                color: Root.Theme.textPrimary
+                                                rotation: controlCenter.notificationsExpanded ? 180 : 0
+
+                                                Behavior on rotation {
+                                                    NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+                                                }
+                                            }
+
+                                            MouseArea {
+                                                id: notifToggleMouse
+                                                anchors.fill: parent
+                                                hoverEnabled: true
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: controlCenter.notificationsExpanded = !controlCenter.notificationsExpanded
+                                            }
+                                        }
+                                    }
+
+                                    // Clic en la barra para alternar colapsado
+                                    MouseArea {
+                                        anchors.fill: parent
+                                        anchors.rightMargin: 80
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: controlCenter.notificationsExpanded = !controlCenter.notificationsExpanded
+                                    }
+                                }
+
+                                Item {
+                                    id: notifBody
+                                    anchors.top: notifHeaderRow.bottom
+                                    anchors.left: parent.left
+                                    anchors.right: parent.right
+                                    visible: controlCenter.notificationsExpanded
+                                    opacity: controlCenter.notificationsExpanded ? 1.0 : 0.0
+
+                                    Behavior on opacity {
+                                        NumberAnimation { duration: 200 }
+                                    }
+
+                                    implicitHeight: {
+                                        if (Notifications.NotificationService.count === 0) return 96;
+                                        return Math.min(notifListView.contentHeight + 20, 260);
+                                    }
+
+                                    // Separador fino
+                                    Rectangle {
+                                        anchors.top: parent.top
+                                        anchors.left: parent.left
+                                        anchors.right: parent.right
+                                        anchors.leftMargin: 16
+                                        anchors.rightMargin: 16
+                                        height: 1
+                                        color: Qt.rgba(255, 255, 255, 0.08)
+                                    }
+
+                                    // Estado vacío
+                                    ColumnLayout {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+                                        visible: Notifications.NotificationService.count === 0
+
+                                        Text {
+                                            Layout.alignment: Qt.AlignHCenter
+                                            text: "󰂚"
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 28
+                                            color: Root.Theme.textSecondary
+                                            opacity: 0.4
+                                        }
+
+                                        Text {
+                                            Layout.alignment: Qt.AlignHCenter
+                                            text: "No notifications"
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 13
+                                            color: Root.Theme.textSecondary
+                                            opacity: 0.6
+                                        }
+                                    }
+
+                                    // Lista de notificaciones
+                                    ListView {
+                                        id: notifListView
+                                        anchors.fill: parent
+                                        anchors.topMargin: 8
+                                        anchors.bottomMargin: 8
+                                        clip: true
+                                        visible: Notifications.NotificationService.count > 0
+                                        spacing: 4
+                                        boundsMovement: Flickable.StopAtBounds
+
+                                        model: Notifications.NotificationService.notifications
+
+                                        delegate: Notifications.NotificationItem {
+                                            width: notifListView.width
+                                            notifId: modelData.id
+                                            appName: modelData.appName
+                                            summary: modelData.summary
+                                            body: modelData.body
+                                            urgency: modelData.urgency
+                                            timestamp: modelData.timestamp
+                                            timeAgo: Notifications.NotificationService.relativeTime(modelData.timestamp)
+
+                                            onDismissed: function(id) {
+                                                Notifications.NotificationService.removeNotification(id);
+                                            }
+                                        }
+
+                                        ScrollBar.vertical: ScrollBar {
+                                            active: true
+                                            policy: ScrollBar.AsNeeded
+                                        }
+                                    }
                                 }
                             }
                         }

@@ -7,10 +7,13 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
 ## Modules Overview
 
 * **Control Center (`modules/controlcenter/`):**
-  * Toggles for Wi-Fi, Bluetooth, DND, Airplane Mode, Caffeine, Power Profiles, Night Light, and [Screen Shaders](../hyprland/shaders.md).
-  * Interactive volume and brightness sliders synchronizing with PipeWire and `brightnessctl`.
-  * Direct access to wallpaper changer and battery diagnostics.
-  * Theme switching integrated with the [Matugen Dynamic Theming Engine](../apps/matugen.md).
+  * **Layout Architecture:** Balanced two-column grid layout featuring a left widgets column (Analog Clock, Weather, Media Player) and a right control matrix (4x3 quick toggle grid alongside vertical glassmorphic sliders).
+  * **Analog Clock Widget (`AnalogClockWidget.qml`):** Canvas-based analog dial with dynamic hour and minute hands, digital time readout, and localized English weekday and calendar date.
+  * **Weather Widget (`WeatherWidget.qml`):** Live atmospheric conditions, ambient temperature, location label, and relative humidity fetched via OpenWeather API in English.
+  * **Vertical Sliders Card:** Frosted glassmorphic card housing vertical reactive sliders for PipeWire audio volume and `brightnessctl` display backlight.
+  * **Quick Toggles (4x3 Grid):** Rounded pill buttons for Wi-Fi, Bluetooth, DND, Airplane Mode, Caffeine, Power Profiles, Night Light, Screen Shaders, Audio outputs, Dynamic Theming, Energy, and Wallpaper selection.
+  * **Energy & Performance Dashboard (`BatterySection.qml`):** Dedicated hardware metrics subpage displaying charge percentage, discharge rates, full charge estimates, battery health state, power draw, charge cycles, and power profile presets (Power Saver, Balanced, Performance).
+  * **Waybar Sync:** Seamless bidirectional state sync between quick toggles (Caffeine, Night Light, Shader) and top status bar indicators using POSIX signals.
 * **Notifications & Toasts (`modules/notifications/`):**
   * Native DBus notification server (`org.freedesktop.Notifications`).
   * Top-center floating toast layer with smooth downward entrance animations.

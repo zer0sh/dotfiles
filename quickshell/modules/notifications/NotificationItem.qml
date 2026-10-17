@@ -102,7 +102,7 @@ Item {
                         anchors.fill: parent
                         hoverEnabled: true
                         cursorShape: Qt.PointingHandCursor
-                        onClicked: root.dismissed(root.notifId)
+                        onClicked: notifItem.dismissed(notifItem.notifId)
                     }
                 }
             }
@@ -121,7 +121,7 @@ Item {
 
             // ── Body text (3 lines max) ──────────────────────
             Text {
-                text: root.body
+                text: notifItem.body || ""
                 color: "#E5E1E9"
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: 15

@@ -13,6 +13,7 @@ QtObject {
     // Suppresses toast popups while keeping notifications in history.
     property bool dndEnabled: false
 
+
     // Internal map of id → Notification object (for tracked=false on remove)
     property var _notifMap: ({})
 
@@ -56,12 +57,6 @@ QtObject {
         }
     }
 
-    // ── Kill dunst on startup to avoid DBus conflict ─────────────────────
-    property var _killDunst: Process {
-        command: ["pkill", "dunst"]
-        Component.onCompleted: running = true
-    }
-
     // ── Waybar signal process ─────────────────────────────────────────────
     property var _waybarProc: Process {
         id: waybarProc
@@ -71,6 +66,7 @@ QtObject {
         var c = root.notifications.length
         waybarProc.command = ["sh", "-c",
             "printf '%s' '" + c + "' > /tmp/qs-notif-count; pkill -RTMIN+1 waybar 2>/dev/null; true"]
+        waybarProc.running = false
         waybarProc.running = true
     }
 

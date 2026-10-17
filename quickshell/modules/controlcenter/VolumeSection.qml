@@ -3,11 +3,14 @@ import QtQuick.Layouts
 import Quickshell.Services.Pipewire
 import "../.." as Root
 
-Item {
+// Vertical Glassmorphic Volume Capsule (Material You Pixel style)
+Rectangle {
     id: root
 
-    implicitHeight: contentColumn.implicitHeight
-    implicitWidth: parent ? parent.width : 300
+    signal openAudio()
+
+    implicitWidth: 60
+    implicitHeight: 310
 
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSink]
@@ -31,101 +34,91 @@ Item {
     }
 
     function volumeIcon(level, muted) {
-        if (muted || level === 0) return "󰖁";
-        if (level < 0.34) return "󰕿";
-        if (level < 0.67) return "󰖀";
-        return "󰕾";
+        if (muted || level === 0) return "volume_off";
+        if (level < 0.50) return "volume_down";
+        return "volume_up";
     }
 
-    // ── UI Layout ──
-    ColumnLayout {
-        id: contentColumn
+    radius: width / 2
+    color: Qt.rgba(0, 0, 0, 0.22)
+    border.width: 1
+    border.color: Qt.rgba(255, 255, 255, 0.08)
+    clip: true
+
+    // Vertical Progress Fill (bottom to top)
+    Rectangle {
+        id: progressFill
+        anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-        spacing: Root.Theme.spacingSmall
+        height: Math.max(0, parent.height * root.currentVolume)
+        radius: parent.radius
+        color: root.currentMuted
+            ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35)
+            : Root.Theme.primary
 
-        // Sink name
-        Text {
-            text: root.sinkName
-            font.family: Root.Theme.fontFamily
-            font.pixelSize: Root.Theme.fontSizeSmall
-            color: Root.Theme.textSecondary
-            elide: Text.ElideRight
-            Layout.fillWidth: true
-        }
+        Behavior on height { NumberAnimation { duration: 60 } }
+        Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+    }
 
-        // One UI-style volume capsule
-        Rectangle {
-            Layout.fillWidth: true
-            height: 46
-            radius: height / 2
-            color: Root.Theme.surfaceContainerHigh
-            clip: true
+    // Top Percentage / "Muted" badge
+    Text {
+        id: percentText
+        anchors.top: parent.top
+        anchors.topMargin: 16
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: root.currentMuted ? "Mute" : root.volumePercent + "%"
+        font.family: Root.Theme.fontFamily
+        font.pixelSize: 13
+        font.weight: Font.DemiBold
+        color: (root.currentVolume > 0.88 && !root.currentMuted)
+            ? Root.Theme.tileActiveText
+            : Root.Theme.textPrimary
+        z: 2
 
-            // Active fill — dims when muted
-            Rectangle {
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.left: parent.left
-                width: Math.max(parent.height, parent.width * root.currentVolume)
-                radius: parent.radius
-                color: root.currentMuted
-                    ? Qt.rgba(Root.Theme.sliderActiveTrack.r, Root.Theme.sliderActiveTrack.g, Root.Theme.sliderActiveTrack.b, 0.35)
-                    : Root.Theme.sliderActiveTrack
-                Behavior on width { NumberAnimation { duration: 80 } }
-                Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
-            }
+        Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+    }
 
-            // Circular icon control (left, click = mute toggle)
-            Rectangle {
-                id: volumeIconButton
-                width: 36
-                height: 36
-                anchors.left: parent.left
-                anchors.leftMargin: 5
-                anchors.verticalCenter: parent.verticalCenter
-                radius: width / 2
-                color: root.currentMuted
-                    ? Root.Theme.surfaceContainer
-                    : Root.Theme.textPrimary
-                z: 1
+    // Bottom Audio Icon
+    Text {
+        id: iconText
+        anchors.bottom: parent.bottom
+        anchors.bottomMargin: 16
+        anchors.horizontalCenter: parent.horizontalCenter
+        text: root.volumeIcon(root.currentVolume, root.currentMuted)
+        font.family: Root.Theme.iconFont
+        font.pixelSize: 24
+        color: (root.currentVolume > 0.14 && !root.currentMuted)
+            ? Root.Theme.tileActiveText
+            : Root.Theme.textPrimary
+        z: 2
 
-                Text {
-                    anchors.centerIn: parent
-                    text: root.volumeIcon(root.currentVolume, root.currentMuted)
-                    font.family: Root.Theme.fontFamily
-                    font.pixelSize: 21
-                    color: root.currentMuted ? Root.Theme.textPrimary : Root.Theme.tileActiveText
-                }
-            }
+        Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+    }
 
-            // Percentage or "Muted" (right)
-            Text {
-                anchors.right: parent.right
-                anchors.rightMargin: 18
-                anchors.verticalCenter: parent.verticalCenter
-                text: root.currentMuted ? "Muted" : root.volumePercent + "%"
-                font.family: Root.Theme.fontFamily
-                font.pixelSize: Root.Theme.fontSizeSmall
-                font.weight: Font.DemiBold
-                color: root.currentVolume > 0.72 && !root.currentMuted
-                    ? Root.Theme.tileActiveText : Root.Theme.textPrimary
-                z: 1
-            }
-
-            MouseArea {
-                anchors.fill: parent
-                preventStealing: true
-                cursorShape: Qt.PointingHandCursor
-                onClicked: (mouse) => { if (mouse.x < 56) root.toggleMute() }
-                onPressed: (mouse) => { if (mouse.x >= 56) updateVolume(mouse.x) }
-                onPositionChanged: (mouse) => { if (pressed && mouse.x >= 56) updateVolume(mouse.x) }
-                function updateVolume(mx) {
-                    var val = Math.min(Math.max(mx / width, 0.0), 1.0);
-                    root.setVolume(val);
-                }
+    // Interaction
+    MouseArea {
+        anchors.fill: parent
+        preventStealing: true
+        cursorShape: Qt.PointingHandCursor
+        onClicked: (mouse) => {
+            if (mouse.y > height - 48) {
+                root.toggleMute();
+            } else if (mouse.y < 40) {
+                root.openAudio();
+            } else {
+                updateVolume(mouse.y);
             }
         }
-
+        onPressed: (mouse) => {
+            if (mouse.y <= height - 48 && mouse.y >= 40) updateVolume(mouse.y);
+        }
+        onPositionChanged: (mouse) => {
+            if (pressed) updateVolume(mouse.y);
+        }
+        function updateVolume(my) {
+            var val = Math.min(Math.max((height - my) / height, 0.0), 1.0);
+            root.setVolume(val);
+        }
     }
 }

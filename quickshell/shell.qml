@@ -32,6 +32,10 @@ ShellRoot {
 
     Component.onCompleted: themeReadProc.running = true
 
+    FontLoader {
+        source: "fonts/MaterialSymbolsRounded.ttf"
+    }
+
     // --- Module Instances ---
     // Each component manages its own visibility and IPC handler internally.
     // Nothing auto-opens on startup.
@@ -50,9 +54,6 @@ ShellRoot {
         powerMenuRef: powerMenu
     }
 
-    Notifications.NotificationCenter {
-        id: notificationCenter
-    }
 
     Notifications.NotificationToastLayer {
         id: notificationToasts
@@ -107,7 +108,6 @@ ShellRoot {
         function onMenuOpenChanged() {
             if (powerMenu.menuOpen) {
                 controlCenter.panelVisible = false;
-                notificationCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
                 clipboardPanel.panelVisible = false;
             }
@@ -119,19 +119,6 @@ ShellRoot {
         function onPanelVisibleChanged() {
             if (controlCenter.panelVisible) {
                 powerMenu.menuOpen = false;
-                notificationCenter.panelVisible = false;
-                appLauncher.panelVisible = false;
-                clipboardPanel.panelVisible = false;
-            }
-        }
-    }
-
-    Connections {
-        target: notificationCenter
-        function onPanelVisibleChanged() {
-            if (notificationCenter.panelVisible) {
-                powerMenu.menuOpen = false;
-                controlCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
                 clipboardPanel.panelVisible = false;
             }
@@ -144,7 +131,6 @@ ShellRoot {
             if (appLauncher.panelVisible) {
                 powerMenu.menuOpen = false;
                 controlCenter.panelVisible = false;
-                notificationCenter.panelVisible = false;
                 clipboardPanel.panelVisible = false;
             }
         }
@@ -156,7 +142,6 @@ ShellRoot {
             if (clipboardPanel.panelVisible) {
                 powerMenu.menuOpen = false;
                 controlCenter.panelVisible = false;
-                notificationCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
             }
         }
