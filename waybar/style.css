@@ -109,8 +109,7 @@ window#waybar {
     background: alpha(@text, 0.12);
 }
 
-#tray.empty,
-#tray:empty {
+#tray.empty {
     padding: 0;
     margin: 0;
     background: transparent;
