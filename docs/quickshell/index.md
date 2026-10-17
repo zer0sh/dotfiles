@@ -14,10 +14,11 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
   * **Quick Toggles (4x3 Grid):** Rounded pill buttons for Wi-Fi, Bluetooth, DND, Airplane Mode, Caffeine, Power Profiles, Night Light, Screen Shaders, Audio outputs, Dynamic Theming, Energy, and Wallpaper selection.
   * **Energy & Performance Dashboard (`BatterySection.qml`):** Dedicated hardware metrics subpage displaying charge percentage, discharge rates, full charge estimates, battery health state, power draw, charge cycles, and power profile presets (Power Saver, Balanced, Performance).
   * **Waybar Sync:** Seamless bidirectional state sync between quick toggles (Caffeine, Night Light, Shader) and top status bar indicators using POSIX signals.
-* **Notifications & Toasts (`modules/notifications/`):**
-  * Native DBus notification server (`org.freedesktop.Notifications`).
-  * Top-center floating toast layer with smooth downward entrance animations.
-  * Persistent notification drawer accessible via [Waybar](../apps/waybar.md) or keyboard shortcuts.
+* **Notifications & Control Center Integration (`modules/controlcenter/`, `modules/notifications/`):**
+  * Native DBus notification server (`org.freedesktop.Notifications`) managed by `NotificationService.qml`.
+  * Top-center floating toast layer (`NotificationToastLayer.qml`) with smooth downward entrance animations.
+  * Collapsible notifications card embedded directly inside the Control Center featuring the title `Notifications • ( # )`, rotating toggle chevron, quick "Clear all" action, empty placeholder state, and scrollable notification list.
+  * Waybar notification bell triggers `qs ipc call notifications toggle`, opening the Control Center with the notifications card smoothly expanded.
   * Full design parameters and easing curves detailed in the [Notifications & OSDs Guide](osd-notifications.md).
 * **Clipboard Manager (`modules/clipboard/`):**
   * Visual history and search for text and images integrated with `cliphist`.

@@ -49,10 +49,9 @@ Item {
     }
 
     function dismiss() {
-        if (!disappearAnim.running && _opacity > 0) {
+        if (!disappearAnim.running) {
+            appearAnim.stop()
             disappearAnim.start()
-        } else if (_opacity <= 0) {
-            root.dismissed(root.notifId)
         }
     }
 

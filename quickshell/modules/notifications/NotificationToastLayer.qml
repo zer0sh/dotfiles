@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell
 import Quickshell.Wayland
+import "." as Notifications
 import "../.." as Root
 
 Scope {
@@ -9,7 +10,7 @@ Scope {
     ListModel { id: toastModel }
 
     Connections {
-        target: NotificationService
+        target: Notifications.NotificationService
 
         function onNewNotification(notifId, appName, summary, body, urgency, timeout) {
             toastModel.insert(0, {
@@ -73,14 +74,13 @@ Scope {
                         urgency: model.urgency
 
                         onDismissed: function(id) {
-                            NotificationService.removeNotification(id)
                             toastWin._removeById(id)
                         }
                     }
 
                     Timer {
                         property int _notifId: model.notifId
-                        interval:  model.timeout
+                        interval:  (model.timeout && model.timeout > 0) ? model.timeout : 5000
                         running:   true
                         repeat:    false
                         onTriggered: popup.dismiss()

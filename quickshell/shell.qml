@@ -30,7 +30,10 @@ ShellRoot {
         }
     }
 
-    Component.onCompleted: themeReadProc.running = true
+    Component.onCompleted: {
+        themeReadProc.running = true
+        var _ = Notifications.NotificationService.count
+    }
 
     FontLoader {
         source: "fonts/MaterialSymbolsRounded.ttf"
@@ -54,6 +57,8 @@ ShellRoot {
         powerMenuRef: powerMenu
     }
 
+    // Eagerly instantiate NotificationService singleton
+    readonly property var notifService: Notifications.NotificationService
 
     Notifications.NotificationToastLayer {
         id: notificationToasts

@@ -23,8 +23,11 @@ All floating indicators follow a standardized behavioral contract:
 
 | Component | Source File | Responsibility |
 | :--- | :--- | :--- |
-| **Toast Window** | `modules/notifications/NotificationToastLayer.qml` | Overlay window, model prepending (`insert(0)`), and column move transition. |
-| **Notification Card** | `modules/notifications/NotificationPopup.qml` | Card styling, slide-down appearance, and dismissal animations. |
+| **Notification Service** | `modules/notifications/NotificationService.qml` | DBus server claiming `org.freedesktop.Notifications`, history store, and Waybar count signal sync. |
+| **Toast Window** | `modules/notifications/NotificationToastLayer.qml` | Top floating window, model prepending (`insert(0)`), and column move transition. |
+| **Notification Toast Card** | `modules/notifications/NotificationPopup.qml` | Floating card styling, slide-down appearance, and dismissal animations. |
+| **Collapsible Notification Card** | `modules/controlcenter/ControlCenter.qml` | Embedded collapsible drawer with `Notifications • ( # )` title, 180° rotating toggle chevron, Clear all button, and scrollable card feed. |
+| **Notification Feed Item** | `modules/notifications/NotificationItem.qml` | Individual notification item styling in the Control Center drawer. |
 | **Volume OSD** | `modules/osd/VolumeOsd.qml` | Listens to PipeWire sink changes and animates top-center card. |
 | **Brightness OSD** | `modules/osd/BrightnessOsd.qml` | Listens to `brightnessctl` and animates top-center card. |
 | **Music Track Toast** | `modules/osd/MusicOsd.qml` | Automatic top-center popup on MPRIS track transition. |
