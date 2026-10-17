@@ -36,6 +36,11 @@ Waybar is docked at the top of the display with a height of 36 pixels and bottom
 
 ### 3. Right Section
 * **`tray`:** Wayland system tray for background application icons (`icon-size: 14px`, `spacing: 8px`).
+* **Quick Status Indicators (Pills):**
+    * **`custom/caffeine`:** Pill indicator displaying coffee cup glyph (`󰅶`) when active. Synchronizes with session wake-lock inhibitor via POSIX signal `SIGRTMIN+8`. Clicking toggles wake-lock state.
+    * **`custom/nightlight`:** Pill indicator displaying eye glyph (`󰈈`) when `hyprsunset` blue-light filter (4000K) is active. Synchronizes via POSIX signal `SIGRTMIN+9`. Clicking toggles warm filter state.
+    * **`custom/shader`:** Pill indicator displaying screen shader glyph (`󰸉`) when Hyprland decoration filter is active. Synchronizes via POSIX signal `SIGRTMIN+10`. Clicking toggles active shader profile.
+    * **Styling & Metrics:** Indicators render as rounded pills (`height: 28px`, `border-radius: 18px`, `background: alpha(@text, 0.08)`) with asymmetric horizontal padding (`padding: 0 13px 0 9px` and `0 12px 0 10px`) to compensate for font side bearings and maintain exact optical centering.
 * **`custom/notifications`:** Notification bell pill connected to Quickshell's notification daemon:
     * Reads unread count from `/tmp/qs-notif-count`.
     * Receives instant wakeup via POSIX signal `SIGRTMIN+1` whenever notifications arrive or dismiss.

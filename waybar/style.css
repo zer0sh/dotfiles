@@ -110,6 +110,36 @@ window#waybar {
     -gtk-icon-effect: highlight;
 }
 
+/* ----- Quick indicator pills (Caffeine, Nightlight, Shader) ----- */
+#custom-caffeine,
+#custom-nightlight,
+#custom-shader {
+    padding: 0 13px 0 9px;
+    margin: 4px 3px;
+    border-radius: 18px;
+    background: alpha(@text, 0.08);
+    color: @accent;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+#custom-caffeine {
+    padding: 0 12px 0 10px;
+}
+
+#custom-caffeine:hover,
+#custom-nightlight:hover,
+#custom-shader:hover {
+    background: alpha(@text, 0.14);
+}
+
+#custom-caffeine label,
+#custom-nightlight label,
+#custom-shader label {
+    margin: 0;
+    padding: 0;
+}
+
 /* ----- Notification bell (standalone pill) ----- */
 #custom-notifications {
     padding: 0 15px 0 12px;

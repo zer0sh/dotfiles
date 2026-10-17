@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# Waybar screen shader status / toggle
+if [ "$1" = "toggle" ]; then
+    /home/zero/.config/hypr/scripts/filter toggle
+    pkill -RTMIN+10 waybar 2>/dev/null || true
+    exit 0
+fi
+
+shader_str=$(hyprctl getoption decoration:screen_shader -j 2>/dev/null | jq -r '.str // empty' 2>/dev/null)
+if [ -n "$shader_str" ] && [[ "$shader_str" != *"off.glsl"* ]] && [[ "$shader_str" != *"[[EMPTY]]"* ]]; then
+    name="Active"
+    if [ -f "$HOME/.cache/hypr-bw-filter" ]; then
+        name=$(cat "$HOME/.cache/hypr-bw-filter")
+    elif [ -f "/tmp/hypr-bw-filter" ]; then
+        name=$(cat "/tmp/hypr-bw-filter")
+    fi
+    echo "{\"text\": \"󰸉\", \"class\": \"active\", \"tooltip\": \"Screen filter: $name\"}"
+else
+    echo '{"text": "", "class": "hidden"}'
+fi

@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Waybar caffeine status / toggle
+STATE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/caffeine-mode"
+
+if [ "$1" = "toggle" ]; then
+    if [ -f "$STATE_FILE" ] || pgrep -f "Caffeine mode" >/dev/null 2>&1; then
+        pkill -f "Caffeine mode" 2>/dev/null || true
+        rm -f "$STATE_FILE"
+        notify-send "Caffeine" "Caffeine mode disabled"
+    else
+        touch "$STATE_FILE"
+        systemd-inhibit --what=idle:sleep --who=Quickshell --why="Caffeine mode" sleep infinity >/dev/null 2>&1 &
+        notify-send "Caffeine" "Caffeine mode enabled"
+    fi
+    pkill -RTMIN+8 waybar 2>/dev/null || true
+    exit 0
+fi
+
+if [ -f "$STATE_FILE" ] || pgrep -f "Caffeine mode" >/dev/null 2>&1; then
+    echo '{"text": "󰅶", "class": "active", "tooltip": "Caffeine mode active"}'
+else
+    echo '{"text": "", "class": "hidden"}'
+fi

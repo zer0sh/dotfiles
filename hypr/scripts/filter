@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SHADER_DIR="$HOME/.config/hypr/shaders"
-STATE_FILE="/tmp/hypr-bw-filter"
+STATE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/hypr-bw-filter"
 
 apply_shader() {
     local name="$1"

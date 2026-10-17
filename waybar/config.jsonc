@@ -6,6 +6,7 @@
   "tooltip": false,
   "modules-left": [
     "custom/launcher",
+    "custom/wallpaper",
     "hyprland/workspaces"
   ],
   "modules-center": [
@@ -13,6 +14,9 @@
   ],
   "modules-right": [
     "tray",
+    "custom/caffeine",
+    "custom/nightlight",
+    "custom/shader",
     "custom/notifications",
     "custom/date",
     "clock",
@@ -22,9 +26,38 @@
     "battery",
     "custom/power"
   ],
+  "custom/caffeine": {
+    "exec": "~/.config/waybar/scripts/caffeine",
+    "return-type": "json",
+    "interval": 3,
+    "signal": 8,
+    "on-click": "~/.config/waybar/scripts/caffeine toggle",
+    "tooltip": true
+  },
+  "custom/nightlight": {
+    "exec": "~/.config/waybar/scripts/nightlight",
+    "return-type": "json",
+    "interval": 3,
+    "signal": 9,
+    "on-click": "~/.config/waybar/scripts/nightlight toggle",
+    "tooltip": true
+  },
+  "custom/shader": {
+    "exec": "~/.config/waybar/scripts/shader",
+    "return-type": "json",
+    "interval": 3,
+    "signal": 10,
+    "on-click": "~/.config/waybar/scripts/shader toggle",
+    "tooltip": true
+  },
   "custom/launcher": {
     "format": "󰪥",
     "on-click": "qs ipc call launcher toggle",
+    "tooltip": false
+  },
+  "custom/wallpaper": {
+    "format": "󰸉",
+    "on-click": "qs ipc call launcher wallpaper",
     "tooltip": false
   },
   "custom/notifications": {

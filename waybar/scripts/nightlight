@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Waybar nightlight status / toggle
+if [ "$1" = "toggle" ]; then
+    if pgrep -x hyprsunset >/dev/null 2>&1; then
+        pkill -x hyprsunset
+        notify-send "Night light" "Light color filter disabled"
+    else
+        setsid nohup hyprsunset -t 4000 >/dev/null 2>&1 < /dev/null &
+        notify-send "Night light" "Light color filter enabled (4000K)"
+    fi
+    pkill -RTMIN+9 waybar 2>/dev/null || true
+    exit 0
+fi
+
+if pgrep -x hyprsunset >/dev/null 2>&1; then
+    echo '{"text": "󰈈", "class": "active", "tooltip": "Night light active (4000K)"}'
+else
+    echo '{"text": "", "class": "hidden"}'
+fi
