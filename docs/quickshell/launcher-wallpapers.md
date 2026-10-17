@@ -53,7 +53,12 @@ quickshell/
 When the search input is empty or contains standard text:
 * Lists all installed `.desktop` applications discovered by `list-apps.py`.
 * Shows application icon, title in bold, and comment / category description.
-* Keyboard navigation: `Up` / `Down` arrows move selection, `Enter` executes the application and closes the launcher, `Escape` cancels.
+* **High-Contrast Selection Feedback:**
+  * Active item receives a vibrant translucent primary tint (`rgba(primary, 0.22)`) and 1.5 px glowing primary border.
+  * Vertical accent pill indicator on the left border.
+  * Prominent `[ 󰌑 Enter ]` badge on the right edge.
+  * Dynamic icon and title scale expansion.
+* Keyboard navigation: `Up` / `Down` arrows move selection with automatic viewport positioning (`positionViewAtIndex`), `Enter` executes the application and closes the launcher, `Escape` cancels.
 
 ### 2. Action / Command Mode (`>`)
 Typing `>` filters available system commands:
