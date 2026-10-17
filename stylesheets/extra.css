@@ -1,0 +1,1303 @@
+/* ==========================================================================
+   zer0sh Dotfiles - Material 3 + Glassmorphism Theme
+   UX/UI Optimized Documentation Stylesheet
+   ========================================================================== */
+
+/* --- 1. Root & Design Tokens --- */
+:root {
+  --md-sys-motion-standard: cubic-bezier(0.2, 0, 0, 1);
+  --md-sys-radius-xs: 4px;
+  --md-sys-radius-sm: 8px;
+  --md-sys-radius-md: 12px;
+  --md-sys-radius-lg: 16px;
+  --md-sys-radius-xl: 24px;
+  --md-sys-radius-pill: 9999px;
+}
+
+/* --- Dark Theme Tokens (Slate / Cobalt Night Glass) --- */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: transparent;
+  --md-default-fg-color: #e2e1ec;
+  --md-default-fg-color--light: #9a9cb2;
+  --md-default-fg-color--lighter: #63667c;
+  --md-primary-fg-color: #9bbde8;
+  --md-accent-fg-color: #c7bfff;
+
+  /* Glass Surface Tokens */
+  --glass-bg-base: rgba(13, 15, 23, 0.72);
+  --glass-bg-card: rgba(17, 18, 29, 0.78);
+  --glass-bg-card-hover: rgba(28, 32, 50, 0.85);
+  --glass-bg-elevated: rgba(24, 27, 42, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-focus: rgba(199, 191, 255, 0.45);
+  --glass-shadow: 0 12px 32px 0 rgba(0, 0, 0, 0.45);
+  --glass-shadow-sm: 0 4px 16px 0 rgba(0, 0, 0, 0.25);
+  --glass-blur: blur(18px) saturate(180%);
+
+  /* Material You Semantic Accents */
+  --m3-accent-container: rgba(169, 148, 249, 0.18);
+  --m3-accent-on-container: #e5deff;
+  --m3-primary-container: rgba(155, 189, 232, 0.16);
+  --m3-code-bg: rgba(13, 15, 24, 0.88);
+  --m3-table-header: rgba(28, 33, 49, 0.7);
+}
+
+/* --- Light Theme Tokens (Material You Daylight Glass) --- */
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: transparent;
+  --md-default-fg-color: #1a1b24;
+  --md-default-fg-color--light: #525466;
+  --md-default-fg-color--lighter: #898c9f;
+  --md-primary-fg-color: #554a8a;
+  --md-accent-fg-color: #6750a4;
+
+  /* Glass Surface Tokens */
+  --glass-bg-base: rgba(247, 248, 252, 0.78);
+  --glass-bg-card: rgba(255, 255, 255, 0.78);
+  --glass-bg-card-hover: rgba(255, 255, 255, 0.92);
+  --glass-bg-elevated: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-border-focus: rgba(103, 80, 164, 0.45);
+  --glass-shadow: 0 12px 32px 0 rgba(40, 48, 70, 0.1);
+  --glass-shadow-sm: 0 4px 16px 0 rgba(40, 48, 70, 0.06);
+  --glass-blur: blur(18px) saturate(180%);
+
+  /* Material You Semantic Accents */
+  --m3-accent-container: rgba(103, 80, 164, 0.12);
+  --m3-accent-on-container: #21005d;
+  --m3-primary-container: rgba(85, 74, 138, 0.12);
+  --m3-code-bg: rgba(240, 242, 248, 0.88);
+  --m3-table-header: rgba(230, 233, 243, 0.75);
+}
+
+/* --- 2. Layout Width & Ambient Wallpaper Background --- */
+.md-grid {
+  max-width: 1340px !important;
+}
+
+html {
+  background-color: #0b0d14;
+}
+
+body {
+  min-height: 100vh;
+  transition: background-color 0.35s var(--md-sys-motion-standard);
+  -webkit-font-smoothing: antialiased;
+}
+
+body[data-md-color-scheme="slate"] {
+  background-color: #0a0c13 !important;
+  background-image:
+    radial-gradient(circle at 10% 15%, rgba(155, 189, 232, 0.14) 0%, transparent 36%),
+    radial-gradient(circle at 90% 20%, rgba(199, 191, 255, 0.12) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, rgba(134, 213, 160, 0.08) 0%, transparent 48%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+body[data-md-color-scheme="default"] {
+  background-color: #f4f5fa !important;
+  background-image:
+    radial-gradient(circle at 12% 14%, rgba(103, 80, 164, 0.10) 0%, transparent 38%),
+    radial-gradient(circle at 88% 22%, rgba(155, 189, 232, 0.15) 0%, transparent 42%),
+    radial-gradient(circle at 50% 82%, rgba(200, 176, 240, 0.09) 0%, transparent 50%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.md-container,
+.md-main {
+  background-color: transparent !important;
+}
+
+::selection {
+  background-color: var(--md-accent-fg-color);
+  color: #000;
+}
+
+/* --- 3. Top App Bar (Compact Header & Actions) --- */
+.md-header {
+  background-color: var(--glass-bg-base) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-sm);
+  transition: all 0.3s var(--md-sys-motion-standard);
+}
+
+.md-header__inner {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0.2rem 1rem !important;
+  height: 2.75rem !important;
+  max-width: 1340px !important;
+}
+
+/* Left Cluster: Logo & Brand Title (Order 1) */
+.md-logo,
+.md-header__button[for="__drawer"],
+.md-header__title {
+  order: 1 !important;
+}
+
+.md-logo {
+  padding: 0.15rem !important;
+}
+
+.md-logo svg,
+.md-logo img {
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+}
+
+.md-header__title {
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  line-height: normal !important;
+  margin: 0 1rem 0 0.4rem !important;
+}
+
+.md-header__title > .md-header__ellipsis {
+  display: flex !important;
+  align-items: center !important;
+  height: 100% !important;
+}
+
+/* Compact, clean site title */
+.md-header__topic {
+  position: relative !important;
+  font-size: 0.88rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+  color: var(--md-default-fg-color, #e4e1e9) !important;
+  opacity: 1 !important;
+  transform: none !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.md-header__topic:first-child {
+  opacity: 1 !important;
+  transform: none !important;
+  display: flex !important;
+}
+
+.md-header__title--active .md-header__topic:first-child {
+  opacity: 1 !important;
+  transform: none !important;
+  pointer-events: auto !important;
+}
+
+/* Hide secondary shifting page-name */
+.md-header__topic[data-md-component="header-topic"] {
+  display: none !important;
+}
+
+/* Base header button style */
+.md-header__button.md-icon {
+  background: transparent !important;
+  border: none !important;
+  border-radius: var(--md-sys-radius-sm) !important;
+  margin: 0 2px;
+  padding: 0.25rem !important;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.md-header__button.md-icon svg {
+  width: 1.1rem !important;
+  height: 1.1rem !important;
+}
+
+.md-header__button.md-icon:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+[data-md-color-scheme="default"] .md-header__button.md-icon:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+/* --- 4. Android Pill Search Bar (Order 2 - Centered & Compact) --- */
+@media screen and (min-width: 60em) {
+  .md-search,
+  .md-search[hidden] {
+    display: block !important;
+    order: 2 !important;
+    flex: 1 1 auto !important;
+    max-width: 420px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+  }
+
+  .md-search__inner {
+    display: block !important;
+    float: none !important;
+    width: 100% !important;
+    height: auto !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    position: relative !important;
+    transform: none !important;
+  }
+
+  .md-search__form {
+    width: 100% !important;
+    height: 2rem !important;
+  }
+
+  .md-search__input {
+    font-size: 0.78rem !important;
+    padding-left: 2.3rem !important;
+    padding-right: 1.8rem !important;
+    height: 100% !important;
+  }
+
+  .md-search__output {
+    width: 100% !important;
+    top: 2.35rem !important;
+  }
+
+  .md-search__scrollwrap {
+    width: 100% !important;
+  }
+
+  /* Centered Magnifying Glass Icon on Desktop */
+  .md-search__icon[for="__search"] {
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    left: 0.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 1rem !important;
+    width: 1rem !important;
+    margin: 0 !important;
+    pointer-events: none !important;
+  }
+
+  .md-search__icon[for="__search"] svg:first-child {
+    display: block !important;
+    width: 0.95rem !important;
+    height: 0.95rem !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .md-search__icon[for="__search"] svg:last-child {
+    display: none !important;
+  }
+
+  /* Desktop Header Elements Order */
+  .md-header__option {
+    order: 3 !important;
+    margin-left: 0.5rem !important;
+    margin-right: 0.35rem !important;
+  }
+
+  .md-header__source {
+    order: 4 !important;
+    width: auto !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+  }
+}
+
+/* --- Mobile Top App Bar & Mobile Search (< 60em) --- */
+@media screen and (max-width: 59.9375em) {
+  .md-header__inner {
+    height: 3rem !important;
+    padding: 0 0.5rem !important;
+    gap: 0.2rem !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* 1. Hamburger menu button */
+  .md-header__button[for="__drawer"] {
+    order: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    border-radius: 8px !important;
+    margin: 0 !important;
+  }
+
+  /* 2. Brand logo */
+  .md-logo {
+    order: 2 !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 !important;
+    margin: 0 0.15rem 0 0 !important;
+  }
+
+  .md-logo svg,
+  .md-logo img {
+    width: 1.15rem !important;
+    height: 1.15rem !important;
+  }
+
+  /* 3. Site title: fluid flex with text-overflow ellipsis */
+  .md-header__title {
+    order: 3 !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 0.4rem 0 0.2rem !important;
+    overflow: hidden !important;
+  }
+
+  .md-header__title > .md-header__ellipsis {
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .md-header__topic {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    font-size: 0.86rem !important;
+    font-weight: 600 !important;
+    letter-spacing: -0.01em !important;
+    color: var(--md-default-fg-color, #e4e1e9) !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  /* 4. Search action icon */
+  .md-header__button[for="__search"] {
+    order: 4 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    margin: 0 !important;
+    border-radius: 8px !important;
+  }
+
+  .md-header__button[for="__search"] svg {
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+  }
+
+  /* 5. Theme toggle switch */
+  .md-header__option {
+    order: 5 !important;
+    margin: 0 !important;
+  }
+
+  .md-header__option label {
+    width: 2.25rem !important;
+    height: 2.25rem !important;
+    border-radius: 8px !important;
+  }
+
+  /* 6. GitHub Repository Button (Icon-Only on Mobile) */
+  .md-header__source {
+    order: 6 !important;
+    display: flex !important;
+    align-items: center !important;
+    margin: 0 !important;
+  }
+
+  .md-header__source .md-source {
+    height: 2.25rem !important;
+    width: 2.25rem !important;
+    min-width: 2.25rem !important;
+    padding: 0 !important;
+    justify-content: center !important;
+    border-radius: 8px !important;
+  }
+
+  .md-header__source .md-source__repository {
+    display: none !important;
+  }
+
+  .md-header__source .md-source__icon svg {
+    width: 1.05rem !important;
+    height: 1.05rem !important;
+  }
+
+  /* Mobile Search Overlay Sheet */
+  [data-md-toggle="search"]:checked ~ .md-header .md-search {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 100 !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__inner {
+    background: rgba(17, 18, 29, 0.96) !important;
+    backdrop-filter: blur(28px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+    padding: 0.6rem 0.8rem 0.8rem 0.8rem !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45) !important;
+  }
+
+  [data-md-color-scheme="default"] [data-md-toggle="search"]:checked ~ .md-header .md-search__inner {
+    background: rgba(255, 255, 255, 0.96) !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__form {
+    height: 2.6rem !important;
+    border-radius: 24px !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__input {
+    font-size: 0.9rem !important;
+    padding-left: 2.8rem !important;
+    padding-right: 2.6rem !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__icon[for="__search"] {
+    position: absolute !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    left: 0.85rem !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 1.3rem !important;
+    height: 1.3rem !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__icon[for="__search"] svg:first-child {
+    display: none !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__icon[for="__search"] svg:last-child {
+    display: block !important;
+    width: 1.2rem !important;
+    height: 1.2rem !important;
+  }
+
+  [data-md-toggle="search"]:checked ~ .md-header .md-search__output {
+    position: fixed !important;
+    top: 4.2rem !important;
+    left: 0.75rem !important;
+    right: 0.75rem !important;
+    width: calc(100vw - 1.5rem) !important;
+    max-height: calc(100vh - 5rem) !important;
+    border-radius: 16px !important;
+    border: 1px solid var(--glass-border) !important;
+  }
+}
+
+/* Centered Clear Button */
+.md-search__options {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  right: 0.65rem !important;
+  display: flex !important;
+  align-items: center !important;
+}
+
+.md-search__overlay {
+  background-color: rgba(0, 0, 0, 0.45) !important;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.md-search__scrollwrap {
+  background-color: transparent !important;
+}
+
+.md-search__output {
+  background-color: var(--glass-bg-elevated) !important;
+  backdrop-filter: blur(24px) saturate(190%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--md-sys-radius-lg) !important;
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+}
+
+.md-search-result__meta {
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--glass-border);
+  font-weight: 600;
+  font-size: 0.78rem;
+}
+
+.md-search-result__item {
+  border-radius: var(--md-sys-radius-sm);
+  margin: 0.2rem 0.4rem;
+  transition: background-color 0.2s ease;
+}
+
+.md-search-result__item:hover {
+  background-color: var(--m3-accent-container);
+}
+
+/* --- Theme Switcher: STRICTLY SINGLE TOGGLE BUTTON --- */
+.md-header__option {
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* Hide all toggle labels by default */
+.md-header__option label {
+  display: none !important;
+}
+
+/* In Dark Mode (slate): show ONLY the toggle button to light mode (__palette_1) */
+[data-md-color-scheme="slate"] .md-header__option label[for="__palette_1"],
+:root:not([data-md-color-scheme="default"]) .md-header__option label[for="__palette_1"] {
+  display: flex !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  transition: all 0.2s var(--md-sys-motion-standard);
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* In Light Mode (default): show ONLY the toggle button to dark mode (__palette_0) */
+[data-md-color-scheme="default"] .md-header__option label[for="__palette_0"] {
+  display: flex !important;
+  width: 2rem !important;
+  height: 2rem !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 8px !important;
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  transition: all 0.2s var(--md-sys-motion-standard);
+  cursor: pointer;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.md-header__option label svg {
+  width: 1rem !important;
+  height: 1rem !important;
+}
+
+.md-header__option label:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: var(--glass-border-focus) !important;
+  transform: translateY(-1px);
+}
+
+[data-md-color-scheme="default"] .md-header__option label:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+}
+
+/* Rightmost: Repository Badge */
+.md-header__source {
+  width: auto !important;
+  max-width: none !important;
+}
+
+.md-source {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 2rem !important;
+  padding: 0 11px !important;
+  min-width: fit-content !important;
+  max-width: none !important;
+  width: auto !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  box-sizing: border-box !important;
+}
+
+.md-source:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: var(--glass-border-focus) !important;
+  transform: translateY(-1px);
+}
+
+[data-md-color-scheme="default"] .md-source {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+}
+
+.md-source__icon {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: auto !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.md-source__icon svg {
+  width: 0.95rem !important;
+  height: 0.95rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+}
+
+.md-source__icon + .md-source__repository {
+  padding-left: 0 !important;
+  margin-left: 6px !important;
+}
+
+.md-source__repository {
+  display: inline-block !important;
+  max-width: none !important;
+  width: auto !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+  font-size: 0.76rem !important;
+  font-weight: 500 !important;
+  line-height: normal !important;
+  letter-spacing: 0.01em !important;
+}
+
+/* --- 5. Navigation Tabs (Compact Centered Tabs Bar) --- */
+.md-tabs {
+  background-color: var(--glass-bg-base) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0.12rem 0 !important;
+}
+
+.md-tabs__list {
+  padding: 0.1rem 0 !important;
+  display: flex;
+  justify-content: center !important;
+  gap: 6px;
+}
+
+.md-tabs__item {
+  height: auto;
+}
+
+.md-tabs__link {
+  border-radius: 6px !important;
+  padding: 4px 11px !important;
+  font-weight: 500;
+  font-size: 0.76rem !important;
+  transition: all 0.2s ease;
+}
+
+.md-tabs__link:hover {
+  background-color: var(--glass-border);
+  color: var(--md-accent-fg-color) !important;
+}
+
+.md-tabs__item--active .md-tabs__link {
+  background: rgba(169, 148, 249, 0.18) !important;
+  color: #c4b5fd !important;
+  border: 1px solid rgba(169, 148, 249, 0.35);
+  font-weight: 600;
+}
+
+/* --- 6. Navigation Sidebars (Drawer & TOC) --- */
+.md-sidebar {
+  padding-top: 1rem;
+}
+
+.md-sidebar--primary {
+  background-color: transparent !important;
+}
+
+.md-nav__title {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.md-nav__link {
+  border-radius: var(--md-sys-radius-md);
+  padding: 0.4rem 0.85rem;
+  margin: 0.1rem 0;
+  transition: all 0.2s var(--md-sys-motion-standard);
+}
+
+.md-nav__link:hover {
+  background-color: var(--glass-border);
+  color: var(--md-accent-fg-color) !important;
+}
+
+.md-nav__item--active > .md-nav__link {
+  background-color: var(--m3-accent-container) !important;
+  color: var(--md-accent-fg-color) !important;
+  font-weight: 600;
+  box-shadow: inset 0 0 0 1px var(--glass-border);
+}
+
+/* Right Table of Contents (TOC Card) */
+.md-sidebar--secondary .md-sidebar__scrollwrap {
+  background: rgba(17, 18, 29, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 0.75rem;
+  box-shadow: var(--glass-shadow-sm);
+}
+
+[data-md-color-scheme="default"] .md-sidebar--secondary .md-sidebar__scrollwrap {
+  background: rgba(255, 255, 255, 0.65);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+/* Mobile Drawer (Android Pure Material Design 3 Navigation Drawer) */
+@media screen and (max-width: 76.234375em) {
+  [dir="ltr"] .md-sidebar--primary,
+  .md-sidebar--primary {
+    width: 17.5rem !important;
+    left: 0 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border-radius: 0 24px 24px 0 !important;
+    border-right: 1px solid var(--glass-border) !important;
+    box-shadow: 8px 0 36px rgba(0, 0, 0, 0.45) !important;
+    overflow: hidden !important;
+  }
+
+  [data-md-toggle="drawer"]:checked ~ .md-container .md-sidebar--primary {
+    transform: translateX(0) !important;
+  }
+
+  /* Prevent duplicate items when TOC label exists */
+  .md-nav--primary .md-nav__link[for="__toc"] + .md-nav__link {
+    display: none !important;
+  }
+
+  .md-sidebar--primary .md-sidebar__scrollwrap,
+  .md-nav--primary,
+  .md-nav--primary .md-nav {
+    background-color: var(--glass-bg-elevated) !important;
+    backdrop-filter: blur(28px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  }
+
+  /* Drawer Header */
+  .md-nav__title[for="__drawer"] {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+    padding: 1.3rem 1.25rem 0.85rem 1.25rem !important;
+    font-size: 0.95rem !important;
+    font-weight: 700 !important;
+    color: var(--md-accent-fg-color) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+    background: transparent !important;
+  }
+
+  .md-nav__title[for="__drawer"] .md-nav__button.md-logo {
+    width: 2.2rem !important;
+    height: 2.2rem !important;
+    border-radius: 10px !important;
+    background: rgba(169, 148, 249, 0.16) !important;
+    border: 1px solid rgba(169, 148, 249, 0.25) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 5px !important;
+    margin: 0 !important;
+  }
+
+  /* Repository Card in Drawer (M3 Glass Surface) */
+  .md-nav__source {
+    margin: 0.75rem 0.85rem !important;
+    border-radius: 12px !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    overflow: hidden;
+  }
+
+  [data-md-color-scheme="default"] .md-nav__source {
+    background: rgba(0, 0, 0, 0.04) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  }
+
+  .md-nav__source .md-source {
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0.55rem 0.9rem !important;
+    color: var(--md-default-fg-color) !important;
+    display: flex !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: auto !important;
+  }
+
+  .md-nav__source .md-source__repository {
+    display: block !important;
+    margin-left: 8px !important;
+    font-size: 0.82rem !important;
+    font-weight: 500 !important;
+    color: var(--md-default-fg-color) !important;
+  }
+
+  /* Drawer Navigation Items (M3 Pill Shape & Touch Spacing) */
+  .md-nav--primary .md-nav__item {
+    padding: 2px 10px !important;
+  }
+
+  .md-nav--primary .md-nav__link {
+    border-radius: 12px !important;
+    padding: 0.6rem 0.95rem !important;
+    min-height: 2.65rem !important;
+    font-size: 0.86rem !important;
+    font-weight: 500 !important;
+    display: flex !important;
+    align-items: center !important;
+    transition: all 0.2s ease;
+  }
+
+  .md-nav--primary .md-nav__item--active > .md-nav__link {
+    background: rgba(169, 148, 249, 0.18) !important;
+    color: #c4b5fd !important;
+    font-weight: 600 !important;
+    border: 1px solid rgba(169, 148, 249, 0.3) !important;
+  }
+
+  [data-md-color-scheme="default"] .md-nav--primary .md-nav__item--active > .md-nav__link {
+    background: rgba(103, 80, 164, 0.14) !important;
+    color: #6750a4 !important;
+    border-color: rgba(103, 80, 164, 0.25) !important;
+  }
+
+  /* Nested Navigation Submenu Lists */
+  .md-nav--primary .md-nav {
+    margin-left: 1.2rem !important;
+    border-left: 2px solid rgba(255, 255, 255, 0.08) !important;
+    padding-left: 0.35rem !important;
+  }
+
+  [data-md-color-scheme="default"] .md-nav--primary .md-nav {
+    border-left-color: rgba(0, 0, 0, 0.08) !important;
+  }
+}
+
+/* --- 7. Main Content Glass Container --- */
+.md-content__inner {
+  margin-top: 1.2rem;
+  margin-bottom: 2rem;
+  padding: 1.8rem 2.5rem;
+  background-color: var(--glass-bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: var(--glass-shadow);
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.md-typeset h1 {
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin-bottom: 1.2rem;
+  color: var(--md-accent-fg-color);
+}
+
+.md-typeset h2 {
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 0.4rem;
+  margin-top: 2rem;
+}
+
+.md-typeset hr {
+  border-bottom: 1px solid var(--glass-border);
+  margin: 1.8rem 0;
+}
+
+/* --- 8. Code Blocks & Terminal (Single Clean Container) --- */
+.highlight,
+.highlighttable,
+.md-typeset > pre {
+  background-color: var(--m3-code-bg) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 10px !important;
+  box-shadow: var(--glass-shadow-sm);
+  overflow: hidden !important;
+  margin: 1.2rem 0;
+}
+
+.highlight pre,
+.highlighttable pre,
+.md-typeset .highlight pre {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  margin: 0 !important;
+  padding: 0.85rem 1.15rem !important;
+}
+
+.highlight code,
+.highlight pre code,
+.highlighttable code,
+.md-typeset pre > code {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.md-clipboard {
+  border-radius: var(--md-sys-radius-pill);
+  transition: all 0.2s var(--md-sys-motion-standard);
+  top: 0.5rem !important;
+  right: 0.5rem !important;
+}
+
+.md-clipboard:hover {
+  background-color: var(--glass-border);
+  color: var(--md-accent-fg-color);
+}
+
+/* Clean Inline Code */
+.md-typeset code:not(pre code) {
+  background-color: rgba(169, 148, 249, 0.12) !important;
+  color: #d8b4fe !important;
+  border: 1px solid rgba(169, 148, 249, 0.2) !important;
+  border-radius: 6px !important;
+  padding: 0.15em 0.4em !important;
+  font-size: 0.85em !important;
+}
+
+[data-md-color-scheme="default"] .md-typeset code:not(pre code) {
+  background-color: rgba(103, 80, 164, 0.1) !important;
+  color: #4f378b !important;
+  border: 1px solid rgba(103, 80, 164, 0.2) !important;
+}
+
+/* --- 9. Bento Grid Cards --- */
+.md-typeset .grid.cards > ul > li {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.md-typeset .grid.cards > ul > li:hover {
+  transform: translateY(-2px);
+  border-color: rgba(169, 148, 249, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+[data-md-color-scheme="default"] .md-typeset .grid.cards > ul > li {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+}
+
+[data-md-color-scheme="default"] .md-typeset .grid.cards > ul > li:hover {
+  border-color: rgba(103, 80, 164, 0.4);
+}
+
+/* --- 10. Material You Admonitions --- */
+.md-typeset .admonition,
+.md-typeset details {
+  background-color: var(--glass-bg-card) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border) !important;
+  border-left-width: 5px !important;
+  border-radius: var(--md-sys-radius-lg) !important;
+  box-shadow: var(--glass-shadow-sm);
+  overflow: hidden;
+  margin: 1.5rem 0;
+  transition: transform 0.2s var(--md-sys-motion-standard), box-shadow 0.2s ease;
+}
+
+.md-typeset .admonition:hover,
+.md-typeset details:hover {
+  box-shadow: var(--glass-shadow);
+}
+
+.md-typeset .admonition-title,
+.md-typeset summary {
+  background-color: transparent !important;
+  border-bottom: 1px solid var(--glass-border);
+  font-weight: 600;
+  padding: 0.6rem 1rem;
+}
+
+.md-typeset .admonition.note,
+.md-typeset .admonition.info {
+  border-left-color: #9bbde8 !important;
+}
+
+.md-typeset .admonition.tip,
+.md-typeset .admonition.success {
+  border-left-color: #86d5a0 !important;
+}
+
+.md-typeset .admonition.warning,
+.md-typeset .admonition.caution {
+  border-left-color: #f2d479 !important;
+}
+
+.md-typeset .admonition.danger,
+.md-typeset .admonition.critical {
+  border-left-color: #f2a8b8 !important;
+}
+
+/* --- 11. Tables --- */
+.md-typeset table:not([class]) {
+  background-color: var(--glass-bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--md-sys-radius-lg);
+  box-shadow: var(--glass-shadow-sm);
+  overflow: hidden;
+  display: table;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1.5rem 0;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--m3-table-header);
+  font-weight: 600;
+  border-bottom: 1px solid var(--glass-border);
+  padding: 0.8rem 1rem;
+}
+
+.md-typeset table:not([class]) td {
+  border-top: 1px solid var(--glass-border);
+  padding: 0.75rem 1rem;
+}
+
+.md-typeset table:not([class]) tr:hover td {
+  background-color: var(--m3-accent-container);
+}
+
+/* --- 12. Buttons & Badges --- */
+.md-typeset .md-button {
+  border-radius: var(--md-sys-radius-pill);
+  padding: 0.55rem 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  background-color: var(--glass-bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow-sm);
+  transition: all 0.25s var(--md-sys-motion-standard);
+}
+
+.md-typeset .md-button--primary {
+  background-color: var(--md-accent-fg-color) !important;
+  color: #12131a !important;
+  border: none;
+}
+
+.md-typeset .md-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glass-shadow);
+  border-color: var(--glass-border-focus);
+}
+
+.md-typeset kbd {
+  background-color: var(--glass-bg-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--md-sys-radius-sm);
+  box-shadow: 0 2px 0 var(--glass-border);
+  padding: 0.15rem 0.45rem;
+  font-size: 0.82em;
+}
+
+/* --- 13. Footer & FAB --- */
+.md-footer {
+  background-color: var(--glass-bg-base) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1px solid var(--glass-border);
+}
+
+.md-footer-meta {
+  background-color: transparent !important;
+}
+
+.md-top {
+  border-radius: var(--md-sys-radius-pill);
+  background-color: var(--glass-bg-elevated) !important;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  transition: all 0.25s var(--md-sys-motion-standard);
+}
+
+.md-top:hover {
+  transform: scale(1.1) translateY(-2px);
+  background-color: var(--m3-accent-container) !important;
+  color: var(--md-accent-fg-color);
+}
+
+/* --- 14. Scrollbar --- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--glass-border);
+  border-radius: var(--md-sys-radius-pill);
+  backdrop-filter: blur(4px);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--md-default-fg-color--lighter);
+}
+
+/* --- 15. Mobile Phone Refinement (< 45em) --- */
+@media screen and (max-width: 45em) {
+  /* Main Content Glass Card */
+  .md-content__inner {
+    margin: 0.5rem 0.4rem 1.5rem 0.4rem !important;
+    padding: 1.2rem 1rem !important;
+    border-radius: 14px !important;
+    max-width: calc(100vw - 0.8rem) !important;
+    overflow-x: hidden !important;
+  }
+
+  /* Responsive Mobile Typography */
+  .md-typeset h1 {
+    font-size: 1.5rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 0.8rem !important;
+  }
+
+  .md-typeset h2 {
+    font-size: 1.2rem !important;
+    line-height: 1.3 !important;
+    margin-top: 1.4rem !important;
+    margin-bottom: 0.6rem !important;
+  }
+
+  .md-typeset h3 {
+    font-size: 1.02rem !important;
+    margin-top: 1.1rem !important;
+  }
+
+  /* Spacing on Small Screens */
+  .md-typeset ul,
+  .md-typeset ol {
+    padding-left: 1.2rem !important;
+  }
+
+  .md-typeset li {
+    margin-bottom: 0.35rem !important;
+  }
+
+  /* Inline Code on Mobile */
+  .md-typeset code:not(pre code) {
+    font-size: 0.77em !important;
+    padding: 0.12em 0.35em !important;
+    border-radius: 5px !important;
+    word-break: break-all !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  /* Bento Grid Cards: Stack 1 Column Full Width */
+  .md-typeset .grid.cards > ul {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+
+  .md-typeset .grid.cards > ul > li {
+    padding: 1rem 1.1rem !important;
+  }
+
+  /* Code Blocks & Preformatted Text */
+  .highlight,
+  .highlighttable,
+  .md-typeset > pre {
+    margin: 0.85rem 0 !important;
+    border-radius: 10px !important;
+    font-size: 0.76rem !important;
+    line-height: 1.45 !important;
+    max-width: 100% !important;
+  }
+
+  .highlight pre,
+  .highlighttable pre,
+  .md-typeset .highlight pre {
+    padding: 0.75rem 0.95rem !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  /* Code copy button touch friendly */
+  .md-clipboard {
+    top: 0.4rem !important;
+    right: 0.4rem !important;
+    opacity: 0.85 !important;
+  }
+
+  /* Tables horizontal scrolling */
+  .md-typeset table:not([class]) {
+    font-size: 0.78rem !important;
+    margin: 0.8rem 0 !important;
+    display: block !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .md-typeset table:not([class]) th,
+  .md-typeset table:not([class]) td {
+    padding: 0.45rem 0.65rem !important;
+    white-space: nowrap !important;
+  }
+
+  /* Admonition Cards */
+  .md-typeset .admonition,
+  .md-typeset details {
+    margin: 0.85rem 0 !important;
+    padding: 0.65rem 0.85rem !important;
+    border-radius: 10px !important;
+  }
+
+  /* Floating Action Button (Back To Top) */
+  .md-top {
+    bottom: 1.25rem !important;
+    right: 1rem !important;
+    width: 2.6rem !important;
+    height: 2.6rem !important;
+    border-radius: 14px !important;
+  }
+}

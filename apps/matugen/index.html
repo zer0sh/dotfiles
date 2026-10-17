@@ -1,0 +1,1977 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Official documentation for zer0sh's Hyprland, Quickshell, and terminal environment">
+      
+      
+        <meta name="author" content="zer0sh">
+      
+      
+        <link rel="canonical" href="https://zer0sh.github.io/dotfiles/apps/matugen/">
+      
+      
+        <link rel="prev" href="../fastfetch/">
+      
+      
+        <link rel="next" href="../bat/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Matugen - zer0sh Dotfiles</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#matugen-dynamic-theming-engine" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="zer0sh Dotfiles" class="md-header__button md-logo" aria-label="zer0sh Dotfiles" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zer0sh Dotfiles
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Matugen
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zer0sh/dotfiles" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zer0sh/dotfiles
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../hyprland/" class="md-tabs__link">
+          
+  
+  
+  Hyprland
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../quickshell/" class="md-tabs__link">
+          
+  
+  
+  Quickshell
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../waybar/" class="md-tabs__link">
+          
+  
+  
+  Launchers & Tools
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../terminals/alacritty/" class="md-tabs__link">
+          
+  
+  
+  Terminals
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../dotfiles/workflow/" class="md-tabs__link">
+          
+  
+  
+  Dotfiles & Workflow
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="zer0sh Dotfiles" class="md-nav__button md-logo" aria-label="zer0sh Dotfiles" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    zer0sh Dotfiles
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zer0sh/dotfiles" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zer0sh/dotfiles
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hyprland
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hyprland
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/keybinds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keybindings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/shaders/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shaders & Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/hyprlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Screen Locking & Idle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickshell
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Quickshell
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control Center
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/osd-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications & OSDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/launcher-wallpapers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Floating Launcher & Wallpapers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Launchers & Tools
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Launchers & Tools
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../waybar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Waybar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wofi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wofi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fastfetch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fastfetch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Matugen
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Matugen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architectural-role-and-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Role and Store
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-configtoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration (config.toml)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consumer-applications-and-reload-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consumer Applications and Reload Strategies
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Consumer Applications and Reload Strategies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#themed-gtk-applications-suite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Themed GTK Applications Suite
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-color-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Color Roles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-usage-and-manual-palette-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI Usage and Manual Palette Generation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CLI Usage and Manual Palette Generation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#centralized-theme-dispatcher-apply-matugensh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Centralized Theme Dispatcher (apply-matugen.sh)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#privileged-applications-theming-sudo-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Privileged Applications Theming (sudo / root)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Privileged Applications Theming (sudo / root)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mechanism-and-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanism and Persistence:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#synchronization-cleanup-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synchronization &amp; Cleanup Flags
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../btop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Btop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steam
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Terminals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Terminals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/alacritty/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Alacritty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/zsh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zsh
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/vim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Dotfiles & Workflow
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Dotfiles & Workflow
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dotfiles/workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Philosophy & Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dotfiles/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release & SemVer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architectural-role-and-store" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architectural Role and Store
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-configtoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration (config.toml)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#consumer-applications-and-reload-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Consumer Applications and Reload Strategies
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Consumer Applications and Reload Strategies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#themed-gtk-applications-suite" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Themed GTK Applications Suite
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-color-roles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Color Roles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cli-usage-and-manual-palette-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CLI Usage and Manual Palette Generation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CLI Usage and Manual Palette Generation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#centralized-theme-dispatcher-apply-matugensh" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Centralized Theme Dispatcher (apply-matugen.sh)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#privileged-applications-theming-sudo-root" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Privileged Applications Theming (sudo / root)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Privileged Applications Theming (sudo / root)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mechanism-and-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mechanism and Persistence:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#synchronization-cleanup-flags" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Synchronization &amp; Cleanup Flags
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="matugen-dynamic-theming-engine">Matugen Dynamic Theming Engine</h1>
+<p>Matugen is the Material You (Material Design 3) color palette generator used in this desktop environment. It extracts harmonic color palettes from wallpaper images and propagates them to all active UI components through dynamic templates.</p>
+<hr />
+<h2 id="architectural-role-and-store">Architectural Role and Store</h2>
+<ul>
+<li><strong>Engine Configuration:</strong> <code>~/.config/matugen/config.toml</code> (version-controlled in <code>~/dotfiles/matugen/config.toml</code>).</li>
+<li><strong>Template Repository:</strong> <code>~/.config/matugen/templates/</code> contains component-specific template files.</li>
+<li><strong>Central Theme Store:</strong> Output files are rendered directly into <code>~/.config/themes/current/</code>, which acts as the single source of truth for the entire desktop.</li>
+</ul>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Wallpaper Image (.png / .jpg)
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>          |
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>          v
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>   [ matugen image ]
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>          |
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>          v  (processes ~/.config/matugen/templates/)
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>~/.config/themes/current/
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>   ├── alacritty.toml  --&gt; read by ~/.config/alacritty/alacritty.toml
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>   ├── wofi.css        --&gt; imported by ~/.config/wofi/style.css
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>   ├── waybar.css      --&gt; imported by ~/.config/waybar/colors.css
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>   ├── kitty.conf      --&gt; included by ~/.config/kitty/kitty.conf
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>   ├── hyprland.conf   --&gt; sourced by Hyprland for active/inactive borders
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>   ├── hyprlock.conf   --&gt; sourced by ~/.config/hypr/hyprlock.conf
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>   ├── btop.theme       --&gt; linked by ~/.config/btop/themes/matugen.theme
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>   ├── gtk-3.0.css     --&gt; linked by ~/.config/gtk-3.0/gtk.css
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>   ├── gtk-4.0.css     --&gt; linked by ~/.config/gtk-4.0/gtk.css
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>   ├── spicetify.ini   --&gt; linked by ~/.config/spicetify/Themes/matugen/color.ini
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>   ├── steam.css       --&gt; linked by ~/.config/AdwSteamGtk/custom.css
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>   └── palette.json    --&gt; consumed by Quickshell Control Center &amp; Widgets
+</span></code></pre></div>
+<hr />
+<h2 id="configuration-configtoml">Configuration (<code>config.toml</code>)</h2>
+<p>The engine behavior and output mappings are defined in <code>config.toml</code>:</p>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Matugen is the color generator; ~/.config/themes is the central theme store.</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="k">[config]</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">mode</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"dark"</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"scheme-tonal-spot"</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">source_color_index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">scheme_tonal_spot_cutoff</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.15</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">scheme_contrast</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">1.0</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="k">[templates.waybar]</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/waybar.css"</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/waybar.css"</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="k">[templates.wofi]</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/wofi.css"</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/wofi.css"</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="k">[templates.kitty]</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/kitty.conf"</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/kitty.conf"</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="k">[templates.alacritty]</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/alacritty.toml"</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/alacritty.toml"</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="k">[templates.hyprland]</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/hyprland.conf"</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/hyprland.conf"</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="k">[templates.hyprlock]</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/hyprlock.conf"</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/hyprlock.conf"</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a>
+</span><span id="__span-1-34"><a id="__codelineno-1-34" name="__codelineno-1-34" href="#__codelineno-1-34"></a><span class="k">[templates.palette]</span>
+</span><span id="__span-1-35"><a id="__codelineno-1-35" name="__codelineno-1-35" href="#__codelineno-1-35"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/palette.json"</span>
+</span><span id="__span-1-36"><a id="__codelineno-1-36" name="__codelineno-1-36" href="#__codelineno-1-36"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/palette.json"</span>
+</span><span id="__span-1-37"><a id="__codelineno-1-37" name="__codelineno-1-37" href="#__codelineno-1-37"></a>
+</span><span id="__span-1-38"><a id="__codelineno-1-38" name="__codelineno-1-38" href="#__codelineno-1-38"></a><span class="k">[templates.hyprtoolkit]</span>
+</span><span id="__span-1-39"><a id="__codelineno-1-39" name="__codelineno-1-39" href="#__codelineno-1-39"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/hyprtoolkit.conf"</span>
+</span><span id="__span-1-40"><a id="__codelineno-1-40" name="__codelineno-1-40" href="#__codelineno-1-40"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/hypr/hyprtoolkit.conf"</span>
+</span><span id="__span-1-41"><a id="__codelineno-1-41" name="__codelineno-1-41" href="#__codelineno-1-41"></a>
+</span><span id="__span-1-42"><a id="__codelineno-1-42" name="__codelineno-1-42" href="#__codelineno-1-42"></a><span class="k">[templates.btop]</span>
+</span><span id="__span-1-43"><a id="__codelineno-1-43" name="__codelineno-1-43" href="#__codelineno-1-43"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/btop.theme"</span>
+</span><span id="__span-1-44"><a id="__codelineno-1-44" name="__codelineno-1-44" href="#__codelineno-1-44"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/btop.theme"</span>
+</span><span id="__span-1-45"><a id="__codelineno-1-45" name="__codelineno-1-45" href="#__codelineno-1-45"></a>
+</span><span id="__span-1-46"><a id="__codelineno-1-46" name="__codelineno-1-46" href="#__codelineno-1-46"></a><span class="k">[templates.gtk3]</span>
+</span><span id="__span-1-47"><a id="__codelineno-1-47" name="__codelineno-1-47" href="#__codelineno-1-47"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/gtk-3.0.css"</span>
+</span><span id="__span-1-48"><a id="__codelineno-1-48" name="__codelineno-1-48" href="#__codelineno-1-48"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/gtk-3.0.css"</span>
+</span><span id="__span-1-49"><a id="__codelineno-1-49" name="__codelineno-1-49" href="#__codelineno-1-49"></a>
+</span><span id="__span-1-50"><a id="__codelineno-1-50" name="__codelineno-1-50" href="#__codelineno-1-50"></a><span class="k">[templates.gtk4]</span>
+</span><span id="__span-1-51"><a id="__codelineno-1-51" name="__codelineno-1-51" href="#__codelineno-1-51"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/gtk-4.0.css"</span>
+</span><span id="__span-1-52"><a id="__codelineno-1-52" name="__codelineno-1-52" href="#__codelineno-1-52"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/gtk-4.0.css"</span>
+</span><span id="__span-1-53"><a id="__codelineno-1-53" name="__codelineno-1-53" href="#__codelineno-1-53"></a>
+</span><span id="__span-1-54"><a id="__codelineno-1-54" name="__codelineno-1-54" href="#__codelineno-1-54"></a><span class="k">[templates.spicetify]</span>
+</span><span id="__span-1-55"><a id="__codelineno-1-55" name="__codelineno-1-55" href="#__codelineno-1-55"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/spicetify.ini"</span>
+</span><span id="__span-1-56"><a id="__codelineno-1-56" name="__codelineno-1-56" href="#__codelineno-1-56"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/spicetify.ini"</span>
+</span><span id="__span-1-57"><a id="__codelineno-1-57" name="__codelineno-1-57" href="#__codelineno-1-57"></a>
+</span><span id="__span-1-58"><a id="__codelineno-1-58" name="__codelineno-1-58" href="#__codelineno-1-58"></a><span class="k">[templates.steam]</span>
+</span><span id="__span-1-59"><a id="__codelineno-1-59" name="__codelineno-1-59" href="#__codelineno-1-59"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/steam.css"</span>
+</span><span id="__span-1-60"><a id="__codelineno-1-60" name="__codelineno-1-60" href="#__codelineno-1-60"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/steam.css"</span>
+</span><span id="__span-1-61"><a id="__codelineno-1-61" name="__codelineno-1-61" href="#__codelineno-1-61"></a><span class="n">post_hook</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"adwaita-steam-gtk -i &gt;/dev/null 2&gt;&amp;1 || flatpak run io.github.Foldex.AdwSteamGtk -i &gt;/dev/null 2&gt;&amp;1 || true"</span>
+</span></code></pre></div>
+<hr />
+<h2 id="consumer-applications-and-reload-strategies">Consumer Applications and Reload Strategies</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Target Application</th>
+<th style="text-align: left;">Destination File</th>
+<th style="text-align: left;">Consumed Tokens</th>
+<th style="text-align: left;">Reload Method</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong><a href="../../quickshell/">Quickshell</a></strong></td>
+<td style="text-align: left;"><code>themes/current/palette.json</code></td>
+<td style="text-align: left;">Surfaces, containers, primary accents, semantic states</td>
+<td style="text-align: left;">Automatic filesystem watcher / panel restart</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><a href="../waybar/">Waybar</a></strong></td>
+<td style="text-align: left;"><code>themes/current/waybar.css</code></td>
+<td style="text-align: left;">Background, text, accent, warning, critical, charging</td>
+<td style="text-align: left;"><code>pkill -SIGUSR2 waybar</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><a href="../wofi/">Wofi</a></strong></td>
+<td style="text-align: left;"><code>themes/current/wofi.css</code></td>
+<td style="text-align: left;">Panel backdrop, input field, text, selection, outline</td>
+<td style="text-align: left;">Next instance invocation</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><a href="../../terminals/alacritty/">Alacritty</a></strong></td>
+<td style="text-align: left;"><code>themes/current/alacritty.toml</code></td>
+<td style="text-align: left;">Normal, bright, primary, cursor, and selection colors</td>
+<td style="text-align: left;">Automatic live reload</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Kitty</strong></td>
+<td style="text-align: left;"><code>themes/current/kitty.conf</code></td>
+<td style="text-align: left;">ANSI 16 palette, foreground, background, cursor</td>
+<td style="text-align: left;"><code>kitty @ set-colors</code> or new instance</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><a href="../../hyprland/">Hyprland</a></strong></td>
+<td style="text-align: left;"><code>themes/current/hyprland.conf</code></td>
+<td style="text-align: left;"><code>col.active_border</code>, <code>col.inactive_border</code></td>
+<td style="text-align: left;"><code>hyprctl reload</code> or <code>hyprctl keyword</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><a href="../../hyprland/hyprlock/">Hyprlock</a></strong></td>
+<td style="text-align: left;"><code>themes/current/hyprlock.conf</code></td>
+<td style="text-align: left;">Lockscreen text, ring accent, error and warning colors</td>
+<td style="text-align: left;">Next screen lock event</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><a href="../btop/">btop</a></strong></td>
+<td style="text-align: left;"><code>themes/current/btop.theme</code></td>
+<td style="text-align: left;">Box outlines, graphs, text, selection, gradient metrics</td>
+<td style="text-align: left;">Next launch / live theme switch</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GNOME Classic (GTK 3)</strong></td>
+<td style="text-align: left;"><code>themes/current/gtk-3.0.css</code></td>
+<td style="text-align: left;">Window, headerbar, inputs, buttons, selection, accent</td>
+<td style="text-align: left;">Next app launch</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>GNOME Modern (GTK 4 / Libadwaita)</strong></td>
+<td style="text-align: left;"><code>themes/current/gtk-4.0.css</code></td>
+<td style="text-align: left;">Libadwaita named colors: accent, window_bg, headerbar, cards</td>
+<td style="text-align: left;">Next app launch</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Spicetify (Spotify)</strong></td>
+<td style="text-align: left;"><code>themes/current/spicetify.ini</code></td>
+<td style="text-align: left;">Main, player, sidebar, cards, text, accents, buttons</td>
+<td style="text-align: left;"><code>spicetify apply -n</code> / automated in <code>apply-matugen.sh</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong><a href="../steam/">Steam</a></strong></td>
+<td style="text-align: left;"><code>themes/current/steam.css</code></td>
+<td style="text-align: left;">Adwaita CSS variables: accent, window_bg, headerbar, sidebar</td>
+<td style="text-align: left;"><code>post_hook</code> with <code>adwaita-steam-gtk -i</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="themed-gtk-applications-suite">Themed GTK Applications Suite</h3>
+<p>The generated stylesheets dynamically theme classic and modern GTK applications to match the active desktop palette:</p>
+<p><img alt="Themed GTK Applications Suite" src="../assets/images/apps/gtk-suite.png" /></p>
+<hr />
+<h2 id="core-color-roles">Core Color Roles</h2>
+<p>Each template uses standardized Material Design 3 tokens:</p>
+<ul>
+<li><code>colors.background.default.hex</code>: Deep primary canvas background.</li>
+<li><code>colors.surface.default.hex</code>: Floating surface and card backdrop.</li>
+<li><code>colors.surface_container.default.hex</code>: Inactive inputs and container elements.</li>
+<li><code>colors.surface_bright.default.hex</code>: Subtle highlight outlines and borders.</li>
+<li><code>colors.primary.default.hex</code>: Main accent color, active borders, and focus rings.</li>
+<li><code>colors.primary_container.default.hex</code>: Low-contrast selection backgrounds.</li>
+<li><code>colors.on_surface.default.hex</code>: Primary text and foreground iconography.</li>
+<li><code>colors.on_surface_variant.default.hex</code>: Secondary text, metadata, and hints.</li>
+<li><code>colors.outline.default.hex</code>: Structural dividers and borders.</li>
+<li><code>colors.error.default.hex</code>: Destructive actions and critical warnings.</li>
+<li><code>colors.tertiary.default.hex</code>: Auxiliary highlights, charging states, and indicators.</li>
+</ul>
+<hr />
+<h2 id="cli-usage-and-manual-palette-generation">CLI Usage and Manual Palette Generation</h2>
+<p>To generate a new palette from any wallpaper image:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Preview extracted palette without writing files</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>matugen<span class="w"> </span>image<span class="w"> </span><span class="s2">"/path/to/wallpaper.jpg"</span><span class="w"> </span>--mode<span class="w"> </span>dark<span class="w"> </span>--dry-run<span class="w"> </span>--show-colors
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># Generate palette in dark mode</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>matugen<span class="w"> </span>image<span class="w"> </span><span class="s2">"/path/to/wallpaper.jpg"</span><span class="w"> </span>--mode<span class="w"> </span>dark<span class="w"> </span>--source-color-index<span class="w"> </span><span class="m">0</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># Generate palette in light mode</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>matugen<span class="w"> </span>image<span class="w"> </span><span class="s2">"/path/to/wallpaper.jpg"</span><span class="w"> </span>--mode<span class="w"> </span>light<span class="w"> </span>--source-color-index<span class="w"> </span><span class="m">0</span>
+</span></code></pre></div>
+<h3 id="centralized-theme-dispatcher-apply-matugensh">Centralized Theme Dispatcher (<code>apply-matugen.sh</code>)</h3>
+<p>The environment provides <code>~/.config/themes/apply-matugen.sh</code> to coordinate multi-component reloads and mode persistence:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Apply with current wallpaper and specific mode</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>~/.config/themes/apply-matugen.sh<span class="w"> </span><span class="s2">""</span><span class="w"> </span>light
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>~/.config/themes/apply-matugen.sh<span class="w"> </span><span class="s2">""</span><span class="w"> </span>dark
+</span></code></pre></div>
+<p>Optionally adjust the contrast level using <code>--contrast</code>:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Increase contrast for accessibility or higher distinction (-1.0 to 1.0)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>matugen<span class="w"> </span>image<span class="w"> </span><span class="s2">"/path/to/wallpaper.jpg"</span><span class="w"> </span>--mode<span class="w"> </span>dark<span class="w"> </span>--contrast<span class="w"> </span><span class="m">0</span>.2
+</span></code></pre></div></p>
+<hr />
+<h2 id="privileged-applications-theming-sudo-root">Privileged Applications Theming (sudo / root)</h2>
+<p>By default, applications executed with <code>sudo</code> (such as administrative tools, file managers, or system monitors) read configuration files from <code>/root/.config/</code> and do not inherit user-level CSS overrides.</p>
+<p>To synchronize your active Matugen theme with the root user:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>sudo<span class="w"> </span>~/dotfiles/scripts/sync-root-theme.sh
+</span></code></pre></div>
+<h3 id="mechanism-and-persistence">Mechanism and Persistence:</h3>
+<ol>
+<li>Creates <code>/root/.config/gtk-3.0/</code> and <code>/root/.config/gtk-4.0/</code>.</li>
+<li>Configures <code>Adwaita-dark</code> preference in <code>/root/.config/gtk-3.0/settings.ini</code>.</li>
+<li>Symlinks root GTK stylesheets directly to the user's central theme store:</li>
+<li><code>/root/.config/gtk-3.0/gtk.css</code> -&gt; <code>~/.config/themes/current/gtk-3.0.css</code></li>
+<li><code>/root/.config/gtk-4.0/gtk.css</code> -&gt; <code>~/.config/themes/current/gtk-4.0.css</code></li>
+<li>Symlinks root btop monitor theme (<code>/root/.config/btop/themes/matugen.theme</code>).</li>
+</ol>
+<p>Because these are live symlinks targeting <code>~/.config/themes/current/</code>, subsequent wallpaper or palette changes made via Quickshell will automatically reflect in root applications without re-executing the synchronization script.</p>
+<h3 id="synchronization-cleanup-flags">Synchronization &amp; Cleanup Flags</h3>
+<p>The <code>sync-root-theme.sh</code> utility provides flags to manage synchronization or easily restore default themes:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Flag</th>
+<th style="text-align: left;">Privilege</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--sync</code> (default)</td>
+<td style="text-align: left;"><code>sudo</code></td>
+<td style="text-align: left;">Synchronize root GTK and btop themes from active user theme.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--cleanup-user</code></td>
+<td style="text-align: left;">User</td>
+<td style="text-align: left;">Revert user GTK3 and GTK4 stylesheets to system defaults.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--cleanup-root</code></td>
+<td style="text-align: left;"><code>sudo</code></td>
+<td style="text-align: left;">Remove root theme symlinks and restore original settings.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--cleanup-all</code></td>
+<td style="text-align: left;"><code>sudo</code></td>
+<td style="text-align: left;">Revert both user and root configurations to factory defaults.</td>
+</tr>
+</tbody>
+</table>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Revert user theme only (no sudo required)</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>~/dotfiles/scripts/sync-root-theme.sh<span class="w"> </span>--cleanup-user
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="c1"># Revert root theme only</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>sudo<span class="w"> </span>~/dotfiles/scripts/sync-root-theme.sh<span class="w"> </span>--cleanup-root
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="c1"># Revert both user and root to system defaults</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>sudo<span class="w"> </span>~/dotfiles/scripts/sync-root-theme.sh<span class="w"> </span>--cleanup-all
+</span></code></pre></div>
+<hr />
+<h2 id="related-documentation">Related Documentation</h2>
+<ul>
+<li><a href="../../hyprland/">Hyprland Compositor</a>: Window manager border theming and configuration modularity.</li>
+<li><a href="../../hyprland/hyprlock/">Hyprlock Screen Locker</a>: Lockscreen surfaces and authentication colors.</li>
+<li><a href="../../quickshell/">Quickshell Control Center</a>: Real-time wallpaper selector and QML theme integration.</li>
+<li><a href="../waybar/">Waybar Status Bar</a>: Top status bar stylesheet imports and live reload signals.</li>
+<li><a href="../wofi/">Wofi Application Launcher</a>: Material Design 3 launcher CSS imports.</li>
+<li><a href="../../terminals/alacritty/">Alacritty Terminal</a>: Live terminal palette reload configuration.</li>
+<li><a href="../fastfetch/">Fastfetch Telemetry</a>: Hardware display with terminal palette swatches.</li>
+<li><a href="../steam/">Steam Client Theming</a>: Dynamic Adwaita-for-Steam custom stylesheet and post-hook injection.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
