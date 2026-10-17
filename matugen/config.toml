@@ -50,3 +50,13 @@ output_path = "~/.config/themes/current/gtk-3.0.css"
 [templates.gtk4]
 input_path = "~/.config/matugen/templates/gtk-4.0.css"
 output_path = "~/.config/themes/current/gtk-4.0.css"
+
+[templates.vim]
+input_path = "~/.config/matugen/templates/matugen.vim"
+output_path = "~/.config/themes/current/matugen.vim"
+
+[templates.spicetify]
+input_path = "~/.config/matugen/templates/spicetify.ini"
+output_path = "~/.config/themes/current/spicetify.ini"
+
+

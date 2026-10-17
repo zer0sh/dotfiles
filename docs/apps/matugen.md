@@ -27,6 +27,7 @@ Wallpaper Image (.png / .jpg)
    ├── btop.theme       --> linked by ~/.config/btop/themes/matugen.theme
    ├── gtk-3.0.css     --> linked by ~/.config/gtk-3.0/gtk.css
    ├── gtk-4.0.css     --> linked by ~/.config/gtk-4.0/gtk.css
+   ├── spicetify.ini   --> linked by ~/.config/spicetify/Themes/matugen/color.ini
    └── palette.json    --> consumed by Quickshell Control Center & Widgets
 ```
 
@@ -89,6 +90,10 @@ output_path = "~/.config/themes/current/gtk-3.0.css"
 [templates.gtk4]
 input_path = "~/.config/matugen/templates/gtk-4.0.css"
 output_path = "~/.config/themes/current/gtk-4.0.css"
+
+[templates.spicetify]
+input_path = "~/.config/matugen/templates/spicetify.ini"
+output_path = "~/.config/themes/current/spicetify.ini"
 ```
 
 ---
@@ -107,6 +112,14 @@ output_path = "~/.config/themes/current/gtk-4.0.css"
 | **[btop](btop.md)** | `themes/current/btop.theme` | Box outlines, graphs, text, selection, gradient metrics | Next launch / live theme switch |
 | **GNOME Classic (GTK 3)** | `themes/current/gtk-3.0.css` | Window, headerbar, inputs, buttons, selection, accent | Next app launch |
 | **GNOME Modern (GTK 4 / Libadwaita)** | `themes/current/gtk-4.0.css` | Libadwaita named colors: accent, window_bg, headerbar, cards | Next app launch |
+| **Spicetify (Spotify)** | `themes/current/spicetify.ini` | Main, player, sidebar, cards, text, accents, buttons | `spicetify apply -n` / automated in `apply-matugen.sh` |
+
+
+### Themed GTK Applications Suite
+
+The generated stylesheets dynamically theme classic and modern GTK applications to match the active desktop palette:
+
+![Themed GTK Applications Suite](../assets/images/apps/gtk-suite.png)
 
 ---
 
