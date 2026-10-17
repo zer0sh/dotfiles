@@ -27,7 +27,6 @@ All floating indicators follow a standardized behavioral contract:
 | **Notification Card** | `modules/notifications/NotificationPopup.qml` | Card styling, slide-down appearance, and dismissal animations. |
 | **Volume OSD** | `modules/osd/VolumeOsd.qml` | Listens to PipeWire sink changes and animates top-center card. |
 | **Brightness OSD** | `modules/osd/BrightnessOsd.qml` | Listens to `brightnessctl` and animates top-center card. |
-| **Battery Alert OSD** | `modules/osd/BatteryAlertOsd.qml` | Animated battery status cards (warning, critical, ultimatum, charging) with pulsing glyphs, level progress bar, and IPC endpoints. |
 | **Music Track Toast** | `modules/osd/MusicOsd.qml` | Automatic top-center popup on MPRIS track transition. |
 | **Mini Music Player** | `modules/osd/MiniPlayer.qml` | Interactive player triggered via `SUPER + M` (see [Keybindings Catalog](../hyprland/keybinds.md#quickshell-and-desktop-overlays)). |
 

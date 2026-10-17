@@ -88,10 +88,6 @@ ShellRoot {
         id: recordingIndicator
     }
 
-    Osd.BatteryAlertOsd {
-        id: batteryAlertOsd
-    }
-
     Shortcuts.ShortcutsOverlay {
         id: shortcutsOverlay
     }

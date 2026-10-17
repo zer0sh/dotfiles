@@ -1,9 +1,8 @@
 /* ===== ChromeOS Shelf — Waybar Theme ===== */
 @import "colors.css";
-@import "battery-alert.css";
 
 * {
-    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-family: "Google Sans", "JetBrainsMono Nerd Font", sans-serif;
     font-weight: bold;
     font-size: 15px;
     min-height: 0;
@@ -34,6 +33,22 @@ window#waybar {
 
 #custom-launcher:hover {
     background: alpha(@text, 0.12);
+}
+
+/* Wallpaper picker button */
+#custom-wallpaper {
+    font-size: 18px;
+    padding: 0 11px;
+    margin: 4px 4px 4px 2px;
+    border-radius: 50%;
+    background: alpha(@text, 0.10);
+    color: @text;
+    transition: all 0.2s ease;
+}
+
+#custom-wallpaper:hover {
+    background: alpha(@text, 0.16);
+    color: @accent;
 }
 
 /* Workspaces — pill indicators */
