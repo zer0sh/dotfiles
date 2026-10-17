@@ -141,8 +141,12 @@ QtObject {
     readonly property color sliderActiveTrack: _t.sliderActiveTrack
     readonly property color sliderThumb: _t.sliderThumb
 
-    // Mode detection (light vs dark)
-    readonly property bool isLightMode: surface.r * 0.299 + surface.g * 0.587 + surface.b * 0.114 > 0.5
+    // Mode detection (light vs dark) based on underlying theme surface luminance
+    readonly property bool isLightMode: {
+        var base = _t.surface ? _t.surface : "#1A1C28";
+        var c = Qt.color(base);
+        return (c.r * 0.299 + c.g * 0.587 + c.b * 0.114) > 0.5;
+    }
 
     // Text colors
     readonly property color textPrimary: isLightMode ? (_t.textPrimary || "#1A1D16") : (currentTheme === "matugen" ? "#E5E1E9" : (_t.textPrimary || "#E5E1E9"))
