@@ -28,6 +28,7 @@ Wallpaper Image (.png / .jpg)
    ├── gtk-3.0.css     --> linked by ~/.config/gtk-3.0/gtk.css
    ├── gtk-4.0.css     --> linked by ~/.config/gtk-4.0/gtk.css
    ├── spicetify.ini   --> linked by ~/.config/spicetify/Themes/matugen/color.ini
+   ├── steam.css       --> linked by ~/.config/AdwSteamGtk/custom.css
    └── palette.json    --> consumed by Quickshell Control Center & Widgets
 ```
 
@@ -94,6 +95,11 @@ output_path = "~/.config/themes/current/gtk-4.0.css"
 [templates.spicetify]
 input_path = "~/.config/matugen/templates/spicetify.ini"
 output_path = "~/.config/themes/current/spicetify.ini"
+
+[templates.steam]
+input_path = "~/.config/matugen/templates/steam.css"
+output_path = "~/.config/themes/current/steam.css"
+post_hook = "adwaita-steam-gtk -i >/dev/null 2>&1 || flatpak run io.github.Foldex.AdwSteamGtk -i >/dev/null 2>&1 || true"
 ```
 
 ---
@@ -113,6 +119,7 @@ output_path = "~/.config/themes/current/spicetify.ini"
 | **GNOME Classic (GTK 3)** | `themes/current/gtk-3.0.css` | Window, headerbar, inputs, buttons, selection, accent | Next app launch |
 | **GNOME Modern (GTK 4 / Libadwaita)** | `themes/current/gtk-4.0.css` | Libadwaita named colors: accent, window_bg, headerbar, cards | Next app launch |
 | **Spicetify (Spotify)** | `themes/current/spicetify.ini` | Main, player, sidebar, cards, text, accents, buttons | `spicetify apply -n` / automated in `apply-matugen.sh` |
+| **[Steam](steam.md)** | `themes/current/steam.css` | Adwaita CSS variables: accent, window_bg, headerbar, sidebar | `post_hook` with `adwaita-steam-gtk -i` |
 
 
 ### Themed GTK Applications Suite
@@ -214,3 +221,4 @@ sudo ~/dotfiles/scripts/sync-root-theme.sh --cleanup-all
 * [Wofi Application Launcher](wofi.md): Material Design 3 launcher CSS imports.
 * [Alacritty Terminal](../terminals/alacritty.md): Live terminal palette reload configuration.
 * [Fastfetch Telemetry](fastfetch.md): Hardware display with terminal palette swatches.
+* [Steam Client Theming](steam.md): Dynamic Adwaita-for-Steam custom stylesheet and post-hook injection.

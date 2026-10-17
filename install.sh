@@ -61,6 +61,14 @@ mkdir -p "$CONFIG_DIR/gtk-3.0" "$CONFIG_DIR/gtk-4.0"
 ln -sf "$CONFIG_DIR/themes/current/gtk-3.0.css" "$CONFIG_DIR/gtk-3.0/gtk.css"
 ln -sf "$CONFIG_DIR/themes/current/gtk-4.0.css" "$CONFIG_DIR/gtk-4.0/gtk.css"
 
+# Steam (AdwSteamGtk) Matugen theme
+mkdir -p "$CONFIG_DIR/AdwSteamGtk" "$CONFIG_DIR/themes/current"
+ln -sf "$CONFIG_DIR/themes/current/steam.css" "$CONFIG_DIR/AdwSteamGtk/custom.css"
+if [ -d "$HOME/.var/app/io.github.Foldex.AdwSteamGtk" ]; then
+    mkdir -p "$HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/AdwSteamGtk"
+    ln -sf "$CONFIG_DIR/themes/current/steam.css" "$HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/AdwSteamGtk/custom.css"
+fi
+
 # Vim
 if [ -d "$REPO_DIR/vim" ]; then
     echo "[INFO] Setting up Vim configuration..."
