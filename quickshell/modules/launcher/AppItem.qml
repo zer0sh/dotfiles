@@ -6,6 +6,7 @@ Item {
     id: rootItem
 
     required property var modelData
+    required property int index
     property string iconPath: ""
     property bool isSelected: false
     signal activated()
@@ -13,32 +14,53 @@ Item {
     readonly property string appName: modelData ? (modelData.name || "") : ""
     readonly property string appComment: modelData ? (modelData.comment || "Application") : "Application"
 
-    height: 50
-    anchors.left: parent ? parent.left : undefined
-    anchors.right: parent ? parent.right : undefined
+    height: 52
+    width: parent ? parent.width : undefined
 
     Rectangle {
         id: bg
         anchors.fill: parent
         radius: 12
+
+        // Contraste elevado y distinguible: tinte primario vibrante en selección
         color: rootItem.isSelected
-            ? Root.Theme.surfaceContainerHigh
-            : (mouseArea.containsMouse ? Root.Theme.surfaceContainer : "transparent")
-        border.width: rootItem.isSelected ? 1 : 0
-        border.color: Root.Theme.primary
+            ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.22)
+            : (mouseArea.containsMouse ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.08) : "transparent")
+
+        border.width: rootItem.isSelected ? 1.5 : (mouseArea.containsMouse ? 1 : 0)
+        border.color: rootItem.isSelected
+            ? Root.Theme.primary
+            : (mouseArea.containsMouse ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.4) : "transparent")
 
         Behavior on color { ColorAnimation { duration: 120 } }
+        Behavior on border.color { ColorAnimation { duration: 120 } }
+
+        // Indicador lateral de selección activa (pill vertical)
+        Rectangle {
+            anchors.left: parent.left
+            anchors.leftMargin: 3
+            anchors.verticalCenter: parent.verticalCenter
+            width: 4
+            height: 26
+            radius: 2
+            color: Root.Theme.primary
+            visible: rootItem.isSelected
+        }
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 12
+            anchors.leftMargin: rootItem.isSelected ? 14 : 12
             anchors.rightMargin: 12
             spacing: 12
+
+            Behavior on anchors.leftMargin { NumberAnimation { duration: 120 } }
 
             // Icono de la aplicación
             Item {
                 Layout.preferredWidth: 34
                 Layout.preferredHeight: 34
+                scale: rootItem.isSelected ? 1.08 : (mouseArea.containsMouse ? 1.04 : 1.0)
+                Behavior on scale { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
 
                 // Imagen de icono si existe ruta
                 Image {
@@ -87,7 +109,7 @@ Item {
                     text: rootItem.appName
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: 13
-                    font.weight: Font.DemiBold
+                    font.weight: rootItem.isSelected ? Font.Bold : Font.DemiBold
                     color: rootItem.isSelected ? Root.Theme.primary : Root.Theme.textPrimary
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -97,19 +119,43 @@ Item {
                     text: rootItem.appComment
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: 11
-                    color: Root.Theme.textSecondary
+                    color: rootItem.isSelected
+                        ? Qt.rgba(Root.Theme.textPrimary.r, Root.Theme.textPrimary.g, Root.Theme.textPrimary.b, 0.85)
+                        : Root.Theme.textSecondary
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
             }
 
-            // Indicador de selección / Enter
-            Text {
+            // Badge indicador de Enter al estar seleccionado
+            Rectangle {
                 visible: rootItem.isSelected
-                text: "󰌑"
-                font.family: Root.Theme.fontFamily
-                font.pixelSize: 14
-                color: Root.Theme.primary
+                Layout.preferredWidth: 62
+                Layout.preferredHeight: 24
+                radius: 6
+                color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.28)
+                border.width: 1
+                border.color: Root.Theme.primary
+
+                RowLayout {
+                    anchors.centerIn: parent
+                    spacing: 4
+
+                    Text {
+                        text: "󰌑"
+                        font.family: Root.Theme.fontFamily
+                        font.pixelSize: 12
+                        color: Root.Theme.primary
+                    }
+
+                    Text {
+                        text: "Enter"
+                        font.family: Root.Theme.fontFamily
+                        font.pixelSize: 11
+                        font.weight: Font.Bold
+                        color: Root.Theme.primary
+                    }
+                }
             }
         }
     }
