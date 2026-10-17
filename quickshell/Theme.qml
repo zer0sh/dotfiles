@@ -142,8 +142,8 @@ QtObject {
     readonly property color sliderThumb: _t.sliderThumb
 
     // Text colors
-    readonly property color textPrimary: _t.textPrimary
-    readonly property color textSecondary: _t.textSecondary
+    readonly property color textPrimary: currentTheme === "matugen" ? "#E5E1E9" : (_t.textPrimary || "#E5E1E9")
+    readonly property color textSecondary: currentTheme === "matugen" ? "#C9C5D0" : (_t.textSecondary || "#C9C5D0")
 
     // Semantic colors
     readonly property color connected: _t.connected
