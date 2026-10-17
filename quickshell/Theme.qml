@@ -114,12 +114,12 @@ QtObject {
 
     // ── Themed color properties ────────────────────────────────────
     // Surface colors
-    readonly property color panelBg: isLightMode ? "#FFFFFF" : _t.panelBg
-    readonly property color panelBorder: isLightMode ? Qt.rgba(1, 1, 1, 0.6) : _t.panelBorder
-    readonly property color surface: isLightMode ? "#FFFFFF" : _t.surface
-    readonly property color surfaceContainer: isLightMode ? "#FFFFFF" : _t.surfaceContainer
-    readonly property color surfaceContainerHigh: isLightMode ? "#FFFFFF" : _t.surfaceContainerHigh
-    readonly property color surfaceBright: isLightMode ? "#FFFFFF" : _t.surfaceBright
+    readonly property color panelBg: isLightMode ? Qt.rgba(1, 1, 1, 0.08) : _t.panelBg
+    readonly property color panelBorder: isLightMode ? Qt.rgba(1, 1, 1, 0.35) : _t.panelBorder
+    readonly property color surface: isLightMode ? Qt.rgba(1, 1, 1, 0.08) : _t.surface
+    readonly property color surfaceContainer: isLightMode ? Qt.rgba(1, 1, 1, 0.12) : _t.surfaceContainer
+    readonly property color surfaceContainerHigh: isLightMode ? Qt.rgba(1, 1, 1, 0.15) : _t.surfaceContainerHigh
+    readonly property color surfaceBright: isLightMode ? Qt.rgba(1, 1, 1, 0.20) : _t.surfaceBright
 
     // Primary colors
     readonly property color primary: _t.primary
@@ -133,11 +133,11 @@ QtObject {
     // Tile states
     readonly property color tileActive: _t.tileActive
     readonly property color tileActiveText: _t.tileActiveText
-    readonly property color tileInactive: _t.tileInactive
+    readonly property color tileInactive: isLightMode ? Qt.rgba(0, 0, 0, 0.06) : _t.tileInactive
     readonly property color tileInactiveText: _t.tileInactiveText
 
     // Slider colors
-    readonly property color sliderTrack: _t.sliderTrack
+    readonly property color sliderTrack: isLightMode ? Qt.rgba(0, 0, 0, 0.08) : _t.sliderTrack
     readonly property color sliderActiveTrack: _t.sliderActiveTrack
     readonly property color sliderThumb: _t.sliderThumb
 
@@ -157,14 +157,14 @@ QtObject {
     readonly property color error: _t.error
     readonly property color toggleOff: _t.toggleOff
 
-    // Unified Glassmorphism Transparencias (estilo Apple frosted glass con reflexión especular)
-    readonly property real panelOpacity: isLightMode ? 0.12 : 0.18
-    readonly property real cardOpacity: isLightMode ? 0.16 : 0.25
+    // Unified Glassmorphism Transparencias (puro cristal transparente con reflejo)
+    readonly property real panelOpacity: isLightMode ? 0.06 : 0.18
+    readonly property real cardOpacity: isLightMode ? 0.10 : 0.25
     readonly property color glassPanel: isLightMode ? Qt.rgba(1, 1, 1, panelOpacity) : Qt.rgba(surface.r, surface.g, surface.b, panelOpacity)
     readonly property color glassCard: isLightMode ? Qt.rgba(1, 1, 1, cardOpacity) : Qt.rgba(surfaceContainerHigh.r, surfaceContainerHigh.g, surfaceContainerHigh.b, cardOpacity)
-    readonly property color glassBorder: isLightMode ? Qt.rgba(1, 1, 1, 0.45) : Qt.rgba(255, 255, 255, 0.16)
-    readonly property color glassCardBorder: isLightMode ? Qt.rgba(1, 1, 1, 0.30) : Qt.rgba(255, 255, 255, 0.12)
-    readonly property color glassHighlight: isLightMode ? Qt.rgba(1, 1, 1, 0.65) : Qt.rgba(255, 255, 255, 0.22)
+    readonly property color glassBorder: isLightMode ? Qt.rgba(1, 1, 1, 0.40) : Qt.rgba(255, 255, 255, 0.16)
+    readonly property color glassCardBorder: isLightMode ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(255, 255, 255, 0.12)
+    readonly property color glassHighlight: isLightMode ? Qt.rgba(1, 1, 1, 0.60) : Qt.rgba(255, 255, 255, 0.22)
 
     // Shelf
     readonly property color _shelfBgColor: _t.shelfBg
