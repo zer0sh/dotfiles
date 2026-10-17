@@ -154,12 +154,12 @@ QtObject {
     readonly property color toggleOff: _t.toggleOff
 
     // Unified Glassmorphism Transparencias (centralized for deskclock, panels, launcher)
-    readonly property real panelOpacity: isLightMode ? 0.15 : 0.25
-    readonly property real cardOpacity: isLightMode ? 0.20 : 0.35
+    readonly property real panelOpacity: isLightMode ? 0.04 : 0.10
+    readonly property real cardOpacity: isLightMode ? 0.08 : 0.15
     readonly property color glassPanel: isLightMode ? Qt.rgba(1, 1, 1, panelOpacity) : Qt.rgba(surface.r, surface.g, surface.b, panelOpacity)
     readonly property color glassCard: isLightMode ? Qt.rgba(1, 1, 1, cardOpacity) : Qt.rgba(surfaceContainerHigh.r, surfaceContainerHigh.g, surfaceContainerHigh.b, cardOpacity)
-    readonly property color glassBorder: isLightMode ? Qt.rgba(1, 1, 1, 0.40) : Qt.rgba(255, 255, 255, 0.18)
-    readonly property color glassCardBorder: isLightMode ? Qt.rgba(1, 1, 1, 0.25) : Qt.rgba(255, 255, 255, 0.14)
+    readonly property color glassBorder: isLightMode ? Qt.rgba(1, 1, 1, 0.35) : Qt.rgba(255, 255, 255, 0.15)
+    readonly property color glassCardBorder: isLightMode ? Qt.rgba(1, 1, 1, 0.20) : Qt.rgba(255, 255, 255, 0.10)
 
     // Shelf
     readonly property color _shelfBgColor: _t.shelfBg
