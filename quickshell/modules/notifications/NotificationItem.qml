@@ -29,12 +29,15 @@ Item {
         anchors.rightMargin: Root.Theme.paddingNormal
         height: cardContent.implicitHeight + 24  // 12 top + 12 bottom
         radius: 16
-        color: Qt.rgba(0x0D/255, 0x11/255, 0x1F/255, 0.9)
+        color: Qt.rgba(Root.Theme.surfaceContainerHigh.r,
+                       Root.Theme.surfaceContainerHigh.g,
+                       Root.Theme.surfaceContainerHigh.b, 0.85)
         border.width: 1
         border.color: urgency === "CRITICAL"
             ? Root.Theme.error
-            : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g,
-                     Root.Theme.primary.b, 0.55)
+            : Qt.rgba(Root.Theme.panelBorder.r,
+                     Root.Theme.panelBorder.g,
+                     Root.Theme.panelBorder.b, 0.5)
 
         ColumnLayout {
             id: cardContent
@@ -63,10 +66,10 @@ Item {
                 // App name
                 Text {
                     text: appName
-                    color: "#E5E1E9"
+                    color: Root.Theme.primary
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: Root.Theme.fontSizeXS
-                    font.weight: Font.Medium
+                    font.weight: Font.DemiBold
                     font.capitalization: Font.AllUppercase
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -75,7 +78,7 @@ Item {
                 // Timestamp
                 Text {
                     text: timeAgo
-                    color: "#E5E1E9"
+                    color: Root.Theme.textSecondary
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: Root.Theme.fontSizeXS
                     visible: timeAgo !== ""
@@ -92,7 +95,7 @@ Item {
                     Text {
                         anchors.centerIn: parent
                         text: "󰅖"
-                        color: "#E5E1E9"
+                        color: Root.Theme.textSecondary
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 13
                     }
@@ -110,7 +113,7 @@ Item {
             // ── Summary (title) ──────────────────────────────
             Text {
                 text: summary
-                color: "#E5E1E9"
+                color: Root.Theme.textPrimary
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: Root.Theme.fontSizeNormal
                 font.weight: Font.DemiBold
@@ -122,7 +125,7 @@ Item {
             // ── Body text (3 lines max) ──────────────────────
             Text {
                 text: notifItem.body || ""
-                color: "#E5E1E9"
+                color: Root.Theme.textSecondary
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: 15
                 wrapMode: Text.WordWrap

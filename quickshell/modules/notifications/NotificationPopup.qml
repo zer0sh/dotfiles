@@ -104,10 +104,10 @@ Item {
 
                 Text {
                     text: root.appName !== "" ? root.appName : "Notification"
-                    color: "#E5E1E9"
+                    color: Root.Theme.primary
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: Root.Theme.fontSizeXS
-                    font.weight: Font.Medium
+                    font.weight: Font.DemiBold
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
@@ -123,7 +123,7 @@ Item {
                     Text {
                         anchors.centerIn: parent
                         text: "󰅖"
-                        color: "#E5E1E9"
+                        color: Root.Theme.textSecondary
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 12
                     }
@@ -140,7 +140,7 @@ Item {
 
             Text {
                 text: root.summary
-                color: "#E5E1E9"
+                color: Root.Theme.textPrimary
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: Root.Theme.fontSizeNormal
                 font.weight: Font.DemiBold
@@ -151,7 +151,7 @@ Item {
 
             Text {
                 text: root.body
-                color: "#E5E1E9"
+                color: Root.Theme.textSecondary
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: Root.Theme.fontSizeSmall
                 wrapMode: Text.WordWrap
