@@ -124,6 +124,36 @@ Scope {
         launcher.panelVisible = false;
     }
 
+    // ── Themes Model & State ─────────────────────────────────────
+    readonly property var themesList: [
+        { id: "matugen", name: "Wallpaper (Matugen)", desc: "Material You dinámico generado del fondo actual" },
+        { id: "md3-cobalt-night", name: "Cobalt Night", desc: "Azul profundo y zafiro noche" },
+        { id: "md3-amethyst", name: "Amethyst", desc: "Púrpura amatista y lavanda" },
+        { id: "md3-arctic-mist", name: "Arctic Mist", desc: "Cian polar y azul hielo" },
+        { id: "cyberpunk", name: "Cyberpunk", desc: "Neón turquesa, magenta y violeta" }
+    ]
+
+    function applyTheme(themeId) {
+        if (!themeId || themeId === "") return;
+        Root.Theme.currentTheme = themeId;
+        actionExecProc.command = ["/bin/sh", "-c", "printf '%s\\n' '" + themeId + "' > ~/.config/quickshell/current-theme"];
+        actionExecProc.running = true;
+        launcher.panelVisible = false;
+    }
+
+    function openThemes() {
+        searchText = ">theme ";
+        panelVisible = true;
+        var curIdx = 0;
+        for (var i = 0; i < themesList.length; i++) {
+            if (themesList[i].id === Root.Theme.currentTheme) {
+                curIdx = i;
+                break;
+            }
+        }
+        selectedIndex = curIdx;
+    }
+
     Process { id: wallSetIpcProc }
     Process { id: actionExecProc }
 
@@ -165,6 +195,13 @@ Scope {
                     launcher.applyWallpaper(selectedWall.path);
                 }
             }
+        } else if (launcher.currentMode === "theme") {
+            if (launcher.selectedIndex >= 0 && launcher.selectedIndex < launcher.filteredThemes.length) {
+                var selectedTheme = launcher.filteredThemes[launcher.selectedIndex];
+                if (selectedTheme && selectedTheme.id) {
+                    launcher.applyTheme(selectedTheme.id);
+                }
+            }
         } else if (launcher.currentMode === "actions") {
             if (launcher.selectedIndex >= 0 && launcher.selectedIndex < launcher.filteredActions.length) {
                 launcher.executeAction(launcher.filteredActions[launcher.selectedIndex]);
@@ -190,7 +227,7 @@ Scope {
     // ── Lista de Comandos / Acciones ─────────────────────────────
     readonly property var allActions: [
         { id: "wallpaper", name: "Wallpaper Carousel", desc: "Explorar y cambiar fondo de pantalla con animación", icon: "󰸉" },
-        { id: "theme", name: "Cambiar Tema", desc: "Alternar paleta de color (Matugen / Cobalt / Amethyst / Cyberpunk)", icon: "󰏤" },
+        { id: "theme", name: "Theme Carousel", desc: "Explorar y cambiar paleta de temas visuales", icon: "󰏘" },
         { id: "light", name: "Modo Claro", desc: "Cambiar esquema Matugen a modo claro", icon: "󰚝" },
         { id: "dark", name: "Modo Oscuro", desc: "Cambiar esquema Matugen a modo oscuro", icon: "󰖔" },
         { id: "lock", name: "Bloquear Pantalla", desc: "Bloquear la sesión con Hyprlock", icon: "󰌾" },
@@ -214,6 +251,8 @@ Scope {
     readonly property string currentMode: {
         if (searchText.startsWith(">wallpaper") || searchText.startsWith(">fondo") || searchText.startsWith(">wall")) {
             return "wallpaper";
+        } else if (searchText.startsWith(">theme") || searchText.startsWith(">tema")) {
+            return "theme";
         } else if (searchText.startsWith(">")) {
             return "actions";
         } else {
@@ -232,6 +271,19 @@ Scope {
         });
     }
 
+    // ── Filtrado de Temas en Modo Carrusel ──────────────────────
+    property var filteredThemes: {
+        if (currentMode !== "theme") return [];
+        var prefix = searchText.startsWith(">theme") ? ">theme" : ">tema";
+        var query = searchText.slice(prefix.length).trim().toLowerCase();
+        if (query === "") return themesList;
+        return themesList.filter(function(t) {
+            return t.name.toLowerCase().indexOf(query) >= 0 ||
+                   t.id.toLowerCase().indexOf(query) >= 0 ||
+                   (t.desc && t.desc.toLowerCase().indexOf(query) >= 0);
+        });
+    }
+
     function executeAction(act) {
         if (!act) return;
         if (act.id === "wallpaper") {
@@ -239,17 +291,15 @@ Scope {
             selectedIndex = 0;
             return;
         }
+        if (act.id === "theme") {
+            searchText = ">theme ";
+            selectedIndex = 0;
+            return;
+        }
 
         launcher.panelVisible = false;
 
-        if (act.id === "theme") {
-            var themes = ["matugen", "md3-cobalt-night", "md3-amethyst", "md3-arctic-mist", "cyberpunk"];
-            var currentIdx = themes.indexOf(Root.Theme.currentTheme);
-            var nextTheme = themes[(currentIdx + 1) % themes.length];
-            Root.Theme.currentTheme = nextTheme;
-            actionExecProc.command = ["/bin/sh", "-c", "printf '%s\\n' '" + nextTheme + "' > ~/.config/quickshell/current-theme"];
-            actionExecProc.running = true;
-        } else if (act.id === "light") {
+        if (act.id === "light") {
             actionExecProc.command = ["/bin/sh", "-c", "matugen image \"$(cat ~/.config/themes/current/wallpaper)\" --mode light --quiet && hyprctl reload"];
             actionExecProc.running = true;
         } else if (act.id === "dark") {
@@ -287,7 +337,7 @@ Scope {
     onPanelVisibleChanged: {
         if (panelVisible) {
             _showing = true;
-            if (currentMode !== "wallpaper") {
+            if (currentMode !== "wallpaper" && currentMode !== "theme") {
                 selectedIndex = 0;
             }
             if (allApps.length === 0) appsReadProc.running = true;
@@ -313,6 +363,9 @@ Scope {
         function wallpaper(): void {
             launcher.openWallpapers();
         }
+        function theme(): void {
+            launcher.openThemes();
+        }
         function search(query: string): void {
             launcher.panelVisible = true;
             launcher.searchText = query;
@@ -327,6 +380,9 @@ Scope {
         function next(): void {
             if (launcher.currentMode === "wallpaper") {
                 if (launcher.selectedIndex < launcher.filteredWallpapers.length) launcher.selectedIndex++;
+            } else if (launcher.currentMode === "theme") {
+                if (launcher.selectedIndex < launcher.filteredThemes.length - 1) launcher.selectedIndex++;
+                else launcher.selectedIndex = 0;
             } else if (launcher.currentMode === "actions") {
                 if (launcher.selectedIndex < launcher.filteredActions.length - 1) launcher.selectedIndex++;
                 else launcher.selectedIndex = 0;
@@ -337,6 +393,9 @@ Scope {
         }
         function prev(): void {
             if (launcher.selectedIndex > 0) launcher.selectedIndex--;
+            else if (launcher.currentMode === "theme" && launcher.filteredThemes.length > 0) {
+                launcher.selectedIndex = launcher.filteredThemes.length - 1;
+            }
         }
         function activate(): void {
             launcher.activateCurrentSelection();
@@ -348,6 +407,13 @@ Scope {
         target: "wallpaperpicker"
         function toggle(): void { launcher.openWallpapers(); }
         function show(): void { launcher.openWallpapers(); }
+        function hide(): void { launcher.panelVisible = false; }
+    }
+
+    IpcHandler {
+        target: "themepicker"
+        function toggle(): void { launcher.openThemes(); }
+        function show(): void { launcher.openThemes(); }
         function hide(): void { launcher.panelVisible = false; }
     }
 
@@ -394,12 +460,12 @@ Scope {
                 anchors.bottomMargin: 28
 
                 width: {
-                    if (launcher.currentMode === "wallpaper") return Math.min(1080, parent.width - 60);
+                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme") return Math.min(1080, parent.width - 60);
                     return 580;
                 }
 
                 height: {
-                    if (launcher.currentMode === "wallpaper") return 340;
+                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme") return 340;
                     if (launcher.currentMode === "actions") {
                         var actCount = launcher.filteredActions.length;
                         return Math.min(460, Math.max(140, actCount * 50 + 76));
@@ -594,12 +660,161 @@ Scope {
                             anchors.centerIn: parent
                             text: "No wallpapers match your query"
                             font.family: Root.Theme.fontFamily
-                            font.pixelSize: 13
+                            font.pixelSize: 15
                             color: Root.Theme.textSecondary
                         }
                     }
 
-                    // --- VISTA 2: Lista de Acciones / Comandos (Vertical) ---
+                    // --- VISTA 2: Carrusel de Temas (Horizontal) ---
+                    Item {
+                        id: themeView
+                        visible: launcher.currentMode === "theme"
+                        anchors.fill: parent
+                        clip: true
+
+                        function scrollToCard(index, immediate) {
+                            var itemWidth = 236 + 16;
+                            var targetX = index * itemWidth + 118 - (themeCarousel.width / 2);
+                            var maxX = Math.max(0, themeCarousel.contentWidth - themeCarousel.width);
+                            targetX = Math.max(0, Math.min(maxX, targetX));
+                            if (immediate) {
+                                themeScrollAnim.stop();
+                                themeCarousel.contentX = targetX;
+                            } else {
+                                themeScrollAnim.to = targetX;
+                                themeScrollAnim.restart();
+                            }
+                        }
+
+                        NumberAnimation {
+                            id: themeScrollAnim
+                            target: themeCarousel
+                            property: "contentX"
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+
+                        ListView {
+                            id: themeCarousel
+                            anchors.fill: parent
+                            anchors.topMargin: 8
+                            anchors.bottomMargin: 4
+                            orientation: ListView.Horizontal
+                            spacing: 16
+                            clip: true
+
+                            flickDeceleration: 1800
+                            maximumFlickVelocity: 3000
+                            boundsBehavior: Flickable.StopAtBounds
+                            highlightRangeMode: ListView.NoHighlightRange
+
+                            model: launcher.filteredThemes
+                            currentIndex: launcher.selectedIndex
+
+                            delegate: Item {
+                                width: 236
+                                height: 226
+                                z: (cardItem && cardItem.isHovered) ? 100 : (launcher.selectedIndex === index ? 20 : 1)
+
+                                readonly property var itemData: modelData
+
+                                ThemeCard {
+                                    id: cardItem
+                                    anchors.centerIn: parent
+                                    width: 224
+                                    height: 214
+                                    themeKey: itemData ? itemData.id : ""
+                                    themeTitle: itemData ? itemData.name : ""
+                                    themeSubtitle: itemData ? itemData.desc : ""
+                                    isCurrentTheme: itemData ? (itemData.id === Root.Theme.currentTheme) : false
+                                    isSelected: launcher.selectedIndex === index
+
+                                    onActivated: {
+                                        launcher.selectedIndex = index;
+                                        if (itemData) {
+                                            launcher.applyTheme(itemData.id);
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Desplazamiento horizontal fluido
+                            WheelHandler {
+                                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                                onWheel: function(event) {
+                                    var delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
+                                    var step = delta * 1.8;
+                                    var targetX = themeCarousel.contentX - step;
+                                    var maxX = Math.max(0, themeCarousel.contentWidth - themeCarousel.width);
+                                    themeCarousel.contentX = Math.max(0, Math.min(maxX, targetX));
+                                }
+                            }
+
+                            Component.onCompleted: {
+                                if (launcher.currentMode === "theme") {
+                                    themeView.scrollToCard(launcher.selectedIndex, true);
+                                }
+                            }
+                        }
+
+                        // Degradado lateral izquierdo
+                        Rectangle {
+                            id: themeLeftFade
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 32
+                            z: 50
+                            enabled: false
+                            visible: themeCarousel.contentX > 6
+                            opacity: visible ? 1.0 : 0.0
+                            Behavior on opacity { NumberAnimation { duration: 150 } }
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.95) }
+                                GradientStop { position: 1.0; color: "transparent" }
+                            }
+                        }
+
+                        // Degradado lateral derecho
+                        Rectangle {
+                            id: themeRightFade
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 32
+                            z: 50
+                            enabled: false
+                            visible: themeCarousel.contentX < (themeCarousel.contentWidth - themeCarousel.width - 6)
+                            opacity: visible ? 1.0 : 0.0
+                            Behavior on opacity { NumberAnimation { duration: 150 } }
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: "transparent" }
+                                GradientStop { position: 1.0; color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.95) }
+                            }
+                        }
+
+                        Connections {
+                            target: launcher
+                            function onSelectedIndexChanged() {
+                                if (launcher.currentMode === "theme" && themeCarousel) {
+                                    themeView.scrollToCard(launcher.selectedIndex, false);
+                                }
+                            }
+                        }
+
+                        Text {
+                            visible: launcher.filteredThemes.length === 0
+                            anchors.centerIn: parent
+                            text: "No themes match your query"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 15
+                            color: Root.Theme.textSecondary
+                        }
+                    }
+
+                    // --- VISTA 3: Lista de Acciones / Comandos (Vertical) ---
                     Item {
                         id: actionsView
                         visible: launcher.currentMode === "actions"
@@ -634,7 +849,7 @@ Scope {
                             anchors.centerIn: parent
                             text: "No commands found"
                             font.family: Root.Theme.fontFamily
-                            font.pixelSize: 13
+                            font.pixelSize: 15
                             color: Root.Theme.textSecondary
                         }
                     }
@@ -675,7 +890,7 @@ Scope {
                             anchors.centerIn: parent
                             text: "No applications found"
                             font.family: Root.Theme.fontFamily
-                            font.pixelSize: 13
+                            font.pixelSize: 15
                             color: Root.Theme.textSecondary
                         }
                     }
@@ -689,7 +904,7 @@ Scope {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.margins: 12
-                    height: 48
+                    height: 52
 
                     radius: 14
                     color: Root.Theme.surfaceContainer
@@ -708,11 +923,12 @@ Scope {
                         Text {
                             text: {
                                 if (launcher.currentMode === "wallpaper") return "󰸉";
+                                if (launcher.currentMode === "theme") return "󰏘";
                                 if (launcher.currentMode === "actions") return "󰘳";
                                 return "󰍉";
                             }
                             font.family: Root.Theme.fontFamily
-                            font.pixelSize: 18
+                            font.pixelSize: 20
                             color: launcher.currentMode === "apps" ? Root.Theme.textSecondary : Root.Theme.primary
                         }
 
@@ -721,7 +937,7 @@ Scope {
                             id: searchInput
                             Layout.fillWidth: true
                             font.family: Root.Theme.fontFamily
-                            font.pixelSize: 14
+                            font.pixelSize: 16
                             color: Root.Theme.textPrimary
                             selectByMouse: true
                             selectionColor: Root.Theme.primary
@@ -733,7 +949,8 @@ Scope {
 
                             onTextChanged: {
                                 launcher.searchText = text;
-                                if (launcher.currentMode !== "wallpaper" || (text !== ">wallpaper " && text !== ">wallpaper")) {
+                                if ((launcher.currentMode !== "wallpaper" || (text !== ">wallpaper " && text !== ">wallpaper"))
+                                    && (launcher.currentMode !== "theme" || (text !== ">theme " && text !== ">theme"))) {
                                     launcher.selectedIndex = 0;
                                 }
                             }
@@ -754,11 +971,12 @@ Scope {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: {
                                     if (launcher.currentMode === "wallpaper") return "Filter wallpapers or press Enter...";
+                                    if (launcher.currentMode === "theme") return "Filter themes or press Enter...";
                                     if (launcher.currentMode === "actions") return "Type command name or press Enter...";
                                     return "Type \">\" for commands...";
                                 }
                                 font.family: Root.Theme.fontFamily
-                                font.pixelSize: 14
+                                font.pixelSize: 16
                                 color: Root.Theme.textSecondary
                                 visible: searchInput.text === ""
                             }
@@ -770,7 +988,7 @@ Scope {
                             }
 
                             Keys.onLeftPressed: function(event) {
-                                if (launcher.currentMode === "wallpaper") {
+                                if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme") {
                                     if (launcher.selectedIndex > 0) launcher.selectedIndex--;
                                     event.accepted = true;
                                 } else {
@@ -784,13 +1002,18 @@ Scope {
                                         launcher.selectedIndex++;
                                     }
                                     event.accepted = true;
+                                } else if (launcher.currentMode === "theme") {
+                                    if (launcher.selectedIndex < launcher.filteredThemes.length - 1) {
+                                        launcher.selectedIndex++;
+                                    }
+                                    event.accepted = true;
                                 } else {
                                     event.accepted = false;
                                 }
                             }
 
                             Keys.onUpPressed: function(event) {
-                                if (launcher.currentMode === "wallpaper") {
+                                if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme") {
                                     if (launcher.selectedIndex > 0) launcher.selectedIndex--;
                                 } else if (launcher.currentMode === "actions") {
                                     if (launcher.selectedIndex > 0) {
@@ -811,6 +1034,10 @@ Scope {
                             Keys.onDownPressed: function(event) {
                                 if (launcher.currentMode === "wallpaper") {
                                     if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
+                                        launcher.selectedIndex++;
+                                    }
+                                } else if (launcher.currentMode === "theme") {
+                                    if (launcher.selectedIndex < launcher.filteredThemes.length - 1) {
                                         launcher.selectedIndex++;
                                     }
                                 } else if (launcher.currentMode === "actions") {
@@ -848,6 +1075,12 @@ Scope {
                                     } else {
                                         launcher.selectedIndex = 0;
                                     }
+                                } else if (launcher.currentMode === "theme") {
+                                    if (launcher.selectedIndex < launcher.filteredThemes.length - 1) {
+                                        launcher.selectedIndex++;
+                                    } else {
+                                        launcher.selectedIndex = 0;
+                                    }
                                 }
                                 event.accepted = true;
                             }
@@ -870,6 +1103,12 @@ Scope {
                                         launcher.selectedIndex--;
                                     } else {
                                         launcher.selectedIndex = launcher.filteredWallpapers.length;
+                                    }
+                                } else if (launcher.currentMode === "theme") {
+                                    if (launcher.selectedIndex > 0) {
+                                        launcher.selectedIndex--;
+                                    } else if (launcher.filteredThemes.length > 0) {
+                                        launcher.selectedIndex = launcher.filteredThemes.length - 1;
                                     }
                                 }
                                 event.accepted = true;

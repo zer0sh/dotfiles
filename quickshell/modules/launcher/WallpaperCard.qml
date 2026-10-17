@@ -38,7 +38,7 @@ Item {
         color: cardRoot.isSelected
             ? Root.Theme.surfaceContainerHigh
             : (mouseArea.containsMouse
-                ? Qt.rgba(Root.Theme.surfaceContainerHighest.r, Root.Theme.surfaceContainerHighest.g, Root.Theme.surfaceContainerHighest.b, 0.95)
+                ? Qt.rgba(Root.Theme.surfaceBright.r, Root.Theme.surfaceBright.g, Root.Theme.surfaceBright.b, 0.95)
                 : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.65))
 
         border.width: (mouseArea.containsMouse || cardRoot.isSelected) ? 2 : (cardRoot.isCurrentWall ? 1.5 : 1)
@@ -120,7 +120,7 @@ Item {
                         Layout.alignment: Qt.AlignHCenter
                         text: "Browse Local"
                         font.family: Root.Theme.fontFamily
-                        font.pixelSize: 11
+                        font.pixelSize: 13
                         font.weight: Font.DemiBold
                         color: Root.Theme.primary
                     }
@@ -133,7 +133,7 @@ Item {
                 anchors.horizontalCenter: parent.horizontalCenter
                 text: "Add Local File..."
                 font.family: Root.Theme.fontFamily
-                font.pixelSize: 12
+                font.pixelSize: 14
                 font.weight: (mouseArea.containsMouse || cardRoot.isSelected) ? Font.Bold : Font.Medium
                 color: (mouseArea.containsMouse || cardRoot.isSelected) ? Root.Theme.primary : Root.Theme.textPrimary
             }
@@ -186,26 +186,26 @@ Item {
                     anchors.top: parent.top
                     anchors.right: parent.right
                     anchors.margins: 6
-                    width: 58
-                    height: 20
-                    radius: 10
+                    width: 66
+                    height: 22
+                    radius: 11
                     color: Root.Theme.primary
 
                     Row {
                         anchors.centerIn: parent
-                        spacing: 3
+                        spacing: 4
 
                         Text {
                             text: "󰄬"
                             font.family: Root.Theme.fontFamily
-                            font.pixelSize: 10
+                            font.pixelSize: 11
                             color: Root.Theme.tileActiveText
                         }
 
                         Text {
                             text: "Active"
                             font.family: Root.Theme.fontFamily
-                            font.pixelSize: 10
+                            font.pixelSize: 11
                             font.weight: Font.Bold
                             color: Root.Theme.tileActiveText
                         }
@@ -221,8 +221,8 @@ Item {
                 width: parent.width - 4
                 text: cardRoot.wallTitle
                 font.family: Root.Theme.fontFamily
-                font.pixelSize: 12
-                font.weight: (mouseArea.containsMouse || cardRoot.isSelected) ? Font.Bold : Font.Normal
+                font.pixelSize: 14
+                font.weight: (mouseArea.containsMouse || cardRoot.isSelected) ? Font.Bold : Font.Medium
                 color: (mouseArea.containsMouse || cardRoot.isSelected) ? Root.Theme.primary : Root.Theme.textPrimary
                 elide: Text.ElideMiddle
                 horizontalAlignment: Text.AlignHCenter

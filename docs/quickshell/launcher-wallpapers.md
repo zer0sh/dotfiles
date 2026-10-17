@@ -37,6 +37,7 @@ quickshell/
 │   └── launcher/
 │       ├── Launcher.qml             # Main overlay window, state machine, and search bar
 │       ├── WallpaperCard.qml        # 16:9 wallpaper thumbnail card and browse button
+│       ├── ThemeCard.qml            # Theme palette preview card with Material 3 mockup
 │       ├── AppItem.qml              # Application list row delegate with icon and metadata
 │       └── ActionItem.qml           # System action row delegate
 └── scripts/
@@ -62,8 +63,8 @@ When the search input is empty or contains standard text:
 
 ### 2. Action / Command Mode (`>`)
 Typing `>` filters available system commands:
-* **Wallpaper Carousel:** Enters the wallpaper picker view.
-* **Cycle Theme:** Cycles between Matugen, Cobalt Night, Amethyst, Arctic Mist, and Cyberpunk.
+* **Wallpaper Carousel:** Enters the horizontal wallpaper picker carousel (`>wallpaper `).
+* **Theme Carousel:** Enters the horizontal visual theme picker carousel (`>theme `).
 * **Light Mode / Dark Mode:** Switches Matugen generation mode.
 * **Lock Screen:** Locks session using `hyprlock`.
 * **Sleep / Suspend:** Suspends the machine to RAM (`systemctl suspend`).
@@ -83,11 +84,18 @@ Typing `>wallpaper ` or pressing `SUPER + W` opens the horizontal carousel:
   * Vibrant halo glow: Border widens to 2 px with primary accent color and expanded glow margins.
 * **Active Badge:** The currently active desktop wallpaper is highlighted with an "Active" badge and a focused double border.
 * **Add Local File Card:** Positioned at the end of the carousel. Clicking or pressing `Enter` opens a native file dialog (`zenity`) to import external images, automatically caching thumbnails and applying the wallpaper.
-* **Direct Keyboard & Scroll Navigation:**
-  * `Keys.priority: Keys.BeforeItem` guarantees that arrow keys, `Tab`, `Return`, and `Enter` are intercepted directly by the navigation handlers without being swallowed by the text input field.
-  * `Left` / `Right` arrows navigate cards horizontally in wallpaper mode.
-  * `Up` / `Down` arrows navigate items vertically in apps and commands modes with auto-scroll (`positionViewAtIndex`).
-  * `Enter` or mouse click triggers `activateCurrentSelection()`, applying the wallpaper with Zoom & Blur transition or launching the highlighted application.
+
+### 4. Theme Carousel Mode
+Typing `>theme ` or `>tema `, clicking "Theme" in the Control Center, or executing `qs ipc call launcher theme` opens the horizontal theme carousel:
+* Reuses the same 1080x340 px floating container and smooth horizontal scroll architecture as the wallpaper carousel.
+* **Visual Theme Cards (`ThemeCard.qml`):**
+  * Displays 224x214 px cards with a dedicated 120 px preview container showcasing an interface mockup for each palette.
+  * Preview includes a miniature header, active primary widget, slider with active track, accent chip, and 5 color swatches (`primary`, `primaryContainer`, `surfaceContainerHigh`, `connected`, `textPrimary`).
+  * Palette colors resolve via explicit `Qt.color` conversion, ensuring accurate rendering across both static palettes and dynamic Matugen extractions.
+  * An "Active" badge dynamically marks the currently applied theme.
+* **Interactive Behavior:**
+  * Selecting a card applies the theme instantly via `Theme.currentTheme`, persists it to `~/.config/quickshell/current-theme`, triggers `apply-theme.sh` or `apply-matugen.sh` across the system, and closes the launcher.
+  * Full keyboard support with `Left` / `Right` navigation, `Enter` to apply, and text filtering (e.g. `>theme cobalt`).
 
 ---
 
@@ -101,6 +109,10 @@ qs ipc call launcher toggle
 
 # Open wallpaper carousel directly
 qs ipc call launcher wallpaper
+
+# Open theme carousel directly
+qs ipc call launcher theme
+qs ipc call themepicker show
 
 # Navigate selection via IPC
 qs ipc call launcher next
