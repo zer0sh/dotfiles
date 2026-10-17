@@ -144,7 +144,7 @@ Scope {
         Rectangle {
             anchors.fill: parent
             radius: 18
-            color: Qt.rgba(0.05, 0.05, 0.08, 0.55)
+            color: Root.Theme.glassPanel
             border.color: Root.Theme.primary
             border.width: 2
 

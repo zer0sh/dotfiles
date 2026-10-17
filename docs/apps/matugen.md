@@ -156,8 +156,21 @@ To generate a new palette from any wallpaper image:
 # Preview extracted palette without writing files
 matugen image "/path/to/wallpaper.jpg" --mode dark --dry-run --show-colors
 
-# Generate palette and update all theme templates
+# Generate palette in dark mode
 matugen image "/path/to/wallpaper.jpg" --mode dark --source-color-index 0
+
+# Generate palette in light mode
+matugen image "/path/to/wallpaper.jpg" --mode light --source-color-index 0
+```
+
+### Centralized Theme Dispatcher (`apply-matugen.sh`)
+
+The environment provides `~/.config/themes/apply-matugen.sh` to coordinate multi-component reloads and mode persistence:
+
+```bash
+# Apply with current wallpaper and specific mode
+~/.config/themes/apply-matugen.sh "" light
+~/.config/themes/apply-matugen.sh "" dark
 ```
 
 Optionally adjust the contrast level using `--contrast`:

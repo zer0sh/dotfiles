@@ -124,20 +124,17 @@ QtObject {
     // Primary colors
     readonly property color primary: _t.primary
     readonly property color primaryContainer: _t.primaryContainer
-    readonly property color textOnPrimaryContainer: currentTheme === "matugen"
-        ? "#E5E1E9" : _t.onPrimaryContainer
+    readonly property color textOnPrimaryContainer: _t.onPrimaryContainer
 
     // Secondary colors
     readonly property color secondaryContainer: _t.secondaryContainer
-    readonly property color textOnSecondaryContainer: currentTheme === "matugen"
-        ? "#E5E1E9" : _t.textOnSecondaryContainer
+    readonly property color textOnSecondaryContainer: _t.textOnSecondaryContainer
 
     // Tile states
     readonly property color tileActive: _t.tileActive
     readonly property color tileActiveText: _t.tileActiveText
     readonly property color tileInactive: _t.tileInactive
-    readonly property color tileInactiveText: currentTheme === "matugen"
-        ? "#E5E1E9" : _t.tileInactiveText
+    readonly property color tileInactiveText: _t.tileInactiveText
 
     // Slider colors
     readonly property color sliderTrack: _t.sliderTrack
@@ -145,15 +142,19 @@ QtObject {
     readonly property color sliderThumb: _t.sliderThumb
 
     // Text colors
-    readonly property color textPrimary: currentTheme === "matugen"
-        ? "#E5E1E9" : _t.textPrimary
-    readonly property color textSecondary: currentTheme === "matugen"
-        ? "#C9C5D0" : _t.textSecondary
+    readonly property color textPrimary: _t.textPrimary
+    readonly property color textSecondary: _t.textSecondary
 
     // Semantic colors
     readonly property color connected: _t.connected
     readonly property color error: _t.error
     readonly property color toggleOff: _t.toggleOff
+
+    // Unified Glassmorphism Transparencies (centralized for deskclock, panels, launcher)
+    readonly property real panelOpacity: 0.55
+    readonly property real cardOpacity: 0.85
+    readonly property color glassPanel: Qt.rgba(surface.r, surface.g, surface.b, panelOpacity)
+    readonly property color glassCard: Qt.rgba(surfaceContainerHigh.r, surfaceContainerHigh.g, surfaceContainerHigh.b, cardOpacity)
 
     // Shelf
     readonly property color _shelfBgColor: _t.shelfBg

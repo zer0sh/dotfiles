@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+WALLPAPER="${1:-}"
+MODE="${2:-}"
+STATE_FILE="$HOME/.config/themes/current/wallpaper"
+MODE_FILE="$HOME/.config/themes/current/mode"
+
+if [[ -z "$WALLPAPER" && -f "$STATE_FILE" ]]; then
+    WALLPAPER="$(<"$STATE_FILE")"
+fi
+
+if [[ -z "$MODE" ]]; then
+    if [[ -f "$MODE_FILE" ]]; then
+        MODE="$(<"$MODE_FILE")"
+    else
+        MODE="dark"
+    fi
+fi
+
+if [[ -z "$WALLPAPER" || ! -f "$WALLPAPER" ]]; then
+    echo "Wallpaper not found: ${WALLPAPER:-<empty>}" >&2
+    exit 1
+fi
+
+mkdir -p "$HOME/.config/themes/current"
+printf '%s\n' "$WALLPAPER" > "$STATE_FILE"
+printf '%s\n' "$MODE" > "$MODE_FILE"
+
+matugen image "$WALLPAPER" \
+    --config "$HOME/.config/matugen/config.toml" \
+    --mode "$MODE" --source-color-index 0 --quiet
+
+hyprctl reload 2>/dev/null || true
+pkill -SIGUSR2 waybar 2>/dev/null || true
+# Alacritty watches the generated import and reloads its colors automatically.
+
+# Keep the generated outputs in sync with the palette consumed by Quickshell.
+printf '%s\n' "matugen" > "$HOME/.config/quickshell/current-theme"
+
+# Refresh Spicetify theme colors if active theme is matugen
+if [[ -f "$HOME/.config/spicetify/config-xpui.ini" ]] && grep -q "current_theme *= *matugen" "$HOME/.config/spicetify/config-xpui.ini" 2>/dev/null; then
+    spicetify apply -n 2>/dev/null || true
+fi
+
+# Refresh wallpaper thumbnails after the color/theme change has been applied.
+"$HOME/.config/themes/update-wallpaper-cache.sh"
+

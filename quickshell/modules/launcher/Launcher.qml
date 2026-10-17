@@ -52,6 +52,7 @@ Scope {
     property string cacheDir: "/home/zero/.cache/wallpapers/"
     property string currentWallpaper: ""
     property var wallpapers: []
+    property string currentModeState: "dark"
 
     Process {
         id: readCurrentWallProc
@@ -60,6 +61,17 @@ Scope {
             onStreamFinished: {
                 var w = text.trim();
                 if (w !== "") launcher.currentWallpaper = w;
+            }
+        }
+    }
+
+    Process {
+        id: readCurrentModeProc
+        command: ["/bin/sh", "-c", "cat ~/.config/themes/current/mode 2>/dev/null || echo 'dark'"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var m = text.trim();
+                if (m === "light" || m === "dark") launcher.currentModeState = m;
             }
         }
     }
@@ -141,9 +153,17 @@ Scope {
         launcher.panelVisible = false;
     }
 
+    function toggleLightDarkMode() {
+        var targetMode = (launcher.currentModeState === "dark") ? "light" : "dark";
+        launcher.currentModeState = targetMode;
+        actionExecProc.command = ["/home/zero/.config/themes/apply-matugen.sh", "", targetMode];
+        actionExecProc.running = true;
+    }
+
     function openThemes() {
         searchText = ">theme ";
         panelVisible = true;
+        readCurrentModeProc.running = true;
         var curIdx = 0;
         for (var i = 0; i < themesList.length; i++) {
             if (themesList[i].id === Root.Theme.currentTheme) {
@@ -342,6 +362,7 @@ Scope {
             }
             if (allApps.length === 0) appsReadProc.running = true;
             refreshWallpapers();
+            readCurrentModeProc.running = true;
         } else {
             searchText = "";
         }
@@ -351,6 +372,7 @@ Scope {
         iconResolveProc.running = true;
         appsReadProc.running = true;
         refreshWallpapers();
+        readCurrentModeProc.running = true;
     }
 
     // ── IPC Handlers ─────────────────────────────────────────────
@@ -465,7 +487,8 @@ Scope {
                 }
 
                 height: {
-                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme") return 340;
+                    if (launcher.currentMode === "theme") return 380;
+                    if (launcher.currentMode === "wallpaper") return 340;
                     if (launcher.currentMode === "actions") {
                         var actCount = launcher.filteredActions.length;
                         return Math.min(460, Math.max(140, actCount * 50 + 76));
@@ -672,6 +695,97 @@ Scope {
                         anchors.fill: parent
                         clip: true
 
+                        // Encabezado superior con título y toggle de Modo Claro / Oscuro
+                        Item {
+                            id: themeHeaderBar
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            height: 38
+                            z: 60
+
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.leftMargin: 8
+                                anchors.rightMargin: 8
+                                spacing: 12
+
+                                // Título e indicador
+                                RowLayout {
+                                    spacing: 8
+                                    Layout.alignment: Qt.AlignVCenter
+
+                                    Text {
+                                        text: "󰏘"
+                                        font.family: Root.Theme.iconFont
+                                        font.pixelSize: 18
+                                        color: Root.Theme.primary
+                                    }
+
+                                    Text {
+                                        text: "Theme Selection"
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: 15
+                                        font.weight: Font.DemiBold
+                                        color: Root.Theme.textPrimary
+                                    }
+
+                                    Text {
+                                        text: "•  " + launcher.filteredThemes.length + " available"
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: 12
+                                        color: Root.Theme.textSecondary
+                                    }
+                                }
+
+                                Item { Layout.fillWidth: true }
+
+                                // Toggle interactivo Light / Dark
+                                Rectangle {
+                                    id: modeToggleBtn
+                                    Layout.preferredHeight: 32
+                                    Layout.preferredWidth: 126
+                                    radius: 16
+                                    color: modeHoverArea.containsMouse
+                                           ? Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.95)
+                                           : Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.60)
+                                    border.width: 1
+                                    border.color: modeHoverArea.containsMouse ? Root.Theme.primary : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.5)
+
+                                    Behavior on color { ColorAnimation { duration: 150 } }
+                                    Behavior on border.color { ColorAnimation { duration: 150 } }
+
+                                    RowLayout {
+                                        anchors.centerIn: parent
+                                        spacing: 6
+
+                                        Text {
+                                            text: launcher.currentModeState === "light" ? "󰖨" : "󰖔"
+                                            font.family: Root.Theme.iconFont
+                                            font.pixelSize: 16
+                                            color: Root.Theme.primary
+                                        }
+
+                                        Text {
+                                            text: launcher.currentModeState === "light" ? "Light Mode" : "Dark Mode"
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 12
+                                            font.weight: Font.Medium
+                                            color: Root.Theme.textPrimary
+                                        }
+                                    }
+
+                                    MouseArea {
+                                        id: modeHoverArea
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: launcher.toggleLightDarkMode()
+                                    }
+                                }
+                            }
+                        }
+
                         function scrollToCard(index, immediate) {
                             var itemWidth = 236 + 16;
                             var targetX = index * itemWidth + 118 - (themeCarousel.width / 2);
@@ -696,8 +810,11 @@ Scope {
 
                         ListView {
                             id: themeCarousel
-                            anchors.fill: parent
-                            anchors.topMargin: 8
+                            anchors.top: themeHeaderBar.bottom
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.bottom: parent.bottom
+                            anchors.topMargin: 4
                             anchors.bottomMargin: 4
                             orientation: ListView.Horizontal
                             spacing: 16
@@ -761,7 +878,7 @@ Scope {
                         Rectangle {
                             id: themeLeftFade
                             anchors.left: parent.left
-                            anchors.top: parent.top
+                            anchors.top: themeHeaderBar.bottom
                             anchors.bottom: parent.bottom
                             width: 32
                             z: 50
@@ -780,7 +897,7 @@ Scope {
                         Rectangle {
                             id: themeRightFade
                             anchors.right: parent.right
-                            anchors.top: parent.top
+                            anchors.top: themeHeaderBar.bottom
                             anchors.bottom: parent.bottom
                             width: 32
                             z: 50

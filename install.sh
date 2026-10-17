@@ -19,6 +19,7 @@ APPS=(
     "fastfetch:fastfetch"
     "bat:bat"
     "matugen:matugen"
+    "themes:themes"
 )
 
 echo "[INFO] Starting dotfiles deployment..."

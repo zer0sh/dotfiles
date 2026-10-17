@@ -27,17 +27,20 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
   * Ambient desktop clock surface and expandable calendar panel with date navigation.
 * **Mini Music Player (`modules/osd/MiniPlayer.qml`):**
   * Compact MPRIS playback controller triggered with `SUPER + M` as defined in [Hyprland Keybindings](../hyprland/keybinds.md#quickshell-and-desktop-overlays).
-* **Application Launcher (`modules/launcher/`):**
+* **Application Launcher & Theme Selector (`modules/launcher/`):**
   * Fast native application runner and app drawer complementing [Wofi Launcher](../apps/wofi.md).
+  * Interactive theme carousel (`>theme` mode) displaying theme preview cards (`ThemeCard.qml`), active status badges, and an integrated top header bar with title and a quick **Light Mode / Dark Mode** switch.
+  * Synchronized with Matugen and persisted in `~/.config/themes/current/mode`.
 
 ---
 
-## Dynamic Palette Integration
+## Dynamic Palette & Glassmorphism Integration
 
 Quickshell widgets consume Material Design 3 tokens generated dynamically by [Matugen](../apps/matugen.md):
 
 * **Token source:** `~/.config/themes/current/palette.json`
-* **Theme loader:** `Theme.qml` loads colors reactively, allowing instantaneous UI repaints when wallpapers change without restarting the shell.
+* **Theme loader:** `Theme.qml` loads colors reactively, allowing instantaneous UI repaints when wallpapers or light/dark modes change without restarting the shell.
+* **Centralized Glassmorphism:** Standardized transparency properties (`Root.Theme.glassPanel` with opacity `0.55` and `Root.Theme.glassCard` with opacity `0.85`) unified across the DeskClock widget, launcher floating cards, and notifications.
 * **Semantic roles:** Surface containers, primary accents, text variants, and outline borders are mapped directly to QML elements.
 
 ---
