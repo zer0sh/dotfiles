@@ -66,16 +66,23 @@ Typing `>` filters available system commands:
 
 ### 3. Wallpaper Carousel Mode
 Typing `>wallpaper ` or pressing `SUPER + W` opens the horizontal carousel:
-* Expanded floating card container (1080 px width, 330 px height) offering comfortable horizontal and vertical headroom.
+* Expanded floating card container (1080 px width, 340 px height, 24 px radius) offering generous horizontal and vertical headroom.
+* **Caelestia Shell Containment & Edge Fade Overlays:**
+  * Strict clipping (`clip: true`) enforced across the floating dock card, content viewport, and horizontal list view, eliminating lateral overflow beyond container boundaries.
+  * Left and right 32 px horizontal gradient fade overlays that smoothly blend scrollable cards into the dark dock background without hard cutoffs.
 * Displays 16:9 cards (224x214 px with 120 px thumbnail height) generated from `/home/zero/Pictures/walls/` and cached in `~/.cache/wallpapers/`.
-* **Enhanced Hover & Focus Animations:**
-  * Dynamic elevation: Cards lift upward by -10 px on mouse hover.
-  * Elastic scale expansion: Scales to 1.10 using `Easing.OutBack` with 1.3 overshoot.
-  * Internal parallax zoom: The 16:9 thumbnail subtly zooms to 1.08 within rounded clipping bounds.
-  * Vibrant halo glow: Border widens to 2 px with primary color illumination and expanded glow margins.
+* **Hover & Selection Styling:**
+  * Dynamic elevation: Cards lift upward by -5 px on hover (-2 px on keyboard selection).
+  * Smooth scale: Subtle 1.05 expansion on hover (1.03 on keyboard selection) with `Easing.OutCubic`.
+  * Internal thumbnail zoom: 16:9 thumbnail expands to 1.05 within rounded bounds.
+  * Vibrant halo glow: Border widens to 2 px with primary accent color and expanded glow margins.
 * **Active Badge:** The currently active desktop wallpaper is highlighted with an "Active" badge and a focused double border.
 * **Add Local File Card:** Positioned at the end of the carousel. Clicking or pressing `Enter` opens a native file dialog (`zenity`) to import external images, automatically caching thumbnails and applying the wallpaper.
-* **Snappy Keyboard & Scroll Navigation:** `Left` / `Right` arrows instantly navigate adjacent wallpapers with 140 ms highlight transitions (`highlightMoveDuration: 140`), `WheelHandler` provides fluid scrolling without intercepting hover states, and `Enter` or mouse click applies the selected wallpaper with the Zoom & Blur transition.
+* **Direct Keyboard & Scroll Navigation:**
+  * `Keys.priority: Keys.BeforeItem` guarantees that arrow keys, `Tab`, `Return`, and `Enter` are intercepted directly by the navigation handlers without being swallowed by the text input field.
+  * `Left` / `Right` arrows navigate cards horizontally in wallpaper mode.
+  * `Up` / `Down` arrows navigate items vertically in apps and commands modes with auto-scroll (`positionViewAtIndex`).
+  * `Enter` or mouse click triggers `activateCurrentSelection()`, applying the wallpaper with Zoom & Blur transition or launching the highlighted application.
 
 ---
 
@@ -89,6 +96,11 @@ qs ipc call launcher toggle
 
 # Open wallpaper carousel directly
 qs ipc call launcher wallpaper
+
+# Navigate selection via IPC
+qs ipc call launcher next
+qs ipc call launcher prev
+qs ipc call launcher activate
 
 # Filter commands or text via IPC
 qs ipc call launcher search ">"

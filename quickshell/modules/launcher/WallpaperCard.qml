@@ -19,16 +19,16 @@ Item {
     width: 224
     height: 214
 
-    // Escala dinámica y elevación: hover pronunciado y fluido con efecto muelle (OutBack)
-    scale: mouseArea.containsMouse ? 1.10 : (isSelected ? 1.05 : 1.0)
-    y: mouseArea.containsMouse ? -10 : (isSelected ? -4 : 0)
+    // Escala dinámica y elevación: sutil y pulida estilo Caelestia
+    scale: mouseArea.containsMouse ? 1.05 : (isSelected ? 1.03 : 1.0)
+    y: mouseArea.containsMouse ? -5 : (isSelected ? -2 : 0)
     z: mouseArea.containsMouse ? 100 : (isSelected ? 20 : 1)
 
     Behavior on scale {
-        NumberAnimation { duration: 240; easing.type: Easing.OutBack; easing.overshoot: 1.3 }
+        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
     }
     Behavior on y {
-        NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
     }
 
     Rectangle {

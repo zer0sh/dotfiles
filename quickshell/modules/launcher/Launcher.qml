@@ -152,6 +152,30 @@ Scope {
         launcher.panelVisible = false;
     }
 
+    function activateCurrentSelection() {
+        if (!launcher.panelVisible) return;
+
+        if (launcher.currentMode === "wallpaper") {
+            if (launcher.selectedIndex === launcher.filteredWallpapers.length) {
+                launcher.panelVisible = false;
+                browseWallProc.running = true;
+            } else if (launcher.selectedIndex >= 0 && launcher.selectedIndex < launcher.filteredWallpapers.length) {
+                var selectedWall = launcher.filteredWallpapers[launcher.selectedIndex];
+                if (selectedWall && selectedWall.path) {
+                    launcher.applyWallpaper(selectedWall.path);
+                }
+            }
+        } else if (launcher.currentMode === "actions") {
+            if (launcher.selectedIndex >= 0 && launcher.selectedIndex < launcher.filteredActions.length) {
+                launcher.executeAction(launcher.filteredActions[launcher.selectedIndex]);
+            }
+        } else if (launcher.currentMode === "apps") {
+            if (launcher.selectedIndex >= 0 && launcher.selectedIndex < launcher.filteredApps.length) {
+                launcher.launchApp(launcher.filteredApps[launcher.selectedIndex]);
+            }
+        }
+    }
+
     property var filteredApps: {
         if (currentMode !== "apps") return [];
         if (searchText === "") return allApps;
@@ -300,6 +324,23 @@ Scope {
         function hide(): void {
             launcher.panelVisible = false;
         }
+        function next(): void {
+            if (launcher.currentMode === "wallpaper") {
+                if (launcher.selectedIndex < launcher.filteredWallpapers.length) launcher.selectedIndex++;
+            } else if (launcher.currentMode === "actions") {
+                if (launcher.selectedIndex < launcher.filteredActions.length - 1) launcher.selectedIndex++;
+                else launcher.selectedIndex = 0;
+            } else if (launcher.currentMode === "apps") {
+                if (launcher.selectedIndex < launcher.filteredApps.length - 1) launcher.selectedIndex++;
+                else launcher.selectedIndex = 0;
+            }
+        }
+        function prev(): void {
+            if (launcher.selectedIndex > 0) launcher.selectedIndex--;
+        }
+        function activate(): void {
+            launcher.activateCurrentSelection();
+        }
     }
 
     // Compatibilidad adicional con atajo SUPER + W
@@ -358,7 +399,7 @@ Scope {
                 }
 
                 height: {
-                    if (launcher.currentMode === "wallpaper") return 330;
+                    if (launcher.currentMode === "wallpaper") return 340;
                     if (launcher.currentMode === "actions") {
                         var actCount = launcher.filteredActions.length;
                         return Math.min(460, Math.max(140, actCount * 50 + 76));
@@ -367,11 +408,11 @@ Scope {
                     return Math.min(480, Math.max(140, appCount * 52 + 76));
                 }
 
-                radius: 22
+                radius: 24
                 color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.88)
                 border.width: 1
                 border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.35)
-                clip: launcher.currentMode !== "wallpaper"
+                clip: true
 
                 focus: true
                 Keys.forwardTo: [searchInput]
@@ -387,7 +428,7 @@ Scope {
                 Rectangle {
                     anchors.fill: parent
                     anchors.margins: -3
-                    radius: 25
+                    radius: 26
                     color: "transparent"
                     border.width: 1
                     border.color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.2)
@@ -400,15 +441,16 @@ Scope {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.bottom: searchContainer.top
-                    anchors.margins: 14
+                    anchors.margins: 16
                     anchors.bottomMargin: 6
-                    clip: launcher.currentMode !== "wallpaper"
+                    clip: true
 
                     // --- VISTA 1: Carrusel de Wallpapers (Horizontal) ---
                     Item {
                         id: wallpaperView
                         visible: launcher.currentMode === "wallpaper"
                         anchors.fill: parent
+                        clip: true
 
                         function scrollToCard(index, immediate) {
                             var itemWidth = 236 + 16;
@@ -439,7 +481,7 @@ Scope {
                             anchors.bottomMargin: 4
                             orientation: ListView.Horizontal
                             spacing: 16
-                            clip: false
+                            clip: true
 
                             flickDeceleration: 1800
                             maximumFlickVelocity: 3000
@@ -499,6 +541,44 @@ Scope {
                             }
                         }
 
+                        // Degradado de desvanecimiento lateral izquierdo estilo Caelestia
+                        Rectangle {
+                            id: leftFade
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 32
+                            z: 50
+                            enabled: false
+                            visible: wallCarousel.contentX > 6
+                            opacity: visible ? 1.0 : 0.0
+                            Behavior on opacity { NumberAnimation { duration: 150 } }
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.95) }
+                                GradientStop { position: 1.0; color: "transparent" }
+                            }
+                        }
+
+                        // Degradado de desvanecimiento lateral derecho estilo Caelestia
+                        Rectangle {
+                            id: rightFade
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 32
+                            z: 50
+                            enabled: false
+                            visible: wallCarousel.contentX < (wallCarousel.contentWidth - wallCarousel.width - 6)
+                            opacity: visible ? 1.0 : 0.0
+                            Behavior on opacity { NumberAnimation { duration: 150 } }
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: "transparent" }
+                                GradientStop { position: 1.0; color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.95) }
+                            }
+                        }
+
                         Connections {
                             target: launcher
                             function onSelectedIndexChanged() {
@@ -540,6 +620,15 @@ Scope {
                             }
                         }
 
+                        Connections {
+                            target: launcher
+                            function onSelectedIndexChanged() {
+                                if (launcher.currentMode === "actions" && actionsList) {
+                                    actionsList.positionViewAtIndex(launcher.selectedIndex, ListView.Contain);
+                                }
+                            }
+                        }
+
                         Text {
                             visible: launcher.filteredActions.length === 0
                             anchors.centerIn: parent
@@ -569,6 +658,15 @@ Scope {
                                 iconPath: launcher.resolveIcon(modelData.icon)
                                 isSelected: launcher.selectedIndex === index
                                 onActivated: launcher.launchApp(modelData)
+                            }
+                        }
+
+                        Connections {
+                            target: launcher
+                            function onSelectedIndexChanged() {
+                                if (launcher.currentMode === "apps" && appsList) {
+                                    appsList.positionViewAtIndex(launcher.selectedIndex, ListView.Contain);
+                                }
                             }
                         }
 
@@ -629,13 +727,27 @@ Scope {
                             selectionColor: Root.Theme.primary
                             selectedTextColor: Root.Theme.tileActiveText
                             text: launcher.searchText
+                            focus: true
+
+                            Keys.priority: Keys.BeforeItem
 
                             onTextChanged: {
                                 launcher.searchText = text;
-                                launcher.selectedIndex = 0;
+                                if (launcher.currentMode !== "wallpaper" || (text !== ">wallpaper " && text !== ">wallpaper")) {
+                                    launcher.selectedIndex = 0;
+                                }
                             }
 
                             Component.onCompleted: forceActiveFocus()
+
+                            Connections {
+                                target: launcher
+                                function onPanelVisibleChanged() {
+                                    if (launcher.panelVisible) {
+                                        searchInput.forceActiveFocus();
+                                    }
+                                }
+                            }
 
                             // Placeholder
                             Text {
@@ -652,12 +764,17 @@ Scope {
                             }
 
                             // ── Atajos de Teclado y Navegación ──────────
-                            Keys.onEscapePressed: launcher.panelVisible = false
+                            Keys.onEscapePressed: function(event) {
+                                launcher.panelVisible = false;
+                                event.accepted = true;
+                            }
 
                             Keys.onLeftPressed: function(event) {
                                 if (launcher.currentMode === "wallpaper") {
                                     if (launcher.selectedIndex > 0) launcher.selectedIndex--;
                                     event.accepted = true;
+                                } else {
+                                    event.accepted = false;
                                 }
                             }
 
@@ -667,20 +784,28 @@ Scope {
                                         launcher.selectedIndex++;
                                     }
                                     event.accepted = true;
+                                } else {
+                                    event.accepted = false;
                                 }
                             }
 
                             Keys.onUpPressed: function(event) {
                                 if (launcher.currentMode === "wallpaper") {
                                     if (launcher.selectedIndex > 0) launcher.selectedIndex--;
-                                    event.accepted = true;
                                 } else if (launcher.currentMode === "actions") {
-                                    if (launcher.selectedIndex > 0) launcher.selectedIndex--;
-                                    event.accepted = true;
+                                    if (launcher.selectedIndex > 0) {
+                                        launcher.selectedIndex--;
+                                    } else if (launcher.filteredActions.length > 0) {
+                                        launcher.selectedIndex = launcher.filteredActions.length - 1;
+                                    }
                                 } else if (launcher.currentMode === "apps") {
-                                    if (launcher.selectedIndex > 0) launcher.selectedIndex--;
-                                    event.accepted = true;
+                                    if (launcher.selectedIndex > 0) {
+                                        launcher.selectedIndex--;
+                                    } else if (launcher.filteredApps.length > 0) {
+                                        launcher.selectedIndex = launcher.filteredApps.length - 1;
+                                    }
                                 }
+                                event.accepted = true;
                             }
 
                             Keys.onDownPressed: function(event) {
@@ -688,21 +813,23 @@ Scope {
                                     if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
                                         launcher.selectedIndex++;
                                     }
-                                    event.accepted = true;
                                 } else if (launcher.currentMode === "actions") {
                                     if (launcher.selectedIndex < launcher.filteredActions.length - 1) {
                                         launcher.selectedIndex++;
+                                    } else {
+                                        launcher.selectedIndex = 0;
                                     }
-                                    event.accepted = true;
                                 } else if (launcher.currentMode === "apps") {
                                     if (launcher.selectedIndex < launcher.filteredApps.length - 1) {
                                         launcher.selectedIndex++;
+                                    } else {
+                                        launcher.selectedIndex = 0;
                                     }
-                                    event.accepted = true;
                                 }
+                                event.accepted = true;
                             }
 
-                            Keys.onTabPressed: {
+                            Keys.onTabPressed: function(event) {
                                 if (launcher.currentMode === "actions") {
                                     if (launcher.selectedIndex < launcher.filteredActions.length - 1) {
                                         launcher.selectedIndex++;
@@ -715,26 +842,51 @@ Scope {
                                     } else {
                                         launcher.selectedIndex = 0;
                                     }
+                                } else if (launcher.currentMode === "wallpaper") {
+                                    if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
+                                        launcher.selectedIndex++;
+                                    } else {
+                                        launcher.selectedIndex = 0;
+                                    }
                                 }
+                                event.accepted = true;
                             }
 
-                            Keys.onReturnPressed: {
-                                if (launcher.currentMode === "wallpaper") {
-                                    if (launcher.selectedIndex === launcher.filteredWallpapers.length) {
-                                        browseWallProc.running = true;
-                                    } else if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
-                                        var selectedWall = launcher.filteredWallpapers[launcher.selectedIndex];
-                                        if (selectedWall) launcher.applyWallpaper(selectedWall.path);
-                                    }
-                                } else if (launcher.currentMode === "actions") {
-                                    if (launcher.selectedIndex < launcher.filteredActions.length) {
-                                        launcher.executeAction(launcher.filteredActions[launcher.selectedIndex]);
+                            Keys.onBacktabPressed: function(event) {
+                                if (launcher.currentMode === "actions") {
+                                    if (launcher.selectedIndex > 0) {
+                                        launcher.selectedIndex--;
+                                    } else if (launcher.filteredActions.length > 0) {
+                                        launcher.selectedIndex = launcher.filteredActions.length - 1;
                                     }
                                 } else if (launcher.currentMode === "apps") {
-                                    if (launcher.selectedIndex < launcher.filteredApps.length) {
-                                        launcher.launchApp(launcher.filteredApps[launcher.selectedIndex]);
+                                    if (launcher.selectedIndex > 0) {
+                                        launcher.selectedIndex--;
+                                    } else if (launcher.filteredApps.length > 0) {
+                                        launcher.selectedIndex = launcher.filteredApps.length - 1;
+                                    }
+                                } else if (launcher.currentMode === "wallpaper") {
+                                    if (launcher.selectedIndex > 0) {
+                                        launcher.selectedIndex--;
+                                    } else {
+                                        launcher.selectedIndex = launcher.filteredWallpapers.length;
                                     }
                                 }
+                                event.accepted = true;
+                            }
+
+                            Keys.onReturnPressed: function(event) {
+                                launcher.activateCurrentSelection();
+                                event.accepted = true;
+                            }
+
+                            Keys.onEnterPressed: function(event) {
+                                launcher.activateCurrentSelection();
+                                event.accepted = true;
+                            }
+
+                            onAccepted: {
+                                launcher.activateCurrentSelection();
                             }
                         }
 
