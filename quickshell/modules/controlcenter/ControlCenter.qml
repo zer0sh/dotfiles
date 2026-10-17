@@ -582,10 +582,10 @@ Scope {
                     ]
 
                 radius: 30
-                // Dark translucent glass surface with Hyprland blur behind it
-                color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.70)
+                // Translucent glass surface with Hyprland blur behind it
+                color: Root.Theme.glassPanel
                 border.width: 1.5
-                border.color: Qt.rgba(255, 255, 255, 0.16)
+                border.color: Root.Theme.glassBorder
                 clip: true
 
                 // block click-through to overlay close area
@@ -854,9 +854,9 @@ Scope {
                                     Layout.fillHeight: true
                                     Layout.preferredWidth: 168
                                     radius: 24
-                                    color: Qt.rgba(255, 255, 255, 0.08)
+                                    color: Root.Theme.glassCard
                                     border.width: 1
-                                    border.color: Qt.rgba(255, 255, 255, 0.14)
+                                    border.color: Root.Theme.glassCardBorder
                                     clip: true
 
                                     RowLayout {
@@ -901,9 +901,9 @@ Scope {
                                 id: notifCard
                                 Layout.fillWidth: true
                                 radius: 24
-                                color: Qt.rgba(255, 255, 255, 0.08)
+                                color: Root.Theme.glassCard
                                 border.width: 1
-                                border.color: Qt.rgba(255, 255, 255, 0.14)
+                                border.color: Root.Theme.glassCardBorder
                                 clip: true
 
                                 implicitHeight: controlCenter.notificationsExpanded

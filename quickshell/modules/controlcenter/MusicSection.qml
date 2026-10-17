@@ -17,9 +17,9 @@ Rectangle {
     signal openAppRequested()
 
     radius: 24
-    color: Qt.rgba(255, 255, 255, 0.08)
+    color: Root.Theme.glassCard
     border.width: 1
-    border.color: Qt.rgba(255, 255, 255, 0.14)
+    border.color: Root.Theme.glassCardBorder
     clip: true
 
     Process {

@@ -498,9 +498,9 @@ Scope {
                 }
 
                 radius: 24
-                color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.88)
+                color: Root.Theme.glassPanel
                 border.width: 1
-                border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.35)
+                border.color: Root.Theme.glassBorder
                 clip: true
 
                 focus: true
