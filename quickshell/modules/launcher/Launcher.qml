@@ -498,10 +498,23 @@ Scope {
                 }
 
                 radius: 24
-                color: Root.Theme.glassPanel
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: Root.Theme.isLightMode ? Qt.rgba(1, 1, 1, Root.Theme.panelOpacity * 1.5) : Root.Theme.glassPanel }
+                    GradientStop { position: 1.0; color: Root.Theme.glassPanel }
+                }
                 border.width: 1
                 border.color: Root.Theme.glassBorder
                 clip: true
+
+                // Apple specular highlight
+                Rectangle {
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: 1.5
+                    radius: 24
+                    color: Root.Theme.glassHighlight
+                }
 
                 focus: true
                 Keys.forwardTo: [searchInput]

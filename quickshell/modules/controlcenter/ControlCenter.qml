@@ -582,11 +582,24 @@ Scope {
                     ]
 
                 radius: 30
-                // Translucent glass surface with Hyprland blur behind it
-                color: Root.Theme.glassPanel
+                // Translucent glass surface with subtle top-to-bottom refraction gradient
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: Root.Theme.isLightMode ? Qt.rgba(1, 1, 1, Root.Theme.panelOpacity * 1.5) : Root.Theme.glassPanel }
+                    GradientStop { position: 1.0; color: Root.Theme.glassPanel }
+                }
                 border.width: 1.5
                 border.color: Root.Theme.glassBorder
                 clip: true
+
+                // Specular reflection highlight on top edge (Apple glass aesthetic)
+                Rectangle {
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    height: 1.5
+                    radius: 30
+                    color: Root.Theme.glassHighlight
+                }
 
                 // block click-through to overlay close area
                 MouseArea {
