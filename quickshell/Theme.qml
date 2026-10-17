@@ -114,12 +114,12 @@ QtObject {
 
     // ── Themed color properties ────────────────────────────────────
     // Surface colors
-    readonly property color panelBg: _t.panelBg
-    readonly property color panelBorder: _t.panelBorder
-    readonly property color surface: _t.surface
-    readonly property color surfaceContainer: _t.surfaceContainer
-    readonly property color surfaceContainerHigh: _t.surfaceContainerHigh
-    readonly property color surfaceBright: _t.surfaceBright
+    readonly property color panelBg: isLightMode ? "#FFFFFF" : _t.panelBg
+    readonly property color panelBorder: isLightMode ? Qt.rgba(1, 1, 1, 0.6) : _t.panelBorder
+    readonly property color surface: isLightMode ? "#FFFFFF" : _t.surface
+    readonly property color surfaceContainer: isLightMode ? "#FFFFFF" : _t.surfaceContainer
+    readonly property color surfaceContainerHigh: isLightMode ? "#FFFFFF" : _t.surfaceContainerHigh
+    readonly property color surfaceBright: isLightMode ? "#FFFFFF" : _t.surfaceBright
 
     // Primary colors
     readonly property color primary: _t.primary
