@@ -96,10 +96,25 @@ window#waybar {
 
 /* ========== RIGHT MODULES ========== */
 
-/* System tray */
+/* System tray (pill capsule) */
 #tray {
-    padding: 0 8px;
+    padding: 0 10px;
     margin: 4px;
+    border-radius: 18px;
+    background: alpha(@text, 0.08);
+    transition: all 0.2s ease;
+}
+
+#tray:hover {
+    background: alpha(@text, 0.12);
+}
+
+#tray.empty,
+#tray:empty {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
 }
 
 #tray > .passive {

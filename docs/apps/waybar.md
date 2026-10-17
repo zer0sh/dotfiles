@@ -35,7 +35,7 @@ Waybar is docked at the top of the display with a height of 36 pixels and bottom
 * **`hyprland/window`:** Displays the active window title with subtle opacity, keeping the central area clean and legible.
 
 ### 3. Right Section
-* **`tray`:** Wayland system tray for background application icons (`icon-size: 14px`, `spacing: 8px`).
+* **`tray`:** Wayland system tray for background application icons (`icon-size: 14px`, `spacing: 8px`), enclosed in a rounded capsule pill (`border-radius: 18px`, `background: alpha(@text, 0.08)`, `padding: 0 10px`) matching the notification bell and quick status indicators. Automatically hides background and margins when empty.
 * **Quick Status Indicators (Pills):**
     * **`custom/caffeine`:** Pill indicator displaying coffee cup glyph (`󰅶`) when active. Synchronizes with session wake-lock inhibitor via POSIX signal `SIGRTMIN+8`. Clicking toggles wake-lock state.
     * **`custom/nightlight`:** Pill indicator displaying eye glyph (`󰈈`) when `hyprsunset` blue-light filter (4000K) is active. Synchronizes via POSIX signal `SIGRTMIN+9`. Clicking toggles warm filter state.
