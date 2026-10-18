@@ -29,8 +29,14 @@ Wallpaper Image (.png / .jpg)
    ├── gtk-4.0.css     --> linked by ~/.config/gtk-4.0/gtk.css
    ├── spicetify.ini   --> linked by ~/.config/spicetify/Themes/matugen/color.ini
    ├── steam.css       --> linked by ~/.config/AdwSteamGtk/custom.css
-   └── palette.json    --> consumed by Quickshell Control Center & Widgets
+   ├── palette.json    --> consumed by Quickshell Control Center & Widgets
+   └── vscode-colors / vscode-colors.json --> watched by the VS Code "Matugen Theme" extension (rendered to ~/.cache/matugen/)
 ```
+
+Note: the VS Code outputs are the only exception to the central store. The
+`haikalllp.matugen-theme` extension watches the hardcoded paths
+`~/.cache/matugen/vscode-colors` and `~/.cache/matugen/vscode-colors.json`,
+so they are rendered there instead of `~/.config/themes/current/`.
 
 ---
 
@@ -100,6 +106,15 @@ output_path = "~/.config/themes/current/spicetify.ini"
 input_path = "~/.config/matugen/templates/steam.css"
 output_path = "~/.config/themes/current/steam.css"
 post_hook = "adwaita-steam-gtk -i >/dev/null 2>&1 || flatpak run io.github.Foldex.AdwSteamGtk -i >/dev/null 2>&1 || true"
+
+# VS Code (haikalllp.matugen-theme extension watches these paths)
+[templates.vscode-raw]
+input_path = "~/.config/matugen/templates/vscode-colors"
+output_path = "~/.cache/matugen/vscode-colors"
+
+[templates.vscode-json]
+input_path = "~/.config/matugen/templates/vscode-colors.json"
+output_path = "~/.cache/matugen/vscode-colors.json"
 ```
 
 ---
@@ -120,6 +135,7 @@ post_hook = "adwaita-steam-gtk -i >/dev/null 2>&1 || flatpak run io.github.Folde
 | **GNOME Modern (GTK 4 / Libadwaita)** | `themes/current/gtk-4.0.css` | Libadwaita named colors: accent, window_bg, headerbar, cards | Next app launch |
 | **Spicetify (Spotify)** | `themes/current/spicetify.ini` | Main, player, sidebar, cards, text, accents, buttons | `spicetify apply -n` / automated in `apply-matugen.sh` |
 | **[Steam](steam.md)** | `themes/current/steam.css` | Adwaita CSS variables: accent, window_bg, headerbar, sidebar | `post_hook` with `adwaita-steam-gtk -i` |
+| **VS Code** (`haikalllp.matugen-theme`) | `~/.cache/matugen/vscode-colors` and `.json` | Full Material You palette (background, foreground, cursor, 16 accent colors) | Automatic via extension file watcher / `Matugen Theme: Update Theme` |
 
 
 ### Themed GTK Applications Suite
