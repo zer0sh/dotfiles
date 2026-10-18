@@ -185,9 +185,9 @@ Scope {
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: 120
                     font.weight: Font.Bold
-                    color: Qt.lighter(Root.Theme.primary, 1.2)
+                    color: Root.Theme.isLightMode ? Root.Theme.primary : Qt.lighter(Root.Theme.primary, 1.2)
                     horizontalAlignment: Text.AlignHCenter
-                    style: Text.Sunken
+                    style: Root.Theme.isLightMode ? Text.Normal : Text.Sunken
                     styleColor: Root.Theme.primary
                 }
 
@@ -226,7 +226,7 @@ Scope {
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 12
                         font.weight: Font.DemiBold
-                        color: Qt.lighter(Root.Theme.primary, 1.2)
+                        color: Root.Theme.isLightMode ? Root.Theme.textPrimary : Qt.lighter(Root.Theme.primary, 1.2)
                         horizontalAlignment: Text.AlignHCenter
                     }
                 }
@@ -239,11 +239,11 @@ Scope {
                     text: deskClock.message
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: 15
-                    color: Qt.lighter(Root.Theme.primary, 1.1)
+                    color: Root.Theme.isLightMode ? Root.Theme.textPrimary : Qt.lighter(Root.Theme.primary, 1.1)
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
                     wrapMode: Text.WordWrap
-                    style: Text.Sunken
+                    style: Root.Theme.isLightMode ? Text.Normal : Text.Sunken
                     styleColor: Root.Theme.primary
                 }
 

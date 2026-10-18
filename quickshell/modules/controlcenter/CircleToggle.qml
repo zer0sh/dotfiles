@@ -56,7 +56,7 @@ Item {
             font.pixelSize: 28
             color: control.active
                 ? Root.Theme.tileActiveText
-                : Qt.rgba(255, 255, 255, 0.85)
+                : (Root.Theme.isLightMode ? Root.Theme.textPrimary : Qt.rgba(255, 255, 255, 0.85))
 
             Behavior on color {
                 ColorAnimation { duration: Root.Theme.animDurationFast }
