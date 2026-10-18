@@ -13,9 +13,7 @@
   ],
   "modules-right": [
     "tray",
-    "custom/caffeine",
-    "custom/nightlight",
-    "custom/shader",
+    "group/quickshell_tray",
     "custom/notifications",
     "custom/date",
     "clock",
@@ -25,6 +23,14 @@
     "battery",
     "custom/power"
   ],
+  "group/quickshell_tray": {
+    "orientation": "inherit",
+    "modules": [
+      "custom/caffeine",
+      "custom/nightlight",
+      "custom/shader"
+    ]
+  },
   "custom/caffeine": {
     "exec": "~/.config/waybar/scripts/caffeine",
     "return-type": "json",
@@ -47,6 +53,14 @@
     "interval": 3,
     "signal": 10,
     "on-click": "~/.config/waybar/scripts/shader toggle",
+    "tooltip": true
+  },
+  "custom/dnd": {
+    "exec": "~/.config/waybar/scripts/dnd",
+    "return-type": "json",
+    "interval": 3,
+    "signal": 11,
+    "on-click": "~/.config/waybar/scripts/dnd toggle",
     "tooltip": true
   },
   "custom/launcher": {

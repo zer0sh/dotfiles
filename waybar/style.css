@@ -96,24 +96,24 @@ window#waybar {
 
 /* ========== RIGHT MODULES ========== */
 
-/* System tray (pill capsule) */
+/* System tray: completely collapses when empty */
 #tray {
-    padding: 0 10px;
-    margin: 4px;
-    border-radius: 18px;
-    background: alpha(@text, 0.08);
-    transition: all 0.2s ease;
-}
-
-#tray:hover {
-    background: alpha(@text, 0.12);
-}
-
-#tray.empty {
     padding: 0;
     margin: 0;
     background: transparent;
     border: none;
+}
+
+#tray > * {
+    padding: 0 8px;
+    margin: 4px 2px;
+    border-radius: 14px;
+    background: alpha(@text, 0.08);
+    transition: all 0.2s ease;
+}
+
+#tray > *:hover {
+    background: alpha(@text, 0.14);
 }
 
 #tray > .passive {
@@ -124,12 +124,22 @@ window#waybar {
     -gtk-icon-effect: highlight;
 }
 
-/* ----- Quick indicator pills (Caffeine, Nightlight, Shader) ----- */
+/* ----- QuickShell Tray (Caffeine, DND, Nightlight, Shader): completely collapses when empty ----- */
+#quickshell_tray,
+#group-quickshell_tray,
+.quickshell_tray {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+}
+
 #custom-caffeine,
+#custom-dnd,
 #custom-nightlight,
 #custom-shader {
-    padding: 0 13px 0 9px;
-    margin: 4px 3px;
+    padding: 0 12px;
+    margin: 4px 2px;
     border-radius: 18px;
     background: alpha(@text, 0.08);
     color: @accent;
@@ -137,17 +147,26 @@ window#waybar {
     transition: all 0.2s ease;
 }
 
-#custom-caffeine {
-    padding: 0 12px 0 10px;
+#custom-caffeine.hidden,
+#custom-dnd.hidden,
+#custom-nightlight.hidden,
+#custom-shader.hidden {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    font-size: 0;
 }
 
 #custom-caffeine:hover,
+#custom-dnd:hover,
 #custom-nightlight:hover,
 #custom-shader:hover {
     background: alpha(@text, 0.14);
 }
 
 #custom-caffeine label,
+#custom-dnd label,
 #custom-nightlight label,
 #custom-shader label {
     margin: 0;
@@ -168,8 +187,9 @@ window#waybar {
     background: alpha(@text, 0.12);
 }
 
-#custom-notifications.has-notifs {
-    color: @text;
+#custom-notifications.has-notifs,
+#custom-notifications.dnd {
+    color: @accent;
 }
 
 /* ----- System status pill group: date | clock | audio | net | bt | battery/power ----- */

@@ -68,28 +68,36 @@ Item {
                     hoverEnabled: true
                     cursorShape: pressed ? Qt.ClosedHandCursor : Qt.OpenHandCursor
 
-                    property int startMouseX: 0
-                    property int startMouseY: 0
+                    property real startPressX: 0
+                    property real startPressY: 0
+                    property int startWinX: 0
+                    property int startWinY: 0
 
                     onEntered: header.isHovered = true
                     onExited: if (!pressed) header.isHovered = false
 
                     onPressed: function(mouse) {
-                        startMouseX = mouse.x;
-                        startMouseY = mouse.y;
+                        startPressX = mouse.x;
+                        startPressY = mouse.y;
+                        startWinX = header.windowRef.margins.left;
+                        startWinY = header.windowRef.margins.top;
                         header.isDragging = true;
                     }
 
                     onPositionChanged: function(mouse) {
                         if (pressed) {
-                            var dx = mouse.x - startMouseX;
-                            var dy = mouse.y - startMouseY;
-                            if (dx !== 0 || dy !== 0) {
-                                var newX = Math.max(10, Math.min(1920 - header.windowRef.implicitWidth - 10, header.windowRef.margins.left + dx));
-                                var newY = Math.max(10, Math.min(1200 - header.windowRef.implicitHeight - 10, header.windowRef.margins.top + dy));
-                                header.windowRef.margins.left = newX;
-                                header.windowRef.margins.top = newY;
-                            }
+                            // mouse.x/y changes by delta relative to where we pressed within the item,
+                            // even when the window itself translates under the cursor.
+                            var dx = mouse.x - startPressX;
+                            var dy = mouse.y - startPressY;
+                            var targetX = Math.round(header.windowRef.margins.left + dx);
+                            var targetY = Math.round(header.windowRef.margins.top + dy);
+
+                            var newX = Math.max(10, Math.min(1920 - header.windowRef.implicitWidth - 10, targetX));
+                            var newY = Math.max(10, Math.min(1200 - header.windowRef.implicitHeight - 10, targetY));
+
+                            header.windowRef.margins.left = newX;
+                            header.windowRef.margins.top = newY;
                         }
                     }
 

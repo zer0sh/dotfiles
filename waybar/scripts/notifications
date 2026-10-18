@@ -2,9 +2,20 @@
 # Notification count for Waybar — reads count written by QuickShell NotificationService
 count=$(cat /tmp/qs-notif-count 2>/dev/null | tr -dc '0-9')
 count=${count:-0}
+DND_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/dnd-mode"
+
+if [ -f "$DND_FILE" ]; then
+    icon="󰂛"
+    dnd_class="dnd"
+else
+    icon="󰂚"
+    dnd_class=""
+fi
 
 if [ "$count" -gt 0 ]; then
-    echo "{\"text\": \"${count}\", \"class\": \"has-notifs\", \"alt\": \"has-notifs\"}"
+    cls="has-notifs ${dnd_class}"
+    echo "{\"text\": \"${icon}  ${count}\", \"class\": \"${cls## }\", \"alt\": \"has-notifs\"}"
 else
-    echo "{\"text\": \"󰂚\", \"class\": \"empty\", \"alt\": \"empty\"}"
+    cls="empty ${dnd_class}"
+    echo "{\"text\": \"${icon}\", \"class\": \"${cls## }\", \"alt\": \"empty\"}"
 fi

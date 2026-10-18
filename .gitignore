@@ -21,6 +21,9 @@ backups/
 *.bak
 *.bak_*
 
-# Runtime Generated Theme Outputs
+# Runtime Generated Theme Outputs and Preferences
 themes/current/
 quickshell/gadgets.json
+quickshell/bluetooth_icons.json
+quickshell/radar_preferences.json
+quickshell/current-theme

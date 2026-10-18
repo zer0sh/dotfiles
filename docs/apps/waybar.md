@@ -35,16 +35,20 @@ Waybar is docked at the top of the display with a height of 36 pixels and bottom
 * **`hyprland/window`:** Displays the active window title with subtle opacity, keeping the central area clean and legible.
 
 ### 3. Right Section
-* **`tray`:** Wayland system tray for background application icons (`icon-size: 14px`, `spacing: 8px`), enclosed in a rounded capsule pill (`border-radius: 18px`, `background: alpha(@text, 0.08)`, `padding: 0 10px`) matching the notification bell and quick status indicators. Automatically hides background and margins when empty.
-* **Quick Status Indicators (Pills):**
-    * **`custom/caffeine`:** Pill indicator displaying coffee cup glyph (`󰅶`) when active. Synchronizes with session wake-lock inhibitor via POSIX signal `SIGRTMIN+8`. Clicking toggles wake-lock state.
-    * **`custom/nightlight`:** Pill indicator displaying eye glyph (`󰈈`) when `hyprsunset` blue-light filter (4000K) is active. Synchronizes via POSIX signal `SIGRTMIN+9`. Clicking toggles warm filter state.
-    * **`custom/shader`:** Pill indicator displaying screen shader glyph (`󰸉`) when Hyprland decoration filter is active. Synchronizes via POSIX signal `SIGRTMIN+10`. Clicking toggles active shader profile.
-    * **Styling & Metrics:** Indicators render as rounded pills (`height: 28px`, `border-radius: 18px`, `background: alpha(@text, 0.08)`) with asymmetric horizontal padding (`padding: 0 13px 0 9px` and `0 12px 0 10px`) to compensate for font side bearings and maintain exact optical centering.
-* **`custom/notifications`:** Notification bell pill connected to Quickshell's notification daemon:
-    * Reads unread count from `/tmp/qs-notif-count`.
-    * Receives instant wakeup via POSIX signal `SIGRTMIN+1` whenever notifications arrive or dismiss.
-    * Clicking invokes `qs ipc call notifications toggle`.
+* **`tray`:** Wayland system tray for background application icons (`icon-size: 14px`, `spacing: 8px`). The container collapses to zero width and margins when empty, rendering active icons inside rounded capsule badges (`border-radius: 14px`, `background: alpha(@text, 0.08)`).
+* **Quick Indicators Tray (`group/quickshell_tray`):**
+    * Unified module group hosting quick hardware toggles (`custom/caffeine`, `custom/nightlight`, `custom/shader`).
+    * The container collapses to zero width and margins when all grouped indicators are inactive.
+    * When active, each indicator renders as an optical capsule pill (`border-radius: 18px`, `padding: 0 12px`, `background: alpha(@text, 0.08)`, `color: @accent`).
+    * **`custom/caffeine`:** Displays coffee cup glyph (`󰅶`) when session wake-lock is engaged via POSIX signal `SIGRTMIN+8`.
+    * **`custom/nightlight`:** Displays eye glyph (`󰈈`) when `hyprsunset` warm light filter (4000K) is active via POSIX signal `SIGRTMIN+9`.
+    * **`custom/shader`:** Displays screen shader glyph (`󰸉`) when screen decoration shader is applied via POSIX signal `SIGRTMIN+10`.
+* **`custom/notifications`:** Notification bell pill integrated with Quickshell Notification Service and DND state:
+    * Displays standard bell glyph (`󰂚`) in neutral text color (`@text`) when notification history is empty.
+    * Displays bell glyph with unread count (`󰂚  [N]`) highlighted in accent color (`@accent`) when notifications are pending.
+    * Morphs dynamically into the Do Not Disturb glyph (`󰂛  [N]` or `󰂛`) highlighted in accent color (`@accent`) when DND mode is enabled.
+    * Synchronizes in real time via POSIX signal `SIGRTMIN+1`.
+    * Left click invokes `qs ipc call notifications toggle`, opening the Control Center with the notifications card expanded.
 * **Unified Status Pill:** Merged continuous capsule pill containing date, time, audio, network, bluetooth, and battery/power:
     * **`custom/date`:** Formatted date (`date +'%b %d'`), styled as the rounded left edge of the unified pill.
     * **`clock`:** Local time format `{:%H:%M}` with bold typography.

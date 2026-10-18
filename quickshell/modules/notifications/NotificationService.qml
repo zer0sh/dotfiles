@@ -62,6 +62,18 @@ QtObject {
         id: waybarProc
     }
 
+    Component.onCompleted: {
+        dndInitProc.running = true
+    }
+
+    property var _dndInitProc: Process {
+        id: dndInitProc
+        command: ["sh", "-c", "test -f ~/.cache/dnd-mode"]
+        onExited: (code) => {
+            root.dndEnabled = (code === 0)
+        }
+    }
+
     function _updateWaybar() {
         var c = root.notifications.length
         waybarProc.command = ["sh", "-c",

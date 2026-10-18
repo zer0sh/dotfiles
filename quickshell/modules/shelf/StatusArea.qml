@@ -3,6 +3,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Pipewire
 import "../.." as Root
+import "../notifications" as Notifications
 
 // StatusArea — Shelf status icon cluster (WiFi/Bluetooth/Battery/Volume/Clock)
 // WiFi: nmcli CLI polling
@@ -15,6 +16,11 @@ Item {
 
     implicitWidth: statusRow.implicitWidth
     implicitHeight: statusRow.implicitHeight
+    width: implicitWidth
+    height: implicitHeight
+
+    // ── DND state ──
+    readonly property bool isDnd: Notifications.NotificationService.dndEnabled
 
     // ── WiFi state ──
     property int wifiSignal: -1  // -1 = disconnected, 0-100 = signal strength
@@ -180,6 +186,16 @@ Item {
             id: statusRow
             spacing: 14
             anchors.centerIn: parent
+
+            // Do Not Disturb (DND) icon
+            Text {
+                visible: root.isDnd
+                text: "󰂛"
+                font.family: Root.Theme.fontFamily
+                font.pixelSize: 20
+                color: Root.Theme.primary
+                verticalAlignment: Text.AlignVCenter
+            }
 
             // WiFi icon
             Text {

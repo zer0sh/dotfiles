@@ -12,6 +12,7 @@ import "modules/shortcuts" as Shortcuts
 import "modules/deskclock" as DeskClock
 import "modules/calendar" as Calendar
 import "modules/background" as Background
+import "modules/weathergadget" as WeatherGadget
 
 ShellRoot {
     id: root
@@ -105,6 +106,10 @@ ShellRoot {
 
     Calendar.Calendar {
         id: calendar
+    }
+
+    WeatherGadget.WeatherGadget {
+        id: weatherGadget
     }
 
     // --- Mutual Exclusivity ---

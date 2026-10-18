@@ -13,8 +13,6 @@ theme:
       primary: deep purple
       accent: deep purple
   features:
-    - navigation.tabs
-    - navigation.tabs.sticky
     - navigation.sections
     - navigation.top
     - search.suggest

@@ -21,12 +21,19 @@ QtObject {
             name: "Desktop Calendar",
             desc: "Interactive monthly calendar with month navigation and today highlight",
             icon: "󰸗"
+        },
+        {
+            id: "weather",
+            name: "Weather Forecast",
+            desc: "Weather widget showing current conditions and 2-day forecast",
+            icon: "󰖐"
         }
     ]
 
     property var stateMap: ({
         "deskclock": { "enabled": true, "x": 1420, "y": 100 },
-        "calendar":  { "enabled": true, "x": 100,  "y": 700 }
+        "calendar":  { "enabled": true, "x": 100,  "y": 700 },
+        "weather":   { "enabled": true, "x": 1420, "y": 520 }
     })
 
     signal stateChanged()

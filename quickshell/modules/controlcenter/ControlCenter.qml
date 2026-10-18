@@ -40,6 +40,7 @@ Scope {
             shaderStatusProc.running = true
             caffeineCheckProc.running = true
             nightLightCheckProc.running = true
+            dndCheckProc.running = true
         } else {
             _panelOpen = false
             resetPageTimer.running = true
@@ -239,6 +240,18 @@ Scope {
         }
     }
 
+    Process {
+        id: dndCheckProc
+        command: ["/bin/sh", "-c", "test -f ~/.cache/dnd-mode"]
+        onExited: (code) => {
+            Notifications.NotificationService.dndEnabled = (code === 0)
+        }
+    }
+
+    Process {
+        id: dndFileProc
+    }
+
     // Caffeine: keep the session awake while the toggle is active.
     Process {
         id: caffeineProc
@@ -275,6 +288,31 @@ Scope {
             notifyChange("Caffeine", "Caffeine mode enabled")
         }
         updateWaybar(8)
+    }
+
+    function toggleDnd() {
+        var next = !Notifications.NotificationService.dndEnabled
+        setDnd(next)
+        if (!next)
+            notifyChange("Do Not Disturb", "Do Not Disturb disabled")
+    }
+
+    function setDnd(val) {
+        Notifications.NotificationService.dndEnabled = val
+        if (val) {
+            dndFileProc.command = ["touch", "/home/zero/.cache/dnd-mode"]
+        } else {
+            dndFileProc.command = ["rm", "-f", "/home/zero/.cache/dnd-mode"]
+        }
+        dndFileProc.running = true
+        updateWaybar(1)
+        updateWaybar(11)
+    }
+
+    function syncDnd() {
+        dndCheckProc.running = true
+        updateWaybar(1)
+        updateWaybar(11)
     }
 
     // Night Light: toggle 100 % manual y sincrónico. Usa hyprsunset (nativo de
@@ -429,6 +467,9 @@ Scope {
         function toggleCaffeine(): void { controlCenter.toggleCaffeine() }
         function toggleNightLight(): void { controlCenter.toggleNightLight() }
         function toggleShader(): void { controlCenter.toggleShader() }
+        function toggleDnd(): void { controlCenter.toggleDnd() }
+        function setDnd(val: bool): void { controlCenter.setDnd(val) }
+        function syncDnd(): void { controlCenter.syncDnd() }
     }
 
     IpcHandler {
@@ -747,14 +788,7 @@ Scope {
                                         active: controlCenter.dndEnabled
                                         icon: "do_not_disturb_on"
                                         label: "DND"
-                                        onClicked: {
-                                            var next = !Notifications.NotificationService.dndEnabled
-                                            Notifications.NotificationService.dndEnabled = next
-                                            if (next)
-                                                notifyChange("Do Not Disturb", "Do Not Disturb enabled")
-                                            else
-                                                notifyChange("Do Not Disturb", "Do Not Disturb disabled")
-                                        }
+                                        onClicked: controlCenter.toggleDnd()
                                     }
 
                                     CircleToggle {
@@ -932,6 +966,12 @@ Scope {
                                             font.family: Root.Theme.fontFamily
                                             font.pixelSize: 18
                                             color: Notifications.NotificationService.count > 0 ? Root.Theme.primary : Root.Theme.textSecondary
+
+                                            MouseArea {
+                                                anchors.fill: parent
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: controlCenter.notificationsExpanded = !controlCenter.notificationsExpanded
+                                            }
                                         }
 
                                         Text {
@@ -941,10 +981,17 @@ Scope {
                                             font.weight: Font.DemiBold
                                             color: Root.Theme.textPrimary
                                             Layout.fillWidth: true
+
+                                            MouseArea {
+                                                anchors.fill: parent
+                                                cursorShape: Qt.PointingHandCursor
+                                                onClicked: controlCenter.notificationsExpanded = !controlCenter.notificationsExpanded
+                                            }
                                         }
 
                                         // Botón Clear All
                                         Rectangle {
+                                            z: 10
                                             visible: controlCenter.notificationsExpanded && Notifications.NotificationService.count > 0
                                             width: clearAllText.implicitWidth + 20
                                             height: 28
@@ -1004,13 +1051,6 @@ Scope {
                                         }
                                     }
 
-                                    // Clic en la barra para alternar colapsado
-                                    MouseArea {
-                                        anchors.fill: parent
-                                        anchors.rightMargin: 80
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: controlCenter.notificationsExpanded = !controlCenter.notificationsExpanded
-                                    }
                                 }
 
                                 Item {

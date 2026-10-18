@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """
-weather.py — Fetches current weather data via OpenWeatherMap API
-with local caching and graceful fallback.
+weather.py — Fetches current weather and 3-day forecast with local caching.
+Supports wttr.in (no API key needed) and OpenWeatherMap fallback.
+Outputs structured JSON for Quickshell widgets and gadgets.
 """
 
 import os
 import sys
 import json
+import datetime
 import urllib.request
 import urllib.parse
 
@@ -17,29 +19,38 @@ CITY_FILE = os.path.join(CONFIG_DIR, "city")
 
 DEFAULT_WEATHER = {
     "temp": "20°",
-    "city": "Bogotá",
+    "city": "Bogota",
     "condition": "Partly cloudy",
     "icon": "partly_cloudy_day",
     "humidity": "65%",
-    "feels_like": "19°"
+    "feels_like": "19°",
+    "forecast": [
+        {"day": "Tomorrow", "temp": "20°", "condition": "Partly cloudy", "icon": "partly_cloudy_day"},
+        {"day": "Overmorrow", "temp": "19°", "condition": "Light rain", "icon": "rainy"}
+    ]
 }
 
-def get_icon(weather_id, is_night=False):
-    # OpenWeather condition codes: https://openweathermap.org/weather-conditions
-    if 200 <= weather_id < 300:
-        return "thunderstorm"
-    elif 300 <= weather_id < 600:
-        return "rainy"
-    elif 600 <= weather_id < 700:
-        return "ac_unit"
-    elif 700 <= weather_id < 800:
-        return "foggy"
-    elif weather_id == 800:
-        return "bedtime" if is_night else "wb_sunny"
-    elif weather_id == 801 or weather_id == 802:
-        return "bedtime" if is_night else "partly_cloudy_day"
-    elif weather_id >= 803:
+def wttr_code_to_icon(code_str):
+    try:
+        code = int(code_str)
+    except Exception:
+        return "partly_cloudy_day"
+    
+    # Standard WWO / wttr.in weather codes
+    if code in (113,): # Sunny / Clear
+        return "wb_sunny"
+    elif code in (116,): # Partly Cloudy
+        return "partly_cloudy_day"
+    elif code in (119, 122): # Cloudy, Overcast
         return "cloud"
+    elif code in (143, 248, 260): # Mist, Fog
+        return "foggy"
+    elif code in (176, 263, 266, 293, 296, 299, 302, 305, 308, 353, 356, 359): # Rain
+        return "rainy"
+    elif code in (200, 386, 389, 392, 395): # Thunderstorm
+        return "thunderstorm"
+    elif code in (179, 182, 185, 227, 230, 281, 284, 311, 314, 317, 320, 323, 326, 329, 332, 335, 338, 350, 362, 365, 368, 371, 374, 377): # Snow / Ice
+        return "ac_unit"
     return "partly_cloudy_day"
 
 def read_config():
@@ -51,7 +62,7 @@ def read_config():
         except Exception:
             pass
 
-    city = "Bogota,CO"
+    city = "Bogota"
     if os.path.exists(CITY_FILE):
         try:
             with open(CITY_FILE, "r") as f:
@@ -63,36 +74,54 @@ def read_config():
 
     return api_key, city
 
-def fetch_openweather(api_key, city):
+def fetch_wttr(city):
     encoded_city = urllib.parse.quote(city)
-    url = f"https://api.openweathermap.org/data/2.5/weather?q={encoded_city}&appid={api_key}&units=metric&lang=en"
-    req = urllib.request.Request(url, headers={"User-Agent": "QuickShell-Weather/1.0"})
+    url = f"https://wttr.in/{encoded_city}?format=j1"
+    req = urllib.request.Request(url, headers={"User-Agent": "curl/7.68.0"})
     with urllib.request.urlopen(req, timeout=5) as resp:
         data = json.loads(resp.read().decode("utf-8"))
+
+    curr = data["current_condition"][0]
+    curr_temp = f"{curr.get('temp_C', '20')}°"
+    feels_like = f"{curr.get('FeelsLikeC', curr.get('temp_C', '20'))}°"
+    humidity = f"{curr.get('humidity', '60')}%"
+    curr_desc = curr.get("weatherDesc", [{}])[0].get("value", "Partly cloudy").strip()
+    curr_icon = wttr_code_to_icon(curr.get("weatherCode", "116"))
+
+    forecast = []
+    days = data.get("weather", [])
+    day_labels = ["Tomorrow", "Overmorrow"]
+
+    for i in range(1, min(3, len(days))):
+        d = days[i]
+        label = day_labels[i - 1]
+        try:
+            date_obj = datetime.date.fromisoformat(d["date"])
+            label = date_obj.strftime("%a") # e.g. Mon, Tue
+        except Exception:
+            pass
         
-    temp = round(data.get("main", {}).get("temp", 20))
-    feels_like = round(data.get("main", {}).get("feels_like", temp))
-    humidity = data.get("main", {}).get("humidity", 50)
-    city_name = data.get("name", city.split(",")[0])
-    
-    weather_list = data.get("weather", [])
-    if weather_list:
-        condition = weather_list[0].get("description", "Clear").capitalize()
-        weather_id = weather_list[0].get("id", 800)
-        icon_code = weather_list[0].get("icon", "01d")
-        is_night = icon_code.endswith("n")
-        icon = get_icon(weather_id, is_night)
-    else:
-        condition = "Clear"
-        icon = "wb_sunny"
+        # Mid-day forecast representative conditions
+        mid_hourly = d.get("hourly", [{}])[len(d.get("hourly", [])) // 2]
+        desc = mid_hourly.get("weatherDesc", [{}])[0].get("value", "Clear").strip()
+        icon = wttr_code_to_icon(mid_hourly.get("weatherCode", "113"))
+        max_t = d.get("maxtempC", "20")
+
+        forecast.append({
+            "day": label,
+            "temp": f"{max_t}°",
+            "condition": desc,
+            "icon": icon
+        })
 
     return {
-        "temp": f"{temp}°",
-        "city": city_name,
-        "condition": condition,
-        "icon": icon,
-        "humidity": f"{humidity}%",
-        "feels_like": f"{feels_like}°"
+        "temp": curr_temp,
+        "city": city.split(",")[0],
+        "condition": curr_desc,
+        "icon": curr_icon,
+        "humidity": humidity,
+        "feels_like": feels_like,
+        "forecast": forecast
     }
 
 def main():
@@ -100,15 +129,14 @@ def main():
     os.makedirs(os.path.dirname(CACHE_FILE), exist_ok=True)
 
     api_key, city = read_config()
-
     result = None
-    if api_key:
-        try:
-            result = fetch_openweather(api_key, city)
-            with open(CACHE_FILE, "w") as f:
-                json.dump(result, f, indent=2)
-        except Exception as e:
-            pass
+
+    try:
+        result = fetch_wttr(city)
+        with open(CACHE_FILE, "w") as f:
+            json.dump(result, f, indent=2)
+    except Exception:
+        pass
 
     if not result and os.path.exists(CACHE_FILE):
         try:

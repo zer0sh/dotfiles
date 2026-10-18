@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Waybar DND status / toggle
+STATE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/dnd-mode"
+
+if [ "$1" = "toggle" ]; then
+    if [ -f "$STATE_FILE" ]; then
+        rm -f "$STATE_FILE"
+        qs ipc call controlcenter setDnd false 2>/dev/null || true
+        notify-send "Do Not Disturb" "Do Not Disturb disabled" 2>/dev/null || true
+    else
+        touch "$STATE_FILE"
+        qs ipc call controlcenter setDnd true 2>/dev/null || true
+    fi
+    pkill -RTMIN+1 waybar 2>/dev/null || true
+    pkill -RTMIN+11 waybar 2>/dev/null || true
+    exit 0
+fi
+
+if [ -f "$STATE_FILE" ]; then
+    echo '{"text": "󰂛", "class": "active", "tooltip": "Do Not Disturb active"}'
+else
+    echo '{"text": "", "class": "hidden"}'
+fi
