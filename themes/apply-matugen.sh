@@ -29,6 +29,7 @@ printf '%s\n' "$MODE" > "$MODE_FILE"
 
 matugen image "$WALLPAPER" \
     --config "$HOME/.config/matugen/config.toml" \
+    -t scheme-vibrant --contrast 0.2 \
     --mode "$MODE" --source-color-index 0 --quiet
 
 hyprctl reload 2>/dev/null || true
