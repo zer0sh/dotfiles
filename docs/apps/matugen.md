@@ -43,7 +43,7 @@ The engine behavior and output mappings are defined in `config.toml`:
 
 [config]
 mode = "dark"
-type = "scheme-tonal-spot"
+type = "scheme-vibrant"
 source_color_index = 0
 scheme_tonal_spot_cutoff = 0.15
 scheme_contrast = 1.0
