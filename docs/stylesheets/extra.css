@@ -745,10 +745,22 @@ body[data-md-color-scheme="default"] {
 }
 
 .md-nav__item--active > .md-nav__link {
+  font-weight: 600;
+  color: var(--md-accent-fg-color) !important;
+}
+
+/* Only highlight the actual active leaf link, not parent section headers */
+.md-nav__link--active {
   background-color: var(--m3-accent-container) !important;
   color: var(--md-accent-fg-color) !important;
   font-weight: 600;
   box-shadow: inset 0 0 0 1px var(--glass-border);
+}
+
+.md-nav__item--nested > .md-nav__link,
+.md-nav__item--section > .md-nav__link {
+  background-color: transparent !important;
+  box-shadow: none !important;
 }
 
 /* Right Table of Contents (TOC Card) */
@@ -785,9 +797,18 @@ body[data-md-color-scheme="default"] {
     transform: translateX(0) !important;
   }
 
-  /* Prevent duplicate items when TOC label exists */
-  .md-nav--primary .md-nav__link[for="__toc"] + .md-nav__link {
+  /* Drawer: plain links only - remove the nested TOC toggle and block */
+  .md-nav--primary .md-nav__link[for="__toc"] {
     display: none !important;
+  }
+
+  .md-nav--primary .md-nav--secondary {
+    display: none !important;
+  }
+
+  /* Always show the real anchor link for the active page */
+  .md-nav--primary .md-nav__link[for="__toc"] + .md-nav__link {
+    display: flex !important;
   }
 
   .md-sidebar--primary .md-sidebar__scrollwrap,
@@ -1317,5 +1338,98 @@ body[data-md-color-scheme="default"] {
   .md-grid,
   .md-header__inner {
     max-width: calc(100% - min(16rem, 20%)) !important;
+  }
+}
+
+/* --- 17. Modern Right-Side Navigation Sidebar --- */
+/* Desktop: place the primary navigation sidebar on the right side */
+@media screen and (min-width: 76.25em) {
+  /* Give md-content order 1 and md-sidebar--primary order 2 so it sits on the right */
+  .md-content {
+    order: 1 !important;
+  }
+
+  .md-sidebar--primary {
+    order: 2 !important;
+    display: block !important;
+    width: 15rem !important;
+    margin-left: 1.5rem !important;
+  }
+
+  /* Reset inner margins for right-aligned primary sidebar */
+  [dir="ltr"] .md-sidebar--primary:not([hidden]) ~ .md-content > .md-content__inner {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Glassmorphism card for primary navigation */
+  .md-sidebar--primary .md-sidebar__scrollwrap {
+    background: rgba(17, 18, 29, 0.55);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 0.85rem 0.65rem;
+    box-shadow: var(--glass-shadow-sm);
+    max-height: calc(100vh - 5.5rem);
+    scrollbar-width: thin;
+  }
+
+  [data-md-color-scheme="default"] .md-sidebar--primary .md-sidebar__scrollwrap {
+    background: rgba(255, 255, 255, 0.72);
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 16px rgba(40, 48, 70, 0.08);
+  }
+
+  /* Modern active link and hover styles */
+  .md-sidebar--primary .md-nav__link {
+    border-radius: 10px;
+    padding: 0.38rem 0.75rem;
+    font-size: 0.82rem;
+    font-weight: 500;
+    transition: all 0.2s var(--md-sys-motion-standard);
+  }
+
+  .md-sidebar--primary .md-nav__link:hover {
+    background: var(--glass-border);
+    color: var(--md-accent-fg-color) !important;
+    transform: translateX(2px);
+  }
+
+  .md-sidebar--primary .md-nav__item--active > .md-nav__link {
+    font-weight: 600;
+    color: var(--md-accent-fg-color) !important;
+  }
+
+  /* Only highlight the actual active leaf link */
+  .md-sidebar--primary .md-nav__link--active {
+    background: var(--m3-accent-container) !important;
+    color: var(--md-accent-fg-color) !important;
+    font-weight: 600;
+    box-shadow: inset 0 0 0 1px var(--glass-border-focus);
+  }
+
+  .md-sidebar--primary .md-nav__item--nested > .md-nav__link,
+  .md-sidebar--primary .md-nav__item--section > .md-nav__link {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* Hide redundant in-sidebar repository / drawer header in desktop */
+  .md-sidebar--primary .md-nav__title[for="__drawer"],
+  .md-sidebar--primary .md-nav__source {
+    display: none !important;
+  }
+
+  /* Hide secondary TOC to give full prominence to right sidebar navigation */
+  .md-sidebar--secondary {
+    display: none !important;
+  }
+}
+
+/* Ensure mobile drawer button is visible on mobile screens */
+@media screen and (max-width: 76.234375em) {
+  .md-header__button[for="__drawer"] {
+    display: flex !important;
   }
 }

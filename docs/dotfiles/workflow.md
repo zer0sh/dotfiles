@@ -36,7 +36,7 @@ Whenever you test and stabilize adjustments in your Hyprland configuration and w
 
 ---
 
-## Documentation Deployment (MkDocs)
+## Documentation Deployment & UI Architecture (MkDocs)
 
 To preview the documentation locally with live-reload:
 
@@ -53,6 +53,13 @@ mkdocs gh-deploy
 ```
 
 *(Note: Pushing to `main` also automatically triggers the GitHub Actions workflow defined in `.github/workflows/deploy-docs.yml`, as detailed in [Release Management & SemVer](releases.md)).*
+
+### UI & Navigation Layout
+
+The documentation uses Material for MkDocs enhanced with custom Material 3 and Glassmorphism styling (`docs/stylesheets/extra.css`):
+* **Right-Hand Primary Navigation:** The navigation sidebar tree is docked on the right side on desktop viewport sizes (`min-width: 76.25em`), presenting page hierarchy inside a frosted glass card (`backdrop-filter: blur(14px)`).
+* **Precise Active Indicators:** Parent section headers remain in clean bold text without intrusive highlight boxes, while only the active target page receives the active accent container pill.
+* **Responsive Drawer:** On mobile devices, the navigation switches to a left slide-out Material You navigation drawer triggered from the top app bar.
 
 ---
 
