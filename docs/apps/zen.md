@@ -94,6 +94,30 @@ sidebar.
 
 ---
 
+## Layout Customization (Material You)
+
+The chrome template also carries an Android-style layout pass that is independent
+from the wallpaper palette. It is driven by five knobs declared at the bottom of
+`~/dotfiles/matugen/templates/zen-userchrome.css`:
+
+| Variable | Default | Effect |
+| :--- | :--- | :--- |
+| `--matugen-zen-topbar-height` | `42px` | Height of the floating top bar (Zen default is `34px`) |
+| `--matugen-zen-topbar-radius` | `20px` | Corner radius of the top bar card in compact mode |
+| `--matugen-zen-pill-radius` | `999px` | Fully rounded corners for the urlbar pill |
+| `--matugen-zen-surface-radius` | `20px` | Corner radius of menus, panels, dropdowns and tab items |
+| `--matugen-zen-sidebar-offset` | `12px` | Gap between the window top edge and the tabs sidebar |
+
+The knobs are forwarded to the native Zen variables (`--zen-toolbar-height`,
+`--zen-border-radius`, `--arrowpanel-border-radius`) so the whole interface
+follows them. To tune the geometry:
+
+1. Edit the values in the template.
+2. Re-run `matugen` (or `~/dotfiles/themes/apply-matugen.sh`).
+3. Restart Zen Browser completely.
+
+---
+
 ## Reload Strategy
 
 `userChrome.css` and `userContent.css` are read **only at browser startup**.
