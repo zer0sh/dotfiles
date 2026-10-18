@@ -8,18 +8,18 @@ QtObject {
 
     readonly property string configPath: "/home/zero/.config/quickshell/gadgets.json"
 
-    // Definición centralizada de todos los gadgets disponibles en el escritorio
+    // Central definition of all available desktop gadgets
     readonly property var availableGadgets: [
         {
             id: "deskclock",
             name: "Desk Clock",
-            desc: "Reloj digital flotante con saludo dinámico y medidor de progreso del día",
+            desc: "Floating digital clock with dynamic greetings and day progress bar",
             icon: "󰥔"
         },
         {
             id: "calendar",
             name: "Desktop Calendar",
-            desc: "Calendario mensual interactivo con navegación de meses y día actual",
+            desc: "Interactive monthly calendar with month navigation and today highlight",
             icon: "󰸗"
         }
     ]

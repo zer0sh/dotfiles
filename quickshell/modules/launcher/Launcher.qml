@@ -126,11 +126,11 @@ Scope {
 
     // ── Themes Model & State ─────────────────────────────────────
     readonly property var themesList: [
-        { id: "matugen", name: "Wallpaper (Matugen)", desc: "Material You dinámico generado del fondo actual" },
-        { id: "md3-cobalt-night", name: "Cobalt Night", desc: "Azul profundo y zafiro noche" },
-        { id: "md3-amethyst", name: "Amethyst", desc: "Púrpura amatista y lavanda" },
-        { id: "md3-arctic-mist", name: "Arctic Mist", desc: "Cian polar y azul hielo" },
-        { id: "cyberpunk", name: "Cyberpunk", desc: "Neón turquesa, magenta y violeta" }
+        { id: "matugen", name: "Wallpaper (Matugen)", desc: "Dynamic Material You generated from active wallpaper" },
+        { id: "md3-cobalt-night", name: "Cobalt Night", desc: "Deep cobalt blue and midnight sapphire" },
+        { id: "md3-amethyst", name: "Amethyst", desc: "Deep amethyst purple and lavender" },
+        { id: "md3-arctic-mist", name: "Arctic Mist", desc: "Polar cyan and frosted ice blue" },
+        { id: "cyberpunk", name: "Cyberpunk", desc: "Neon turquoise, magenta and electric violet" }
     ]
 
     function applyTheme(themeId) {
@@ -231,15 +231,15 @@ Scope {
         });
     }
 
-    // ── Lista de Comandos / Acciones ─────────────────────────────
+    // ── Commands & Actions List ──────────────────────────────────
     readonly property var allActions: [
-        { id: "wallpaper", name: "Wallpaper Carousel", desc: "Explorar y cambiar fondo de pantalla con animación", icon: "󰸉" },
-        { id: "theme", name: "Theme Carousel", desc: "Explorar y cambiar paleta de temas visuales", icon: "󰏘" },
-        { id: "gadgets", name: "Desktop Gadgets", desc: "Activar, desactivar y gestionar widgets en el escritorio", icon: "󱂬" },
-        { id: "lock", name: "Bloquear Pantalla", desc: "Bloquear la sesión con Hyprlock", icon: "󰌾" },
-        { id: "sleep", name: "Suspender", desc: "Suspender el sistema a RAM", icon: "󰒲" },
-        { id: "reboot", name: "Reiniciar Sistema", desc: "Reiniciar el equipo", icon: "󰜉" },
-        { id: "shutdown", name: "Apagar Equipo", desc: "Apagar el sistema", icon: "󰐥" }
+        { id: "wallpaper", name: "Wallpaper Carousel", desc: "Browse and switch wallpapers with animated transitions", icon: "󰸉", aliases: ["wall", "fondo", "wallpaper"] },
+        { id: "theme", name: "Theme Carousel", desc: "Explore and apply Material You visual palettes", icon: "󰏘", aliases: ["tema", "palette", "color"] },
+        { id: "gadgets", name: "Desktop Gadgets", desc: "Toggle and manage desktop widgets", icon: "󱂬", aliases: ["widgets", "widget", "gadget", "clock", "calendar"] },
+        { id: "lock", name: "Lock Screen", desc: "Lock desktop session with Hyprlock", icon: "󰌾", aliases: ["bloquear", "hyprlock"] },
+        { id: "sleep", name: "Suspend", desc: "Suspend system to RAM", icon: "󰒲", aliases: ["suspender", "standby"] },
+        { id: "reboot", name: "Restart System", desc: "Reboot computer", icon: "󰜉", aliases: ["reiniciar", "restart"] },
+        { id: "shutdown", name: "Shut Down", desc: "Power off system", icon: "󰐥", aliases: ["apagar", "poweroff"] }
     ]
 
     property var filteredActions: {
@@ -247,9 +247,11 @@ Scope {
         var query = searchText.slice(1).trim().toLowerCase();
         if (query === "") return allActions;
         return allActions.filter(function(a) {
+            var aliasMatch = a.aliases ? a.aliases.some(function(al) { return al.toLowerCase().indexOf(query) >= 0; }) : false;
             return a.name.toLowerCase().indexOf(query) >= 0 ||
                    a.desc.toLowerCase().indexOf(query) >= 0 ||
-                   a.id.toLowerCase().indexOf(query) >= 0;
+                   a.id.toLowerCase().indexOf(query) >= 0 ||
+                   aliasMatch;
         });
     }
 
