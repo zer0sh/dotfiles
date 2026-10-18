@@ -154,6 +154,81 @@ Scope {
         selectedIndex = curIdx;
     }
 
+    // ── Shaders Model & State ────────────────────────────────────
+    property string currentShader: "Off"
+    readonly property string shaderThumbDir: "/home/zero/.config/quickshell/assets/shaders/"
+
+    readonly property var shadersList: [
+        { id: "off", name: "Shader Off", filterName: "disabled", desc: "No active screen filter", thumb: shaderThumbDir + "off.png" },
+        { id: "trinitron", name: "Sony Trinitron", filterName: "Sony Trinitron", desc: "Vertical aperture grille and damping wires", thumb: shaderThumbDir + "trinitron.png" },
+        { id: "crt-soft", name: "CRT Soft", filterName: "CRT Soft", desc: "Fine scanlines and subtle chromatic aberration", thumb: shaderThumbDir + "crt-soft.png" },
+        { id: "crt", name: "CRT Retro", filterName: "CRT Retro", desc: "Tube curvature, scanlines and phosphor glow", thumb: shaderThumbDir + "crt.png" },
+        { id: "sepia", name: "Sepia Vintage", filterName: "Sepia Vintage", desc: "Warm 1930s vintage tone", thumb: shaderThumbDir + "sepia.png" },
+        { id: "bw", name: "Black and White", filterName: "Black and White", desc: "Monochrome high-contrast grayscale", thumb: shaderThumbDir + "bw.png" },
+        { id: "noir", name: "Film Noir", filterName: "Film Noir", desc: "Deep contrast with pronounced vignette", thumb: shaderThumbDir + "noir.png" },
+        { id: "vintage", name: "Vintage", filterName: "Vintage", desc: "Aged tone with photographic film grain", thumb: shaderThumbDir + "vintage.png" },
+        { id: "vivid", name: "Vivid", filterName: "Vivid", desc: "Enhanced color saturation and vibrance", thumb: shaderThumbDir + "vivid.png" }
+    ]
+
+    Process {
+        id: shaderCurrentProc
+        command: ["/home/zero/.config/hypr/scripts/filter", "status"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var res = text.trim();
+                if (res.indexOf("Active filter:") === 0) {
+                    launcher.currentShader = res.substring("Active filter:".length).trim();
+                } else if (res.indexOf("Filtro activo:") === 0) {
+                    launcher.currentShader = res.substring("Filtro activo:".length).trim();
+                } else {
+                    launcher.currentShader = "Off";
+                }
+            }
+        }
+    }
+
+    Process { id: shaderApplyProc }
+
+    function isShaderActive(item) {
+        if (!item) return false;
+        if (item.filterName === launcher.currentShader || item.name === launcher.currentShader) return true;
+        if (item.id === "off" && (launcher.currentShader === "Off" || launcher.currentShader === "disabled" || launcher.currentShader === "desactivado" || launcher.currentShader === "")) return true;
+        if (item.id === "bw" && (launcher.currentShader === "Blanco y Negro" || launcher.currentShader === "Black and White")) return true;
+        if (item.id === "crt-soft" && (launcher.currentShader === "CRT Suave" || launcher.currentShader === "CRT Soft")) return true;
+        if (item.id === "vivid" && (launcher.currentShader === "Vívido" || launcher.currentShader === "Vivid")) return true;
+        return false;
+    }
+
+    function applyShader(shaderId, filterName) {
+        if (!shaderId) return;
+        shaderApplyProc.command = ["/home/zero/.config/hypr/scripts/filter", shaderId];
+        shaderApplyProc.running = true;
+        launcher.currentShader = filterName || shaderId;
+        launcher.panelVisible = false;
+    }
+
+    function openShaders() {
+        shaderCurrentProc.running = true;
+        searchText = "/shader ";
+        panelVisible = true;
+        var curIdx = 0;
+        for (var i = 0; i < shadersList.length; i++) {
+            if (isShaderActive(shadersList[i])) {
+                curIdx = i;
+                break;
+            }
+        }
+        selectedIndex = curIdx;
+    }
+
+    function toggleShaders() {
+        if (launcher.panelVisible && launcher.currentMode === "shader") {
+            launcher.panelVisible = false;
+        } else {
+            launcher.openShaders();
+        }
+    }
+
     Process { id: wallSetIpcProc }
     Process { id: actionExecProc }
 
@@ -195,6 +270,13 @@ Scope {
                     launcher.applyWallpaper(selectedWall.path);
                 }
             }
+        } else if (launcher.currentMode === "shader") {
+            if (launcher.selectedIndex >= 0 && launcher.selectedIndex < launcher.filteredShaders.length) {
+                var selectedShader = launcher.filteredShaders[launcher.selectedIndex];
+                if (selectedShader && selectedShader.id) {
+                    launcher.applyShader(selectedShader.id, selectedShader.filterName);
+                }
+            }
         } else if (launcher.currentMode === "theme") {
             if (launcher.selectedIndex >= 0 && launcher.selectedIndex < launcher.filteredThemes.length) {
                 var selectedTheme = launcher.filteredThemes[launcher.selectedIndex];
@@ -234,6 +316,7 @@ Scope {
     // ── Commands & Actions List ──────────────────────────────────
     readonly property var allActions: [
         { id: "wallpaper", name: "Wallpaper Carousel", desc: "Browse and switch wallpapers with animated transitions", icon: "󰸉", aliases: ["wall", "fondo", "wallpaper"] },
+        { id: "shader", name: "Shader Carousel", desc: "Browse and apply screen shaders and CRT effects", icon: "󱡄", aliases: ["shader", "shaders", "filtro", "crt", "trinitron"] },
         { id: "theme", name: "Theme Carousel", desc: "Explore and apply Material You visual palettes", icon: "󰏘", aliases: ["tema", "palette", "color"] },
         { id: "gadgets", name: "Desktop Gadgets", desc: "Toggle and manage desktop widgets", icon: "󱂬", aliases: ["widgets", "widget", "gadget", "clock", "calendar"] },
         { id: "lock", name: "Lock Screen", desc: "Lock desktop session with Hyprlock", icon: "󰌾", aliases: ["bloquear", "hyprlock"] },
@@ -260,6 +343,9 @@ Scope {
         if (searchText.startsWith("/wallpaper") || searchText.startsWith("/fondo") || searchText.startsWith("/wall") ||
             searchText.startsWith(">wallpaper") || searchText.startsWith(">fondo") || searchText.startsWith(">wall")) {
             return "wallpaper";
+        } else if (searchText.startsWith("/shader") || searchText.startsWith("/filter") ||
+                   searchText.startsWith(">shader") || searchText.startsWith(">filter")) {
+            return "shader";
         } else if (searchText.startsWith("/theme") || searchText.startsWith("/tema") ||
                    searchText.startsWith(">theme") || searchText.startsWith(">tema")) {
             return "theme";
@@ -289,6 +375,26 @@ Scope {
         if (query === "") return wallpapers;
         return wallpapers.filter(function(w) {
             return w.title.toLowerCase().indexOf(query) >= 0;
+        });
+    }
+
+    // ── Filtrado de Shaders en Modo Carrusel ────────────────────
+    property var filteredShaders: {
+        if (currentMode !== "shader") return [];
+        var prefixes = ["/shader", "/filter", ">shader", ">filter"];
+        var prefix = "";
+        for (var i = 0; i < prefixes.length; i++) {
+            if (searchText.startsWith(prefixes[i])) {
+                prefix = prefixes[i];
+                break;
+            }
+        }
+        var query = searchText.slice(prefix.length).trim().toLowerCase();
+        if (query === "") return shadersList;
+        return shadersList.filter(function(s) {
+            return s.name.toLowerCase().indexOf(query) >= 0 ||
+                   s.id.toLowerCase().indexOf(query) >= 0 ||
+                   (s.desc && s.desc.toLowerCase().indexOf(query) >= 0);
         });
     }
 
@@ -338,6 +444,10 @@ Scope {
         if (act.id === "wallpaper") {
             searchText = "/wallpaper ";
             selectedIndex = 0;
+            return;
+        }
+        if (act.id === "shader") {
+            launcher.openShaders();
             return;
         }
         if (act.id === "theme") {
@@ -391,11 +501,12 @@ Scope {
     onPanelVisibleChanged: {
         if (panelVisible) {
             _showing = true;
-            if (currentMode !== "wallpaper" && currentMode !== "theme" && currentMode !== "gadgets") {
+            if (currentMode !== "wallpaper" && currentMode !== "theme" && currentMode !== "gadgets" && currentMode !== "shader") {
                 selectedIndex = 0;
             }
             if (allApps.length === 0) appsReadProc.running = true;
             refreshWallpapers();
+            shaderCurrentProc.running = true;
         } else {
             searchText = "";
         }
@@ -405,6 +516,7 @@ Scope {
         iconResolveProc.running = true;
         appsReadProc.running = true;
         refreshWallpapers();
+        shaderCurrentProc.running = true;
     }
 
     // ── IPC Handlers ─────────────────────────────────────────────
@@ -416,6 +528,9 @@ Scope {
         }
         function wallpaper(): void {
             launcher.openWallpapers();
+        }
+        function shader(): void {
+            launcher.openShaders();
         }
         function theme(): void {
             launcher.openThemes();
@@ -437,6 +552,9 @@ Scope {
         function next(): void {
             if (launcher.currentMode === "wallpaper") {
                 if (launcher.selectedIndex < launcher.filteredWallpapers.length) launcher.selectedIndex++;
+            } else if (launcher.currentMode === "shader") {
+                if (launcher.selectedIndex < launcher.filteredShaders.length - 1) launcher.selectedIndex++;
+                else launcher.selectedIndex = 0;
             } else if (launcher.currentMode === "theme") {
                 if (launcher.selectedIndex < launcher.filteredThemes.length - 1) launcher.selectedIndex++;
                 else launcher.selectedIndex = 0;
@@ -453,7 +571,9 @@ Scope {
         }
         function prev(): void {
             if (launcher.selectedIndex > 0) launcher.selectedIndex--;
-            else if (launcher.currentMode === "theme" && launcher.filteredThemes.length > 0) {
+            else if (launcher.currentMode === "shader" && launcher.filteredShaders.length > 0) {
+                launcher.selectedIndex = launcher.filteredShaders.length - 1;
+            } else if (launcher.currentMode === "theme" && launcher.filteredThemes.length > 0) {
                 launcher.selectedIndex = launcher.filteredThemes.length - 1;
             } else if (launcher.currentMode === "gadgets" && launcher.filteredGadgets.length > 0) {
                 launcher.selectedIndex = launcher.filteredGadgets.length - 1;
@@ -462,6 +582,13 @@ Scope {
         function activate(): void {
             launcher.activateCurrentSelection();
         }
+    }
+
+    IpcHandler {
+        target: "shaderpicker"
+        function toggle(): void { launcher.toggleShaders(); }
+        function show(): void { launcher.openShaders(); }
+        function hide(): void { launcher.panelVisible = false; }
     }
 
     IpcHandler {
@@ -529,12 +656,12 @@ Scope {
                 anchors.bottomMargin: 28
 
                 width: {
-                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") return Math.min(1080, parent.width - 60);
+                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") return Math.min(1080, parent.width - 60);
                     return 580;
                 }
 
                 height: {
-                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") return 340;
+                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") return 340;
                     if (launcher.currentMode === "actions") {
                         var actCount = launcher.filteredActions.length;
                         return Math.min(460, Math.max(140, actCount * 50 + 76));
@@ -883,6 +1010,155 @@ Scope {
                         }
                     }
 
+                    // --- VISTA: Carrusel de Shaders (Horizontal) ---
+                    Item {
+                        id: shaderView
+                        visible: launcher.currentMode === "shader"
+                        anchors.fill: parent
+                        clip: true
+
+                        function scrollToCard(index, immediate) {
+                            var itemWidth = 236 + 16;
+                            var targetX = index * itemWidth + 118 - (shaderCarousel.width / 2);
+                            var maxX = Math.max(0, shaderCarousel.contentWidth - shaderCarousel.width);
+                            targetX = Math.max(0, Math.min(maxX, targetX));
+                            if (immediate) {
+                                shaderScrollAnim.stop();
+                                shaderCarousel.contentX = targetX;
+                            } else {
+                                shaderScrollAnim.to = targetX;
+                                shaderScrollAnim.restart();
+                            }
+                        }
+
+                        NumberAnimation {
+                            id: shaderScrollAnim
+                            target: shaderCarousel
+                            property: "contentX"
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+
+                        ListView {
+                            id: shaderCarousel
+                            anchors.fill: parent
+                            anchors.topMargin: 8
+                            anchors.bottomMargin: 4
+                            orientation: ListView.Horizontal
+                            spacing: 16
+                            clip: true
+
+                            flickDeceleration: 1800
+                            maximumFlickVelocity: 3000
+                            boundsBehavior: Flickable.StopAtBounds
+                            highlightRangeMode: ListView.NoHighlightRange
+
+                            model: launcher.filteredShaders
+                            currentIndex: launcher.selectedIndex
+
+                            delegate: Item {
+                                width: 236
+                                height: 226
+                                z: (cardItem && cardItem.isHovered) ? 100 : (launcher.selectedIndex === index ? 20 : 1)
+
+                                readonly property var itemData: modelData
+
+                                ShaderCard {
+                                    id: cardItem
+                                    anchors.centerIn: parent
+                                    width: 224
+                                    height: 214
+                                    shaderKey: itemData ? itemData.id : ""
+                                    shaderTitle: itemData ? itemData.name : ""
+                                    shaderSubtitle: itemData ? itemData.desc : ""
+                                    shaderThumb: itemData ? itemData.thumb : ""
+                                    isCurrentShader: itemData ? launcher.isShaderActive(itemData) : false
+                                    isSelected: launcher.selectedIndex === index
+
+                                    onActivated: {
+                                        launcher.selectedIndex = index;
+                                        if (itemData) {
+                                            launcher.applyShader(itemData.id, itemData.filterName);
+                                        }
+                                    }
+                                }
+                            }
+
+                            WheelHandler {
+                                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                                onWheel: function(event) {
+                                    var delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
+                                    var step = delta * 1.8;
+                                    var targetX = shaderCarousel.contentX - step;
+                                    var maxX = Math.max(0, shaderCarousel.contentWidth - shaderCarousel.width);
+                                    shaderCarousel.contentX = Math.max(0, Math.min(maxX, targetX));
+                                }
+                            }
+
+                            Component.onCompleted: {
+                                if (launcher.currentMode === "shader") {
+                                    shaderView.scrollToCard(launcher.selectedIndex, true);
+                                }
+                            }
+                        }
+
+                        // Degradado lateral izquierdo
+                        Rectangle {
+                            id: shaderLeftFade
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 32
+                            z: 50
+                            enabled: false
+                            visible: shaderCarousel.contentX > 6
+                            opacity: visible ? 1.0 : 0.0
+                            Behavior on opacity { NumberAnimation { duration: 150 } }
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.95) }
+                                GradientStop { position: 1.0; color: "transparent" }
+                            }
+                        }
+
+                        // Degradado lateral derecho
+                        Rectangle {
+                            id: shaderRightFade
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 32
+                            z: 50
+                            enabled: false
+                            visible: shaderCarousel.contentX < (shaderCarousel.contentWidth - shaderCarousel.width - 6)
+                            opacity: visible ? 1.0 : 0.0
+                            Behavior on opacity { NumberAnimation { duration: 150 } }
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: "transparent" }
+                                GradientStop { position: 1.0; color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.95) }
+                            }
+                        }
+
+                        Connections {
+                            target: launcher
+                            function onSelectedIndexChanged() {
+                                if (launcher.currentMode === "shader" && shaderCarousel) {
+                                    shaderView.scrollToCard(launcher.selectedIndex, false);
+                                }
+                            }
+                        }
+
+                        Text {
+                            visible: launcher.filteredShaders.length === 0
+                            anchors.centerIn: parent
+                            text: "No shaders match your query"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 15
+                            color: Root.Theme.textSecondary
+                        }
+                    }
+
                     // --- VISTA 3: Carrusel de Gadgets de Escritorio (Horizontal) ---
                     Item {
                         id: gadgetsView
@@ -1141,6 +1417,7 @@ Scope {
                         Text {
                             text: {
                                 if (launcher.currentMode === "wallpaper") return "󰸉";
+                                if (launcher.currentMode === "shader") return "󱡄";
                                 if (launcher.currentMode === "theme") return "󰏘";
                                 if (launcher.currentMode === "gadgets") return "󱂬";
                                 if (launcher.currentMode === "actions") return "󰘳";
@@ -1169,6 +1446,7 @@ Scope {
                             onTextChanged: {
                                 launcher.searchText = text;
                                 if ((launcher.currentMode !== "wallpaper" || (!text.startsWith("/wallpaper") && !text.startsWith(">wallpaper")))
+                                    && (launcher.currentMode !== "shader" || (!text.startsWith("/shader") && !text.startsWith(">shader")))
                                     && (launcher.currentMode !== "theme" || (!text.startsWith("/theme") && !text.startsWith(">theme")))
                                     && (launcher.currentMode !== "gadgets" || (!text.startsWith("/gadgets") && !text.startsWith(">gadgets")))) {
                                     launcher.selectedIndex = 0;
@@ -1191,6 +1469,7 @@ Scope {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: {
                                     if (launcher.currentMode === "wallpaper") return "Filter wallpapers or press Enter...";
+                                    if (launcher.currentMode === "shader") return "Filter shaders or press Enter...";
                                     if (launcher.currentMode === "theme") return "Filter themes or press Enter...";
                                     if (launcher.currentMode === "gadgets") return "Toggle desktop gadgets with Enter or click...";
                                     if (launcher.currentMode === "actions") return "Type command name or press Enter...";
@@ -1209,7 +1488,7 @@ Scope {
                             }
 
                             Keys.onLeftPressed: function(event) {
-                                if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") {
+                                if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") {
                                     if (launcher.selectedIndex > 0) launcher.selectedIndex--;
                                     event.accepted = true;
                                 } else {
@@ -1220,6 +1499,11 @@ Scope {
                             Keys.onRightPressed: function(event) {
                                 if (launcher.currentMode === "wallpaper") {
                                     if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
+                                        launcher.selectedIndex++;
+                                    }
+                                    event.accepted = true;
+                                } else if (launcher.currentMode === "shader") {
+                                    if (launcher.selectedIndex < launcher.filteredShaders.length - 1) {
                                         launcher.selectedIndex++;
                                     }
                                     event.accepted = true;
@@ -1239,7 +1523,7 @@ Scope {
                             }
 
                             Keys.onUpPressed: function(event) {
-                                if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") {
+                                if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") {
                                     if (launcher.selectedIndex > 0) launcher.selectedIndex--;
                                 } else if (launcher.currentMode === "actions") {
                                     if (launcher.selectedIndex > 0) {
@@ -1260,6 +1544,10 @@ Scope {
                             Keys.onDownPressed: function(event) {
                                 if (launcher.currentMode === "wallpaper") {
                                     if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
+                                        launcher.selectedIndex++;
+                                    }
+                                } else if (launcher.currentMode === "shader") {
+                                    if (launcher.selectedIndex < launcher.filteredShaders.length - 1) {
                                         launcher.selectedIndex++;
                                     }
                                 } else if (launcher.currentMode === "theme") {
@@ -1305,6 +1593,12 @@ Scope {
                                     } else {
                                         launcher.selectedIndex = 0;
                                     }
+                                } else if (launcher.currentMode === "shader") {
+                                    if (launcher.selectedIndex < launcher.filteredShaders.length - 1) {
+                                        launcher.selectedIndex++;
+                                    } else {
+                                        launcher.selectedIndex = 0;
+                                    }
                                 } else if (launcher.currentMode === "theme") {
                                     if (launcher.selectedIndex < launcher.filteredThemes.length - 1) {
                                         launcher.selectedIndex++;
@@ -1339,6 +1633,12 @@ Scope {
                                         launcher.selectedIndex--;
                                     } else {
                                         launcher.selectedIndex = launcher.filteredWallpapers.length;
+                                    }
+                                } else if (launcher.currentMode === "shader") {
+                                    if (launcher.selectedIndex > 0) {
+                                        launcher.selectedIndex--;
+                                    } else if (launcher.filteredShaders.length > 0) {
+                                        launcher.selectedIndex = launcher.filteredShaders.length - 1;
                                     }
                                 } else if (launcher.currentMode === "theme") {
                                     if (launcher.selectedIndex > 0) {

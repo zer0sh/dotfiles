@@ -355,7 +355,9 @@ Scope {
         stdout: StdioCollector {
             onStreamFinished: {
                 var result = text.trim()
-                if (result.indexOf("Filtro activo:") === 0)
+                if (result.indexOf("Active filter:") === 0)
+                    controlCenter.shaderName = result.substring("Active filter:".length).trim()
+                else if (result.indexOf("Filtro activo:") === 0)
                     controlCenter.shaderName = result.substring("Filtro activo:".length).trim()
                 else
                     controlCenter.shaderName = "Off"
@@ -363,33 +365,17 @@ Scope {
         }
     }
 
-    Process {
-        id: shaderNextProc
-        command: ["/home/zero/.config/hypr/scripts/filter", "next"]
-        onExited: shaderStatusProc.running = true
-    }
-
-    Process {
-        id: shaderToggleProc
-        command: ["/home/zero/.config/hypr/scripts/filter", "toggle"]
-        onExited: shaderStatusProc.running = true
-    }
-
     function shaderLabel() {
+        if (shaderName === "Off" || shaderName === "" || shaderName === "disabled" || shaderName === "desactivado") return "Shader Off"
         if (shaderName === "Sepia Vintage") return "Sepia"
-        if (shaderName === "Blanco y Negro") return "B&W"
+        if (shaderName === "Black and White" || shaderName === "Blanco y Negro") return "B&W"
         if (shaderName === "Film Noir") return "Noir"
-        if (shaderName === "Vívido") return "Vivid"
+        if (shaderName === "Vivid" || shaderName === "Vívido") return "Vivid"
         if (shaderName === "Vintage") return "Vintage"
-        return "Shader Off"
-    }
-
-    function cycleShader() {
-        shaderNextProc.running = true
-    }
-
-    function toggleShader() {
-        shaderToggleProc.running = true
+        if (shaderName === "CRT Retro") return "CRT"
+        if (shaderName === "CRT Soft" || shaderName === "CRT Suave") return "CRT Soft"
+        if (shaderName === "Sony Trinitron") return "Trinitron"
+        return shaderName
     }
 
 
@@ -438,6 +424,11 @@ Scope {
     }
 
     Process {
+        id: launchShaderProc
+        command: ["quickshell", "ipc", "call", "launcher", "shader"]
+    }
+
+    Process {
         id: launchThemeProc
         command: ["quickshell", "ipc", "call", "launcher", "theme"]
     }
@@ -461,15 +452,36 @@ Scope {
                 launchWallpaperProc.running = true
                 return
             }
+            if (page === "shader") {
+                controlCenter.panelVisible = false
+                launchShaderProc.running = true
+                return
+            }
             controlCenter.panelVisible = true
             controlCenter.currentPage = page
         }
         function toggleCaffeine(): void { controlCenter.toggleCaffeine() }
         function toggleNightLight(): void { controlCenter.toggleNightLight() }
-        function toggleShader(): void { controlCenter.toggleShader() }
+        function toggleShader(): void {
+            controlCenter.panelVisible = false
+            launchShaderProc.running = true
+        }
         function toggleDnd(): void { controlCenter.toggleDnd() }
         function setDnd(val: bool): void { controlCenter.setDnd(val) }
         function syncDnd(): void { controlCenter.syncDnd() }
+    }
+
+    IpcHandler {
+        target: "controlcenter_shader"
+
+        function toggle(): void {
+            controlCenter.panelVisible = false
+            launchShaderProc.running = true
+        }
+        function show(): void {
+            controlCenter.panelVisible = false
+            launchShaderProc.running = true
+        }
     }
 
     IpcHandler {
@@ -832,12 +844,13 @@ Scope {
 
                                     CircleToggle {
                                         Layout.fillWidth: true
-                                        active: controlCenter.shaderName !== "Off"
+                                        active: controlCenter.shaderName !== "Off" && controlCenter.shaderName !== "disabled" && controlCenter.shaderName !== "desactivado"
                                         icon: "auto_fix_high"
                                         label: controlCenter.shaderLabel()
-                                        hasDetail: true
-                                        onClicked: controlCenter.toggleShader()
-                                        onDetailClicked: controlCenter.cycleShader()
+                                        onClicked: {
+                                            controlCenter.panelVisible = false
+                                            launchShaderProc.running = true
+                                        }
                                     }
 
                                     CircleToggle {

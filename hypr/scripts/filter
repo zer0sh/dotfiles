@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# Screen filter controller for Hyprland
 
 SHADER_DIR="$HOME/.config/hypr/shaders"
 STATE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/hypr-bw-filter"
@@ -9,7 +10,7 @@ apply_shader() {
 
     echo "$name" > "$STATE_FILE"
     hyprctl keyword decoration:screen_shader "$shader"
-    notify-send "1930s Filter" "Filtro: $name"
+    notify-send "Screen Filter" "Filter: $name"
 }
 
 case "$1" in
@@ -17,7 +18,7 @@ case "$1" in
         apply_shader "Sepia Vintage" "$SHADER_DIR/sepia.glsl"
         ;;
     bw|grayscale)
-        apply_shader "Blanco y Negro" "$SHADER_DIR/bw.glsl"
+        apply_shader "Black and White" "$SHADER_DIR/bw.glsl"
         ;;
     noir)
         apply_shader "Film Noir" "$SHADER_DIR/noir.glsl"
@@ -26,12 +27,21 @@ case "$1" in
         apply_shader "Vintage" "$SHADER_DIR/vintage.glsl"
         ;;
     vivid)
-        apply_shader "Vívido" "$SHADER_DIR/vivid.glsl"
+        apply_shader "Vivid" "$SHADER_DIR/vivid.glsl"
+        ;;
+    crt)
+        apply_shader "CRT Retro" "$SHADER_DIR/crt.glsl"
+        ;;
+    crt-soft|crtsoft)
+        apply_shader "CRT Soft" "$SHADER_DIR/crt-soft.glsl"
+        ;;
+    trinitron)
+        apply_shader "Sony Trinitron" "$SHADER_DIR/trinitron.glsl"
         ;;
     off|reset|none)
         rm -f "$STATE_FILE"
         hyprctl keyword decoration:screen_shader "$SHADER_DIR/off.glsl"
-        notify-send "1930s Filter" "Desactivado"
+        notify-send "Screen Filter" "Disabled"
         ;;
     toggle)
         if [ -f "$STATE_FILE" ]; then
@@ -40,28 +50,15 @@ case "$1" in
             "$0" sepia
         fi
         ;;
-    next)
-        # Cycle through the available filters for the quick-settings button.
-        current="$(cat "$STATE_FILE" 2>/dev/null || true)"
-        case "$current" in
-            "")                 "$0" sepia ;;
-            "Sepia Vintage")    "$0" bw ;;
-            "Blanco y Negro")   "$0" noir ;;
-            "Film Noir")        "$0" vintage ;;
-            "Vintage")           "$0" vivid ;;
-            "Vívido")            "$0" off ;;
-            *)                   "$0" sepia ;;
-        esac
-        ;;
     status)
         if [ -f "$STATE_FILE" ]; then
-            echo "Filtro activo: $(cat "$STATE_FILE")"
+            echo "Active filter: $(cat "$STATE_FILE")"
         else
-            echo "Filtro: desactivado"
+            echo "Filter: disabled"
         fi
         ;;
     *)
-        echo "Uso: $0 {sepia|bw|noir|vintage|vivid|off|toggle|next|status}"
+        echo "Usage: $0 {sepia|bw|noir|vintage|vivid|crt|crt-soft|trinitron|off|toggle|status}"
         exit 1
         ;;
 esac
