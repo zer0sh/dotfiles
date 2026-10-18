@@ -35,15 +35,15 @@ Item {
         color: control.active
             ? Root.Theme.primary
             : (btnMouse.containsMouse
-                ? (Root.Theme.isLightMode ? Qt.darker(Root.Theme.surfaceContainerHigh, 1.06) : Qt.lighter(Root.Theme.surfaceContainerHigh, 1.15))
-                : Root.Theme.surfaceContainerHigh)
+                ? (Root.Theme.isLightMode ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.20) : Qt.lighter(Root.Theme.surfaceContainerHigh, 1.15))
+                : (Root.Theme.isLightMode ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.12) : Root.Theme.surfaceContainerHigh))
 
         border.width: control.active ? 0 : 1.5
         border.color: control.active
             ? "transparent"
             : (btnMouse.containsMouse
                 ? Root.Theme.primary
-                : (Root.Theme.isLightMode ? Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.55) : Qt.rgba(255, 255, 255, 0.20)))
+                : (Root.Theme.isLightMode ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35) : Qt.rgba(255, 255, 255, 0.20)))
 
         scale: btnMouse.pressed ? 0.93 : (btnMouse.containsMouse ? 1.04 : 1.0)
 
@@ -62,7 +62,7 @@ Item {
             font.pixelSize: 28
             color: control.active
                 ? Root.Theme.tileActiveText
-                : (Root.Theme.isLightMode ? Root.Theme.textPrimary : Qt.rgba(255, 255, 255, 0.85))
+                : (Root.Theme.isLightMode ? Root.Theme.primary : Qt.rgba(255, 255, 255, 0.85))
 
             Behavior on color {
                 ColorAnimation { duration: Root.Theme.animDurationFast }
