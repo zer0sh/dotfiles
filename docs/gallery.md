@@ -61,7 +61,29 @@ Dynamic Material Design 3 application launcher featuring centralized fuzzy searc
 
 ## 5. Quickshell Desktop Layer
 
-*(Screenshots in progress: floating launcher with wallpaper carousel, top-center notification toasts, and volume/brightness OSDs).*
+### Floating Launcher & Wallpaper Carousel
+
+The Material Design 3 launcher opened in wallpaper mode (`/wallpaper` or `SUPER + W`), rendering a horizontal carousel of 16:9 previews with the active wallpaper highlighted by an accent glow.
+
+![Quickshell Wallpaper Carousel](assets/images/quickshell/launcher-wallpapers.png)
+
+### Notification Toasts & OSD Cards
+
+Floating notification toasts stacking downwards from the top-center of the display, each with its application badge, title, and body text.
+
+![Notification Toasts](assets/images/quickshell/notifications-toast.png)
+
+Translucent volume and brightness OSD cards rendered with the same Material You surface tokens, auto-dismissing after two seconds of inactivity.
+
+![Volume OSD](assets/images/quickshell/osd-volume.png)
+
+![Brightness OSD](assets/images/quickshell/osd-brightness.png)
+
+### Key Features:
+* **Wallpaper Carousel:** Fuzzy-filtered wallpaper browser with cached thumbnails, keyboard navigation, and apply-on-enter behaviour.
+* **Toast Queue:** New notifications are prepended into the top slot and push older cards downwards through a `move` transition (maximum of four concurrent toasts).
+* **OSD Placement:** 360 x 56 px cards anchored 46 px below the 36 px Waybar strip, so status indicators remain visible while the card animates in.
+* **Palette Sync:** Lazily instantiated Wayland layershell surfaces styled exclusively from Matugen `surface_container`, `outline`, and `on_surface` tokens.
 
 ---
 
@@ -77,4 +99,12 @@ Modern replacement for `cat` configured with clean headers, language-specific sy
 
 ![Bat Syntax Highlighting Demonstration](assets/images/terminals/bat-preview.png)
 
-*(Screenshots in progress: btop resource monitor with Matugen palette and Vim dynamic theme setup).*
+### btop Resource Monitor
+Full terminal dashboard rendering CPU, memory, disk, and process panels with the Matugen palette generated from the active wallpaper.
+
+![btop Resource Monitor](assets/images/terminals/btop.png)
+
+### Vim Dynamic Theme Setup
+The repository `vimrc` running under the `matugen` colorscheme, with the synchronized vim-airline statusline at the bottom.
+
+![Vim Matugen Colorscheme](assets/images/terminals/vim.png)

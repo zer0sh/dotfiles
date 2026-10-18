@@ -25,6 +25,10 @@ The system consists of two coordinated Quickshell modules:
      * Incoming wallpaper scales from 0.88 to 1.0 while fading opacity from 0.0 to 1.0 in 750 ms (`Easing.InOutQuad`).
    * Triggers `apply-matugen.sh` asynchronously to regenerate system palettes across Hyprland, Waybar, Alacritty, and Quickshell.
 
+### Wallpaper Carousel Preview
+
+![Quickshell Wallpaper Carousel](../assets/images/quickshell/launcher-wallpapers.png)
+
 ---
 
 ## File Structure

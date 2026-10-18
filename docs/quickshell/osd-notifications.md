@@ -19,6 +19,20 @@ All floating indicators follow a standardized behavioral contract:
 
 ---
 
+## Visual Reference
+
+Top-center notification toasts, each rendering the originating application, title, and body:
+
+![Notification Toasts](../assets/images/quickshell/notifications-toast.png)
+
+Volume and brightness OSD cards sharing the same placement, geometry, and surface tokens:
+
+![Volume OSD](../assets/images/quickshell/osd-volume.png)
+
+![Brightness OSD](../assets/images/quickshell/osd-brightness.png)
+
+---
+
 ## Source Files Map
 
 | Component | Source File | Responsibility |

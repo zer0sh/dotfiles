@@ -39,6 +39,12 @@ btop (color_theme = "matugen", theme_background = False)
 * **`theme_background = False`:** Disables hardcoded opaque background rendering, enabling seamless background transparency and blur from [Alacritty](../terminals/alacritty.md) and Hyprland.
 * **`truecolor = True`:** Enables full 24-bit RGB color depth.
 
+### Matugen Palette Preview
+
+The generated palette drives every graph, meter, and box outline across the CPU, memory, disk, and process panels:
+
+![btop Resource Monitor](../assets/images/terminals/btop.png)
+
 ---
 
 ## Automated Theme Deployment
