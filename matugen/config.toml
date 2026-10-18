@@ -16,6 +16,7 @@ output_path = "~/.config/themes/current/wofi.css"
 [templates.kitty]
 input_path = "~/.config/matugen/templates/kitty.conf"
 output_path = "~/.config/themes/current/kitty.conf"
+post_hook = "pkill -SIGUSR1 kitty || true"
 
 [templates.alacritty]
 input_path = "~/.config/matugen/templates/alacritty.toml"

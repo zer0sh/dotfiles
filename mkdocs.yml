@@ -69,6 +69,7 @@ nav:
   - CLI:
       - Terminals:
           - Alacritty: terminals/alacritty.md
+          - Kitty: terminals/kitty.md
           - Zsh: terminals/zsh.md
           - Vim: terminals/vim.md
       - Fastfetch: apps/fastfetch.md

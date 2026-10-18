@@ -66,6 +66,7 @@ output_path = "~/.config/themes/current/wofi.css"
 [templates.kitty]
 input_path = "~/.config/matugen/templates/kitty.conf"
 output_path = "~/.config/themes/current/kitty.conf"
+post_hook = "pkill -SIGUSR1 kitty || true"
 
 [templates.alacritty]
 input_path = "~/.config/matugen/templates/alacritty.toml"
@@ -139,7 +140,7 @@ and the [documentation site](https://iniox.github.io/).
 | **[Waybar](waybar.md)** | `themes/current/waybar.css` | Background, text, accent, warning, critical, charging | `pkill -SIGUSR2 waybar` |
 | **[Wofi](wofi.md)** | `themes/current/wofi.css` | Panel backdrop, input field, text, selection, outline | Next instance invocation |
 | **[Alacritty](../terminals/alacritty.md)** | `themes/current/alacritty.toml` | Normal, bright, primary, cursor, and selection colors | Automatic live reload |
-| **Kitty** | `themes/current/kitty.conf` | ANSI 16 palette, foreground, background, cursor | `kitty @ set-colors` or new instance |
+| **[Kitty](../terminals/kitty.md)** | `themes/current/kitty.conf` | ANSI 16 palette, extended 256-color range, URL color, tab bar, borders, marks | `post_hook`: `pkill -SIGUSR1 kitty` (live reload) |
 | **[Hyprland](../hyprland/index.md)** | `themes/current/hyprland.conf` | `col.active_border`, `col.inactive_border` | `hyprctl reload` or `hyprctl keyword` |
 | **[Hyprlock](../hyprland/hyprlock.md)** | `themes/current/hyprlock.conf` | Lockscreen text, ring accent, error and warning colors | Next screen lock event |
 | **hyprpolkitagent / Hyprland QML apps** | `hypr/hyprtoolkit.conf` | Hyprtoolkit palette: background, base, text, alternate and highlight colors | Next application launch |

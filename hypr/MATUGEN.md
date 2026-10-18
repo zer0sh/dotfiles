@@ -27,7 +27,7 @@ La paleta generada debe alimentar estos componentes, en este orden:
 | Quickshell / panel | `quickshell/MatugenPalette.qml` lee `themes/current/palette.json` | fondo, superficies, contenedores, primario, texto, estados semánticos, sliders | reiniciar o recargar Quickshell |
 | Waybar | `themes/current/waybar.css`, importado por `waybar/colors.css` | fondo, texto, acento, warning, crítico, charging | `pkill -SIGUSR2 waybar` |
 | Wofi | `themes/current/wofi.css`, importado por `wofi/style.css` | fondo translúcido, superficie de entrada, texto, selección/acento | nueva instancia |
-| Kitty | `themes/current/kitty.conf`, incluido por `kitty/kitty.conf` | fondo, foreground, cursor, selección, ANSI 16 colores | nuevas instancias o `kitty @ set-colors` |
+| Kitty | `themes/current/kitty.conf`, incluido por `kitty/kitty.conf` | fondos, texto, cursor, selección, ANSI 16 colores, rango 256, pestañas y marcas | `pkill -SIGUSR1 kitty` (post_hook de Matugen) |
 | Hyprland | bordes en `hyprland.conf` / `hyprctl keyword` | borde activo e inactivo | `hyprctl reload` o `hyprctl keyword` |
 | Hyprlock | `themes/current/hyprlock.conf`, incluido por `hyprlock.conf` | texto, fondo secundario, acento, error y atención | próximo bloqueo de pantalla |
 | Rofi heredado | `rofi/themes/colors.rasi` | fondo, contenedor, acento y texto | nueva instancia |

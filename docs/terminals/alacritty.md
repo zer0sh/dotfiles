@@ -61,6 +61,7 @@ italic = { family = "BlexMono Nerd Font", style = "Bold Italic" }
 ## Related Documentation
 
 * [Zsh Shell Configuration](zsh.md): Default login shell environment, lightweight plugins, and custom prompt styles.
+* [Kitty Terminal Configuration](kitty.md): Alternate terminal mirroring these visual settings and sharing the same generated palette.
 * [Matugen Theming Engine](../apps/matugen.md): Dynamic generation of `alacritty.toml` color tables.
 * [Hyprland Keybindings Catalog](../hyprland/keybinds.md): Global hotkeys for spawning and navigating terminal windows.
 * [Hyprland Architecture](../hyprland/index.md): Compositor blur, window decorations, and window rules.
