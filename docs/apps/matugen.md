@@ -24,12 +24,14 @@ Wallpaper Image (.png / .jpg)
    ├── kitty.conf      --> included by ~/.config/kitty/kitty.conf
    ├── hyprland.conf   --> sourced by Hyprland for active/inactive borders
    ├── hyprlock.conf   --> sourced by ~/.config/hypr/hyprlock.conf
+   ├── hyprtoolkit.conf --> read by hyprpolkitagent and Hyprland/QML apps (rendered to ~/.config/hypr/)
    ├── btop.theme       --> linked by ~/.config/btop/themes/matugen.theme
    ├── gtk-3.0.css     --> linked by ~/.config/gtk-3.0/gtk.css
    ├── gtk-4.0.css     --> linked by ~/.config/gtk-4.0/gtk.css
    ├── spicetify.ini   --> linked by ~/.config/spicetify/Themes/matugen/color.ini
    ├── steam.css       --> linked by ~/.config/AdwSteamGtk/custom.css
    ├── palette.json    --> consumed by Quickshell Control Center & Widgets
+   ├── matugen.vim     --> loaded by Vim via :colorscheme matugen
    └── vscode-colors / vscode-colors.json --> watched by the VS Code "Matugen Theme" extension (rendered to ~/.cache/matugen/)
 ```
 
@@ -51,8 +53,6 @@ The engine behavior and output mappings are defined in `config.toml`:
 mode = "dark"
 type = "scheme-vibrant"
 source_color_index = 0
-scheme_tonal_spot_cutoff = 0.15
-scheme_contrast = 1.0
 
 [templates.waybar]
 input_path = "~/.config/matugen/templates/waybar.css"
@@ -121,6 +121,13 @@ input_path = "~/.config/matugen/templates/vscode-colors.json"
 output_path = "~/.cache/matugen/vscode-colors.json"
 ```
 
+The snippet above mirrors `~/dotfiles/matugen/config.toml` exactly. For the
+full list of keys supported by matugen 4.x (`contrast`, `fallback_color`,
+`prefer`, `caching`, `version_check`, `import_json_files`, `expr_prefix` /
+`expr_postfix`, `[config.wallpaper]`, `[config.custom_colors]`), see the
+[official example configuration](https://github.com/InioX/matugen/blob/main/example/config.toml)
+and the [documentation site](https://iniox.github.io/).
+
 ---
 
 ## Consumer Applications and Reload Strategies
@@ -134,6 +141,7 @@ output_path = "~/.cache/matugen/vscode-colors.json"
 | **Kitty** | `themes/current/kitty.conf` | ANSI 16 palette, foreground, background, cursor | `kitty @ set-colors` or new instance |
 | **[Hyprland](../hyprland/index.md)** | `themes/current/hyprland.conf` | `col.active_border`, `col.inactive_border` | `hyprctl reload` or `hyprctl keyword` |
 | **[Hyprlock](../hyprland/hyprlock.md)** | `themes/current/hyprlock.conf` | Lockscreen text, ring accent, error and warning colors | Next screen lock event |
+| **hyprpolkitagent / Hyprland QML apps** | `hypr/hyprtoolkit.conf` | Hyprtoolkit palette: background, base, text, alternate and highlight colors | Next application launch |
 | **[btop](btop.md)** | `themes/current/btop.theme` | Box outlines, graphs, text, selection, gradient metrics | Next launch / live theme switch |
 | **GNOME Classic (GTK 3)** | `themes/current/gtk-3.0.css` | Window, headerbar, inputs, buttons, selection, accent | Next app launch |
 | **GNOME Modern (GTK 4 / Libadwaita)** | `themes/current/gtk-4.0.css` | Libadwaita named colors: accent, window_bg, headerbar, cards | Next app launch |
