@@ -1,24 +1,45 @@
 # Steam Client Theming
 
-The Steam desktop client is integrated into the dynamic Material You theming pipeline using [Matugen](matugen.md) templates and [AdwSteamGtk](https://github.com/Foldex/AdwSteamGtk) (Adwaita-for-Steam). This pipeline extracts harmonic colors from the active desktop wallpaper and renders custom CSS variables for Steam's interface, covering window surfaces, headerbars, popovers, sidebars, cards, and accent highlights.
+The Steam desktop client is integrated into the dynamic Material You theming pipeline using [Matugen](matugen.md) templates and the native installer of [Adwaita-for-Steam](https://github.com/Foldex/Adwaita-for-Steam) (Foldex fork, MIT). The pipeline extracts harmonic colors from the active desktop wallpaper and renders custom CSS variables that cover Steam's window surfaces, headerbars, popovers, sidebars, cards, and accent highlights.
+
+The injection runs through `install.py` with Python 3 only. **Flatpak and the AdwSteamGtk graphical wrapper are not required**; they remain an optional alternative (see [Optional: AdwSteamGtk Graphical Wrapper](#optional-adwsteamgtk-graphical-wrapper)).
 
 ---
 
-## File Structure & Paths
+## Requirements
 
-* **Template source:** `~/dotfiles/matugen/templates/steam.css` (symlinked into `~/.config/matugen/templates/steam.css`)
-* **Engine mapping:** `~/dotfiles/matugen/config.toml` (`[templates.steam]`)
-* **Central theme store output:** `~/.config/themes/current/steam.css`
-* **AdwSteamGtk custom stylesheet:** `~/.config/AdwSteamGtk/custom.css` -> `~/.config/themes/current/steam.css`
-* **Flatpak AdwSteamGtk custom stylesheet:** `~/.var/app/io.github.Foldex.AdwSteamGtk/config/AdwSteamGtk/custom.css` -> `~/.config/themes/current/steam.css`
-* **Deployment automation script:** `~/dotfiles/scripts/setup-steam-matugen.sh`
-* **Dotfiles deployment routine:** `~/dotfiles/install.sh`
+| Requirement | Minimum | Purpose | Validate with |
+| :--- | :--- | :--- | :--- |
+| **Steam (native)** | any | Receives the patched stylesheets under `~/.local/share/Steam/steamui` | `command -v steam` |
+| **Millennium** *(optional)* | 3.x | Steam modding framework for companion skins and plugins; not required by this pipeline | `test -f /usr/lib/millennium/libmillennium_hhx64.so` |
+| **python3** | 3.9+ (system ships 3.13) | Executes `install.py` | `python3 --version` |
+| **git** | any | Clones Adwaita-for-Steam once | `command -v git` |
+| **matugen** | 4.x | Renders the Material Design 3 palette from a wallpaper | `command -v matugen` |
+| **Matugen engine config** | any | Provides `~/.config/matugen/config.toml` and `~/.config/matugen/templates/` | `test -f "$HOME/.config/matugen/config.toml"` |
+| **bash or zsh** | any | Runs the snippets of this guide | `echo $0` |
+
+No `sudo` privileges are required. Every path touched by the integration lives under `$HOME`, and the Steam client directory is only modified inside the user-owned `steamui` folder.
+
+---
+
+## File Structure and Paths
+
+| Action | Path | Notes |
+| :--- | :--- | :--- |
+| Create | `~/dotfiles/matugen/templates/steam.css` | Template source of truth in the repository |
+| Modify (backup first) | `~/dotfiles/matugen/config.toml` | Registers `[templates.steam]` and the injection `post_hook` |
+| Create (rendered by matugen) | `~/.config/themes/current/steam.css` | Central theme store output |
+| Clone (once) | `~/.local/share/Adwaita-for-Steam` | Foldex fork of Adwaita-for-Steam |
+| Create (symlink) | `~/.local/share/Adwaita-for-Steam/custom/custom.css` -> `~/.config/themes/current/steam.css` | The installer dereferences this link on every run |
+| Create (injected) | `~/.local/share/Steam/steamui/libraryroot.custom.css` | `@import` manifest, includes `adwaita/custom/custom.css` |
+| Create (injected) | `~/.local/share/Steam/steamui/adwaita/` | Full theme copy consumed through `https://steamloopback.host` |
+| Backup (created by installer) | `~/.local/share/Steam/steamui/css/library.original.css` | Pristine copy of `library.css` before patching |
+| Create | `~/dotfiles/scripts/setup-steam-matugen.sh` | Deployment and verification automation |
+| Modify | `~/dotfiles/install.sh` | Runs the setup script when Steam is detected |
 
 ---
 
 ## Dynamic Matugen Architecture
-
-Steam theming operates through the central theme store and automated post-processing hooks:
 
 ```
 Wallpaper Image (.png / .jpg)
@@ -29,12 +50,15 @@ Wallpaper Image (.png / .jpg)
           v (evaluates ~/.config/matugen/templates/steam.css)
 ~/.config/themes/current/steam.css
           |
-          +--> (symlink) ~/.config/AdwSteamGtk/custom.css
+          +--> (symlink) ~/.local/share/Adwaita-for-Steam/custom/custom.css
           |
           v (post_hook)
-adwaita-steam-gtk -i (or flatpak run io.github.Foldex.AdwSteamGtk -i)
+cd ~/.local/share/Adwaita-for-Steam && python3 install.py --custom-css -t normal
           |
-          v (injects CSS into)
+          v (patches and copies into)
+~/.local/share/Steam/steamui/   (libraryroot.custom.css + adwaita/ theme)
+          |
+          v (loaded when)
 Steam Client UI (Library, Friends, Settings, Overlays)
 ```
 
@@ -44,88 +68,288 @@ Steam Client UI (Library, Friends, Settings, Overlays)
 
 ### 1. Matugen Template (`matugen/templates/steam.css`)
 
-The template defines Adwaita-compatible GTK variables translated from Material Design 3 color tokens:
+The template defines Adwaita-compatible variables translated from Material Design 3 color tokens. The RGB triplets are **comma-separated** because Adwaita-for-Steam consumes them through legacy `rgb(var(--name))` and `rgba(var(--name), alpha)` functions:
 
 ```css
 /*
 * GTK 4 / Adwaita for Steam Colors
 * Material You dynamic template generated by Matugen
+*
+* RGB triplets are comma-separated because Adwaita-for-Steam consumes them
+* through legacy rgb(var(--name)) and rgba(var(--name), alpha) functions.
 */
 
 :root {
-    --adw-accent-rgb: {{ colors.primary.default.red }} {{ colors.primary.default.green }} {{ colors.primary.default.blue }};
-    --adw-accent-bg-rgb: {{ colors.primary.default.red }} {{ colors.primary.default.green }} {{ colors.primary.default.blue }};
-    --adw-accent-fg-rgb: {{ colors.on_primary.default.red }} {{ colors.on_primary.default.green }} {{ colors.on_primary.default.blue }};
+    --adw-accent-rgb: {{ colors.primary.default.red }}, {{ colors.primary.default.green }}, {{ colors.primary.default.blue }};
+    --adw-accent-bg-rgb: {{ colors.primary.default.red }}, {{ colors.primary.default.green }}, {{ colors.primary.default.blue }};
+    --adw-accent-fg-rgb: {{ colors.on_primary.default.red }}, {{ colors.on_primary.default.green }}, {{ colors.on_primary.default.blue }};
 
-    --adw-window-bg-rgb: {{ colors.background.default.red }} {{ colors.background.default.green }} {{ colors.background.default.blue }};
-    --adw-window-fg-rgb: {{ colors.on_background.default.red }} {{ colors.on_background.default.green }} {{ colors.on_background.default.blue }};
+    --adw-window-bg-rgb: {{ colors.background.default.red }}, {{ colors.background.default.green }}, {{ colors.background.default.blue }};
+    --adw-window-fg-rgb: {{ colors.on_background.default.red }}, {{ colors.on_background.default.green }}, {{ colors.on_background.default.blue }};
 
-    --adw-headerbar-bg-rgb: {{ colors.surface_dim.default.red }} {{ colors.surface_dim.default.green }} {{ colors.surface_dim.default.blue }};
-    --adw-headerbar-fg-rgb: {{ colors.on_surface.default.red }} {{ colors.on_surface.default.green }} {{ colors.on_surface.default.blue }};
+    --adw-headerbar-bg-rgb: {{ colors.surface_dim.default.red }}, {{ colors.surface_dim.default.green }}, {{ colors.surface_dim.default.blue }};
+    --adw-headerbar-fg-rgb: {{ colors.on_surface.default.red }}, {{ colors.on_surface.default.green }}, {{ colors.on_surface.default.blue }};
 
-    --adw-popover-bg-rgb: {{ colors.surface_dim.default.red }} {{ colors.surface_dim.default.green }} {{ colors.surface_dim.default.blue }};
-    --adw-popover-fg-rgb: {{ colors.on_surface.default.red }} {{ colors.on_surface.default.green }} {{ colors.on_surface.default.blue }};
+    --adw-popover-bg-rgb: {{ colors.surface_dim.default.red }}, {{ colors.surface_dim.default.green }}, {{ colors.surface_dim.default.blue }};
+    --adw-popover-fg-rgb: {{ colors.on_surface.default.red }}, {{ colors.on_surface.default.green }}, {{ colors.on_surface.default.blue }};
 
-    --adw-view-bg-rgb: {{ colors.surface.default.red }} {{ colors.surface.default.green }} {{ colors.surface.default.blue }};
-    --adw-view-fg-rgb: {{ colors.on_surface.default.red }} {{ colors.on_surface.default.green }} {{ colors.on_surface.default.blue }};
+    --adw-view-bg-rgb: {{ colors.surface.default.red }}, {{ colors.surface.default.green }}, {{ colors.surface.default.blue }};
+    --adw-view-fg-rgb: {{ colors.on_surface.default.red }}, {{ colors.on_surface.default.green }}, {{ colors.on_surface.default.blue }};
 
-    --adw-card-bg-rgb: {{ colors.surface.default.red }} {{ colors.surface.default.green }} {{ colors.surface.default.blue }};
-    --adw-card-fg-rgb: {{ colors.on_surface.default.red }} {{ colors.on_surface.default.green }} {{ colors.on_surface.default.blue }};
+    --adw-card-bg-rgb: {{ colors.surface.default.red }}, {{ colors.surface.default.green }}, {{ colors.surface.default.blue }};
+    --adw-card-fg-rgb: {{ colors.on_surface.default.red }}, {{ colors.on_surface.default.green }}, {{ colors.on_surface.default.blue }};
 
-    --adw-sidebar-bg-rgb: {{ colors.background.default.red }} {{ colors.background.default.green }} {{ colors.background.default.blue }};
-    --adw-sidebar-fg-rgb: {{ colors.on_background.default.red }} {{ colors.on_background.default.green }} {{ colors.on_background.default.blue }};
-    --adw-sidebar-border-rgb: {{ colors.background.default.red }} {{ colors.background.default.green }} {{ colors.background.default.blue }};
-    --adw-sidebar-backdrop-rgb: {{ colors.background.default.red }} {{ colors.background.default.green }} {{ colors.background.default.blue }};
+    --adw-sidebar-bg-rgb: {{ colors.background.default.red }}, {{ colors.background.default.green }}, {{ colors.background.default.blue }};
+    --adw-sidebar-fg-rgb: {{ colors.on_background.default.red }}, {{ colors.on_background.default.green }}, {{ colors.on_background.default.blue }};
+    --adw-sidebar-border-rgb: {{ colors.background.default.red }}, {{ colors.background.default.green }}, {{ colors.background.default.blue }};
+    --adw-sidebar-backdrop-rgb: {{ colors.background.default.red }}, {{ colors.background.default.green }}, {{ colors.background.default.blue }};
 }
 ```
 
+The variables are declared in `:root`, so every `adwaita` stylesheet (imported before `custom/custom.css`) resolves them against the current palette. Upstream defaults cover the variables the template does not override (destructive, warning, success and online/offline colors).
+
 ### 2. Matugen Mapping (`matugen/config.toml`)
 
-The engine config monitors the template, outputs to `~/.config/themes/current/steam.css`, and runs the installation hook:
+The engine config renders the template into the central store and re-injects the theme:
 
 ```toml
 [templates.steam]
 input_path = "~/.config/matugen/templates/steam.css"
 output_path = "~/.config/themes/current/steam.css"
-post_hook = "adwaita-steam-gtk -i >/dev/null 2>&1 || flatpak run io.github.Foldex.AdwSteamGtk -i >/dev/null 2>&1 || true"
+post_hook = 'cd "$HOME/.local/share/Adwaita-for-Steam" && python3 install.py --custom-css -t normal >/dev/null 2>&1 || true'
 ```
+
+Hook behavior:
+
+* `cd` into the clone first, because `install.py` refuses to run outside its repository root.
+* `--custom-css` imports `custom/custom.css` (the symlink to `themes/current/steam.css`) as the last stylesheet, so the palette overrides every upstream default.
+* `-t normal` targets native Steam (`~/.steam/steam`); the `flatpak` target is never used.
+* Output is silenced and the command always succeeds (`|| true`), so a missing Steam installation or a missing clone can never break palette generation.
 
 ---
 
-## Installation & Setup Instructions
+## Automatic Installation (Dotfiles)
 
-### Step 1: Install AdwSteamGtk
-
-AdwSteamGtk manages the Adwaita skin injection for Steam. Install it using Flatpak (recommended) or build from source:
+Running `~/dotfiles/install.sh` invokes the setup script when Steam is detected:
 
 ```bash
-# Recommended Flatpak installation
-flatpak install flathub io.github.Foldex.AdwSteamGtk
+if command -v steam >/dev/null 2>&1 || [ -d "$HOME/.steam/steam" ]; then
+    "$REPO_DIR/scripts/setup-steam-matugen.sh"
+fi
 ```
 
-### Step 2: Enable Custom CSS in AdwSteamGtk
-
-1. Launch AdwSteamGtk.
-2. Open **Preferences**.
-3. Under the **Custom CSS** section, toggle **Custom CSS** to **Enabled**.
-
-Without this setting enabled, AdwSteamGtk ignores `custom.css` during theme generation.
-
-### Step 3: Run Deployment Script
-
-Run the automated integration script to link the stylesheet and apply the active desktop theme:
+The setup script is idempotent and can be re-run at any time:
 
 ```bash
 ~/dotfiles/scripts/setup-steam-matugen.sh
 ```
 
-Alternatively, running `~/dotfiles/install.sh` establishes the symlinks automatically during fresh system bootstrapping.
+It validates dependencies, clones Adwaita-for-Steam once, links the custom stylesheet, renders the palette with the same flags as `apply-matugen.sh`, injects the theme, and prints a verification report.
+
+---
+
+## Manual Installation: Adwaita-for-Steam Theme Integration
+
+Standalone instructions to add the Steam theme integration to an existing matugen installation without cloning the full dotfiles repository. This follows the manual installation format pioneered in [Matugen (VS Code pilot)](matugen.md#manual-installation-vs-code-theme-integration-pilot).
+
+All snippets are compatible with `bash` and `zsh`, use explicit quoted paths, and are safe to paste into an interactive shell.
+
+### Step 1: Validate prerequisites
+
+Run the checks. Every line must report `OK` before continuing:
+
+```bash
+command -v steam >/dev/null 2>&1 && echo "steam         : OK" || echo "steam         : MISSING"
+test -d "$HOME/.steam/steam" && echo "steam dir     : OK" || echo "steam dir     : MISSING"
+command -v python3 >/dev/null 2>&1 && echo "python3       : OK" || echo "python3       : MISSING"
+command -v git >/dev/null 2>&1 && echo "git           : OK" || echo "git           : MISSING"
+command -v matugen >/dev/null 2>&1 && echo "matugen       : OK" || echo "matugen       : MISSING"
+test -d "$HOME/.config/matugen/templates" && echo "templates dir : OK" || echo "templates dir : MISSING"
+test -f "$HOME/.config/matugen/config.toml" && echo "config.toml   : OK" || echo "config.toml   : MISSING"
+```
+
+If a line reports `MISSING`:
+
+* `steam` / `steam dir`: install the native Steam client (`apt install steam` on Debian) or skip this integration.
+* `python3`: install it with your package manager (`apt install python3` on Debian).
+* `git`: install it with your package manager (`apt install git` on Debian).
+* `matugen`: install it from <https://github.com/InioX/matugen>.
+* `templates dir`: create it with `mkdir -p "$HOME/.config/matugen/templates"`.
+* `config.toml`: create an empty one with `touch "$HOME/.config/matugen/config.toml"`.
+
+### Step 2: Back up the files that will be modified
+
+The only existing files altered by this procedure are `config.toml` and, when a previous clone already exists, its `custom/custom.css`. Backups carry the exact date and time of the operation:
+
+```bash
+BACKUP_STAMP="$(date +%Y%m%d-%H%M%S)"
+test -f "$HOME/.config/matugen/config.toml" && cp -p "$HOME/.config/matugen/config.toml" "$HOME/.config/matugen/config.toml.$BACKUP_STAMP.bak"
+test -f "$HOME/.local/share/Adwaita-for-Steam/custom/custom.css" && cp -p "$HOME/.local/share/Adwaita-for-Steam/custom/custom.css" "$HOME/.local/share/Adwaita-for-Steam/custom/custom.css.$BACKUP_STAMP.bak"
+echo "Backups created with stamp: $BACKUP_STAMP"
+```
+
+The template file from a previous attempt is backed up the same way before being replaced:
+
+```bash
+test -f "$HOME/.config/matugen/templates/steam.css" && cp -p "$HOME/.config/matugen/templates/steam.css" "$HOME/.config/matugen/templates/steam.css.$BACKUP_STAMP.bak"
+```
+
+### Step 3: Create the template file
+
+Download it directly from the repository:
+
+```bash
+mkdir -p "$HOME/.config/matugen/templates"
+curl -fsSL -o "$HOME/.config/matugen/templates/steam.css" "https://raw.githubusercontent.com/zer0sh/dotfiles/main/matugen/templates/steam.css"
+```
+
+Alternatively, copy the contents manually from [steam.css](https://github.com/zer0sh/dotfiles/blob/main/matugen/templates/steam.css) into the destination path shown above.
+
+Confirm the file exists and is not empty:
+
+```bash
+test -s "$HOME/.config/matugen/templates/steam.css" && echo "steam.css : OK" || echo "steam.css : MISSING"
+```
+
+### Step 4: Register the template in `config.toml`
+
+The block below is idempotent: it appends the section only when it is not already registered, and the heredoc delimiter is quoted, so no shell expansion happens inside it:
+
+```bash
+if grep -q "^\[templates.steam\]" "$HOME/.config/matugen/config.toml"; then
+    echo "Already registered in config.toml, nothing to do."
+else
+    cat >> "$HOME/.config/matugen/config.toml" <<'EOF'
+
+# Steam (Adwaita-for-Steam install.py injects the rendered palette)
+[templates.steam]
+input_path = "~/.config/matugen/templates/steam.css"
+output_path = "~/.config/themes/current/steam.css"
+post_hook = 'cd "$HOME/.local/share/Adwaita-for-Steam" && python3 install.py --custom-css -t normal >/dev/null 2>&1 || true'
+EOF
+    echo "Registered in config.toml."
+fi
+```
+
+If an older `[templates.steam]` block exists with an `adwaita-steam-gtk` or `flatpak run` hook, edit that `post_hook` line and replace it with the one above.
+
+### Step 5: Clone Adwaita-for-Steam and link the custom stylesheet
+
+```bash
+mkdir -p "$HOME/.local/share"
+test -d "$HOME/.local/share/Adwaita-for-Steam" || git clone --depth 1 https://github.com/Foldex/Adwaita-for-Steam.git "$HOME/.local/share/Adwaita-for-Steam"
+mkdir -p "$HOME/.local/share/Adwaita-for-Steam/custom"
+ln -sf "$HOME/.config/themes/current/steam.css" "$HOME/.local/share/Adwaita-for-Steam/custom/custom.css"
+```
+
+This replaces the example `custom/custom.css` shipped by the repository (preserved by the Step 2 backup if it contained custom content). The installer dereferences the symlink while staging, so the clone always carries the current palette without further intervention.
+
+### Step 6: Generate the colors
+
+```bash
+WALLPAPER="$(cat "$HOME/.config/themes/current/wallpaper" 2>/dev/null || true)"
+MODE="$(cat "$HOME/.config/themes/current/mode" 2>/dev/null || echo dark)"
+if [ -n "$WALLPAPER" ] && [ -f "$WALLPAPER" ]; then
+    matugen image "$WALLPAPER" \
+        --config "$HOME/.config/matugen/config.toml" \
+        -t scheme-vibrant --contrast 0.2 \
+        --mode "$MODE" --source-color-index 0 --quiet
+else
+    echo "No active wallpaper in the theme store yet; run themes/apply-matugen.sh first."
+fi
+test -s "$HOME/.config/themes/current/steam.css" && echo "steam.css : OK" || echo "steam.css : MISSING"
+```
+
+The flags mirror `~/dotfiles/themes/apply-matugen.sh`; `--source-color-index 0` bypasses the interactive color picker.
+
+### Step 7: Inject the theme into Steam
+
+Run the installer from its repository root (the subshell keeps your current directory unchanged):
+
+```bash
+( cd "$HOME/.local/share/Adwaita-for-Steam" && python3 install.py --custom-css -t normal )
+```
+
+Expected output includes `Applying custom css...`, `Patching Steam Client Library Files...` and `Done!`. On the first run the installer renames the pristine `steamui/css/library.css` to `library.original.css` and replaces it with an `@import` wrapper of the same byte size.
+
+### Step 8: Restart Steam and verify
+
+Exit Steam completely (including the tray icon) and launch it again, then run:
+
+```bash
+grep -q "^/\*patched\*/" "$HOME/.local/share/Steam/steamui/css/library.css" && echo "library patch : OK" || echo "library patch : MISSING"
+grep -q "custom/custom.css" "$HOME/.local/share/Steam/steamui/libraryroot.custom.css" && echo "custom import : OK" || echo "custom import : MISSING"
+grep -q "adw-accent-rgb" "$HOME/.local/share/Steam/steamui/adwaita/custom/custom.css" && echo "palette copy  : OK" || echo "palette copy  : MISSING"
+```
+
+All three lines must report `OK`, and the Steam Library must display the wallpaper-derived palette after the restart.
+
+### Troubleshooting
+
+* **Theme not visible:** Steam loads its stylesheets at startup. Exit the client completely (tray included) and launch it again.
+* **Steam updated and the theme disappeared:** Steam restores `library.css` during client updates. Re-run Step 7 (or the setup script); every wallpaper change also re-applies the theme automatically through the `post_hook`.
+* **`install.py` reports that the theme directory does not exist:** the command was not run from the clone root. Use the subshell form of Step 7.
+* **Colors missing or invalid:** verify the symlink (`readlink -f "$HOME/.local/share/Adwaita-for-Steam/custom/custom.css"`) and that `themes/current/steam.css` contains comma-separated triplets such as `--adw-accent-rgb: 158, 217, 0;`.
+* **Revert to the Steam default appearance:**
+
+  ```bash
+  ( cd "$HOME/.local/share/Adwaita-for-Steam" && python3 install.py --uninstall -t normal )
+  ```
+
+  This empties `libraryroot.custom.css` and removes the `steamui/adwaita/` copy; `library.css` stays as the harmless `@import` wrapper pointing at `library.original.css`.
 
 ---
 
 ## Real-time Wallpaper Synchronization
 
-When wallpaper transitions occur via Quickshell launcher or control center, `matugen image` renders all templates. The configured `post_hook` immediately triggers `adwaita-steam-gtk -i`, refreshing Steam's active stylesheets without manual intervention.
+When wallpaper transitions occur via Quickshell launcher or control center, `matugen image` renders all templates. The configured `post_hook` silently runs `install.py --custom-css -t normal`, so the Steam clone and the `steamui` folder always receive the fresh palette without manual intervention. The Steam client itself must be restarted to display the refreshed colors; there is no supported hot reload outside of Steam's `-dev` mode.
+
+---
+
+## Optional: AdwSteamGtk Graphical Wrapper
+
+[AdwSteamGtk](https://github.com/Foldex/AdwSteamGtk) is a GTK front-end for the same theme. It is **not required** by this pipeline and is only distributed as a Flatpak:
+
+```bash
+flatpak install flathub io.github.Foldex.AdwSteamGtk
+```
+
+If it is installed, `install.sh` additionally links the central store output to its custom stylesheet locations (`~/.config/AdwSteamGtk/custom.css` and the Flatpak equivalent), and **Preferences -> Custom CSS** must be enabled inside the application for those links to be honored. The native `install.py` route described above keeps working independently of this wrapper.
+
+---
+
+## Optional: Millennium Modding Framework
+
+[Millennium](https://steambrew.app) (SteamClientHomebrew, MIT) is an open-source modding framework that loads custom themes and plugins into the Steam UI. It is listed as an optional requirement of this setup: the matugen/Adwaita-for-Steam pipeline **works without it**, because both operate on different layers:
+
+* Adwaita-for-Steam patches `steamui/css/library.css` and serves stylesheets through `https://steamloopback.host`.
+* Millennium LD-preloads its shared objects into `steamwebhelper` to inject the JavaScript and plugin layer.
+
+The two have been validated together on this setup without conflicts.
+
+### Installation (Debian and other distributions)
+
+The official installer downloads the latest stable release from GitHub and verifies its sha256 checksum. It requires `sudo` for `/usr/lib/millennium` (and refuses to run as root) plus one i386 prerequisite on Debian:
+
+```bash
+sudo dpkg --add-architecture i386 && sudo apt-get update && sudo apt-get install -y libssl-dev:i386
+curl -fsSL "https://steambrew.app/install.sh" | bash
+```
+
+Confirm the prompt, then restart Steam completely so the new shared objects are loaded. Arch Linux users can install the `millennium` AUR package instead; Flatpak and Snap Steam are not supported by Millennium.
+
+### Paths touched by Millennium
+
+| Path | Owner | Content |
+| :--- | :--- | :--- |
+| `/usr/lib/millennium/*.so` | root | Bootstrap and preload shared objects (system layer) |
+| `~/.steam/steam/ubuntu12_32/libXtst.so.6`, `~/.steam/steam/ubuntu12_64/libXtst.so.6` | user | Preload symlinks created by the installer |
+| `~/.local/share/millennium/` | user | `themes/`, `plugins/` and the plugin `~/.venv` |
+| `~/.steam/steam/package/beta` | user | Removed by the installer (forces the stable Steam channel) |
+
+### Updating and uninstalling
+
+Re-run the installer command above to update to the latest stable release, and restart Steam afterwards. Removal instructions live in the official [Uninstalling](https://docs.steambrew.app/users/parting-ways/uninstall) guide.
 
 ---
 

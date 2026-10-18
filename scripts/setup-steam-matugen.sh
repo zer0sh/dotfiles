@@ -1,75 +1,79 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Script to configure Steam dynamic Material You theming via Matugen and AdwSteamGtk
+# Configure Steam dynamic Material You theming via Matugen and the native
+# Adwaita-for-Steam installer (python3 only, no Flatpak and no GUI wrapper).
+
 REPO_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}"
 THEMES_CURRENT="$CONFIG_DIR/themes/current"
-ADW_STEAM_DIR="$CONFIG_DIR/AdwSteamGtk"
-FLATPAK_ADW_DIR="$HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/AdwSteamGtk"
 WALLPAPER_FILE="$THEMES_CURRENT/wallpaper"
+MODE_FILE="$THEMES_CURRENT/mode"
+ADW_REPO="$HOME/.local/share/Adwaita-for-Steam"
+ADW_URL="https://github.com/Foldex/Adwaita-for-Steam.git"
+ADW_CUSTOM="$ADW_REPO/custom/custom.css"
+STEAM_UI="$HOME/.local/share/Steam/steamui"
 
-echo "[INFO] Configuring Steam integration with Matugen..."
+echo "[INFO] Configuring Steam integration with Matugen (native install.py route)..."
 
 # 1. Dependency checks
-if ! command -v steam >/dev/null 2>&1; then
-    echo "[WARN] steam is not installed. Ensure Steam is installed."
+if ! command -v steam >/dev/null 2>&1 && [ ! -d "$HOME/.steam/steam" ]; then
+    echo "[WARN] Steam was not detected. The theme will be injected once Steam is installed."
+fi
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "[ERROR] python3 is required to run the Adwaita-for-Steam installer." >&2
+    exit 1
+fi
+if ! command -v git >/dev/null 2>&1; then
+    echo "[ERROR] git is required to clone the Adwaita-for-Steam installer." >&2
+    exit 1
 fi
 
-HAS_ADW=0
-if command -v adwaita-steam-gtk >/dev/null 2>&1; then
-    HAS_ADW=1
-elif command -v flatpak >/dev/null 2>&1 && flatpak list --app 2>/dev/null | grep -q "io.github.Foldex.AdwSteamGtk"; then
-    HAS_ADW=2
+# 2. Clone the installer once (idempotent)
+if [ ! -f "$ADW_REPO/install.py" ]; then
+    echo "[INFO] Cloning Adwaita-for-Steam into $ADW_REPO..."
+    git clone --depth 1 "$ADW_URL" "$ADW_REPO"
 fi
 
-if [ "$HAS_ADW" -eq 0 ]; then
-    echo "[WARN] AdwSteamGtk is not installed."
-    echo "       Install via Flatpak: flatpak install flathub io.github.Foldex.AdwSteamGtk"
-    echo "       Or from GitHub: https://github.com/Foldex/AdwSteamGtk"
-fi
-
-# 2. Ensure destination directories exist
-mkdir -p "$THEMES_CURRENT"
-mkdir -p "$ADW_STEAM_DIR"
-if [ -d "$HOME/.var/app/io.github.Foldex.AdwSteamGtk" ]; then
-    mkdir -p "$FLATPAK_ADW_DIR"
-fi
-
-# 3. Setup symlinks for AdwSteamGtk custom.css
+# 3. Link the generated palette as the installer custom stylesheet.
+#    install.py dereferences the symlink while staging, so Steam always
+#    receives the current palette on every run.
 echo "[INFO] Linking Matugen Steam theme..."
-ln -sf "$THEMES_CURRENT/steam.css" "$ADW_STEAM_DIR/custom.css"
-if [ -d "$HOME/.var/app/io.github.Foldex.AdwSteamGtk" ]; then
-    ln -sf "$THEMES_CURRENT/steam.css" "$FLATPAK_ADW_DIR/custom.css"
-fi
+mkdir -p "$THEMES_CURRENT" "$ADW_REPO/custom"
+ln -sf "$THEMES_CURRENT/steam.css" "$ADW_CUSTOM"
 
-# 4. Generate current theme if wallpaper is known
+# 4. Generate the palette from the active wallpaper (same flags as apply-matugen.sh)
 if command -v matugen >/dev/null 2>&1 && [ -f "$WALLPAPER_FILE" ]; then
-    WALLPAPER="$(cat "$WALLPAPER_FILE")"
+    WALLPAPER="$(<"$WALLPAPER_FILE")"
+    MODE="dark"
+    if [ -f "$MODE_FILE" ]; then
+        MODE="$(<"$MODE_FILE")"
+    fi
     if [ -f "$WALLPAPER" ]; then
         echo "[INFO] Generating Steam theme from active wallpaper: $WALLPAPER"
         matugen image "$WALLPAPER" \
             --config "$CONFIG_DIR/matugen/config.toml" \
-            --mode dark --source-color-index 0 --quiet || true
+            -t scheme-vibrant --contrast 0.2 \
+            --mode "$MODE" --source-color-index 0 --quiet || true
     fi
 fi
 
-# 5. Apply theme via AdwSteamGtk if installed
-if [ "$HAS_ADW" -eq 1 ]; then
-    echo "[INFO] Applying Adwaita-for-Steam theme..."
-    adwaita-steam-gtk -i || true
-elif [ "$HAS_ADW" -eq 2 ]; then
-    echo "[INFO] Applying Adwaita-for-Steam theme via Flatpak..."
-    flatpak run io.github.Foldex.AdwSteamGtk -i || true
-fi
-
-# 6. Verification
+# 5. Inject the theme into the Steam client (idempotent)
 if [ -f "$THEMES_CURRENT/steam.css" ]; then
-    echo "[SUCCESS] Steam theme generated at: $THEMES_CURRENT/steam.css"
-    echo "[SUCCESS] Symlink active at: $ADW_STEAM_DIR/custom.css"
+    echo "[INFO] Applying Adwaita-for-Steam theme into Steam..."
+    ( cd "$ADW_REPO" && python3 install.py --custom-css -t normal ) || \
+        echo "[WARN] install.py reported an error. It can be re-run safely."
 else
     echo "[WARN] $THEMES_CURRENT/steam.css has not been generated yet. Run matugen to populate it."
 fi
 
-echo "[INFO] Important: In AdwSteamGtk, ensure Preferences -> 'Custom CSS' is enabled."
+# 6. Verification
+if grep -q "custom/custom.css" "$STEAM_UI/libraryroot.custom.css" 2>/dev/null; then
+    echo "[SUCCESS] Steam theme injected: steamui/libraryroot.custom.css imports custom/custom.css"
+else
+    echo "[WARN] Steam injection not detected yet (the Steam client creates its CSS entry points on first run)."
+fi
+echo "[SUCCESS] Palette store: $THEMES_CURRENT/steam.css"
+echo "[SUCCESS] Installer link: $ADW_CUSTOM"
+echo "[INFO] Restart Steam completely to load the refreshed theme."
 echo "[INFO] Steam Matugen integration is ready."

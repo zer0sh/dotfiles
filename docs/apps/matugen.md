@@ -29,7 +29,7 @@ Wallpaper Image (.png / .jpg)
    ├── gtk-3.0.css     --> linked by ~/.config/gtk-3.0/gtk.css
    ├── gtk-4.0.css     --> linked by ~/.config/gtk-4.0/gtk.css
    ├── spicetify.ini   --> linked by ~/.config/spicetify/Themes/matugen/color.ini
-   ├── steam.css       --> linked by ~/.config/AdwSteamGtk/custom.css
+   ├── steam.css       --> linked by ~/.local/share/Adwaita-for-Steam/custom/custom.css
    ├── palette.json    --> consumed by Quickshell Control Center & Widgets
    ├── matugen.vim     --> loaded by Vim via :colorscheme matugen
    └── vscode-colors / vscode-colors.json --> watched by the VS Code "Matugen Theme" extension (rendered to ~/.cache/matugen/)
@@ -114,7 +114,7 @@ output_path = "~/.config/themes/current/spicetify.ini"
 [templates.steam]
 input_path = "~/.config/matugen/templates/steam.css"
 output_path = "~/.config/themes/current/steam.css"
-post_hook = "adwaita-steam-gtk -i >/dev/null 2>&1 || flatpak run io.github.Foldex.AdwSteamGtk -i >/dev/null 2>&1 || true"
+post_hook = 'cd "$HOME/.local/share/Adwaita-for-Steam" && python3 install.py --custom-css -t normal >/dev/null 2>&1 || true'
 
 # VS Code (haikalllp.matugen-theme extension watches these paths)
 [templates.vscode-raw]
@@ -160,7 +160,7 @@ and the [documentation site](https://iniox.github.io/).
 | **GNOME Classic (GTK 3)** | `themes/current/gtk-3.0.css` | Window, headerbar, inputs, buttons, selection, accent | Next app launch |
 | **GNOME Modern (GTK 4 / Libadwaita)** | `themes/current/gtk-4.0.css` | Libadwaita named colors: accent, window_bg, headerbar, cards | Next app launch |
 | **Spicetify (Spotify)** | `themes/current/spicetify.ini` | Main, player, sidebar, cards, text, accents, buttons | `spicetify apply -n` / automated in `apply-matugen.sh` |
-| **[Steam](steam.md)** | `themes/current/steam.css` | Adwaita CSS variables: accent, window_bg, headerbar, sidebar | `post_hook` with `adwaita-steam-gtk -i` |
+| **[Steam](steam.md)** | `themes/current/steam.css` | Adwaita CSS variables: accent, window_bg, headerbar, sidebar | `post_hook` running `install.py --custom-css -t normal`; restart the Steam client to display it |
 | **[Vim](../terminals/vim.md)** | `themes/current/matugen.vim` | Editor highlights, syntax groups, NERDTree colors, airline statusline palette | `:colorscheme matugen` or new instance |
 | **VS Code** (`haikalllp.matugen-theme`) | `~/.cache/matugen/vscode-colors` and `.json` | Full Material You palette (background, foreground, cursor, 16 accent colors) | Automatic via extension file watcher / `Matugen Theme: Update Theme` |
 | **[Zen Browser](zen.md)** (`<profile>/chrome/`) | `zen-userChrome.css` and `zen-userContent.css` | Chrome UI: sidebar, tabs, toolbar, urlbar, panels; `about:` pages: links, buttons, inputs, cards | Full browser restart (profile stylesheets load at startup only) |
@@ -244,7 +244,9 @@ No reload step is needed for Alacritty (automatic live reload), for VS Code
 (the extension watches `~/.cache/matugen/`), or for the root symlinks created
 by `sync-root-theme.sh` (they point at `themes/current/`). Zen Browser cannot
 be reloaded programmatically either: the rendered `zen-userChrome.css` and
-`zen-userContent.css` are picked up on the next full browser restart.
+`zen-userContent.css` are picked up on the next full browser restart. Steam is
+re-injected automatically by its `post_hook` on every render, but the client
+must be restarted to display the refreshed palette.
 
 ---
 

@@ -61,7 +61,7 @@ output_path = "~/.config/themes/current/spicetify.ini"
 [templates.steam]
 input_path = "~/.config/matugen/templates/steam.css"
 output_path = "~/.config/themes/current/steam.css"
-post_hook = "adwaita-steam-gtk -i >/dev/null 2>&1 || flatpak run io.github.Foldex.AdwSteamGtk -i >/dev/null 2>&1 || true"
+post_hook = 'cd "$HOME/.local/share/Adwaita-for-Steam" && python3 install.py --custom-css -t normal >/dev/null 2>&1 || true'
 
 # VS Code (haikalllp.matugen-theme extension watches these paths)
 [templates.vscode-raw]
