@@ -71,8 +71,10 @@
 }
 
 /* --- 2. Layout Width & Ambient Wallpaper Background --- */
+/* Fluid grid: full-bleed below the desktop breakpoint; the desktop gutter
+   rule lives in section 16 (viewport minus 8rem per side, capped at 20%). */
 .md-grid {
-  max-width: 1340px !important;
+  max-width: none !important;
 }
 
 html {
@@ -133,7 +135,8 @@ body[data-md-color-scheme="default"] {
   justify-content: space-between !important;
   padding: 0.2rem 1rem !important;
   height: 2.75rem !important;
-  max-width: 1340px !important;
+  /* Mirrors .md-grid: gutter rule in section 16 keeps header aligned */
+  max-width: none !important;
 }
 
 /* Left Cluster: Logo & Brand Title (Order 1) */
@@ -1299,5 +1302,20 @@ body[data-md-color-scheme="default"] {
     width: 2.6rem !important;
     height: 2.6rem !important;
     border-radius: 14px !important;
+  }
+}
+
+/* --- 16. Fluid Desktop Width (rem-based gutters, max 20%) --- */
+/* Content spans the viewport minus 8rem per side (16rem total in rem units).
+   The min() clamp guarantees the side gutters never consume more than 20% of
+   the available width: below 1280px the gutter shrinks proportionally until it
+   hits exactly 20%. The header mirrors .md-grid so the brand, search pill and
+   repository badge stay aligned with the content grid. Below 76.234375em the
+   sidebars become drawers and everything stays full-bleed (max-width: none
+   from sections 2 and 3). */
+@media screen and (min-width: 76.234375em) {
+  .md-grid,
+  .md-header__inner {
+    max-width: calc(100% - min(16rem, 20%)) !important;
   }
 }
