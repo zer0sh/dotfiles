@@ -158,8 +158,8 @@ QtObject {
     readonly property color toggleOff: _t.toggleOff
 
     // Unified Glassmorphism Transparencias basadas en el color de fondo de matugen (_t.panelBg)
-    readonly property real panelOpacity: isLightMode ? 0.65 : 0.70
-    readonly property real cardOpacity: isLightMode ? 0.50 : 0.60
+    readonly property real panelOpacity: isLightMode ? 0.35 : 0.70
+    readonly property real cardOpacity: isLightMode ? 0.30 : 0.60
     readonly property color glassPanel: Qt.rgba(panelBg.r, panelBg.g, panelBg.b, panelOpacity)
     readonly property color glassCard: Qt.rgba(surfaceContainerHigh.r, surfaceContainerHigh.g, surfaceContainerHigh.b, cardOpacity)
     readonly property color glassBorder: isLightMode ? Qt.rgba(panelBorder.r, panelBorder.g, panelBorder.b, 0.40) : Qt.rgba(255, 255, 255, 0.16)
