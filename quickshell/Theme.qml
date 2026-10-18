@@ -114,30 +114,30 @@ QtObject {
 
     // ── Themed color properties ────────────────────────────────────
     // Surface colors
-    readonly property color panelBg: _t.panelBg
-    readonly property color panelBorder: _t.panelBorder
-    readonly property color surface: _t.surface
-    readonly property color surfaceContainer: _t.surfaceContainer
-    readonly property color surfaceContainerHigh: _t.surfaceContainerHigh
-    readonly property color surfaceBright: _t.surfaceBright
+    readonly property color panelBg: isLightMode ? "#F8F9FA" : _t.panelBg
+    readonly property color panelBorder: isLightMode ? Qt.rgba(0, 0, 0, 0.12) : _t.panelBorder
+    readonly property color surface: isLightMode ? "#FFFFFF" : _t.surface
+    readonly property color surfaceContainer: isLightMode ? "#F1F3F5" : _t.surfaceContainer
+    readonly property color surfaceContainerHigh: isLightMode ? "#E9ECEF" : _t.surfaceContainerHigh
+    readonly property color surfaceBright: isLightMode ? "#FFFFFF" : _t.surfaceBright
 
     // Primary colors
     readonly property color primary: _t.primary
     readonly property color primaryContainer: _t.primaryContainer
-    readonly property color textOnPrimaryContainer: _t.onPrimaryContainer
+    readonly property color textOnPrimaryContainer: isLightMode ? "#1A1D16" : _t.onPrimaryContainer
 
     // Secondary colors
     readonly property color secondaryContainer: _t.secondaryContainer
-    readonly property color textOnSecondaryContainer: _t.textOnSecondaryContainer
+    readonly property color textOnSecondaryContainer: isLightMode ? "#1A1D16" : _t.textOnSecondaryContainer
 
     // Tile states
     readonly property color tileActive: _t.tileActive
     readonly property color tileActiveText: _t.tileActiveText
-    readonly property color tileInactive: _t.tileInactive
-    readonly property color tileInactiveText: _t.tileInactiveText
+    readonly property color tileInactive: isLightMode ? "#E9ECEF" : _t.tileInactive
+    readonly property color tileInactiveText: isLightMode ? "#1A1D16" : _t.tileInactiveText
 
     // Slider colors
-    readonly property color sliderTrack: _t.sliderTrack
+    readonly property color sliderTrack: isLightMode ? "#DEE2E6" : _t.sliderTrack
     readonly property color sliderActiveTrack: _t.sliderActiveTrack
     readonly property color sliderThumb: _t.sliderThumb
 
@@ -148,9 +148,9 @@ QtObject {
         return (c.r * 0.299 + c.g * 0.587 + c.b * 0.114) > 0.5;
     }
 
-    // Text colors
-    readonly property color textPrimary: isLightMode ? (_t.textPrimary || "#1A1D16") : (currentTheme === "matugen" ? "#E5E1E9" : (_t.textPrimary || "#E5E1E9"))
-    readonly property color textSecondary: isLightMode ? (_t.textSecondary || "#44483E") : (currentTheme === "matugen" ? "#C9C5D0" : (_t.textSecondary || "#C9C5D0"))
+    // Text colors (exclusivamente oscuros y nítidos en modo claro)
+    readonly property color textPrimary: isLightMode ? "#1A1D16" : (currentTheme === "matugen" ? "#E5E1E9" : (_t.textPrimary || "#E5E1E9"))
+    readonly property color textSecondary: isLightMode ? "#44483E" : (currentTheme === "matugen" ? "#C9C5D0" : (_t.textSecondary || "#C9C5D0"))
 
     // Semantic colors
     readonly property color connected: _t.connected
