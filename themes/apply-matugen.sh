@@ -38,6 +38,17 @@ pkill -SIGUSR2 waybar 2>/dev/null || true
 # Keep the generated outputs in sync with the palette consumed by Quickshell.
 printf '%s\n' "matugen" > "$HOME/.config/quickshell/current-theme"
 
+# Sync GTK color-scheme and force reload of gtk.css
+CURRENT_GTK_THEME="$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null | tr -d "'" || echo "Adwaita-dark")"
+if [[ "$MODE" == "light" ]]; then
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-light' 2>/dev/null || true
+else
+    gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
+fi
+# Toggle theme name briefly to trigger GTK stylesheet re-read in running apps
+gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3' 2>/dev/null || true
+gsettings set org.gnome.desktop.interface gtk-theme "$CURRENT_GTK_THEME" 2>/dev/null || true
+
 # Refresh Spicetify theme colors if active theme is matugen
 if [[ -f "$HOME/.config/spicetify/config-xpui.ini" ]] && grep -q "current_theme *= *matugen" "$HOME/.config/spicetify/config-xpui.ini" 2>/dev/null; then
     spicetify apply -n 2>/dev/null || true
