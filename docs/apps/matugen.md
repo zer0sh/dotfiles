@@ -297,7 +297,8 @@ All snippets are compatible with `bash` and `zsh`, use explicit paths only
 
 ### Step 1: Validate prerequisites
 
-Run the checks and confirm every line reports `OK` before continuing:
+Run the checks. Every line must report `OK` before continuing, except
+`extension`: a missing extension here is expected, because Step 6 installs it:
 
 ```bash
 command -v matugen >/dev/null 2>&1 && echo "matugen       : OK" || echo "matugen       : MISSING"
@@ -305,14 +306,18 @@ command -v code >/dev/null 2>&1 && echo "vscode cli    : OK" || echo "vscode cli
 command -v curl >/dev/null 2>&1 && echo "curl          : OK" || echo "curl          : MISSING"
 test -d "$HOME/.config/matugen/templates" && echo "templates dir : OK" || echo "templates dir : MISSING"
 test -f "$HOME/.config/matugen/config.toml" && echo "config.toml   : OK" || echo "config.toml   : MISSING"
+code --list-extensions 2>/dev/null | grep -Fx "haikalllp.matugen-theme" >/dev/null && echo "extension     : OK" || echo "extension     : MISSING"
 ```
 
 If a line reports `MISSING`:
 
 * `matugen`: install it from <https://github.com/InioX/matugen>.
 * `vscode cli`: install VS Code and make sure the `code` command is in `PATH`.
+* `curl`: install it with your package manager (`apt install curl` on Debian).
 * `templates dir`: create it with `mkdir -p "$HOME/.config/matugen/templates"`.
 * `config.toml`: create an empty one with `touch "$HOME/.config/matugen/config.toml"`.
+* `extension`: the `haikalllp.matugen-theme` theme extension is not installed
+  yet; Step 6 installs it, so no action is needed here.
 
 ### Step 2: Back up the files that will be modified
 
