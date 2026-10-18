@@ -6,7 +6,6 @@
   "tooltip": false,
   "modules-left": [
     "custom/launcher",
-    "custom/wallpaper",
     "hyprland/workspaces"
   ],
   "modules-center": [
