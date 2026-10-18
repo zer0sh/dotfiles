@@ -2,10 +2,9 @@
 
 [config]
 mode = "dark"
-type = "scheme-tonal-spot"
+type = "scheme-expressive"
 source_color_index = 0
-scheme_tonal_spot_cutoff = 0.15
-scheme_contrast = 1.0
+contrast = 0.5
 
 [templates.waybar]
 input_path = "~/.config/matugen/templates/waybar.css"
@@ -62,4 +61,4 @@ output_path = "~/.config/themes/current/spicetify.ini"
 [templates.steam]
 input_path = "~/.config/matugen/templates/steam.css"
 output_path = "~/.config/themes/current/steam.css"
-post_hook = "adwaita-steam-gtk -i >/dev/null 2>&1 || flatpak run io.github.Foldex.AdwSteamGtk -i >/dev/null 2>&1 || true"
+post_hook = "(cd ~/.local/share/Adwaita-for-Steam 2>/dev/null && python3 install.py --custom-css ~/.config/themes/current/steam.css --color-scheme dark >/dev/null 2>&1) || adwaita-steam-gtk -i >/dev/null 2>&1 || flatpak run io.github.Foldex.AdwSteamGtk -i >/dev/null 2>&1 || true"
