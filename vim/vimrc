@@ -47,11 +47,13 @@ call plug#begin("~/.vim/plugged")
     Plug 'vim-airline/vim-airline-themes'
 call plug#end()
 
-colorscheme synthwave84
+" Tema dinamico generado por Matugen (source: ~/.config/themes/current/matugen.vim)
+" El loader en ~/.vim/colors/matugen.vim cae a synthwave84 si la paleta aun no existe
+colorscheme matugen
 
 " Airline
 let g:airline#extensions#branch#enabled = 1
-let g:airline_theme='synthwave84'
+let g:airline_theme='matugen'
 
 " NerdTree
 nnoremap <C-n> :NERDTreeToggle<CR>

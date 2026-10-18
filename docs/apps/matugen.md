@@ -98,6 +98,10 @@ output_path = "~/.config/themes/current/gtk-3.0.css"
 input_path = "~/.config/matugen/templates/gtk-4.0.css"
 output_path = "~/.config/themes/current/gtk-4.0.css"
 
+[templates.vim]
+input_path = "~/.config/matugen/templates/matugen.vim"
+output_path = "~/.config/themes/current/matugen.vim"
+
 [templates.spicetify]
 input_path = "~/.config/matugen/templates/spicetify.ini"
 output_path = "~/.config/themes/current/spicetify.ini"
@@ -135,6 +139,7 @@ output_path = "~/.cache/matugen/vscode-colors.json"
 | **GNOME Modern (GTK 4 / Libadwaita)** | `themes/current/gtk-4.0.css` | Libadwaita named colors: accent, window_bg, headerbar, cards | Next app launch |
 | **Spicetify (Spotify)** | `themes/current/spicetify.ini` | Main, player, sidebar, cards, text, accents, buttons | `spicetify apply -n` / automated in `apply-matugen.sh` |
 | **[Steam](steam.md)** | `themes/current/steam.css` | Adwaita CSS variables: accent, window_bg, headerbar, sidebar | `post_hook` with `adwaita-steam-gtk -i` |
+| **[Vim](../terminals/vim.md)** | `themes/current/matugen.vim` | Editor highlights, syntax groups, NERDTree colors, airline statusline palette | `:colorscheme matugen` or new instance |
 | **VS Code** (`haikalllp.matugen-theme`) | `~/.cache/matugen/vscode-colors` and `.json` | Full Material You palette (background, foreground, cursor, 16 accent colors) | Automatic via extension file watcher / `Matugen Theme: Update Theme` |
 
 
