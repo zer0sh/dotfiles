@@ -33,6 +33,7 @@ ShellRoot {
     Component.onCompleted: {
         themeReadProc.running = true
         var _ = Notifications.NotificationService.count
+        var _gm = GadgetsManager.availableGadgets
     }
 
     FontLoader {

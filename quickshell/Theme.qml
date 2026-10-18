@@ -166,6 +166,8 @@ QtObject {
     readonly property color surfaceHigh: surfaceBright
     readonly property color hoverOverlay: Qt.rgba(1, 1, 1, 0.08)
     readonly property color textDisabled: Qt.rgba(textSecondary.r, textSecondary.g, textSecondary.b, 0.35)
+    readonly property color outline: panelBorder
+    readonly property color outlineVariant: toggleOff
 
     // ── Font properties ────────────────────────────────────────────
     readonly property string fontFamily: "Google Sans"

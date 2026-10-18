@@ -4,6 +4,7 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import "../.." as Root
+import "../gadgets" as Gadgets
 
 // DeskClock — reloj flotante en el "escritorio" con mensaje dinámico
 // por franja horaria y un medidor de progreso del día.
@@ -15,14 +16,29 @@ Scope {
     property string currentTime: ""
     property real dayProgress: 0      // 0.0 = 00:00, ~1.0 = 23:59
     property string progressText: "0%"
-    property bool panelVisible: true
+    property bool panelVisible: Root.GadgetsManager.isEnabled("deskclock")
+    property int posX: Root.GadgetsManager.getPosition("deskclock", 1420, 100).x
+    property int posY: Root.GadgetsManager.getPosition("deskclock", 1420, 100).y
+
+    Connections {
+        target: Root.GadgetsManager
+        function onStateChanged() {
+            deskClock.panelVisible = Root.GadgetsManager.isEnabled("deskclock");
+            var pos = Root.GadgetsManager.getPosition("deskclock", 1420, 100);
+            deskClock.posX = pos.x;
+            deskClock.posY = pos.y;
+        }
+    }
 
     // ── Toggle por IPC: `qs ipc call deskclock toggle` ────────────
     IpcHandler {
         target: "deskclock"
-        function toggle(): void { deskClock.panelVisible = !deskClock.panelVisible }
-        function show(): void { deskClock.panelVisible = true }
-        function hide(): void { deskClock.panelVisible = false }
+        function toggle(): void { Root.GadgetsManager.toggle("deskclock") }
+        function show(): void { Root.GadgetsManager.setEnabled("deskclock", true) }
+        function hide(): void { Root.GadgetsManager.setEnabled("deskclock", false) }
+        function move(x: int, y: int): void {
+            Root.GadgetsManager.setPosition("deskclock", x, y);
+        }
     }
 
     // ── Motor de mensajes (separado del renderizado) ────────────────
@@ -134,19 +150,31 @@ Scope {
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
         anchors.top:    true
-        anchors.right:  true
-        margins.top:    100
-        margins.right:  100
+        anchors.left:   true
+        margins.top:    deskClock.posY
+        margins.left:   deskClock.posX
         implicitWidth:  400
         implicitHeight: 400
 
         // Panel con estilo neon — ocupa todo el PanelWindow (ya desplazado 100px)
         Rectangle {
+            id: mainCard
             anchors.fill: parent
             radius: 18
             color: Qt.rgba(0.05, 0.05, 0.08, 0.55)
             border.color: Root.Theme.primary
             border.width: 2
+
+            HoverHandler {
+                id: clockHover
+            }
+
+            Gadgets.GadgetHeader {
+                windowRef: win
+                gadgetId: "deskclock"
+                managerRef: Root.GadgetsManager
+                parentHovered: clockHover.hovered
+            }
 
             // Resplandor del borde (capa exterior difuminada)
             Rectangle {
@@ -173,6 +201,7 @@ Scope {
             ColumnLayout {
                 anchors.fill: parent
                 anchors.margins: 20
+                anchors.topMargin: 40
                 spacing: 14
 
                 Item { Layout.fillHeight: true }

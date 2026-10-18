@@ -5,9 +5,10 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import "../.." as Root
+import "../gadgets" as Gadgets
 
 // Calendar — calendario simple en el "escritorio".
-// Va en una capa Background (detrás de las ventanas) y no captura input.
+// Va en una capa Bottom (detrás de las ventanas) y no captura input.
 Scope {
     id: calendar
 
@@ -21,14 +22,29 @@ Scope {
                               "July","August","September","October","November","December"]
     property int daysInMonth: 30
     property int leadingBlanks: 0   // celdas vacías antes del día 1 (semana empieza en domingo)
-    property bool panelVisible: true
+    property bool panelVisible: Root.GadgetsManager.isEnabled("calendar")
+    property int posX: Root.GadgetsManager.getPosition("calendar", 100, 700).x
+    property int posY: Root.GadgetsManager.getPosition("calendar", 100, 700).y
+
+    Connections {
+        target: Root.GadgetsManager
+        function onStateChanged() {
+            calendar.panelVisible = Root.GadgetsManager.isEnabled("calendar");
+            var pos = Root.GadgetsManager.getPosition("calendar", 100, 700);
+            calendar.posX = pos.x;
+            calendar.posY = pos.y;
+        }
+    }
 
     // ── Toggle por IPC: `qs ipc call calendar toggle` ─────────────
     IpcHandler {
         target: "calendar"
-        function toggle(): void { calendar.panelVisible = !calendar.panelVisible }
-        function show(): void { calendar.panelVisible = true }
-        function hide(): void { calendar.panelVisible = false }
+        function toggle(): void { Root.GadgetsManager.toggle("calendar") }
+        function show(): void { Root.GadgetsManager.setEnabled("calendar", true) }
+        function hide(): void { Root.GadgetsManager.setEnabled("calendar", false) }
+        function move(x: int, y: int): void {
+            Root.GadgetsManager.setPosition("calendar", x, y);
+        }
     }
 
     function setNow() {
@@ -63,6 +79,7 @@ Scope {
 
     // ── Escritorio: detrás de las ventanas, sin capturar input ────
     PanelWindow {
+        id: win
         visible: calendar.panelVisible
         color: "transparent"
         exclusionMode: ExclusionMode.Ignore
@@ -70,20 +87,32 @@ Scope {
         WlrLayershell.namespace: "quickshell:calendar"
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-        anchors.bottom: true
+        anchors.top:    true
         anchors.left:   true
-        margins.bottom: 100
-        margins.left:   100
+        margins.top:    calendar.posY
+        margins.left:   calendar.posX
         implicitWidth:  400
         implicitHeight: 400
 
         // Panel con estilo neon
         Rectangle {
+            id: mainCard
             anchors.fill: parent
             radius: 18
             color: Qt.rgba(0.05, 0.05, 0.08, 0.55)
             border.color: Root.Theme.primary
             border.width: 2
+
+            HoverHandler {
+                id: calHover
+            }
+
+            Gadgets.GadgetHeader {
+                windowRef: win
+                gadgetId: "calendar"
+                managerRef: Root.GadgetsManager
+                parentHovered: calHover.hovered
+            }
 
             Rectangle {
                 anchors.fill: parent
@@ -99,6 +128,7 @@ Scope {
             ColumnLayout {
                 anchors.fill: parent
                 anchors.margins: 18
+                anchors.topMargin: 40
                 spacing: 12
 
                 // Encabezado:  ‹ August ›  (funcional)

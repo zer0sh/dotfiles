@@ -202,6 +202,13 @@ Scope {
                     launcher.applyTheme(selectedTheme.id);
                 }
             }
+        } else if (launcher.currentMode === "gadgets") {
+            if (launcher.selectedIndex >= 0 && launcher.selectedIndex < launcher.filteredGadgets.length) {
+                var selectedGadget = launcher.filteredGadgets[launcher.selectedIndex];
+                if (selectedGadget && selectedGadget.id) {
+                    Root.GadgetsManager.toggle(selectedGadget.id);
+                }
+            }
         } else if (launcher.currentMode === "actions") {
             if (launcher.selectedIndex >= 0 && launcher.selectedIndex < launcher.filteredActions.length) {
                 launcher.executeAction(launcher.filteredActions[launcher.selectedIndex]);
@@ -228,6 +235,7 @@ Scope {
     readonly property var allActions: [
         { id: "wallpaper", name: "Wallpaper Carousel", desc: "Explorar y cambiar fondo de pantalla con animación", icon: "󰸉" },
         { id: "theme", name: "Theme Carousel", desc: "Explorar y cambiar paleta de temas visuales", icon: "󰏘" },
+        { id: "gadgets", name: "Desktop Gadgets", desc: "Activar, desactivar y gestionar widgets en el escritorio", icon: "󱂬" },
         { id: "lock", name: "Bloquear Pantalla", desc: "Bloquear la sesión con Hyprlock", icon: "󰌾" },
         { id: "sleep", name: "Suspender", desc: "Suspender el sistema a RAM", icon: "󰒲" },
         { id: "reboot", name: "Reiniciar Sistema", desc: "Reiniciar el equipo", icon: "󰜉" },
@@ -253,6 +261,10 @@ Scope {
         } else if (searchText.startsWith("/theme") || searchText.startsWith("/tema") ||
                    searchText.startsWith(">theme") || searchText.startsWith(">tema")) {
             return "theme";
+        } else if (searchText.startsWith("/gadgets") || searchText.startsWith("/widgets") ||
+                   searchText.startsWith("/gadget")  || searchText.startsWith("/widget") ||
+                   searchText.startsWith(">gadgets") || searchText.startsWith(">widgets")) {
+            return "gadgets";
         } else if (searchText.startsWith("/") || searchText.startsWith(">")) {
             return "actions";
         } else {
@@ -298,6 +310,27 @@ Scope {
         });
     }
 
+    // ── Filtrado de Gadgets en Modo Carrusel ─────────────────────
+    property var filteredGadgets: {
+        if (currentMode !== "gadgets") return [];
+        var prefixes = ["/gadgets", "/widgets", "/gadget", "/widget", ">gadgets", ">widgets"];
+        var prefix = "";
+        for (var i = 0; i < prefixes.length; i++) {
+            if (searchText.startsWith(prefixes[i])) {
+                prefix = prefixes[i];
+                break;
+            }
+        }
+        var query = searchText.slice(prefix.length).trim().toLowerCase();
+        var all = Root.GadgetsManager.availableGadgets;
+        if (query === "") return all;
+        return all.filter(function(g) {
+            return g.name.toLowerCase().indexOf(query) >= 0 ||
+                   g.id.toLowerCase().indexOf(query) >= 0 ||
+                   (g.desc && g.desc.toLowerCase().indexOf(query) >= 0);
+        });
+    }
+
     function executeAction(act) {
         if (!act) return;
         if (act.id === "wallpaper") {
@@ -307,6 +340,11 @@ Scope {
         }
         if (act.id === "theme") {
             searchText = "/theme ";
+            selectedIndex = 0;
+            return;
+        }
+        if (act.id === "gadgets") {
+            searchText = "/gadgets ";
             selectedIndex = 0;
             return;
         }
@@ -342,10 +380,16 @@ Scope {
         refreshWallpapers();
     }
 
+    function openGadgets() {
+        searchText = "/gadgets ";
+        panelVisible = true;
+        selectedIndex = 0;
+    }
+
     onPanelVisibleChanged: {
         if (panelVisible) {
             _showing = true;
-            if (currentMode !== "wallpaper" && currentMode !== "theme") {
+            if (currentMode !== "wallpaper" && currentMode !== "theme" && currentMode !== "gadgets") {
                 selectedIndex = 0;
             }
             if (allApps.length === 0) appsReadProc.running = true;
@@ -374,6 +418,9 @@ Scope {
         function theme(): void {
             launcher.openThemes();
         }
+        function gadgets(): void {
+            launcher.openGadgets();
+        }
         function search(query: string): void {
             launcher.panelVisible = true;
             launcher.searchText = query;
@@ -391,6 +438,9 @@ Scope {
             } else if (launcher.currentMode === "theme") {
                 if (launcher.selectedIndex < launcher.filteredThemes.length - 1) launcher.selectedIndex++;
                 else launcher.selectedIndex = 0;
+            } else if (launcher.currentMode === "gadgets") {
+                if (launcher.selectedIndex < launcher.filteredGadgets.length - 1) launcher.selectedIndex++;
+                else launcher.selectedIndex = 0;
             } else if (launcher.currentMode === "actions") {
                 if (launcher.selectedIndex < launcher.filteredActions.length - 1) launcher.selectedIndex++;
                 else launcher.selectedIndex = 0;
@@ -403,11 +453,20 @@ Scope {
             if (launcher.selectedIndex > 0) launcher.selectedIndex--;
             else if (launcher.currentMode === "theme" && launcher.filteredThemes.length > 0) {
                 launcher.selectedIndex = launcher.filteredThemes.length - 1;
+            } else if (launcher.currentMode === "gadgets" && launcher.filteredGadgets.length > 0) {
+                launcher.selectedIndex = launcher.filteredGadgets.length - 1;
             }
         }
         function activate(): void {
             launcher.activateCurrentSelection();
         }
+    }
+
+    IpcHandler {
+        target: "gadgetpicker"
+        function toggle(): void { launcher.openGadgets(); }
+        function show(): void { launcher.openGadgets(); }
+        function hide(): void { launcher.panelVisible = false; }
     }
 
     // Compatibilidad adicional con atajo SUPER + W
@@ -468,12 +527,12 @@ Scope {
                 anchors.bottomMargin: 28
 
                 width: {
-                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme") return Math.min(1080, parent.width - 60);
+                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") return Math.min(1080, parent.width - 60);
                     return 580;
                 }
 
                 height: {
-                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme") return 340;
+                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") return 340;
                     if (launcher.currentMode === "actions") {
                         var actCount = launcher.filteredActions.length;
                         return Math.min(460, Math.max(140, actCount * 50 + 76));
@@ -822,7 +881,156 @@ Scope {
                         }
                     }
 
-                    // --- VISTA 3: Lista de Acciones / Comandos (Vertical) ---
+                    // --- VISTA 3: Carrusel de Gadgets de Escritorio (Horizontal) ---
+                    Item {
+                        id: gadgetsView
+                        visible: launcher.currentMode === "gadgets"
+                        anchors.fill: parent
+                        clip: true
+
+                        function scrollToCard(index, immediate) {
+                            var itemWidth = 236 + 16;
+                            var targetX = Math.max(0, index * itemWidth - (gadgetsCarousel.width - 236) / 2);
+                            var maxX = Math.max(0, gadgetsCarousel.contentWidth - gadgetsCarousel.width);
+                            targetX = Math.min(maxX, targetX);
+                            if (immediate) {
+                                gadgetsCarousel.contentX = targetX;
+                            } else {
+                                gadgetsScrollAnim.to = targetX;
+                                gadgetsScrollAnim.restart();
+                            }
+                        }
+
+                        NumberAnimation {
+                            id: gadgetsScrollAnim
+                            target: gadgetsCarousel
+                            property: "contentX"
+                            duration: 160
+                            easing.type: Easing.OutCubic
+                        }
+
+                        ListView {
+                            id: gadgetsCarousel
+                            anchors.fill: parent
+                            anchors.topMargin: 8
+                            anchors.bottomMargin: 4
+                            orientation: ListView.Horizontal
+                            spacing: 16
+                            clip: true
+
+                            flickDeceleration: 1800
+                            maximumFlickVelocity: 3000
+                            boundsBehavior: Flickable.StopAtBounds
+                            highlightRangeMode: ListView.NoHighlightRange
+
+                            model: launcher.filteredGadgets
+                            currentIndex: launcher.selectedIndex
+
+                            delegate: Item {
+                                width: 236
+                                height: 226
+                                z: (cardItem && cardItem.isHovered) ? 100 : (launcher.selectedIndex === index ? 20 : 1)
+
+                                readonly property var itemData: modelData
+
+                                GadgetCard {
+                                    id: cardItem
+                                    anchors.centerIn: parent
+                                    width: 224
+                                    height: 214
+                                    gadgetId: itemData ? itemData.id : ""
+                                    gadgetTitle: itemData ? itemData.name : ""
+                                    gadgetSubtitle: itemData ? itemData.desc : ""
+                                    gadgetIcon: itemData ? itemData.icon : "󱂬"
+                                    isEnabled: itemData ? Root.GadgetsManager.isEnabled(itemData.id) : true
+                                    isSelected: launcher.selectedIndex === index
+
+                                    onActivated: {
+                                        launcher.selectedIndex = index;
+                                        if (itemData) {
+                                            Root.GadgetsManager.toggle(itemData.id);
+                                        }
+                                    }
+                                }
+                            }
+
+                            // Desplazamiento horizontal fluido
+                            WheelHandler {
+                                acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                                onWheel: function(event) {
+                                    var delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
+                                    var step = delta * 1.8;
+                                    var targetX = gadgetsCarousel.contentX - step;
+                                    var maxX = Math.max(0, gadgetsCarousel.contentWidth - gadgetsCarousel.width);
+                                    gadgetsCarousel.contentX = Math.max(0, Math.min(maxX, targetX));
+                                }
+                            }
+
+                            Component.onCompleted: {
+                                if (launcher.currentMode === "gadgets") {
+                                    gadgetsView.scrollToCard(launcher.selectedIndex, true);
+                                }
+                            }
+                        }
+
+                        // Degradado lateral izquierdo
+                        Rectangle {
+                            id: gadgetsLeftFade
+                            anchors.left: parent.left
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 32
+                            z: 50
+                            enabled: false
+                            visible: gadgetsCarousel.contentX > 6
+                            opacity: visible ? 1.0 : 0.0
+                            Behavior on opacity { NumberAnimation { duration: 150 } }
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.95) }
+                                GradientStop { position: 1.0; color: "transparent" }
+                            }
+                        }
+
+                        // Degradado lateral derecho
+                        Rectangle {
+                            id: gadgetsRightFade
+                            anchors.right: parent.right
+                            anchors.top: parent.top
+                            anchors.bottom: parent.bottom
+                            width: 32
+                            z: 50
+                            enabled: false
+                            visible: gadgetsCarousel.contentX < (gadgetsCarousel.contentWidth - gadgetsCarousel.width - 6)
+                            opacity: visible ? 1.0 : 0.0
+                            Behavior on opacity { NumberAnimation { duration: 150 } }
+                            gradient: Gradient {
+                                orientation: Gradient.Horizontal
+                                GradientStop { position: 0.0; color: "transparent" }
+                                GradientStop { position: 1.0; color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.95) }
+                            }
+                        }
+
+                        Connections {
+                            target: launcher
+                            function onSelectedIndexChanged() {
+                                if (launcher.currentMode === "gadgets" && gadgetsCarousel) {
+                                    gadgetsView.scrollToCard(launcher.selectedIndex, false);
+                                }
+                            }
+                        }
+
+                        Text {
+                            visible: launcher.filteredGadgets.length === 0
+                            anchors.centerIn: parent
+                            text: "No desktop gadgets found"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 15
+                            color: Root.Theme.textSecondary
+                        }
+                    }
+
+                    // --- VISTA 4: Lista de Acciones / Comandos (Vertical) ---
                     Item {
                         id: actionsView
                         visible: launcher.currentMode === "actions"
@@ -932,6 +1140,7 @@ Scope {
                             text: {
                                 if (launcher.currentMode === "wallpaper") return "󰸉";
                                 if (launcher.currentMode === "theme") return "󰏘";
+                                if (launcher.currentMode === "gadgets") return "󱂬";
                                 if (launcher.currentMode === "actions") return "󰘳";
                                 return "󰍉";
                             }
@@ -958,7 +1167,8 @@ Scope {
                             onTextChanged: {
                                 launcher.searchText = text;
                                 if ((launcher.currentMode !== "wallpaper" || (!text.startsWith("/wallpaper") && !text.startsWith(">wallpaper")))
-                                    && (launcher.currentMode !== "theme" || (!text.startsWith("/theme") && !text.startsWith(">theme")))) {
+                                    && (launcher.currentMode !== "theme" || (!text.startsWith("/theme") && !text.startsWith(">theme")))
+                                    && (launcher.currentMode !== "gadgets" || (!text.startsWith("/gadgets") && !text.startsWith(">gadgets")))) {
                                     launcher.selectedIndex = 0;
                                 }
                             }
@@ -980,6 +1190,7 @@ Scope {
                                 text: {
                                     if (launcher.currentMode === "wallpaper") return "Filter wallpapers or press Enter...";
                                     if (launcher.currentMode === "theme") return "Filter themes or press Enter...";
+                                    if (launcher.currentMode === "gadgets") return "Toggle desktop gadgets with Enter or click...";
                                     if (launcher.currentMode === "actions") return "Type command name or press Enter...";
                                     return "Type \"/\" for commands...";
                                 }
@@ -996,7 +1207,7 @@ Scope {
                             }
 
                             Keys.onLeftPressed: function(event) {
-                                if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme") {
+                                if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") {
                                     if (launcher.selectedIndex > 0) launcher.selectedIndex--;
                                     event.accepted = true;
                                 } else {
@@ -1015,13 +1226,18 @@ Scope {
                                         launcher.selectedIndex++;
                                     }
                                     event.accepted = true;
+                                } else if (launcher.currentMode === "gadgets") {
+                                    if (launcher.selectedIndex < launcher.filteredGadgets.length - 1) {
+                                        launcher.selectedIndex++;
+                                    }
+                                    event.accepted = true;
                                 } else {
                                     event.accepted = false;
                                 }
                             }
 
                             Keys.onUpPressed: function(event) {
-                                if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme") {
+                                if (launcher.currentMode === "wallpaper" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") {
                                     if (launcher.selectedIndex > 0) launcher.selectedIndex--;
                                 } else if (launcher.currentMode === "actions") {
                                     if (launcher.selectedIndex > 0) {
@@ -1046,6 +1262,10 @@ Scope {
                                     }
                                 } else if (launcher.currentMode === "theme") {
                                     if (launcher.selectedIndex < launcher.filteredThemes.length - 1) {
+                                        launcher.selectedIndex++;
+                                    }
+                                } else if (launcher.currentMode === "gadgets") {
+                                    if (launcher.selectedIndex < launcher.filteredGadgets.length - 1) {
                                         launcher.selectedIndex++;
                                     }
                                 } else if (launcher.currentMode === "actions") {
@@ -1089,6 +1309,12 @@ Scope {
                                     } else {
                                         launcher.selectedIndex = 0;
                                     }
+                                } else if (launcher.currentMode === "gadgets") {
+                                    if (launcher.selectedIndex < launcher.filteredGadgets.length - 1) {
+                                        launcher.selectedIndex++;
+                                    } else {
+                                        launcher.selectedIndex = 0;
+                                    }
                                 }
                                 event.accepted = true;
                             }
@@ -1117,6 +1343,12 @@ Scope {
                                         launcher.selectedIndex--;
                                     } else if (launcher.filteredThemes.length > 0) {
                                         launcher.selectedIndex = launcher.filteredThemes.length - 1;
+                                    }
+                                } else if (launcher.currentMode === "gadgets") {
+                                    if (launcher.selectedIndex > 0) {
+                                        launcher.selectedIndex--;
+                                    } else if (launcher.filteredGadgets.length > 0) {
+                                        launcher.selectedIndex = launcher.filteredGadgets.length - 1;
                                     }
                                 }
                                 event.accepted = true;

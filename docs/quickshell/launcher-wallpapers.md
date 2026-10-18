@@ -31,13 +31,17 @@ The system consists of two coordinated Quickshell modules:
 
 ```text
 quickshell/
+├── GadgetsManager.qml               # Central desktop gadgets state and persistence manager
 ├── modules/
 │   ├── background/
 │   │   └── Background.qml           # Fullscreen background layer with Zoom & Blur transition
+│   ├── gadgets/
+│   │   └── GadgetHeader.qml         # Interactive drag handle, coordinates sync, and close button
 │   └── launcher/
 │       ├── Launcher.qml             # Main overlay window, state machine, and search bar
 │       ├── WallpaperCard.qml        # 16:9 wallpaper thumbnail card and browse button
 │       ├── ThemeCard.qml            # Theme palette preview card with Material 3 mockup
+│       ├── GadgetCard.qml           # Desktop widget toggle card with real-time UI preview
 │       ├── AppItem.qml              # Application list row delegate with icon and metadata
 │       └── ActionItem.qml           # System action row delegate
 └── scripts/
@@ -96,6 +100,17 @@ Typing `/theme ` or `/tema ` (also `>theme `), clicking "Theme" in the Control C
   * Selecting a card applies the theme instantly via `Theme.currentTheme`, persists it to `~/.config/quickshell/current-theme`, triggers `apply-theme.sh` or `apply-matugen.sh` across the system, and closes the launcher.
   * Full keyboard support with `Left` / `Right` navigation, `Enter` to apply, and text filtering (e.g. `>theme cobalt`).
 
+### 5. Desktop Gadgets Mode (`/gadgets` or `/widgets`)
+Typing `/gadgets `, `/widgets `, or `/gadget ` (also with `>`), selecting "Desktop Gadgets" from the `/` commands list, or running `qs ipc call launcher gadgets` opens the desktop gadgets carousel:
+* **Interactive Gadget Cards (`GadgetCard.qml`):**
+  * Displays 224x214 px cards showcasing live visual mockups of desktop widgets (`DeskClock`, `Calendar`, and future extensions).
+  * Top-right badge dynamically indicates status: green `Active` checkmark or muted `Hidden` badge.
+  * Clicking any card or pressing `Enter` toggles the gadget visibility on the desktop in real time.
+* **On-Desktop Interaction (`GadgetHeader.qml`):**
+  * **Smooth Proximity Reveal:** Desktop gadgets feature an integrated header that stays invisible during normal use and reveals smoothly (`opacity: 1.0` in 220 ms) when hovering over the widget.
+  * **Freeform Drag Handle:** A centered Material You style drag pill allows repositioning the widget freely across the screen. Coordinates are calculated dynamically using Layershell panel margins and automatically saved to `~/.config/quickshell/gadgets.json`.
+  * **Close Button (`✕`):** Clicking the close button in the header hides the gadget immediately and updates state persistence. The gadget can be restored at any time via the `/gadgets` launcher carousel.
+
 ---
 
 ## IPC Commands and Keybindings
@@ -113,6 +128,13 @@ qs ipc call launcher wallpaper
 qs ipc call launcher theme
 qs ipc call themepicker show
 
+# Open desktop gadgets carousel directly
+qs ipc call launcher gadgets
+
+# Toggle individual gadgets via IPC
+qs ipc call gadgets toggle deskclock
+qs ipc call gadgets toggle calendar
+
 # Navigate selection via IPC
 qs ipc call launcher next
 qs ipc call launcher prev
@@ -120,6 +142,7 @@ qs ipc call launcher activate
 
 # Filter commands or text via IPC
 qs ipc call launcher search ">"
+qs ipc call launcher search "/gadgets"
 
 # Set wallpaper programmatically with animated transition
 qs ipc call wallpaper set "/path/to/image.png"
