@@ -49,28 +49,31 @@ markdown_extensions:
   - attr_list
 
 nav:
-  - Home: index.md
-  - Hyprland:
-      - Architecture: hyprland/index.md
-      - Keybindings: hyprland/keybinds.md
-      - Shaders & Filters: hyprland/shaders.md
-      - Screen Locking & Idle: hyprland/hyprlock.md
-  - Quickshell:
-      - Control Center: quickshell/index.md
-      - Notifications & OSDs: quickshell/osd-notifications.md
-      - Floating Launcher & Wallpapers: quickshell/launcher-wallpapers.md
-  - Launchers & Tools:
+  - Home:
+      - Overview: index.md
+      - Gallery: gallery.md
+  - Desktop:
+      - Hyprland:
+          - Architecture: hyprland/index.md
+          - Keybindings: hyprland/keybinds.md
+          - Shaders & Filters: hyprland/shaders.md
+          - Screen Locking & Idle: hyprland/hyprlock.md
+      - Quickshell:
+          - Control Center: quickshell/index.md
+          - Notifications & OSDs: quickshell/osd-notifications.md
+          - Floating Launcher & Wallpapers: quickshell/launcher-wallpapers.md
       - Waybar: apps/waybar.md
       - Wofi: apps/wofi.md
-      - Fastfetch: apps/fastfetch.md
       - Matugen: apps/matugen.md
+      - Steam: apps/steam.md
+  - CLI:
+      - Terminals:
+          - Alacritty: terminals/alacritty.md
+          - Zsh: terminals/zsh.md
+          - Vim: terminals/vim.md
+      - Fastfetch: apps/fastfetch.md
       - Bat: apps/bat.md
       - Btop: apps/btop.md
-      - Steam: apps/steam.md
-  - Terminals:
-      - Alacritty: terminals/alacritty.md
-      - Zsh: terminals/zsh.md
-      - Vim: terminals/vim.md
-  - Dotfiles & Workflow:
+  - Workflow:
       - Philosophy & Workflow: dotfiles/workflow.md
       - Release & SemVer: dotfiles/releases.md
