@@ -1,6 +1,6 @@
 # Alacritty Configuration
 
-Alacritty serves as the primary terminal emulator in this environment, running the [Zsh Shell](zsh.md) with instant live configuration reloading and tight integration with the [Matugen Dynamic Theming Engine](../apps/matugen.md).
+Alacritty serves as the secondary terminal emulator in this environment, running the [Zsh Shell](zsh.md) with instant live configuration reloading and tight integration with the [Matugen Dynamic Theming Engine](../apps/matugen.md). [Kitty](kitty.md) is the default terminal bound to `SUPER + Return`, and both terminals share the same typography, padding, opacity and palette.
 
 ---
 
@@ -54,7 +54,8 @@ italic = { family = "BlexMono Nerd Font", style = "Bold Italic" }
 
 ## Associated Keybindings
 
-* `SUPER + Return` -> Launch Alacritty terminal instance (see [Hyprland Keybindings Catalog](../hyprland/keybinds.md#applications-and-system)).
+* No default keybinding: `SUPER + Return` launches the default terminal ([Kitty Terminal](kitty.md), see the [Hyprland Keybindings Catalog](../hyprland/keybinds.md)).
+* Launch Alacritty from the [Wofi Application Launcher](../apps/wofi.md) or from scripts such as `hypr/scripts/sudo-launcher`.
 
 ---
 

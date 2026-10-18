@@ -23,7 +23,7 @@ height=500
 location=center
 prompt=Buscar aplicaciones...
 improved=true
-term=alacritty
+term=kitty
 matching=fuzzy
 hide_scroll=true
 insensitive=true
@@ -78,6 +78,6 @@ Wofi is invoked with `SUPER + Space` as defined in [Hyprland Keybindings](../hyp
 
 * [Hyprland Keybindings](../hyprland/keybinds.md): Key combination bindings for launcher and window navigation.
 * [Matugen Theming Engine](matugen.md): Dynamic generation of `wofi.css` palette overrides.
-* [Alacritty Terminal](../terminals/alacritty.md): Companion terminal emulator sharing monospace typography.
+* [Kitty Terminal](../terminals/kitty.md): Default terminal emulator sharing monospace typography (`term=kitty`).
 * [Quickshell Overview](../quickshell/index.md): Native QML app drawer and widget system running alongside Wofi.
 * [Fastfetch Telemetry](fastfetch.md): Terminal hardware display utilizing system palettes.

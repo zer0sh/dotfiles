@@ -8,7 +8,7 @@ All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr
 
 | Shortcut | Action | Target / Command |
 | :--- | :--- | :--- |
-| `SUPER + Enter` | Open terminal | [`alacritty`](../terminals/alacritty.md) |
+| `SUPER + Enter` | Open terminal | [`$terminal` (kitty)](../terminals/kitty.md) |
 | `SUPER + E` | Open file manager | `nautilus` |
 | `SUPER + Space` | Application launcher | `scripts/toggle-menu` ([Wofi Launcher](../apps/wofi.md)) |
 | `SUPER + Q` | Close active window | `killactive` |
@@ -61,5 +61,6 @@ All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr
 * [GLSL Screen Shaders](shaders.md): Detailed visual descriptions of all compositor color filters.
 * [Screen Locking & Idle](hyprlock.md): Hyprlock security, PAM authentication, and Hypridle power states.
 * [Wofi Application Launcher](../apps/wofi.md): Material Design 3 launcher presets and customization.
-* [Alacritty Terminal](../terminals/alacritty.md): Terminal emulator settings, font choice, and palette reload.
+* [Kitty Terminal](../terminals/kitty.md): Default terminal emulator, font choice, and palette reload.
+* [Alacritty Terminal](../terminals/alacritty.md): Secondary terminal emulator sharing the same visual settings.
 * [Quickshell Overview](../quickshell/index.md): Desktop control center and reactive Wayland widgets.

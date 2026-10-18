@@ -1,6 +1,6 @@
 # Kitty Configuration
 
-Kitty serves as the alternate terminal emulator in this environment, wired as the `$terminal` variable in Hyprland and running the [Zsh Shell](zsh.md). Its configuration deliberately mirrors [Alacritty](alacritty.md): identical typography, padding, opacity and cursor behavior, with the color palette supplied by the [Matugen Dynamic Theming Engine](../apps/matugen.md).
+Kitty is the default terminal emulator in this environment, bound to `SUPER + Return` through the `$terminal` variable in Hyprland and running the [Zsh Shell](zsh.md). Its configuration deliberately mirrors [Alacritty](alacritty.md): identical typography, padding, opacity and cursor behavior, with the color palette supplied by the [Matugen Dynamic Theming Engine](../apps/matugen.md).
 
 ---
 
@@ -72,8 +72,9 @@ shell_integration no-cursor
 
 ## Associated Keybindings
 
-* `$terminal` is set to `kitty` in `~/.config/hypr/variables.conf`, and helper scripts such as `hypr/scripts/sudo-launcher` spawn kitty directly.
-* `SUPER + Return` currently spawns Alacritty (see [Hyprland Keybindings Catalog](../hyprland/keybinds.md)).
+* `SUPER + Return` launches kitty through the `$terminal` variable defined in `~/.config/hypr/variables.conf`.
+* Helper scripts such as `hypr/scripts/sudo-launcher` also spawn kitty directly.
+* [Wofi](../apps/wofi.md) launches `.desktop` entries requiring a terminal through `term=kitty`.
 * `Ctrl + Shift + F5` reloads the kitty configuration manually.
 
 ---

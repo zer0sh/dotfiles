@@ -88,6 +88,7 @@ Explore the complete modular guide:
 
     Hardware-accelerated terminal emulation and lightning-fast interactive shell workflow.
 
+    * [Kitty Terminal](terminals/kitty.md)
     * [Alacritty Terminal](terminals/alacritty.md)
     * [Zsh Shell Configuration](terminals/zsh.md)
 
