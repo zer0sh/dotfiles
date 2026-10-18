@@ -582,9 +582,9 @@ Scope {
                     ]
 
                 radius: 30
-                // Translucent glass surface with subtle top-to-bottom refraction gradient
+                // Translucent glass surface based on matugen background
                 gradient: Gradient {
-                    GradientStop { position: 0.0; color: Root.Theme.isLightMode ? Qt.rgba(1, 1, 1, Root.Theme.panelOpacity * 1.5) : Root.Theme.glassPanel }
+                    GradientStop { position: 0.0; color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, Math.min(1.0, Root.Theme.panelOpacity * 1.15)) }
                     GradientStop { position: 1.0; color: Root.Theme.glassPanel }
                 }
                 border.width: 1.5
