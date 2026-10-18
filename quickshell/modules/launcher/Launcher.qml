@@ -142,7 +142,7 @@ Scope {
     }
 
     function openThemes() {
-        searchText = ">theme ";
+        searchText = "/theme ";
         panelVisible = true;
         var curIdx = 0;
         for (var i = 0; i < themesList.length; i++) {
@@ -228,8 +228,6 @@ Scope {
     readonly property var allActions: [
         { id: "wallpaper", name: "Wallpaper Carousel", desc: "Explorar y cambiar fondo de pantalla con animación", icon: "󰸉" },
         { id: "theme", name: "Theme Carousel", desc: "Explorar y cambiar paleta de temas visuales", icon: "󰏘" },
-        { id: "light", name: "Modo Claro", desc: "Cambiar esquema Matugen a modo claro", icon: "󰚝" },
-        { id: "dark", name: "Modo Oscuro", desc: "Cambiar esquema Matugen a modo oscuro", icon: "󰖔" },
         { id: "lock", name: "Bloquear Pantalla", desc: "Bloquear la sesión con Hyprlock", icon: "󰌾" },
         { id: "sleep", name: "Suspender", desc: "Suspender el sistema a RAM", icon: "󰒲" },
         { id: "reboot", name: "Reiniciar Sistema", desc: "Reiniciar el equipo", icon: "󰜉" },
@@ -249,11 +247,13 @@ Scope {
 
     // ── Modo Activo ──────────────────────────────────────────────
     readonly property string currentMode: {
-        if (searchText.startsWith(">wallpaper") || searchText.startsWith(">fondo") || searchText.startsWith(">wall")) {
+        if (searchText.startsWith("/wallpaper") || searchText.startsWith("/fondo") || searchText.startsWith("/wall") ||
+            searchText.startsWith(">wallpaper") || searchText.startsWith(">fondo") || searchText.startsWith(">wall")) {
             return "wallpaper";
-        } else if (searchText.startsWith(">theme") || searchText.startsWith(">tema")) {
+        } else if (searchText.startsWith("/theme") || searchText.startsWith("/tema") ||
+                   searchText.startsWith(">theme") || searchText.startsWith(">tema")) {
             return "theme";
-        } else if (searchText.startsWith(">")) {
+        } else if (searchText.startsWith("/") || searchText.startsWith(">")) {
             return "actions";
         } else {
             return "apps";
@@ -263,7 +263,14 @@ Scope {
     // ── Filtrado de Wallpapers en Modo Carrusel ──────────────────
     property var filteredWallpapers: {
         if (currentMode !== "wallpaper") return [];
-        var prefix = searchText.startsWith(">wallpaper") ? ">wallpaper" : ">fondo";
+        var prefixes = ["/wallpaper", "/fondo", "/wall", ">wallpaper", ">fondo", ">wall"];
+        var prefix = "";
+        for (var i = 0; i < prefixes.length; i++) {
+            if (searchText.startsWith(prefixes[i])) {
+                prefix = prefixes[i];
+                break;
+            }
+        }
         var query = searchText.slice(prefix.length).trim().toLowerCase();
         if (query === "") return wallpapers;
         return wallpapers.filter(function(w) {
@@ -274,7 +281,14 @@ Scope {
     // ── Filtrado de Temas en Modo Carrusel ──────────────────────
     property var filteredThemes: {
         if (currentMode !== "theme") return [];
-        var prefix = searchText.startsWith(">theme") ? ">theme" : ">tema";
+        var prefixes = ["/theme", "/tema", ">theme", ">tema"];
+        var prefix = "";
+        for (var i = 0; i < prefixes.length; i++) {
+            if (searchText.startsWith(prefixes[i])) {
+                prefix = prefixes[i];
+                break;
+            }
+        }
         var query = searchText.slice(prefix.length).trim().toLowerCase();
         if (query === "") return themesList;
         return themesList.filter(function(t) {
@@ -287,25 +301,19 @@ Scope {
     function executeAction(act) {
         if (!act) return;
         if (act.id === "wallpaper") {
-            searchText = ">wallpaper ";
+            searchText = "/wallpaper ";
             selectedIndex = 0;
             return;
         }
         if (act.id === "theme") {
-            searchText = ">theme ";
+            searchText = "/theme ";
             selectedIndex = 0;
             return;
         }
 
         launcher.panelVisible = false;
 
-        if (act.id === "light") {
-            actionExecProc.command = ["/bin/sh", "-c", "matugen image \"$(cat ~/.config/themes/current/wallpaper)\" --mode light --quiet && hyprctl reload"];
-            actionExecProc.running = true;
-        } else if (act.id === "dark") {
-            actionExecProc.command = ["/bin/sh", "-c", "matugen image \"$(cat ~/.config/themes/current/wallpaper)\" --mode dark --quiet && hyprctl reload"];
-            actionExecProc.running = true;
-        } else if (act.id === "lock") {
+        if (act.id === "lock") {
             actionExecProc.command = ["hyprlock"];
             actionExecProc.running = true;
         } else if (act.id === "sleep") {
@@ -321,7 +329,7 @@ Scope {
     }
 
     function openWallpapers() {
-        searchText = ">wallpaper ";
+        searchText = "/wallpaper ";
         panelVisible = true;
         var curIdx = 0;
         for (var i = 0; i < wallpapers.length; i++) {
@@ -949,8 +957,8 @@ Scope {
 
                             onTextChanged: {
                                 launcher.searchText = text;
-                                if ((launcher.currentMode !== "wallpaper" || (text !== ">wallpaper " && text !== ">wallpaper"))
-                                    && (launcher.currentMode !== "theme" || (text !== ">theme " && text !== ">theme"))) {
+                                if ((launcher.currentMode !== "wallpaper" || (!text.startsWith("/wallpaper") && !text.startsWith(">wallpaper")))
+                                    && (launcher.currentMode !== "theme" || (!text.startsWith("/theme") && !text.startsWith(">theme")))) {
                                     launcher.selectedIndex = 0;
                                 }
                             }
@@ -973,7 +981,7 @@ Scope {
                                     if (launcher.currentMode === "wallpaper") return "Filter wallpapers or press Enter...";
                                     if (launcher.currentMode === "theme") return "Filter themes or press Enter...";
                                     if (launcher.currentMode === "actions") return "Type command name or press Enter...";
-                                    return "Type \">\" for commands...";
+                                    return "Type \"/\" for commands...";
                                 }
                                 font.family: Root.Theme.fontFamily
                                 font.pixelSize: 16

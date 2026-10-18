@@ -14,8 +14,8 @@ The system consists of two coordinated Quickshell modules:
    * Translucent dark surface with rounded corners (22 px radius), subtle border highlight, and outer glow.
    * Search input at the bottom with real-time mode detection:
      * **Application Mode (default):** Lists system desktop entries with official icons, titles, and descriptions.
-     * **Command / Actions Mode (`>`):** Activated by typing `>` to expose system commands.
-     * **Wallpaper Carousel (`>wallpaper` / `SUPER + W`):** Horizontal card carousel featuring 16:9 previews, active wallpaper glow, and a local file explorer.
+     * **Command / Actions Mode (`/` or `>`):** Activated by typing `/` (or `>`)  to expose system commands.
+     * **Wallpaper Carousel (`/wallpaper` / `SUPER + W`):** Horizontal card carousel featuring 16:9 previews, active wallpaper glow, and a local file explorer.
 2. **Desktop Background Engine (`modules/background/Background.qml`):**
    * Placed on `WlrLayershell.layer: WlrLayer.Background` on all connected displays (`Quickshell.screens`).
    * Implements a double-buffer (ping-pong) layer switching architecture, guaranteeing reliable consecutive wallpaper transitions without QML property binding degradation.
@@ -61,17 +61,16 @@ When the search input is empty or contains standard text:
   * Dynamic icon and title scale expansion.
 * Keyboard navigation: `Up` / `Down` arrows move selection with automatic viewport positioning (`positionViewAtIndex`), `Enter` executes the application and closes the launcher, `Escape` cancels.
 
-### 2. Action / Command Mode (`>`)
-Typing `>` filters available system commands:
-* **Wallpaper Carousel:** Enters the horizontal wallpaper picker carousel (`>wallpaper `).
-* **Theme Carousel:** Enters the horizontal visual theme picker carousel (`>theme `).
-* **Light Mode / Dark Mode:** Switches Matugen generation mode.
+### 2. Action / Command Mode (`/` or `>`)
+Typing `/` (or `>`) filters available system commands:
+* **Wallpaper Carousel:** Enters the horizontal wallpaper picker carousel (`/wallpaper `).
+* **Theme Carousel:** Enters the horizontal visual theme picker carousel (`/theme `).
 * **Lock Screen:** Locks session using `hyprlock`.
 * **Sleep / Suspend:** Suspends the machine to RAM (`systemctl suspend`).
 * **Restart System / Shut Down:** Session reboot and power-off actions.
 
 ### 3. Wallpaper Carousel Mode
-Typing `>wallpaper ` or pressing `SUPER + W` opens the horizontal carousel:
+Typing `/wallpaper ` (or pressing `SUPER + W`) opens the horizontal carousel:
 * Expanded floating card container (1080 px width, 340 px height, 24 px radius) offering generous horizontal and vertical headroom.
 * **Caelestia Shell Containment & Edge Fade Overlays:**
   * Strict clipping (`clip: true`) enforced across the floating dock card, content viewport, and horizontal list view, eliminating lateral overflow beyond container boundaries.
@@ -86,7 +85,7 @@ Typing `>wallpaper ` or pressing `SUPER + W` opens the horizontal carousel:
 * **Add Local File Card:** Positioned at the end of the carousel. Clicking or pressing `Enter` opens a native file dialog (`zenity`) to import external images, automatically caching thumbnails and applying the wallpaper.
 
 ### 4. Theme Carousel Mode
-Typing `>theme ` or `>tema `, clicking "Theme" in the Control Center, or executing `qs ipc call launcher theme` opens the horizontal theme carousel:
+Typing `/theme ` or `/tema ` (also `>theme `), clicking "Theme" in the Control Center, or executing `qs ipc call launcher theme` opens the horizontal theme carousel:
 * Reuses the same 1080x340 px floating container and smooth horizontal scroll architecture as the wallpaper carousel.
 * **Visual Theme Cards (`ThemeCard.qml`):**
   * Displays 224x214 px cards with a dedicated 120 px preview container showcasing an interface mockup for each palette.

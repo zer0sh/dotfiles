@@ -20,3 +20,6 @@ site/
 backups/
 *.bak
 *.bak_*
+
+# Runtime Generated Theme Outputs
+themes/current/
