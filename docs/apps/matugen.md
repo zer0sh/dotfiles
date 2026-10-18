@@ -228,6 +228,161 @@ sudo ~/dotfiles/scripts/sync-root-theme.sh --cleanup-all
 
 ---
 
+## Manual Installation: VS Code Theme Integration (Pilot)
+
+Standalone instructions to add the VS Code theme integration to an existing
+matugen installation without cloning the full dotfiles repository. This is the
+pilot for the manual installation format used across this documentation.
+
+All snippets are compatible with `bash` and `zsh`, use explicit paths only
+(no glob patterns), and are safe to paste into an interactive shell.
+
+### Files created or modified
+
+| Action | Path | Notes |
+| :--- | :--- | :--- |
+| Create | `~/.config/matugen/templates/vscode-colors` | Raw color list template |
+| Create | `~/.config/matugen/templates/vscode-colors.json` | JSON color template |
+| Modify (backup first) | `~/.config/matugen/config.toml` | Registers both templates |
+| Create | `~/.cache/matugen/vscode-colors` | Rendered by matugen |
+| Create | `~/.cache/matugen/vscode-colors.json` | Rendered by matugen |
+
+### Step 1: Validate prerequisites
+
+Run the checks and confirm every line reports `OK` before continuing:
+
+```bash
+command -v matugen >/dev/null 2>&1 && echo "matugen       : OK" || echo "matugen       : MISSING"
+command -v code >/dev/null 2>&1 && echo "vscode cli    : OK" || echo "vscode cli    : MISSING"
+command -v curl >/dev/null 2>&1 && echo "curl          : OK" || echo "curl          : MISSING"
+test -d "$HOME/.config/matugen/templates" && echo "templates dir : OK" || echo "templates dir : MISSING"
+test -f "$HOME/.config/matugen/config.toml" && echo "config.toml   : OK" || echo "config.toml   : MISSING"
+```
+
+If a line reports `MISSING`:
+
+* `matugen`: install it from <https://github.com/InioX/matugen>.
+* `vscode cli`: install VS Code and make sure the `code` command is in `PATH`.
+* `templates dir`: create it with `mkdir -p "$HOME/.config/matugen/templates"`.
+* `config.toml`: create an empty one with `touch "$HOME/.config/matugen/config.toml"`.
+
+### Step 2: Back up the files that will be modified
+
+The only existing file altered by this procedure is `config.toml`. The backup
+name carries the exact date and time of the operation:
+
+```bash
+BACKUP_STAMP="$(date +%Y%m%d-%H%M%S)"
+cp -p "$HOME/.config/matugen/config.toml" "$HOME/.config/matugen/config.toml.$BACKUP_STAMP.bak"
+echo "Backup created: $HOME/.config/matugen/config.toml.$BACKUP_STAMP.bak"
+```
+
+If template files from a previous attempt already exist, they are backed up
+the same way before being replaced:
+
+```bash
+BACKUP_STAMP="$(date +%Y%m%d-%H%M%S)"
+if test -f "$HOME/.config/matugen/templates/vscode-colors"; then
+    cp -p "$HOME/.config/matugen/templates/vscode-colors" "$HOME/.config/matugen/templates/vscode-colors.$BACKUP_STAMP.bak"
+fi
+if test -f "$HOME/.config/matugen/templates/vscode-colors.json"; then
+    cp -p "$HOME/.config/matugen/templates/vscode-colors.json" "$HOME/.config/matugen/templates/vscode-colors.json.$BACKUP_STAMP.bak"
+fi
+```
+
+### Step 3: Create the template files
+
+Download both templates directly from the repository:
+
+```bash
+mkdir -p "$HOME/.config/matugen/templates"
+curl -fsSL -o "$HOME/.config/matugen/templates/vscode-colors" "https://raw.githubusercontent.com/zer0sh/dotfiles/main/matugen/templates/vscode-colors"
+curl -fsSL -o "$HOME/.config/matugen/templates/vscode-colors.json" "https://raw.githubusercontent.com/zer0sh/dotfiles/main/matugen/templates/vscode-colors.json"
+```
+
+Alternatively, copy the file contents manually from the repository pages
+([vscode-colors](https://github.com/zer0sh/dotfiles/blob/main/matugen/templates/vscode-colors),
+[vscode-colors.json](https://github.com/zer0sh/dotfiles/blob/main/matugen/templates/vscode-colors.json))
+into the destination paths shown above.
+
+Confirm both files exist and are not empty:
+
+```bash
+test -s "$HOME/.config/matugen/templates/vscode-colors" && echo "vscode-colors      : OK" || echo "vscode-colors      : MISSING"
+test -s "$HOME/.config/matugen/templates/vscode-colors.json" && echo "vscode-colors.json : OK" || echo "vscode-colors.json : MISSING"
+```
+
+### Step 4: Register the templates in `config.toml`
+
+The following block is idempotent: it appends the sections only when they are
+not already registered. The heredoc delimiter is quoted, so no variable or
+shell expansion happens inside it:
+
+```bash
+if grep -q "^\[templates.vscode-raw\]" "$HOME/.config/matugen/config.toml"; then
+    echo "Already registered in config.toml, nothing to do."
+else
+    cat >> "$HOME/.config/matugen/config.toml" <<'EOF'
+
+# VS Code (haikalllp.matugen-theme extension watches these paths)
+[templates.vscode-raw]
+input_path = "~/.config/matugen/templates/vscode-colors"
+output_path = "~/.cache/matugen/vscode-colors"
+
+[templates.vscode-json]
+input_path = "~/.config/matugen/templates/vscode-colors.json"
+output_path = "~/.cache/matugen/vscode-colors.json"
+EOF
+    echo "Registered in config.toml."
+fi
+```
+
+### Step 5: Generate the colors
+
+Replace the wallpaper path with your own absolute path. The
+`--source-color-index 0` flag disables the interactive color picker, so the
+command also works from keybindings or non-interactive shells:
+
+```bash
+matugen image "/absolute/path/to/your-wallpaper.jpg" --mode dark --source-color-index 0
+test -f "$HOME/.cache/matugen/vscode-colors" && echo "rendered colors : OK" || echo "rendered colors : MISSING"
+```
+
+### Step 6: Install the extension and activate the theme
+
+```bash
+code --install-extension haikalllp.matugen-theme
+```
+
+Then in VS Code press `Ctrl+K` `Ctrl+T` and select **Matugen** (or
+**Matugen Bordered** for panels with border lines).
+
+### Step 7: Verification
+
+```bash
+test -f "$HOME/.cache/matugen/vscode-colors" && echo "colors      : OK" || echo "colors      : MISSING"
+code --list-extensions | grep -Fx "haikalllp.matugen-theme" >/dev/null && echo "extension   : OK" || echo "extension   : MISSING"
+find "$HOME/.vscode/extensions" -maxdepth 2 -type f -name "matugen.json" -path "*matugen-theme*" 2>/dev/null | grep -q . && echo "theme file  : OK" || echo "theme file  : MISSING"
+```
+
+Note: the `-name` and `-path` values in the `find` command are `find`
+predicates, not shell patterns, so they are never expanded by the shell.
+
+### Troubleshooting
+
+* **`themes/matugen.json` does not exist or VS Code reports it cannot load the
+  theme:** the extension activated before the color files were generated, so
+  its file watcher missed them. Open the Command Palette and run
+  `Matugen Theme: Update Theme`, or reload the window with
+  `Developer: Reload Window`.
+* **Palette did not change after a wallpaper switch:** run
+  `matugen image` again (Step 5) and check the Output panel of VS Code,
+  channel `Matugen Theme`.
+* **Restore the previous configuration:** copy the backup created in Step 2
+  back over `config.toml` using the exact name printed by the backup command.
+
+---
+
 ## Related Documentation
 
 * [Hyprland Compositor](../hyprland/index.md): Window manager border theming and configuration modularity.
