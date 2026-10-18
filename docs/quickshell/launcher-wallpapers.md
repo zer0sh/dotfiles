@@ -130,7 +130,7 @@ qs ipc call launcher wallpaper
 
 # Open theme carousel directly
 qs ipc call launcher theme
-qs ipc call themepicker show
+qs ipc call themepicker toggle
 
 # Open desktop gadgets carousel directly
 qs ipc call launcher gadgets
@@ -151,9 +151,11 @@ qs ipc call launcher search "/gadgets"
 # Set wallpaper programmatically with animated transition
 qs ipc call wallpaper set "/path/to/image.png"
 
-# Hide launcher
-qs ipc call launcher hide
+# Close the launcher (the same command reopens it)
+qs ipc call launcher toggle
 ```
+
+**Note:** `hide()` works over IPC, but `qs ipc call <target> show` is not dispatchable in Quickshell 0.3.1: the CLI prints the target's function list and the panel stays closed (reproduced on `launcher`, `clipboard` and `controlcenter`). Use `toggle` to open and close a panel, or `qs ipc call launcher search "<query>"`, which always sets the launcher visible.
 
 ### Hyprland Integration (`~/.config/hypr/binds.conf`)
 

@@ -75,13 +75,12 @@ NumberAnimation {
   ```bash
   wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
   ```
-* **Trigger battery alert cards:**
-  ```bash
-  qs ipc call battery test           # 30% warning alert
-  qs ipc call battery testCritical   # 10% critical alert
-  qs ipc call battery testUltimatum  # 5% ultimatum alert
-  qs ipc call battery testCharging   # charging connected alert
-  ```
+* **Battery states:** this configuration exposes no battery OSD or IPC test
+  hook, so warning and critical cards cannot be faked from the shell
+  (`qs ipc call battery ...` returns `Target not found`). Battery warnings are
+  rendered by Waybar's `battery` module, which switches to its `warning`,
+  `critical` and `charging` states from live system data (see
+  `waybar/config.jsonc`).
 
 ---
 
