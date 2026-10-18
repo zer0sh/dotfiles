@@ -71,3 +71,12 @@ output_path = "~/.cache/matugen/vscode-colors"
 [templates.vscode-json]
 input_path = "~/.config/matugen/templates/vscode-colors.json"
 output_path = "~/.cache/matugen/vscode-colors.json"
+
+# Zen Browser (imported by <profile>/chrome/userChrome.css and userContent.css)
+[templates.zen-userchrome]
+input_path = "~/.config/matugen/templates/zen-userchrome.css"
+output_path = "~/.zen/xbjonc67.Default Profile/chrome/zen-userChrome.css"
+
+[templates.zen-usercontent]
+input_path = "~/.config/matugen/templates/zen-usercontent.css"
+output_path = "~/.zen/xbjonc67.Default Profile/chrome/zen-userContent.css"

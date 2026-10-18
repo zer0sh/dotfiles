@@ -66,6 +66,7 @@ nav:
       - Wofi: apps/wofi.md
       - Matugen: apps/matugen.md
       - Steam: apps/steam.md
+      - Zen Browser: apps/zen.md
   - CLI:
       - Terminals:
           - Alacritty: terminals/alacritty.md

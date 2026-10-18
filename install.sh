@@ -70,6 +70,14 @@ if [ -d "$HOME/.var/app/io.github.Foldex.AdwSteamGtk" ]; then
     ln -sf "$CONFIG_DIR/themes/current/steam.css" "$HOME/.var/app/io.github.Foldex.AdwSteamGtk/config/AdwSteamGtk/custom.css"
 fi
 
+# Zen Browser Matugen theme (userChrome.css / userContent.css integration)
+if [ -f "$HOME/.zen/profiles.ini" ] || [ -f "$HOME/.var/app/app.zen_browser.zen/.zen/profiles.ini" ]; then
+    echo "[INFO] Setting up Zen Browser Matugen integration..."
+    "$REPO_DIR/scripts/setup-zen-matugen.sh"
+else
+    echo "[NOTE] Zen Browser not detected; skipping Matugen integration."
+fi
+
 # Vim
 if [ -d "$REPO_DIR/vim" ]; then
     echo "[INFO] Setting up Vim configuration..."

@@ -33,13 +33,16 @@ Wallpaper Image (.png / .jpg)
    ├── palette.json    --> consumed by Quickshell Control Center & Widgets
    ├── matugen.vim     --> loaded by Vim via :colorscheme matugen
    └── vscode-colors / vscode-colors.json --> watched by the VS Code "Matugen Theme" extension (rendered to ~/.cache/matugen/)
+    └── zen-userchrome.css / zen-usercontent.css --> rendered into <profile>/chrome/ and imported by userChrome.css / userContent.css
 ```
 
 Note: the outputs rendered outside `~/.config/themes/current/` are the
 exceptions to the central store. `hyprtoolkit.conf` goes to
-`~/.config/hypr/hyprtoolkit.conf`, and the VS Code outputs go to
+`~/.config/hypr/hyprtoolkit.conf`, the VS Code outputs go to
 `~/.cache/matugen/vscode-colors` and `~/.cache/matugen/vscode-colors.json`
-because the `haikalllp.matugen-theme` extension watches those hardcoded paths.
+because the `haikalllp.matugen-theme` extension watches those hardcoded paths,
+and the Zen Browser outputs go to the profile `chrome/` folder because Firefox
+forks only load stylesheets from the profile.
 
 ---
 
@@ -121,6 +124,15 @@ output_path = "~/.cache/matugen/vscode-colors"
 [templates.vscode-json]
 input_path = "~/.config/matugen/templates/vscode-colors.json"
 output_path = "~/.cache/matugen/vscode-colors.json"
+
+# Zen Browser (imported by <profile>/chrome/userChrome.css and userContent.css)
+[templates.zen-userchrome]
+input_path = "~/.config/matugen/templates/zen-userchrome.css"
+output_path = "~/.zen/xbjonc67.Default Profile/chrome/zen-userChrome.css"
+
+[templates.zen-usercontent]
+input_path = "~/.config/matugen/templates/zen-usercontent.css"
+output_path = "~/.zen/xbjonc67.Default Profile/chrome/zen-userContent.css"
 ```
 
 The snippet above mirrors `~/dotfiles/matugen/config.toml` exactly. For the
@@ -151,6 +163,7 @@ and the [documentation site](https://iniox.github.io/).
 | **[Steam](steam.md)** | `themes/current/steam.css` | Adwaita CSS variables: accent, window_bg, headerbar, sidebar | `post_hook` with `adwaita-steam-gtk -i` |
 | **[Vim](../terminals/vim.md)** | `themes/current/matugen.vim` | Editor highlights, syntax groups, NERDTree colors, airline statusline palette | `:colorscheme matugen` or new instance |
 | **VS Code** (`haikalllp.matugen-theme`) | `~/.cache/matugen/vscode-colors` and `.json` | Full Material You palette (background, foreground, cursor, 16 accent colors) | Automatic via extension file watcher / `Matugen Theme: Update Theme` |
+| **[Zen Browser](zen.md)** (`<profile>/chrome/`) | `zen-userChrome.css` and `zen-userContent.css` | Chrome UI: sidebar, tabs, toolbar, urlbar, panels; `about:` pages: links, buttons, inputs, cards | Full browser restart (profile stylesheets load at startup only) |
 
 
 ### Themed GTK Applications Suite
@@ -229,7 +242,9 @@ The script executes:
 
 No reload step is needed for Alacritty (automatic live reload), for VS Code
 (the extension watches `~/.cache/matugen/`), or for the root symlinks created
-by `sync-root-theme.sh` (they point at `themes/current/`).
+by `sync-root-theme.sh` (they point at `themes/current/`). Zen Browser cannot
+be reloaded programmatically either: the rendered `zen-userChrome.css` and
+`zen-userContent.css` are picked up on the next full browser restart.
 
 ---
 
@@ -447,3 +462,4 @@ predicates, not shell patterns, so they are never expanded by the shell.
 * [Alacritty Terminal](../terminals/alacritty.md): Live terminal palette reload configuration.
 * [Fastfetch Telemetry](fastfetch.md): Hardware display with terminal palette swatches.
 * [Steam Client Theming](steam.md): Dynamic Adwaita-for-Steam custom stylesheet and post-hook injection.
+* [Zen Browser Theming](zen.md): Profile `userChrome.css` / `userContent.css` integration with a manual installation guide.
