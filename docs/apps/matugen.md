@@ -35,10 +35,11 @@ Wallpaper Image (.png / .jpg)
    └── vscode-colors / vscode-colors.json --> watched by the VS Code "Matugen Theme" extension (rendered to ~/.cache/matugen/)
 ```
 
-Note: the VS Code outputs are the only exception to the central store. The
-`haikalllp.matugen-theme` extension watches the hardcoded paths
-`~/.cache/matugen/vscode-colors` and `~/.cache/matugen/vscode-colors.json`,
-so they are rendered there instead of `~/.config/themes/current/`.
+Note: the outputs rendered outside `~/.config/themes/current/` are the
+exceptions to the central store. `hyprtoolkit.conf` goes to
+`~/.config/hypr/hyprtoolkit.conf`, and the VS Code outputs go to
+`~/.cache/matugen/vscode-colors` and `~/.cache/matugen/vscode-colors.json`
+because the `haikalllp.matugen-theme` extension watches those hardcoded paths.
 
 ---
 
@@ -194,6 +195,40 @@ Optionally adjust the contrast level using `--contrast`:
 # Increase contrast for accessibility or higher distinction (-1.0 to 1.0)
 matugen image "/path/to/wallpaper.jpg" --mode dark --contrast 0.2
 ```
+
+---
+
+## Orchestration: `apply-matugen.sh`
+
+`~/dotfiles/themes/apply-matugen.sh` is the single entrypoint that regenerates
+the whole palette. It is invoked by Quickshell when the wallpaper changes
+(`modules/background/Background.qml`), by the theme picker in the Control
+Center (`modules/controlcenter/ControlCenter.qml`), and manually from a shell.
+
+Inputs, in order of precedence: the optional first argument, then the
+`~/.config/themes/current/wallpaper` state file. The mode (dark/light) follows
+the optional second argument, then `~/.config/themes/current/mode`, defaulting
+to `dark`. Both state files are rewritten on every run.
+
+The script executes:
+
+1. `matugen image` with `--config ~/.config/matugen/config.toml`,
+   `-t scheme-vibrant`, `--contrast 0.2`, `--mode`, `--source-color-index 0`
+   and `--quiet` (the index flag bypasses the interactive color picker).
+2. `hyprctl reload` to re-read the generated border colors.
+3. `pkill -SIGUSR2 waybar` to reload the status bar stylesheet.
+4. Writes `matugen` to `~/.config/quickshell/current-theme` so Quickshell
+   consumes `palette.json` instead of a static theme.
+5. Sets `org.gnome.desktop.interface color-scheme` to `prefer-dark` or
+   `prefer-light` and toggles `gtk-theme` to `adw-gtk3` to force GTK
+   stylesheets to re-read.
+6. Runs `spicetify apply -n` only when the active Spicetify theme is `matugen`.
+7. Runs `~/.config/themes/update-wallpaper-cache.sh` to refresh wallpaper
+   thumbnails.
+
+No reload step is needed for Alacritty (automatic live reload), for VS Code
+(the extension watches `~/.cache/matugen/`), or for the root symlinks created
+by `sync-root-theme.sh` (they point at `themes/current/`).
 
 ---
 
