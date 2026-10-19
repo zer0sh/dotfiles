@@ -124,24 +124,25 @@ window#waybar {
     -gtk-icon-effect: highlight;
 }
 
-/* ----- QuickShell Tray (Caffeine, DND, Nightlight, Shader): completely collapses when empty ----- */
+/* ----- QuickShell Tray (Caffeine, DND, Nightlight, Shader): single unified pill ----- */
 #quickshell_tray,
 #group-quickshell_tray,
 .quickshell_tray {
-    padding: 0;
-    margin: 0;
-    background: transparent;
-    border: none;
+    padding: 0 4px;
+    margin: 4px 2px;
+    border-radius: 18px;
+    background: alpha(@text, 0.08);
+    transition: all 0.2s ease;
 }
 
 #custom-caffeine,
 #custom-dnd,
 #custom-nightlight,
 #custom-shader {
-    padding: 0 12px;
-    margin: 4px 2px;
-    border-radius: 18px;
-    background: alpha(@text, 0.08);
+    padding: 0 8px;
+    margin: 0;
+    border-radius: 14px;
+    background: transparent;
     color: @accent;
     font-size: 16px;
     transition: all 0.2s ease;
@@ -162,7 +163,7 @@ window#waybar {
 #custom-dnd:hover,
 #custom-nightlight:hover,
 #custom-shader:hover {
-    background: alpha(@text, 0.14);
+    background: alpha(@text, 0.08);
 }
 
 #custom-caffeine label,
@@ -253,6 +254,10 @@ window#waybar {
 
 #network.disconnected {
     color: alpha(@text, 0.40);
+}
+
+#bluetooth {
+    font-size: 18px;
 }
 
 #bluetooth.disabled {

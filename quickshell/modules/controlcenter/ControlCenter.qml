@@ -226,7 +226,7 @@ Scope {
 
     Process {
         id: caffeineCheckProc
-        command: ["/bin/sh", "-c", "test -f ~/.cache/caffeine-mode || pgrep -f 'Caffeine mode'"]
+        command: ["/home/zero/.config/waybar/scripts/caffeine", "check"]
         onExited: (code) => {
             controlCenter.caffeineEnabled = (code === 0)
         }
@@ -254,14 +254,11 @@ Scope {
 
     // Caffeine: keep the session awake while the toggle is active.
     Process {
-        id: caffeineProc
-        command: ["systemd-inhibit", "--what=idle:sleep", "--who=Quickshell",
-                  "--why=Caffeine mode", "sleep", "infinity"]
-        onExited: controlCenter.caffeineEnabled = false
-    }
-
-    Process {
-        id: caffeineFileProc
+        id: caffeineToggleProc
+        command: ["/home/zero/.config/waybar/scripts/caffeine", "toggle"]
+        onExited: {
+            caffeineCheckProc.running = true
+        }
     }
 
     Process {
@@ -274,20 +271,8 @@ Scope {
     }
 
     function toggleCaffeine() {
-        if (controlCenter.caffeineEnabled) {
-            caffeineProc.running = false
-            controlCenter.caffeineEnabled = false
-            caffeineFileProc.command = ["rm", "-f", "/home/zero/.cache/caffeine-mode"]
-            caffeineFileProc.running = true
-            notifyChange("Caffeine", "Caffeine mode disabled")
-        } else {
-            controlCenter.caffeineEnabled = true
-            caffeineProc.running = true
-            caffeineFileProc.command = ["touch", "/home/zero/.cache/caffeine-mode"]
-            caffeineFileProc.running = true
-            notifyChange("Caffeine", "Caffeine mode enabled")
-        }
-        updateWaybar(8)
+        controlCenter.caffeineEnabled = !controlCenter.caffeineEnabled
+        caffeineToggleProc.running = true
     }
 
     function toggleDnd() {

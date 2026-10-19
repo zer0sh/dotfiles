@@ -39,7 +39,7 @@ Waybar is docked at the top of the display with a height of 36 pixels and bottom
 * **Quick Indicators Tray (`group/quickshell_tray`):**
     * Unified module group hosting quick hardware toggles (`custom/caffeine`, `custom/nightlight`, `custom/shader`).
     * The container collapses to zero width and margins when all grouped indicators are inactive.
-    * When active, each indicator renders as an optical capsule pill (`border-radius: 18px`, `padding: 0 12px`, `background: alpha(@text, 0.08)`, `color: @accent`).
+    * When one or more indicators are active, the container renders as a single unified capsule pill (`border-radius: 18px`, `background: alpha(@text, 0.08)`), grouping all active toggles together with individual accent icons (`color: @accent`, `font-size: 16px`).
     * **`custom/caffeine`:** Displays coffee cup glyph (`󰅶`) when session wake-lock is engaged via POSIX signal `SIGRTMIN+8`.
     * **`custom/nightlight`:** Displays eye glyph (`󰈈`) when `hyprsunset` warm light filter (4000K) is active via POSIX signal `SIGRTMIN+9`.
     * **`custom/shader`:** Displays screen shader glyph (`󰸉`) when screen decoration shader is applied via POSIX signal `SIGRTMIN+10`.
@@ -54,7 +54,7 @@ Waybar is docked at the top of the display with a height of 36 pixels and bottom
     * **`clock`:** Local time format `{:%H:%M}` with bold typography.
     * **`pulseaudio`:** Volume glyphs; click toggles Quickshell Control Center, right-click opens `pavucontrol`, and mouse wheel scrolling adjusts sink volume using `wpctl set-volume`.
     * **`network`:** Wi-Fi / Ethernet state; click opens Quickshell Control Center.
-    * **`bluetooth`:** Adapter state and connection count; click opens Quickshell Control Center.
+    * **`bluetooth`:** Adapter state and connection count; click opens Quickshell Control Center. Features an optical size increase (18px) when active, and collapses to zero width (`format-disabled: ""` and `format-off: ""`) when Bluetooth is powered off.
     * **`battery` / `custom/power`:** Charge percentage, charging animations, and battery warnings (laptop) or power state (desktop), styled as the rounded right edge of the unified pill.
 
 ---

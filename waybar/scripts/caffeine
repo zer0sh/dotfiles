@@ -1,22 +1,44 @@
 #!/usr/bin/env bash
-# Waybar caffeine status / toggle
+# Waybar and Quickshell caffeine status / toggle
 STATE_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/caffeine-mode"
+PID_FILE="${XDG_CACHE_HOME:-$HOME/.cache}/caffeine.pid"
+
+is_active() {
+    if [ -f "$PID_FILE" ] && kill -0 "$(cat "$PID_FILE" 2>/dev/null)" 2>/dev/null; then
+        return 0
+    fi
+    return 1
+}
+
+if [ "$1" = "check" ] || [ "$1" = "status" ]; then
+    if is_active; then
+        exit 0
+    else
+        # Limpieza de archivo huérfano si el proceso murió
+        rm -f "$STATE_FILE" "$PID_FILE"
+        exit 1
+    fi
+fi
 
 if [ "$1" = "toggle" ]; then
-    if [ -f "$STATE_FILE" ] || pgrep -f "Caffeine mode" >/dev/null 2>&1; then
-        pkill -f "Caffeine mode" 2>/dev/null || true
-        rm -f "$STATE_FILE"
+    if is_active; then
+        if [ -f "$PID_FILE" ]; then
+            kill "$(cat "$PID_FILE" 2>/dev/null)" 2>/dev/null || true
+        fi
+        pkill -f "why=Caffeine mode" 2>/dev/null || true
+        rm -f "$STATE_FILE" "$PID_FILE"
         notify-send "Caffeine" "Caffeine mode disabled"
     else
         touch "$STATE_FILE"
-        systemd-inhibit --what=idle:sleep --who=Quickshell --why="Caffeine mode" sleep infinity >/dev/null 2>&1 &
+        setsid systemd-inhibit --what=idle:sleep --who=Quickshell --why="Caffeine mode" sleep infinity >/dev/null 2>&1 &
+        echo $! > "$PID_FILE"
         notify-send "Caffeine" "Caffeine mode enabled"
     fi
     pkill -RTMIN+8 waybar 2>/dev/null || true
     exit 0
 fi
 
-if [ -f "$STATE_FILE" ] || pgrep -f "Caffeine mode" >/dev/null 2>&1; then
+if is_active; then
     echo '{"text": "󰅶", "class": "active", "tooltip": "Caffeine mode active"}'
 else
     echo '{"text": "", "class": "hidden"}'

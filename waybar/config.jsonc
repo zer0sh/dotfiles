@@ -115,7 +115,8 @@
   },
   "bluetooth": {
     "format": "󰂯",
-    "format-disabled": "󰂲",
+    "format-disabled": "",
+    "format-off": "",
     "format-connected": "󰂱 {num_connections}",
     "on-click": "qs ipc call controlcenter toggle",
     "tooltip": false
