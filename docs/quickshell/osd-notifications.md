@@ -16,6 +16,11 @@ All floating indicators follow a standardized behavioral contract:
    * Fades in opacity from `0` to `1` over 220 ms using `Easing.OutQuad`.
 5. **Queue Dynamics:** When a new notification arrives, it occupies the top slot and fluidly pushes older active notifications downward using `move: Transition`.
 6. **Dismissal Animation:** Gently moves upward (`to: -20`) and fades out (`opacity: 0`) before unmounting from the model.
+7. **LayerShell Surface Lifecycle & Input Masking:**
+   * **Dynamic Loader Lifecycle:** The `PanelWindow` is instantiated via a `Loader { active: toastModel.count > 0 }`. When no toasts are active, the surface is completely unmapped from the Wayland compositor, eliminating stale layer surfaces.
+   * **Targeted Surface Dimensions:** Instead of spanning full-screen width, the window specifies `implicitWidth: 380` and dynamic height (`Math.min(600, toastModel.count * 140 + 60)`), anchored only at `anchors.top: true` so the compositor centers it horizontally.
+   * **Layer `Top`:** Placed on `WlrLayer.Top` (rather than `Overlay`), preventing pointer grabs and focus disruption on normal desktop windows.
+   * **Input Masking:** Uses `mask: Region { item: toastCol }` to restrict mouse interaction strictly to active notification cards. All transparent areas pass clicks through to underlying windows.
 
 ---
 
