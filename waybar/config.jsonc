@@ -13,8 +13,7 @@
   ],
   "modules-right": [
     "tray",
-    "group/quickshell_tray",
-    "custom/notifications",
+    "group/quick_actions",
     "custom/date",
     "clock",
     "pulseaudio",
@@ -23,12 +22,13 @@
     "battery",
     "custom/power"
   ],
-  "group/quickshell_tray": {
+  "group/quick_actions": {
     "orientation": "inherit",
     "modules": [
       "custom/caffeine",
       "custom/nightlight",
-      "custom/shader"
+      "custom/shader",
+      "custom/notifications"
     ]
   },
   "custom/caffeine": {
@@ -55,22 +55,9 @@
     "on-click": "~/.config/waybar/scripts/shader toggle",
     "tooltip": true
   },
-  "custom/dnd": {
-    "exec": "~/.config/waybar/scripts/dnd",
-    "return-type": "json",
-    "interval": 3,
-    "signal": 11,
-    "on-click": "~/.config/waybar/scripts/dnd toggle",
-    "tooltip": true
-  },
   "custom/launcher": {
     "format": "󰪥",
     "on-click": "qs ipc call launcher toggle",
-    "tooltip": false
-  },
-  "custom/wallpaper": {
-    "format": "󰸉",
-    "on-click": "qs ipc call launcher wallpaper",
     "tooltip": false
   },
   "custom/notifications": {
