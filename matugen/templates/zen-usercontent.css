@@ -89,6 +89,9 @@
                url-prefix("about:rights"),
                url-prefix("about:support"),
                url-prefix("about:translation"),
+               url-prefix("about:home"),
+               url-prefix("about:newtab"),
+               url-prefix("about:blank"),
                url-prefix("chrome://mozapps/content/extensions/") {
 
   body,

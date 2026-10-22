@@ -120,7 +120,7 @@ body {
 
 #urlbar-background,
 .urlbar-background {
-  background-color: color-mix(in srgb, {{colors.surface_container.default.hex}} 80%, transparent) !important;
+  background-color: color-mix(in srgb, {{colors.background.default.hex}} 75%, transparent) !important;
   border-radius: var(--zen-border-radius, 10px) !important;
   border: 1.5px solid {{colors.primary.default.hex}} !important;
   transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
@@ -145,13 +145,13 @@ body {
   color: {{colors.on_surface_variant.default.hex}} !important;
 }
 
-/* Estado de foco y desplegable abierto (Breakout) */
+/* Estado de foco y desplegable abierto (Breakout al hacer clic o Ctrl+T) */
 #urlbar[breakout-extend="true"] .urlbar-background,
 #urlbar[focused="true"] #urlbar-background {
-  background-color: color-mix(in srgb, {{colors.surface_container_high.default.hex}} 94%, transparent) !important;
+  background-color: color-mix(in srgb, {{colors.background.default.hex}} 82%, transparent) !important;
   border: 2px solid {{colors.primary.default.hex}} !important;
   border-radius: var(--zen-border-radius, 10px) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
   backdrop-filter: blur(20px) !important;
 }
 

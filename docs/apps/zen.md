@@ -14,6 +14,7 @@ Zen Browser is integrated into the dynamic Material You theming pipeline using [
 | **curl** | any | Downloads the templates (manual installation only) | `command -v curl` |
 | **bash or zsh** | any | Runs the snippets of this guide | `echo $0` |
 | **Profile stylesheet pref** | `true` | Loads `userChrome.css` / `userContent.css` (off by default since Zen 1.14) | `about:config` entry `toolkit.legacyUserProfileCustomizations.stylesheets` |
+| **Window transparency pref** | `true` | Allows transparent background for Hyprland system blur | `about:config` entry `browser.tabs.allow_transparent_browser` |
 
 No `sudo` privileges are required. The integration does not modify browser binaries or installation directories; it only touches files inside the user profile and the matugen configuration.
 
@@ -30,7 +31,7 @@ No `sudo` privileges are required. The integration does not modify browser binar
 | Create (rendered by matugen) | `~/.zen/xbjonc67.Default Profile/chrome/zen-userContent.css` | Output of the content template |
 | Create (entry file) | `~/.zen/xbjonc67.Default Profile/chrome/userChrome.css` | Single `@import` line pointing at the rendered chrome file |
 | Create (entry file) | `~/.zen/xbjonc67.Default Profile/chrome/userContent.css` | Single `@import` line pointing at the rendered content file |
-| Modify (append) | `~/.zen/xbjonc67.Default Profile/user.js` | Enables `toolkit.legacyUserProfileCustomizations.stylesheets` |
+| Modify (append) | `~/.zen/xbjonc67.Default Profile/user.js` | Enables stylesheets and transparent window prefs |
 | Create | `~/dotfiles/scripts/setup-zen-matugen.sh` | Deployment and verification automation |
 | Modify | `~/dotfiles/install.sh` | Runs the setup script when Zen Browser is detected |
 
@@ -74,23 +75,20 @@ Zen Browser UI (sidebar, tabs, toolbar, urlbar, panels, about: pages)
 
 ### Chrome template (`zen-userchrome.css`)
 
-| Token | Applied to |
+| Feature / Element | Implementation Details |
 | :--- | :--- |
-| `colors.background.default` | Main browser background, tab bar, app content navbar |
-| `colors.primary_container.default` | `--zen-primary-color` (Zen accent variable) |
-| `colors.primary.default` | Toolbar icon fill, selected tab text, urlbar selection, panel icons |
-| `colors.surface_container.default` | Sidebar tree, workspaces button, urlbar field, arrow panels |
-| `colors.on_background.default` | Toolbar, urlbar and panel text |
-| `colors.on_surface_variant.default` | Urlbar suggestion URLs |
-| `colors.on_primary.default` | Urlbar selection text |
+| **System Blur & Transparency** | Semi-transparent backgrounds (`color-mix` with `colors.background.default` at 72-78%) with `backdrop-filter: blur(20px)` for Hyprland integration. |
+| **Material You Active Tabs** | Active tab pill (`border-radius: 20px`) filled with `colors.primary_container.default` and bold `colors.on_primary_container.default` text. |
+| **Tab Controls & New Tab** | Pill-shaped new tab button (`border-radius: 20px`) with aligned margins and smooth hover transitions. |
+| **Unified URL & Search Bar** | Matches top bar background (`colors.background.default` mix) with `var(--zen-border-radius, 10px)` geometry and an active `colors.primary.default` border. |
+| **Floating Search (Ctrl+F)** | Centered findbar with frosted glass effect, rounded inputs (`8px`), and accent-styled navigation buttons. |
+| **Statuspanel Link Preview** | Bottom-left hover URL preview in frosted glass with dynamic green / accent font (`colors.primary.default`). |
+| **Scrollbars** | Minimalist thin scrollbars using `colors.outline_variant.default`. |
 
 ### Content template (`zen-usercontent.css`)
 
-Overrides the Firefox in-content variables used by `about:preferences`,
-`about:addons`, `about:config`, `about:logins`, `about:support` and the rest of
-the internal pages: link and focus colors, buttons, inputs, checkboxes, radios,
-tables, cards, scrollbars, selection highlight and the `about:preferences`
-sidebar.
+* **Default Dynamic Hyperlinks:** Global `:where(:link)` and `:where(:visited)` anchors automatically inherit the wallpaper accent tone (`colors.primary.default`) on unstyled websites without overriding custom page CSS.
+* **Internal `about:` Pages:** Full Material Design 3 token overrides for `about:preferences`, `about:addons`, `about:config`, `about:logins`, `about:support`, `about:home`, `about:newtab`, and `about:blank`.
 
 ---
 
