@@ -16,7 +16,7 @@ Hyprland is organized using a strict modular approach. The primary `hyprland.con
 ├── animations.conf       # Bezier curves and window movement dynamics
 ├── decoration.conf       # Borders, shadows, blur, and gaps
 ├── miscellaneous.conf    # Keyboard repeat rate and layout behavior
-├── window.conf           # Window rules (windowrule / windowrulev2)
+├── window.conf           # Window rules & XWayland fixes (see xwayland.md)
 ├── hyprlock.conf         # Lock screen layout and theming
 ├── hypridle.conf         # Idle management and power saving
 ├── scripts/              # Executable shell helpers (OCR, screenshots, filters)
@@ -59,6 +59,7 @@ source = $HOME/.config/hypr/autostart.conf
 ## Related Documentation
 
 * [Keybindings Catalog](keybinds.md): Complete table of window management, screenshot, and application shortcuts.
+* [XWayland & Window Rules](xwayland.md): Troubleshooting popup artifacts, transparent boxes, and window borders.
 * [GLSL Screen Shaders](shaders.md): Real-time compositor shader filters and Quickshell toggles.
 * [Screen Locking & Idle](hyprlock.md): Lock screen layout with Hyprlock and power savings via Hypridle.
 * [Matugen Theming Engine](../apps/matugen.md): How border colors and system palettes are dynamically injected.

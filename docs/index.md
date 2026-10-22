@@ -58,6 +58,7 @@ Explore the complete modular guide:
 
     * [Architecture Overview](hyprland/index.md)
     * [Keybindings Catalog](hyprland/keybinds.md)
+    * [XWayland & Window Rules](hyprland/xwayland.md)
     * [GLSL Post-Processing Shaders](hyprland/shaders.md)
     * [Hyprlock & Idle Security](hyprland/hyprlock.md)
 

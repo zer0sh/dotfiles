@@ -54,6 +54,7 @@ nav:
       - Hyprland:
           - Architecture: hyprland/index.md
           - Keybindings: hyprland/keybinds.md
+          - XWayland & Window Rules: hyprland/xwayland.md
           - Shaders & Filters: hyprland/shaders.md
           - Screen Locking & Idle: hyprland/hyprlock.md
       - Quickshell:

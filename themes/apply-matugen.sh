@@ -53,11 +53,11 @@ printf '%s\n' "matugen" > "$HOME/.config/quickshell/current-theme"
 # Sync GTK color-scheme and force reload of gtk.css
 if [[ "$MODE" == "light" ]]; then
     TARGET_GTK_THEME="custom-light"
-    TARGET_ICON_THEME="Papirus-Light"
+    TARGET_ICON_THEME="Papirus-Matugen-Light"
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-light' 2>/dev/null || true
 else
     TARGET_GTK_THEME="custom-dark"
-    TARGET_ICON_THEME="Papirus-Dark"
+    TARGET_ICON_THEME="Papirus-Matugen-Dark"
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
 fi
 gsettings set org.gnome.desktop.wm.preferences button-layout ":" 2>/dev/null || true

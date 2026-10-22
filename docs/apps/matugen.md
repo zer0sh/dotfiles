@@ -180,7 +180,7 @@ The generated stylesheets dynamically theme classic and modern GTK applications 
 
 Papirus icon folders automatically adapt to the desktop wallpaper without root privileges:
 
-1. **Local Icon Store**: Papirus and Papirus-Dark reside in `~/.local/share/icons/`, enabling `papirus-folders` to switch folder colors without `sudo`.
+1. **User Icon Namespace**: Custom-named icon themes (`Papirus-Matugen-Dark` and `Papirus-Matugen-Light`) reside in `~/.local/share/icons/`, preventing namespace collisions with system packages in `/usr/share/` and enabling rootless switching without `sudo`.
 2. **Nearest Color Comparison**: Matugen's `colors_to_compare` table evaluates the wallpaper's primary accent against all 23 official Papirus folder palettes (e.g., `nordic`, `blue`, `teal`, `green`, `orange`, `carmine`, etc.).
 3. **Instant Cache Reload**: `apply-matugen.sh` toggles the icon theme briefly, forcing GTK file managers (such as Nautilus) to re-render folder icons immediately.
 
@@ -268,6 +268,9 @@ injects the updated `matugen` palette into Spotify via `spicetify apply -n`; if 
 window is currently active in Hyprland, `apply-matugen.sh` automatically dispatches
 a native `Ctrl + Shift + R` reload shortcut via `hyprctl dispatch sendshortcut` to reload
 the interface live with the new colors without closing the client or stopping music playback.
+Because Spotify runs through XWayland to bypass CEF Wayland GPU crashes, context menu blur
+and shadow artifacts are eliminated using specialized compositor rules (see
+[XWayland & Window Rules](../hyprland/xwayland.md)).
 
 ---
 

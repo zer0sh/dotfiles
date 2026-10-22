@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Setup Papirus Folders with Matugen dynamic theming (no sudo required)
+# Setup Papirus Folders with Matugen dynamic theming (custom user themes, no sudo required)
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BIN_DIR="$HOME/.local/bin"
 ICONS_DIR="$HOME/.local/share/icons"
@@ -13,21 +13,26 @@ if ! command -v papirus-folders >/dev/null 2>&1; then
     if [ -f "$SCRIPT_DIR/papirus-folders" ]; then
         cp "$SCRIPT_DIR/papirus-folders" "$BIN_DIR/papirus-folders"
         chmod +x "$BIN_DIR/papirus-folders"
-    elif [ -f "/home/zero/Workspace/playground/papirus-folders/papirus-folders" ]; then
-        cp "/home/zero/Workspace/playground/papirus-folders/papirus-folders" "$BIN_DIR/papirus-folders"
-        chmod +x "$BIN_DIR/papirus-folders"
     fi
 fi
 
-# Ensure user icon directories exist so papirus-folders modifies user icons without root/sudo
-if [ -d "/usr/share/icons/Papirus" ] && [ ! -d "$ICONS_DIR/Papirus" ]; then
-    echo "[INFO] Copying Papirus to ~/.local/share/icons/ for passwordless color switching..."
-    cp -ru /usr/share/icons/Papirus "$ICONS_DIR/"
-fi
+# Create dedicated user-space themes that GTK prioritizes without colliding with /usr/share/
+setup_user_theme() {
+    local src_name="$1"
+    local dst_name="$2"
+    local inherits="$3"
 
-if [ -d "/usr/share/icons/Papirus-Dark" ] && [ ! -d "$ICONS_DIR/Papirus-Dark" ]; then
-    echo "[INFO] Copying Papirus-Dark to ~/.local/share/icons/..."
-    cp -ru /usr/share/icons/Papirus-Dark "$ICONS_DIR/"
-fi
+    if [ -d "/usr/share/icons/$src_name" ] && [ ! -d "$ICONS_DIR/$dst_name" ]; then
+        echo "[INFO] Creating user icon theme $dst_name from $src_name..."
+        cp -r "/usr/share/icons/$src_name" "$ICONS_DIR/$dst_name"
+        sed -i "s/^Name=.*/Name=$dst_name/" "$ICONS_DIR/$dst_name/index.theme"
+        sed -i "s/^Inherits=.*/Inherits=$inherits/" "$ICONS_DIR/$dst_name/index.theme"
+        gtk-update-icon-cache -f "$ICONS_DIR/$dst_name" 2>/dev/null || true
+    fi
+}
 
-echo "[SUCCESS] Papirus folders Matugen integration ready."
+setup_user_theme "Papirus" "Papirus-Matugen" "Papirus,breeze,hicolor"
+setup_user_theme "Papirus-Dark" "Papirus-Matugen-Dark" "Papirus-Dark,Papirus,breeze-dark,hicolor"
+setup_user_theme "Papirus-Light" "Papirus-Matugen-Light" "Papirus-Light,Papirus,breeze,hicolor"
+
+echo "[SUCCESS] Papirus-Matugen user icon themes initialized."

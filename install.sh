@@ -72,7 +72,7 @@ for ver in gtk-3.0 gtk-4.0; do
     cat > "$CONFIG_DIR/$ver/settings.ini" << 'EOF'
 [Settings]
 gtk-theme-name=custom-dark
-gtk-icon-theme-name=Papirus-Dark
+gtk-icon-theme-name=Papirus-Matugen-Dark
 gtk-application-prefer-dark-theme=1
 gtk-decoration-layout=:
 EOF
@@ -81,7 +81,7 @@ done
 if command -v gsettings >/dev/null 2>&1; then
     gsettings set org.gnome.desktop.wm.preferences button-layout ":" 2>/dev/null || true
     gsettings set org.gnome.desktop.interface gtk-theme "custom-dark" 2>/dev/null || true
-    gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface icon-theme "Papirus-Matugen-Dark" 2>/dev/null || true
 fi
 
 # Papirus Folders Matugen integration (user-level dynamic folder coloring)

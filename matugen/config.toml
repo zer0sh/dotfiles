@@ -111,5 +111,6 @@ colors_to_compare = [
     { name = "yellow",     color = "#f9bd30" },
 ]
 compare_to = "{{ colors.primary.default.hex }}"
-post_hook = "papirus-folders -C {{ closest_color }} >/dev/null 2>&1 && papirus-folders -t Papirus-Dark -C {{ closest_color }} >/dev/null 2>&1 || true"
+post_hook = "papirus-folders -t Papirus-Matugen-Dark -C {{ closest_color }} >/dev/null 2>&1 && papirus-folders -t Papirus-Matugen-Light -C {{ closest_color }} >/dev/null 2>&1 && papirus-folders -t Papirus-Matugen -C {{ closest_color }} >/dev/null 2>&1 || true"
+index = 1
 
