@@ -159,6 +159,7 @@ and the [documentation site](https://iniox.github.io/).
 | **[btop](btop.md)** | `themes/current/btop.theme` | Box outlines, graphs, text, selection, gradient metrics | Next launch / live theme switch |
 | **GNOME Classic (GTK 3)** | `themes/current/gtk-3.0.css` | Window, seamless headerbar, inputs, buttons, selections, `custom-dark`/`custom-light` base | Next app launch |
 | **GNOME Modern (GTK 4 / Libadwaita)** | `themes/current/gtk-4.0.css` | Libadwaita named colors, seamless headerbar, soft navigation sidebar, hidden window controls | Next app launch |
+| **Papirus Folders** | `themes/current/papirus-color` | Nearest folder palette (`colors_to_compare`) matching primary accent | Immediate post-hook (`papirus-folders -C`) |
 | **Spicetify (Spotify)** | `themes/current/spicetify.ini` | Main, player, sidebar, cards, text, accents, buttons | `spicetify apply -n` / automated in `apply-matugen.sh` |
 | **[Steam](steam.md)** | `themes/current/steam.css` | Adwaita CSS variables: accent, window_bg, headerbar, sidebar | `post_hook` running `install.py --custom-css -t normal`; restart the Steam client to display it |
 | **[Vim](../terminals/vim.md)** | `themes/current/matugen.vim` | Editor highlights, syntax groups, NERDTree colors, airline statusline palette | `:colorscheme matugen` or new instance |
@@ -174,6 +175,14 @@ The generated stylesheets dynamically theme classic and modern GTK applications 
 * **Unified Surface**: Headerbars blend seamlessly with `@window_bg_color`, allowing sidebars and view panes to extend smoothly from top to bottom without harsh division borders.
 * **Refined Navigation & Breadcrumbs**: Nautilus navigation sidebars use soft rounded pills with accent translucency (`alpha(@accent_bg_color, 0.18)`), and pathbar breadcrumbs adopt rounded corners.
 * **Modern GTK3 Foundation**: GTK3 applications consume the `custom-dark` / `custom-light` base themes (`adw-gtk3`), unifying classic and modern apps under a single Libadwaita design language.
+
+### Papirus Folders Dynamic Theming
+
+Papirus icon folders automatically adapt to the desktop wallpaper without root privileges:
+
+1. **Local Icon Store**: Papirus and Papirus-Dark reside in `~/.local/share/icons/`, enabling `papirus-folders` to switch folder colors without `sudo`.
+2. **Nearest Color Comparison**: Matugen's `colors_to_compare` table evaluates the wallpaper's primary accent against all 23 official Papirus folder palettes (e.g., `nordic`, `blue`, `teal`, `green`, `orange`, `carmine`, etc.).
+3. **Instant Cache Reload**: `apply-matugen.sh` toggles the icon theme briefly, forcing GTK file managers (such as Nautilus) to re-render folder icons immediately.
 
 ![Themed GTK Applications Suite](../assets/images/apps/gtk-suite.png)
 

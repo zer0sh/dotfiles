@@ -83,6 +83,11 @@ if command -v gsettings >/dev/null 2>&1; then
     gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" 2>/dev/null || true
 fi
 
+# Papirus Folders Matugen integration (user-level dynamic folder coloring)
+if [ -f "$REPO_DIR/scripts/setup-papirus-matugen.sh" ]; then
+    "$REPO_DIR/scripts/setup-papirus-matugen.sh"
+fi
+
 # Steam (Adwaita-for-Steam) Matugen theme - native install.py route, no Flatpak
 if command -v steam >/dev/null 2>&1 || [ -d "$HOME/.steam/steam" ]; then
     echo "[INFO] Setting up Steam Matugen integration..."
