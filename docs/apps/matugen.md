@@ -178,11 +178,83 @@ The generated stylesheets dynamically theme classic and modern GTK applications 
 
 ### Papirus Folders Dynamic Theming
 
-Papirus icon folders automatically adapt to the desktop wallpaper without root privileges:
+Papirus icon folders automatically adapt to the desktop wallpaper without requiring root privileges or `sudoers` modifications:
 
-1. **User Icon Namespace**: Custom-named icon themes (`Papirus-Matugen-Dark` and `Papirus-Matugen-Light`) reside in `~/.local/share/icons/`, preventing namespace collisions with system packages in `/usr/share/` and enabling rootless switching without `sudo`.
-2. **Nearest Color Comparison**: Matugen's `colors_to_compare` table evaluates the wallpaper's primary accent against all 23 official Papirus folder palettes (e.g., `nordic`, `blue`, `teal`, `green`, `orange`, `carmine`, etc.).
-3. **Instant Cache Reload**: `apply-matugen.sh` toggles the icon theme briefly, forcing GTK file managers (such as Nautilus) to re-render folder icons immediately.
+#### 1. The Name Collision Problem & User Namespace Solution
+In modern Wayland and GTK 4 setups (such as Nautilus in GNOME 48), if an icon theme named `Papirus-Dark` exists in both `/usr/share/icons/` and `~/.local/share/icons/`, GTK 4 resolves system paths first, falling back to unmodifiable blue folders. 
+
+To overcome this without requiring `sudo` on every wallpaper switch, the environment provisions dedicated user-space themes in `~/.local/share/icons/`:
+* `Papirus-Matugen-Dark` (inherits `Papirus-Dark,Papirus,breeze-dark,hicolor`)
+* `Papirus-Matugen-Light` (inherits `Papirus-Light,Papirus,breeze,hicolor`)
+
+Because these theme names do not exist in `/usr/share/icons/`, GTK 4 is guaranteed to load the user's local instance.
+
+#### 2. Helper Scripts Required
+
+Two scripts manage this pipeline inside `~/dotfiles/scripts/`:
+
+* **`scripts/papirus-folders`**: The official Papirus folder recoloring script bundled directly in the dotfiles repository and deployed to `~/.local/bin/papirus-folders`.
+* **`scripts/setup-papirus-matugen.sh`**: One-time setup utility (executed automatically by `install.sh`) that:
+  1. Installs the `papirus-folders` binary to `~/.local/bin/`.
+  2. Copies system Papirus themes to `~/.local/share/icons/Papirus-Matugen-Dark` and `Papirus-Matugen-Light`.
+  3. Rewrites their `index.theme` to update `Name` and configure `Inherits` fallback to the system package.
+  4. Generates an initial icon cache via `gtk-update-icon-cache`.
+
+To manually trigger or reinitialize the user icon themes:
+```bash
+~/dotfiles/scripts/setup-papirus-matugen.sh
+```
+
+#### 3. Matugen Configuration (`matugen/config.toml`)
+
+Matugen's built-in `colors_to_compare` engine evaluates the wallpaper's primary accent against all 23 official Papirus folder palettes and executes `papirus-folders`:
+
+```toml
+[templates.papirus-folders]
+input_path = "~/.config/matugen/templates/papirus-color"
+output_path = "~/.config/themes/current/papirus-color"
+colors_to_compare = [
+    { name = "black",      color = "#4f4f4f" },
+    { name = "blue",       color = "#5294e2" },
+    { name = "bluegrey",   color = "#607d8b" },
+    { name = "brown",      color = "#ae8e6c" },
+    { name = "carmine",    color = "#a30002" },
+    { name = "cyan",       color = "#00bcd4" },
+    { name = "darkcyan",   color = "#45abb7" },
+    { name = "deeporange", color = "#eb6637" },
+    { name = "green",      color = "#87b158" },
+    { name = "grey",       color = "#8e8e8e" },
+    { name = "indigo",     color = "#5c6bc0" },
+    { name = "magenta",    color = "#ca71df" },
+    { name = "nordic",     color = "#81a1c1" },
+    { name = "orange",     color = "#ee923a" },
+    { name = "palebrown",  color = "#d1bfae" },
+    { name = "paleorange", color = "#eeca8f" },
+    { name = "pink",       color = "#f06292" },
+    { name = "red",        color = "#e25252" },
+    { name = "teal",       color = "#16a085" },
+    { name = "violet",     color = "#7e57c2" },
+    { name = "white",      color = "#e4e4e4" },
+    { name = "yaru",       color = "#676767" },
+    { name = "yellow",     color = "#f9bd30" },
+]
+compare_to = "{{ colors.primary.default.hex }}"
+post_hook = "papirus-folders -t Papirus-Matugen-Dark -C {{ closest_color }} >/dev/null 2>&1 && papirus-folders -t Papirus-Matugen-Light -C {{ closest_color }} >/dev/null 2>&1 && papirus-folders -t Papirus-Matugen -C {{ closest_color }} >/dev/null 2>&1 || true"
+index = 1
+```
+
+The template file `matugen/templates/papirus-color` simply stores:
+```text
+current={{colors.primary.default.hex_stripped}}
+```
+
+#### 4. Live Reloading in `apply-matugen.sh`
+
+Whenever `apply-matugen.sh` runs:
+1. It writes `gtk-icon-theme-name=Papirus-Matugen-Dark` (or `Papirus-Matugen-Light`) into both `~/.config/gtk-3.0/settings.ini` and `~/.config/gtk-4.0/settings.ini`.
+2. Updates `gsettings set org.gnome.desktop.interface icon-theme`.
+3. Runs Matugen, which switches the symlinks in `~/.local/share/icons/Papirus-Matugen-Dark/` to the nearest matching color.
+4. Toggles `icon-theme` to `Adwaita` and back to force running GTK 4 apps (such as Nautilus) to immediately invalidate their icon cache without needing a session restart.
 
 ![Themed GTK Applications Suite](../assets/images/apps/gtk-suite.png)
 
