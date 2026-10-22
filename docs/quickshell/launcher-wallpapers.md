@@ -94,14 +94,18 @@ Typing `/wallpaper ` (or pressing `SUPER + W`) opens the horizontal carousel:
 
 ### 4. Theme Carousel Mode
 Typing `/theme ` or `/tema ` (also `>theme `), clicking "Theme" in the Control Center, or executing `qs ipc call launcher theme` opens the horizontal theme carousel:
-* Reuses the same 1080x340 px floating container and smooth horizontal scroll architecture as the wallpaper carousel.
+* Reuses the same 1080 px floating container (smoothly expanding from 340 px to 392 px height when Matugen is selected) and horizontal scroll architecture as the wallpaper carousel.
+* **Matugen Dynamic Modes Selector:**
+  * When "Wallpaper (Matugen)" is selected or active, an animated top header gracefully expands with Material You mode pills for all 9 Matugen color scheme algorithms: `Vibrant`, `Fruit Salad`, `Monochrome`, `Tonal Spot`, `Expressive`, `Rainbow`, `Fidelity`, `Content`, and `Neutral`.
+  * **Live Palette Preview:** Clicking any mode chip immediately applies that scheme via `apply-matugen.sh` in the background, updating desktop accent colors and Quickshell in real-time without dismissing the launcher.
+  * The active scheme type is saved to `~/.config/themes/current/scheme_type` and preserved across subsequent wallpaper transitions.
 * **Visual Theme Cards (`ThemeCard.qml`):**
   * Displays 224x214 px cards with a dedicated 120 px preview container showcasing an interface mockup for each palette.
   * Preview includes a miniature header, active primary widget, slider with active track, accent chip, and 5 color swatches (`primary`, `primaryContainer`, `surfaceContainerHigh`, `connected`, `textPrimary`).
   * Palette colors resolve via explicit `Qt.color` conversion, ensuring accurate rendering across both static palettes and dynamic Matugen extractions.
   * An "Active" badge dynamically marks the currently applied theme.
 * **Interactive Behavior:**
-  * Selecting a card applies the theme instantly via `Theme.currentTheme`, persists it to `~/.config/quickshell/current-theme`, triggers `apply-theme.sh` or `apply-matugen.sh` across the system, and closes the launcher.
+  * Selecting a card applies the theme instantly via `Theme.currentTheme`, persists it to `~/.config/quickshell/current-theme`, triggers `apply-theme.sh` or `apply-matugen.sh` across the system, and closes the launcher on `Enter`.
   * Full keyboard support with `Left` / `Right` navigation, `Enter` to apply, and text filtering (e.g. `>theme cobalt`).
 
 ### 5. Desktop Gadgets Mode (`/gadgets` or `/widgets`)

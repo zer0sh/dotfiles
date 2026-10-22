@@ -83,10 +83,10 @@ gsettings set org.gnome.desktop.interface icon-theme "$TARGET_ICON_THEME" 2>/dev
 # Refresh Spicetify theme colors if active theme is matugen
 SPICETIFY_BIN="$(which spicetify 2>/dev/null || echo "$HOME/.spicetify/spicetify")"
 if [[ -x "$SPICETIFY_BIN" ]] && [[ -f "$HOME/.config/spicetify/config-xpui.ini" ]] && grep -q "current_theme *= *matugen" "$HOME/.config/spicetify/config-xpui.ini" 2>/dev/null; then
-    if pgrep -x spotify >/dev/null 2>&1; then
-        "$SPICETIFY_BIN" apply 2>/dev/null || true
-    else
-        "$SPICETIFY_BIN" apply -n 2>/dev/null || true
+    "$SPICETIFY_BIN" apply -n 2>/dev/null || true
+    # If Spotify is currently open in Hyprland, reload its interface live without restarting
+    if command -v hyprctl >/dev/null 2>&1 && hyprctl clients 2>/dev/null | grep -q "class: Spotify"; then
+        hyprctl dispatch sendshortcut "CTRL SHIFT, R, class:^(Spotify)$" 2>/dev/null || true
     fi
 fi
 

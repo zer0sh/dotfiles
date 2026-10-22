@@ -64,6 +64,21 @@
   background: {{colors.primary.default.hex}} !important;
 }
 
+/* Hyperlinks por defecto en páginas web que no definen color en su CSS */
+:where(:link) {
+  color: {{colors.primary.default.hex}};
+}
+
+:where(:visited) {
+  color: {{colors.tertiary.default.hex}};
+}
+
+:where(:link):hover,
+:where(:visited):hover {
+  color: {{colors.primary.default.hex}};
+  text-decoration: underline;
+}
+
 /* === Global body/html for about: pages === */
 @-moz-document url-prefix("about:preferences"),
                url-prefix("about:addons"),

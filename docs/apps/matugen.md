@@ -160,7 +160,7 @@ and the [documentation site](https://iniox.github.io/).
 | **GNOME Classic (GTK 3)** | `themes/current/gtk-3.0.css` | Window, seamless headerbar, inputs, buttons, selections, `custom-dark`/`custom-light` base | Next app launch |
 | **GNOME Modern (GTK 4 / Libadwaita)** | `themes/current/gtk-4.0.css` | Libadwaita named colors, seamless headerbar, soft navigation sidebar, hidden window controls | Next app launch |
 | **Papirus Folders** | `themes/current/papirus-color` | Nearest folder palette (`colors_to_compare`) matching primary accent | Immediate post-hook (`papirus-folders -C`) |
-| **Spicetify (Spotify)** | `themes/current/spicetify.ini` | Main, player, sidebar, cards, text, accents, buttons | `spicetify apply -n` / automated in `apply-matugen.sh` (client restart or `Ctrl+Shift+R` if running) |
+| **Spicetify (Spotify)** | `themes/current/spicetify.ini` | Main, player, sidebar, cards, text, accents, buttons | `spicetify apply -n` in `apply-matugen.sh` + live Hyprland reload shortcut |
 | **[Steam](steam.md)** | `themes/current/steam.css` | Adwaita CSS variables: accent, window_bg, headerbar, sidebar | `post_hook` running `install.py --custom-css -t normal`; restart the Steam client to display it |
 | **[Vim](../terminals/vim.md)** | `themes/current/matugen.vim` | Editor highlights, syntax groups, NERDTree colors, airline statusline palette | `:colorscheme matugen` or new instance |
 | **VS Code** (`haikalllp.matugen-theme`) | `~/.cache/matugen/vscode-colors` and `.json` | Full Material You palette (background, foreground, cursor, 16 accent colors) | Automatic via extension file watcher / `Matugen Theme: Update Theme` |
@@ -236,12 +236,14 @@ Center (`modules/controlcenter/ControlCenter.qml`), and manually from a shell.
 Inputs, in order of precedence: the optional first argument, then the
 `~/.config/themes/current/wallpaper` state file. The mode (dark/light) follows
 the optional second argument, then `~/.config/themes/current/mode`, defaulting
-to `dark`. Both state files are rewritten on every run.
+to `dark`. The color scheme type (`scheme-vibrant`, `scheme-fruit-salad`, `scheme-monochrome`, etc.)
+follows the optional third argument, then `~/.config/themes/current/scheme_type`, defaulting
+to `scheme-vibrant`. All three state files are rewritten on every run.
 
 The script executes:
 
 1. `matugen image` with `--config ~/.config/matugen/config.toml`,
-   `-t scheme-vibrant`, `--contrast 0.2`, `--mode`, `--source-color-index 0`
+   `-t "$TYPE"`, `--contrast 0.2`, `--mode "$MODE"`, `--source-color-index 0`
    and `--quiet` (the index flag bypasses the interactive color picker).
 2. `hyprctl reload` to re-read the generated border colors.
 3. `pkill -SIGUSR2 waybar` to reload the status bar stylesheet.
@@ -262,10 +264,10 @@ be reloaded programmatically either: the rendered `zen-userChrome.css` and
 `zen-userContent.css` are picked up on the next full browser restart. Steam is
 re-injected automatically by its `post_hook` on every render, but the client
 must be restarted to display the refreshed palette. Similarly, Spicetify permanently
-injects the updated `matugen` palette into Spotify via `spicetify apply -n`; because the
-`-n` (`--no-restart`) flag avoids disrupting playback, a running Spotify client requires
-either a window reload (`Ctrl + Shift + R`) or a client restart to render the new colors,
-without needing temporary development commands like `spicetify watch -s`.
+injects the updated `matugen` palette into Spotify via `spicetify apply -n`; if a Spotify
+window is currently active in Hyprland, `apply-matugen.sh` automatically dispatches
+a native `Ctrl + Shift + R` reload shortcut via `hyprctl dispatch sendshortcut` to reload
+the interface live with the new colors without closing the client or stopping music playback.
 
 ---
 

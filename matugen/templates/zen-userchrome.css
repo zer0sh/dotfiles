@@ -302,3 +302,18 @@ toolbar .toolbarbutton-1 > .toolbarbutton-icon {
   scrollbar-color: {{colors.outline_variant.default.hex}} transparent !important;
   scrollbar-width: thin !important;
 }
+
+/* ==========================================================================
+   8. Previsualización de Enlaces (Statuspanel - Abajo a la izquierda)
+   ========================================================================== */
+
+#statuspanel #statuspanel-label {
+  background-color: color-mix(in srgb, {{colors.surface_container_high.default.hex}} 92%, transparent) !important;
+  color: {{colors.primary.default.hex}} !important; /* Fuente verde / acento dinámico */
+  border: 1px solid {{colors.outline_variant.default.hex}} !important;
+  border-radius: var(--zen-border-radius, 8px) !important;
+  margin: 4px !important;
+  padding: 3px 8px !important;
+  font-weight: 500 !important;
+  backdrop-filter: blur(12px) !important;
+}

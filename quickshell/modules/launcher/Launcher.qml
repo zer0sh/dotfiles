@@ -133,6 +133,60 @@ Scope {
         { id: "cyberpunk", name: "Cyberpunk", desc: "Neon turquoise, magenta and electric violet" }
     ]
 
+    property string activeMatugenScheme: "scheme-vibrant"
+
+    readonly property var matugenModesList: [
+        { id: "scheme-vibrant", name: "Vibrant", icon: "auto_awesome" },
+        { id: "scheme-fruit-salad", name: "Fruit Salad", icon: "nutrition" },
+        { id: "scheme-monochrome", name: "Monochrome", icon: "contrast" },
+        { id: "scheme-tonal-spot", name: "Tonal Spot", icon: "palette" },
+        { id: "scheme-expressive", name: "Expressive", icon: "brush" },
+        { id: "scheme-rainbow", name: "Rainbow", icon: "looks" },
+        { id: "scheme-fidelity", name: "Fidelity", icon: "center_focus_strong" },
+        { id: "scheme-content", name: "Content", icon: "image" },
+        { id: "scheme-neutral", name: "Neutral", icon: "lens" }
+    ]
+
+    readonly property bool isMatugenSelected: {
+        if (currentMode !== "theme") return false;
+        if (filteredThemes.length === 0) return false;
+        if (selectedIndex >= 0 && selectedIndex < filteredThemes.length) {
+            return filteredThemes[selectedIndex].id === "matugen";
+        }
+        return Root.Theme.currentTheme === "matugen";
+    }
+
+    Process {
+        id: matugenSchemeReadProc
+        command: ["/bin/sh", "-c", "cat ~/.config/themes/current/scheme_type 2>/dev/null || echo 'scheme-vibrant'"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var s = text.trim();
+                if (s !== "") {
+                    launcher.activeMatugenScheme = s;
+                }
+            }
+        }
+    }
+
+    Process {
+        id: matugenApplySchemeProc
+    }
+
+    function applyMatugenScheme(schemeId) {
+        if (!schemeId || schemeId === "") return;
+        launcher.activeMatugenScheme = schemeId;
+
+        if (Root.Theme.currentTheme !== "matugen") {
+            Root.Theme.currentTheme = "matugen";
+            actionExecProc.command = ["/bin/sh", "-c", "printf '%s\\n' 'matugen' > ~/.config/quickshell/current-theme"];
+            actionExecProc.running = true;
+        }
+
+        matugenApplySchemeProc.command = ["/home/zero/.config/themes/apply-matugen.sh", "", "", schemeId];
+        matugenApplySchemeProc.running = true;
+    }
+
     function applyTheme(themeId) {
         if (!themeId || themeId === "") return;
         Root.Theme.currentTheme = themeId;
@@ -144,6 +198,7 @@ Scope {
     function openThemes() {
         searchText = "/theme ";
         panelVisible = true;
+        matugenSchemeReadProc.running = true;
         var curIdx = 0;
         for (var i = 0; i < themesList.length; i++) {
             if (themesList[i].id === Root.Theme.currentTheme) {
@@ -281,7 +336,12 @@ Scope {
             if (launcher.selectedIndex >= 0 && launcher.selectedIndex < launcher.filteredThemes.length) {
                 var selectedTheme = launcher.filteredThemes[launcher.selectedIndex];
                 if (selectedTheme && selectedTheme.id) {
-                    launcher.applyTheme(selectedTheme.id);
+                    if (selectedTheme.id === "matugen") {
+                        launcher.applyMatugenScheme(launcher.activeMatugenScheme);
+                        launcher.panelVisible = false;
+                    } else {
+                        launcher.applyTheme(selectedTheme.id);
+                    }
                 }
             }
         } else if (launcher.currentMode === "gadgets") {
@@ -517,6 +577,7 @@ Scope {
         appsReadProc.running = true;
         refreshWallpapers();
         shaderCurrentProc.running = true;
+        matugenSchemeReadProc.running = true;
     }
 
     // ── IPC Handlers ─────────────────────────────────────────────
@@ -661,7 +722,8 @@ Scope {
                 }
 
                 height: {
-                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") return 340;
+                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "gadgets") return 340;
+                    if (launcher.currentMode === "theme") return launcher.isMatugenSelected ? 392 : 340;
                     if (launcher.currentMode === "actions") {
                         var actCount = launcher.filteredActions.length;
                         return Math.min(460, Math.max(140, actCount * 50 + 76));
@@ -868,6 +930,139 @@ Scope {
                         anchors.fill: parent
                         clip: true
 
+                        // Barra superior de modos Matugen
+                        Rectangle {
+                            id: matugenModesBar
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            height: launcher.isMatugenSelected ? 40 : 0
+                            visible: height > 0
+                            opacity: launcher.isMatugenSelected ? 1.0 : 0.0
+                            color: "transparent"
+                            clip: true
+
+                            Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+                            Behavior on opacity { NumberAnimation { duration: 180 } }
+
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.leftMargin: 4
+                                anchors.rightMargin: 4
+                                spacing: 10
+
+                                // Etiqueta de sección
+                                Row {
+                                    Layout.alignment: Qt.AlignVCenter
+                                    spacing: 6
+
+                                    Text {
+                                        text: "󰏘"
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: 15
+                                        color: Root.Theme.primary
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Text {
+                                        text: "Modo:"
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: 12
+                                        font.weight: Font.DemiBold
+                                        color: Root.Theme.textSecondary
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
+
+                                // Carrusel de pastillas de modo
+                                ListView {
+                                    id: modesCarousel
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    orientation: ListView.Horizontal
+                                    spacing: 6
+                                    clip: true
+                                    boundsBehavior: Flickable.StopAtBounds
+                                    model: launcher.matugenModesList
+
+                                    delegate: Rectangle {
+                                        id: modeChip
+                                        readonly property var modeData: modelData
+                                        readonly property bool isActive: launcher.activeMatugenScheme === modeData.id
+                                        readonly property bool isHovered: chipMouse.containsMouse
+
+                                        width: chipRow.implicitWidth + 22
+                                        height: 30
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        radius: 15
+
+                                        color: isActive
+                                            ? Root.Theme.primary
+                                            : (isHovered ? Root.Theme.surfaceBright : Root.Theme.surfaceContainer)
+                                        border.width: 1
+                                        border.color: isActive
+                                            ? Root.Theme.primary
+                                            : (isHovered
+                                                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.45)
+                                                : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.35))
+
+                                        Behavior on color { ColorAnimation { duration: 140 } }
+                                        Behavior on border.color { ColorAnimation { duration: 140 } }
+
+                                        Row {
+                                            id: chipRow
+                                            anchors.centerIn: parent
+                                            spacing: 6
+
+                                            Text {
+                                                text: modeData.icon
+                                                font.family: Root.Theme.iconFont
+                                                font.pixelSize: 15
+                                                color: modeChip.isActive
+                                                    ? Root.Theme.tileActiveText
+                                                    : (modeChip.isHovered ? Root.Theme.textPrimary : Root.Theme.textSecondary)
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                Behavior on color { ColorAnimation { duration: 140 } }
+                                            }
+
+                                            Text {
+                                                text: modeData.name
+                                                font.family: Root.Theme.fontFamily
+                                                font.pixelSize: 12
+                                                font.weight: modeChip.isActive ? Font.Bold : Font.Normal
+                                                color: modeChip.isActive
+                                                    ? Root.Theme.tileActiveText
+                                                    : (modeChip.isHovered ? Root.Theme.textPrimary : Root.Theme.textSecondary)
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                Behavior on color { ColorAnimation { duration: 140 } }
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            id: chipMouse
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                launcher.applyMatugenScheme(modeData.id);
+                                            }
+                                        }
+                                    }
+
+                                    WheelHandler {
+                                        acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                                        onWheel: function(event) {
+                                            var delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
+                                            var step = delta * 1.5;
+                                            var targetX = modesCarousel.contentX - step;
+                                            var maxX = Math.max(0, modesCarousel.contentWidth - modesCarousel.width);
+                                            modesCarousel.contentX = Math.max(0, Math.min(maxX, targetX));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         function scrollToCard(index, immediate) {
                             var itemWidth = 236 + 16;
                             var targetX = index * itemWidth + 118 - (themeCarousel.width / 2);
@@ -892,8 +1087,11 @@ Scope {
 
                         ListView {
                             id: themeCarousel
-                            anchors.fill: parent
-                            anchors.topMargin: 8
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            anchors.top: matugenModesBar.bottom
+                            anchors.bottom: parent.bottom
+                            anchors.topMargin: launcher.isMatugenSelected ? 6 : 8
                             anchors.bottomMargin: 4
                             orientation: ListView.Horizontal
                             spacing: 16
@@ -928,7 +1126,15 @@ Scope {
                                     onActivated: {
                                         launcher.selectedIndex = index;
                                         if (itemData) {
-                                            launcher.applyTheme(itemData.id);
+                                            if (itemData.id === "matugen") {
+                                                if (Root.Theme.currentTheme === "matugen") {
+                                                    launcher.panelVisible = false;
+                                                } else {
+                                                    launcher.applyMatugenScheme(launcher.activeMatugenScheme);
+                                                }
+                                            } else {
+                                                launcher.applyTheme(itemData.id);
+                                            }
                                         }
                                     }
                                 }
@@ -957,7 +1163,7 @@ Scope {
                         Rectangle {
                             id: themeLeftFade
                             anchors.left: parent.left
-                            anchors.top: parent.top
+                            anchors.top: matugenModesBar.bottom
                             anchors.bottom: parent.bottom
                             width: 32
                             z: 50
@@ -976,7 +1182,7 @@ Scope {
                         Rectangle {
                             id: themeRightFade
                             anchors.right: parent.right
-                            anchors.top: parent.top
+                            anchors.top: matugenModesBar.bottom
                             anchors.bottom: parent.bottom
                             width: 32
                             z: 50
