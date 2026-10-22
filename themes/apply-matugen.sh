@@ -40,15 +40,19 @@ pkill -SIGUSR2 waybar 2>/dev/null || true
 printf '%s\n' "matugen" > "$HOME/.config/quickshell/current-theme"
 
 # Sync GTK color-scheme and force reload of gtk.css
-CURRENT_GTK_THEME="$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null | tr -d "'" || echo "Adwaita-dark")"
 if [[ "$MODE" == "light" ]]; then
+    TARGET_GTK_THEME="custom-light"
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-light' 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Light' 2>/dev/null || true
 else
+    TARGET_GTK_THEME="custom-dark"
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark' 2>/dev/null || true
 fi
+gsettings set org.gnome.desktop.wm.preferences button-layout ":" 2>/dev/null || true
 # Toggle theme name briefly to trigger GTK stylesheet re-read in running apps
-gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3' 2>/dev/null || true
-gsettings set org.gnome.desktop.interface gtk-theme "$CURRENT_GTK_THEME" 2>/dev/null || true
+gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita' 2>/dev/null || true
+gsettings set org.gnome.desktop.interface gtk-theme "$TARGET_GTK_THEME" 2>/dev/null || true
 
 # Refresh Spicetify theme colors if active theme is matugen
 if [[ -f "$HOME/.config/spicetify/config-xpui.ini" ]] && grep -q "current_theme *= *matugen" "$HOME/.config/spicetify/config-xpui.ini" 2>/dev/null; then

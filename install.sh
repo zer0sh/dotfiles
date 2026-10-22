@@ -57,10 +57,31 @@ if [ -d "$CONFIG_DIR/btop/themes" ]; then
     ln -sf "$CONFIG_DIR/themes/current/btop.theme" "$CONFIG_DIR/btop/themes/matugen.theme"
 fi
 
-# GTK 3 & GTK 4 Matugen themes
-mkdir -p "$CONFIG_DIR/gtk-3.0" "$CONFIG_DIR/gtk-4.0"
+# GTK 3 & GTK 4 Matugen themes (Mitsugen-inspired clean layout)
+mkdir -p "$CONFIG_DIR/gtk-3.0" "$CONFIG_DIR/gtk-4.0" "$HOME/.local/share/themes"
 ln -sf "$CONFIG_DIR/themes/current/gtk-3.0.css" "$CONFIG_DIR/gtk-3.0/gtk.css"
 ln -sf "$CONFIG_DIR/themes/current/gtk-4.0.css" "$CONFIG_DIR/gtk-4.0/gtk.css"
+
+# Install custom-dark and custom-light base GTK themes
+if [ -d "$REPO_DIR/themes/gtk" ]; then
+    cp -ru "$REPO_DIR/themes/gtk/"* "$HOME/.local/share/themes/"
+fi
+
+# Clean GTK settings: hide window control buttons & set custom-dark default
+for ver in gtk-3.0 gtk-4.0; do
+    cat > "$CONFIG_DIR/$ver/settings.ini" << 'EOF'
+[Settings]
+gtk-theme-name=custom-dark
+gtk-application-prefer-dark-theme=1
+gtk-decoration-layout=:
+EOF
+done
+
+if command -v gsettings >/dev/null 2>&1; then
+    gsettings set org.gnome.desktop.wm.preferences button-layout ":" 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface gtk-theme "custom-dark" 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface icon-theme "Papirus-Dark" 2>/dev/null || true
+fi
 
 # Steam (Adwaita-for-Steam) Matugen theme - native install.py route, no Flatpak
 if command -v steam >/dev/null 2>&1 || [ -d "$HOME/.steam/steam" ]; then

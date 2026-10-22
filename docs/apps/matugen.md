@@ -157,8 +157,8 @@ and the [documentation site](https://iniox.github.io/).
 | **[Hyprlock](../hyprland/hyprlock.md)** | `themes/current/hyprlock.conf` | Lockscreen text, ring accent, error and warning colors | Next screen lock event |
 | **hyprpolkitagent / Hyprland QML apps** | `hypr/hyprtoolkit.conf` | Hyprtoolkit palette: background, base, text, alternate and highlight colors | Next application launch |
 | **[btop](btop.md)** | `themes/current/btop.theme` | Box outlines, graphs, text, selection, gradient metrics | Next launch / live theme switch |
-| **GNOME Classic (GTK 3)** | `themes/current/gtk-3.0.css` | Window, headerbar, inputs, buttons, selection, accent | Next app launch |
-| **GNOME Modern (GTK 4 / Libadwaita)** | `themes/current/gtk-4.0.css` | Libadwaita named colors: accent, window_bg, headerbar, cards | Next app launch |
+| **GNOME Classic (GTK 3)** | `themes/current/gtk-3.0.css` | Window, seamless headerbar, inputs, buttons, selections, `custom-dark`/`custom-light` base | Next app launch |
+| **GNOME Modern (GTK 4 / Libadwaita)** | `themes/current/gtk-4.0.css` | Libadwaita named colors, seamless headerbar, soft navigation sidebar, hidden window controls | Next app launch |
 | **Spicetify (Spotify)** | `themes/current/spicetify.ini` | Main, player, sidebar, cards, text, accents, buttons | `spicetify apply -n` / automated in `apply-matugen.sh` |
 | **[Steam](steam.md)** | `themes/current/steam.css` | Adwaita CSS variables: accent, window_bg, headerbar, sidebar | `post_hook` running `install.py --custom-css -t normal`; restart the Steam client to display it |
 | **[Vim](../terminals/vim.md)** | `themes/current/matugen.vim` | Editor highlights, syntax groups, NERDTree colors, airline statusline palette | `:colorscheme matugen` or new instance |
@@ -168,7 +168,12 @@ and the [documentation site](https://iniox.github.io/).
 
 ### Themed GTK Applications Suite
 
-The generated stylesheets dynamically theme classic and modern GTK applications to match the active desktop palette:
+The generated stylesheets dynamically theme classic and modern GTK applications to match the active desktop palette, inspired by [Mitsugen](https://github.com/DimitrisMilonopoulos/mitsugen):
+
+* **Ultra-Clean Headerbars**: Window controls (minimize, maximize, close buttons) are hidden via `gsettings set org.gnome.desktop.wm.preferences button-layout ":"` and GTK CSS, keeping titlebars distraction-free.
+* **Unified Surface**: Headerbars blend seamlessly with `@window_bg_color`, allowing sidebars and view panes to extend smoothly from top to bottom without harsh division borders.
+* **Refined Navigation & Breadcrumbs**: Nautilus navigation sidebars use soft rounded pills with accent translucency (`alpha(@accent_bg_color, 0.18)`), and pathbar breadcrumbs adopt rounded corners.
+* **Modern GTK3 Foundation**: GTK3 applications consume the `custom-dark` / `custom-light` base themes (`adw-gtk3`), unifying classic and modern apps under a single Libadwaita design language.
 
 ![Themed GTK Applications Suite](../assets/images/apps/gtk-suite.png)
 
@@ -234,8 +239,9 @@ The script executes:
 4. Writes `matugen` to `~/.config/quickshell/current-theme` so Quickshell
    consumes `palette.json` instead of a static theme.
 5. Sets `org.gnome.desktop.interface color-scheme` to `prefer-dark` or
-   `prefer-light` and toggles `gtk-theme` to `adw-gtk3` to force GTK
-   stylesheets to re-read.
+   `prefer-light`, sets `icon-theme` (`Papirus-Dark` or `Papirus-Light`),
+   enforces `button-layout ":"` to hide window controls, and toggles
+   `gtk-theme` to force GTK stylesheets to re-read with `custom-dark` or `custom-light`.
 6. Runs `spicetify apply -n` only when the active Spicetify theme is `matugen`.
 7. Runs `~/.config/themes/update-wallpaper-cache.sh` to refresh wallpaper
    thumbnails.
