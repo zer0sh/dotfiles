@@ -1,44 +1,134 @@
-/* Matugen Zen Browser Theme
-* Source: InioX/matugen-themes (MIT) - templates/zen-userchrome.css
-* Rendered into <profile>/chrome/zen-userChrome.css and imported by chrome/userChrome.css
-*/
+/* Matugen Zen Browser Theme - Material You with Transparency & Clean Search
+ * Rendered into <profile>/chrome/zen-userChrome.css and imported by chrome/userChrome.css
+ */
+
 :root {
-  --zen-primary-color: {{colors.primary_container.default.hex}} !important;
+  /* Color tokens */
+  --zen-primary-color: {{colors.primary.default.hex}} !important;
   --toolbarbutton-icon-fill: {{colors.primary.default.hex}} !important;
-  --toolbar-field-color: {{colors.on_background.default.hex}} !important;
-  --tab-selected-textcolor: {{colors.primary.default.hex}} !important;
-  --toolbar-color: {{colors.on_background.default.hex}} !important;
-  --arrowpanel-color: {{colors.on_background.default.hex}} !important;
+  --toolbar-field-color: {{colors.on_surface.default.hex}} !important;
+  --tab-selected-textcolor: {{colors.on_primary_container.default.hex}} !important;
+  --toolbar-color: {{colors.on_surface.default.hex}} !important;
+  --arrowpanel-color: {{colors.on_surface.default.hex}} !important;
   --arrowpanel-background: {{colors.surface_container.default.hex}} !important;
-  --sidebar-text-color: {{colors.on_background.default.hex}} !important;
-  --zen-main-browser-background: {{colors.background.default.hex}} !important;
-  --zen-main-browser-background-toolbar: {{colors.background.default.hex}} !important;
+  --sidebar-text-color: {{colors.on_surface.default.hex}} !important;
+
+  /* Translucency tokens */
+  --zen-main-browser-background: color-mix(in srgb, {{colors.background.default.hex}} 78%, transparent) !important;
+  --zen-main-browser-background-toolbar: color-mix(in srgb, {{colors.background.default.hex}} 72%, transparent) !important;
+  --zen-background-opacity: 0.82 !important;
+}
+
+/* ==========================================================================
+   1. Transparencias y Soporte para Blur del Sistema (Hyprland)
+   ========================================================================== */
+
+#main-window,
+#browser,
+body {
+  background-color: transparent !important;
 }
 
 #zen-browser-background {
-  --zen-main-browser-background: {{colors.background.default.hex}} !important;
-  --zen-background-opacity: 1 !important;
+  --zen-main-browser-background: color-mix(in srgb, {{colors.background.default.hex}} 78%, transparent) !important;
+  --zen-background-opacity: 0.82 !important;
+  background-color: color-mix(in srgb, {{colors.background.default.hex}} 78%, transparent) !important;
+  backdrop-filter: blur(20px) !important;
 }
 
 #zen-toolbar-background {
-  --zen-main-browser-background-toolbar: {{colors.background.default.hex}} !important;
-  --zen-background-opacity: 1 !important;
-}
-
-.sidebar-placesTree {
-  background-color: {{colors.surface_container.default.hex}} !important;
-}
-
-#zen-workspaces-button {
-  background-color: {{colors.surface_container.default.hex}} !important;
+  --zen-main-browser-background-toolbar: color-mix(in srgb, {{colors.background.default.hex}} 72%, transparent) !important;
+  --zen-background-opacity: 0.82 !important;
+  background-color: color-mix(in srgb, {{colors.background.default.hex}} 72%, transparent) !important;
+  backdrop-filter: blur(20px) !important;
 }
 
 #TabsToolbar {
-  background-color: {{colors.background.default.hex}} !important;
+  background-color: transparent !important;
 }
 
+#zen-appcontent-navbar-container {
+  background-color: color-mix(in srgb, {{colors.background.default.hex}} 75%, transparent) !important;
+  backdrop-filter: blur(16px) !important;
+}
+
+.sidebar-placesTree {
+  background-color: color-mix(in srgb, {{colors.surface_container.default.hex}} 65%, transparent) !important;
+}
+
+/* ==========================================================================
+   2. Pestañas Estilo Píldora Material You (Tabs)
+   ========================================================================== */
+
+.tabbrowser-tab {
+  padding-inline: 4px !important;
+  margin-block: 2px !important;
+}
+
+/* Fondo con forma de píldora */
+.tabbrowser-tab .tab-background {
+  border-radius: 20px !important;
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease !important;
+}
+
+/* Pestaña activa / seleccionada */
+.tabbrowser-tab[selected="true"] .tab-background {
+  background-color: {{colors.primary_container.default.hex}} !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25) !important;
+}
+
+.tabbrowser-tab[selected="true"] .tab-label {
+  color: {{colors.on_primary_container.default.hex}} !important;
+  font-weight: 600 !important;
+}
+
+.tabbrowser-tab[selected="true"] .tab-close-button {
+  fill: {{colors.on_primary_container.default.hex}} !important;
+  color: {{colors.on_primary_container.default.hex}} !important;
+  border-radius: 50% !important;
+}
+
+.tabbrowser-tab[selected="true"] .tab-close-button:hover {
+  background-color: color-mix(in srgb, {{colors.on_primary_container.default.hex}} 20%, transparent) !important;
+}
+
+/* Hover en pestañas inactivas */
+.tabbrowser-tab:hover .tab-background:not([selected="true"]) {
+  background-color: color-mix(in srgb, {{colors.surface_container_high.default.hex}} 65%, transparent) !important;
+}
+
+/* Botón de nueva pestaña estilo píldora (Pill) */
+#tabs-newtab-button,
+#TabsToolbar #tabs-newtab-button,
+#new-tab-button {
+  border-radius: 20px !important;
+  margin-inline: 4px !important;
+  margin-block: 2px !important;
+  transition: background-color 0.2s ease, transform 0.15s ease !important;
+}
+
+#tabs-newtab-button:hover,
+#TabsToolbar #tabs-newtab-button:hover,
+#new-tab-button:hover {
+  background-color: color-mix(in srgb, {{colors.surface_container_high.default.hex}} 80%, transparent) !important;
+}
+
+/* ==========================================================================
+   3. Barra de Búsqueda y Direcciones (URL Bar)
+      Fondo neutro armonizado + Borde fino con color de acento
+   ========================================================================== */
+
+#urlbar-background,
 .urlbar-background {
-  background-color: {{colors.surface_container.default.hex}} !important;
+  background-color: color-mix(in srgb, {{colors.surface_container.default.hex}} 80%, transparent) !important;
+  border-radius: var(--zen-border-radius, 10px) !important;
+  border: 1.5px solid {{colors.primary.default.hex}} !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+#urlbar-input,
+.urlbar-input {
+  color: {{colors.on_surface.default.hex}} !important;
 }
 
 .urlbar-input::selection {
@@ -46,11 +136,129 @@
   background-color: {{colors.primary.default.hex}} !important;
 }
 
+/* Iconos de la barra de URL */
+#identity-box,
+#tracking-protection-icon-container,
+.urlbar-icon,
+.urlbar-addon-page-action {
+  fill: {{colors.on_surface_variant.default.hex}} !important;
+  color: {{colors.on_surface_variant.default.hex}} !important;
+}
+
+/* Estado de foco y desplegable abierto (Breakout) */
+#urlbar[breakout-extend="true"] .urlbar-background,
+#urlbar[focused="true"] #urlbar-background {
+  background-color: color-mix(in srgb, {{colors.surface_container_high.default.hex}} 94%, transparent) !important;
+  border: 2px solid {{colors.primary.default.hex}} !important;
+  border-radius: var(--zen-border-radius, 10px) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+  backdrop-filter: blur(20px) !important;
+}
+
+#urlbar[focused="true"] .urlbar-icon,
+#urlbar[breakout-extend="true"] .urlbar-icon {
+  fill: {{colors.primary.default.hex}} !important;
+  color: {{colors.primary.default.hex}} !important;
+}
+
+/* ==========================================================================
+   4. Resultados de Búsqueda y Sugerencias de URL
+   ========================================================================== */
+
+.urlbarView-body-inner {
+  border: none !important;
+}
+
+.urlbarView-row {
+  border-radius: var(--zen-border-radius, 8px) !important;
+  margin-inline: 4px !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.urlbarView-row:hover {
+  background-color: color-mix(in srgb, {{colors.surface_container_highest.default.hex}} 75%, transparent) !important;
+}
+
+.urlbarView-row[selected] {
+  background-color: {{colors.primary_container.default.hex}} !important;
+  color: {{colors.on_primary_container.default.hex}} !important;
+}
+
+.urlbarView-row[selected] .urlbarView-title,
+.urlbarView-row[selected] .urlbarView-url {
+  color: {{colors.on_primary_container.default.hex}} !important;
+}
+
 .urlbarView-url {
   color: {{colors.on_surface_variant.default.hex}} !important;
 }
 
+.search-one-offs {
+  border-top: none !important;
+  border-radius: var(--zen-border-radius, 8px) !important;
+}
+
+.searchbar-engine-one-off-item {
+  border-radius: var(--zen-border-radius, 6px) !important;
+}
+
+/* ==========================================================================
+   5. Buscador en Página (Findbar - Ctrl+F)
+   ========================================================================== */
+
+findbar {
+  background-color: color-mix(in srgb, {{colors.surface_container_high.default.hex}} 92%, transparent) !important;
+  backdrop-filter: blur(16px) !important;
+  border-top: 2px solid {{colors.primary.default.hex}} !important;
+  color: {{colors.on_surface.default.hex}} !important;
+  padding: 6px 14px !important;
+}
+
+findbar .findbar-textbox {
+  background-color: {{colors.surface_container.default.hex}} !important;
+  color: {{colors.on_surface.default.hex}} !important;
+  border-radius: var(--zen-border-radius, 8px) !important;
+  border: 1.5px solid {{colors.outline_variant.default.hex}} !important;
+  padding: 4px 12px !important;
+  transition: border-color 0.2s ease !important;
+}
+
+findbar .findbar-textbox:focus {
+  border-color: {{colors.primary.default.hex}} !important;
+  outline: none !important;
+}
+
+findbar .findbar-find-next,
+findbar .findbar-find-previous,
+findbar .findbar-closebutton {
+  fill: {{colors.primary.default.hex}} !important;
+  color: {{colors.primary.default.hex}} !important;
+  border-radius: var(--zen-border-radius, 6px) !important;
+}
+
+findbar .findbar-find-next:hover,
+findbar .findbar-find-previous:hover,
+findbar .findbar-closebutton:hover {
+  background-color: color-mix(in srgb, {{colors.primary.default.hex}} 18%, transparent) !important;
+}
+
+/* ==========================================================================
+   6. Workspaces, Toolbars y Botones
+   ========================================================================== */
+
+#zen-workspaces-button {
+  background-color: color-mix(in srgb, {{colors.surface_container.default.hex}} 70%, transparent) !important;
+  border-radius: 14px !important;
+  border: 1px solid {{colors.outline_variant.default.hex}} !important;
+  transition: background-color 0.2s ease !important;
+}
+
+#zen-workspaces-button:hover {
+  background-color: color-mix(in srgb, {{colors.surface_container_high.default.hex}} 85%, transparent) !important;
+}
+
 toolbar .toolbarbutton-1 {
+  border-radius: 12px !important;
   &:not([disabled]) {
     &:is([open], [checked])
       > :is(
@@ -58,13 +266,14 @@ toolbar .toolbarbutton-1 {
         .toolbarbutton-text,
         .toolbarbutton-badge-stack
       ) {
-      fill: {{colors.primary.default.hex}}
+      fill: {{colors.primary.default.hex}} !important;
+      color: {{colors.primary.default.hex}} !important;
     }
   }
 }
 
-#zen-appcontent-navbar-container {
-  background-color: {{colors.background.default.hex}} !important;
+toolbar .toolbarbutton-1 > .toolbarbutton-icon {
+  fill: {{colors.primary.default.hex}} !important;
 }
 
 #PanelUI-menu-button .toolbarbutton-icon,
@@ -85,6 +294,11 @@ toolbar .toolbarbutton-1 {
   color: {{colors.on_surface.default.hex}} !important;
 }
 
-toolbar .toolbarbutton-1 > .toolbarbutton-icon {
-  fill: {{colors.primary.default.hex}} !important;
+/* ==========================================================================
+   7. Scrollbars Minimalistas
+   ========================================================================== */
+
+* {
+  scrollbar-color: {{colors.outline_variant.default.hex}} transparent !important;
+  scrollbar-width: thin !important;
 }

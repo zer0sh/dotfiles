@@ -12,6 +12,7 @@ THEMES_CURRENT="$CONFIG_DIR/themes/current"
 WALLPAPER_FILE="$THEMES_CURRENT/wallpaper"
 MODE_FILE="$THEMES_CURRENT/mode"
 STYLE_PREF='toolkit.legacyUserProfileCustomizations.stylesheets'
+TRANSPARENT_PREF='browser.tabs.allow_transparent_browser'
 
 echo "[INFO] Configuring Zen Browser integration with Matugen..."
 
@@ -120,6 +121,14 @@ if grep -Fq "\"$STYLE_PREF\", true" "$PROFILE_DIR/prefs.js" 2>/dev/null ||
 else
     printf 'user_pref("%s", true);\n' "$STYLE_PREF" >> "$USER_JS"
     echo "[INFO] Enabled $STYLE_PREF in $USER_JS."
+fi
+
+if grep -Fq "\"$TRANSPARENT_PREF\", true" "$PROFILE_DIR/prefs.js" 2>/dev/null ||
+   grep -Fq "\"$TRANSPARENT_PREF\", true" "$USER_JS" 2>/dev/null; then
+    echo "[INFO] $TRANSPARENT_PREF is already enabled."
+else
+    printf 'user_pref("%s", true);\n' "$TRANSPARENT_PREF" >> "$USER_JS"
+    echo "[INFO] Enabled $TRANSPARENT_PREF in $USER_JS."
 fi
 
 # 7. Generate the palette when a wallpaper is already known

@@ -3,8 +3,10 @@ set -euo pipefail
 
 WALLPAPER="${1:-}"
 MODE="${2:-}"
+TYPE="${3:-}"
 STATE_FILE="$HOME/.config/themes/current/wallpaper"
 MODE_FILE="$HOME/.config/themes/current/mode"
+TYPE_FILE="$HOME/.config/themes/current/scheme_type"
 
 if [[ -z "$WALLPAPER" && -f "$STATE_FILE" ]]; then
     WALLPAPER="$(<"$STATE_FILE")"
@@ -18,6 +20,14 @@ if [[ -z "$MODE" ]]; then
     fi
 fi
 
+if [[ -z "$TYPE" ]]; then
+    if [[ -f "$TYPE_FILE" ]]; then
+        TYPE="$(<"$TYPE_FILE")"
+    else
+        TYPE="scheme-vibrant"
+    fi
+fi
+
 if [[ -z "$WALLPAPER" || ! -f "$WALLPAPER" ]]; then
     echo "Wallpaper not found: ${WALLPAPER:-<empty>}" >&2
     exit 1
@@ -26,10 +36,11 @@ fi
 mkdir -p "$HOME/.config/themes/current"
 printf '%s\n' "$WALLPAPER" > "$STATE_FILE"
 printf '%s\n' "$MODE" > "$MODE_FILE"
+printf '%s\n' "$TYPE" > "$TYPE_FILE"
 
 matugen image "$WALLPAPER" \
     --config "$HOME/.config/matugen/config.toml" \
-    -t scheme-vibrant --contrast 0.2 \
+    -t "$TYPE" --contrast 0.2 \
     --mode "$MODE" --source-color-index 0 --quiet
 
 hyprctl reload 2>/dev/null || true
@@ -70,8 +81,13 @@ gsettings set org.gnome.desktop.interface icon-theme 'Adwaita' 2>/dev/null || tr
 gsettings set org.gnome.desktop.interface icon-theme "$TARGET_ICON_THEME" 2>/dev/null || true
 
 # Refresh Spicetify theme colors if active theme is matugen
-if [[ -f "$HOME/.config/spicetify/config-xpui.ini" ]] && grep -q "current_theme *= *matugen" "$HOME/.config/spicetify/config-xpui.ini" 2>/dev/null; then
-    spicetify apply -n 2>/dev/null || true
+SPICETIFY_BIN="$(which spicetify 2>/dev/null || echo "$HOME/.spicetify/spicetify")"
+if [[ -x "$SPICETIFY_BIN" ]] && [[ -f "$HOME/.config/spicetify/config-xpui.ini" ]] && grep -q "current_theme *= *matugen" "$HOME/.config/spicetify/config-xpui.ini" 2>/dev/null; then
+    if pgrep -x spotify >/dev/null 2>&1; then
+        "$SPICETIFY_BIN" apply 2>/dev/null || true
+    else
+        "$SPICETIFY_BIN" apply -n 2>/dev/null || true
+    fi
 fi
 
 # Refresh wallpaper thumbnails after the color/theme change has been applied.

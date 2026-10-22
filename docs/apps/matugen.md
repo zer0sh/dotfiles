@@ -160,7 +160,7 @@ and the [documentation site](https://iniox.github.io/).
 | **GNOME Classic (GTK 3)** | `themes/current/gtk-3.0.css` | Window, seamless headerbar, inputs, buttons, selections, `custom-dark`/`custom-light` base | Next app launch |
 | **GNOME Modern (GTK 4 / Libadwaita)** | `themes/current/gtk-4.0.css` | Libadwaita named colors, seamless headerbar, soft navigation sidebar, hidden window controls | Next app launch |
 | **Papirus Folders** | `themes/current/papirus-color` | Nearest folder palette (`colors_to_compare`) matching primary accent | Immediate post-hook (`papirus-folders -C`) |
-| **Spicetify (Spotify)** | `themes/current/spicetify.ini` | Main, player, sidebar, cards, text, accents, buttons | `spicetify apply -n` / automated in `apply-matugen.sh` |
+| **Spicetify (Spotify)** | `themes/current/spicetify.ini` | Main, player, sidebar, cards, text, accents, buttons | `spicetify apply -n` / automated in `apply-matugen.sh` (client restart or `Ctrl+Shift+R` if running) |
 | **[Steam](steam.md)** | `themes/current/steam.css` | Adwaita CSS variables: accent, window_bg, headerbar, sidebar | `post_hook` running `install.py --custom-css -t normal`; restart the Steam client to display it |
 | **[Vim](../terminals/vim.md)** | `themes/current/matugen.vim` | Editor highlights, syntax groups, NERDTree colors, airline statusline palette | `:colorscheme matugen` or new instance |
 | **VS Code** (`haikalllp.matugen-theme`) | `~/.cache/matugen/vscode-colors` and `.json` | Full Material You palette (background, foreground, cursor, 16 accent colors) | Automatic via extension file watcher / `Matugen Theme: Update Theme` |
@@ -261,7 +261,11 @@ by `sync-root-theme.sh` (they point at `themes/current/`). Zen Browser cannot
 be reloaded programmatically either: the rendered `zen-userChrome.css` and
 `zen-userContent.css` are picked up on the next full browser restart. Steam is
 re-injected automatically by its `post_hook` on every render, but the client
-must be restarted to display the refreshed palette.
+must be restarted to display the refreshed palette. Similarly, Spicetify permanently
+injects the updated `matugen` palette into Spotify via `spicetify apply -n`; because the
+`-n` (`--no-restart`) flag avoids disrupting playback, a running Spotify client requires
+either a window reload (`Ctrl + Shift + R`) or a client restart to render the new colors,
+without needing temporary development commands like `spicetify watch -s`.
 
 ---
 
