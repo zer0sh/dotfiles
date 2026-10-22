@@ -50,6 +50,18 @@ else
     gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
 fi
 gsettings set org.gnome.desktop.wm.preferences button-layout ":" 2>/dev/null || true
+# Update GTK settings.ini files
+for ver in gtk-3.0 gtk-4.0; do
+    mkdir -p "$HOME/.config/$ver"
+    cat > "$HOME/.config/$ver/settings.ini" << EOF
+[Settings]
+gtk-theme-name=$TARGET_GTK_THEME
+gtk-icon-theme-name=$TARGET_ICON_THEME
+gtk-application-prefer-dark-theme=$([[ "$MODE" == "light" ]] && echo "0" || echo "1")
+gtk-decoration-layout=:
+EOF
+done
+
 # Toggle theme name briefly to trigger GTK stylesheet re-read in running apps
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita' 2>/dev/null || true
 gsettings set org.gnome.desktop.interface gtk-theme "$TARGET_GTK_THEME" 2>/dev/null || true
