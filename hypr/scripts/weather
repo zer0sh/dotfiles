@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+import json
+import os
+import sys
+
+CACHE_FILE = os.path.expanduser("~/.cache/weather.json")
+
+ICONS = {
+    "wb_sunny": "󰖙",
+    "partly_cloudy_day": "󰖕",
+    "cloud": "󰖐",
+    "rainy": "󰖗",
+    "thunderstorm": "󰼲",
+    "foggy": "󰖑",
+    "ac_unit": "󰙾"
+}
+
+def get_weather():
+    if not os.path.exists(CACHE_FILE):
+        return ""
+    try:
+        with open(CACHE_FILE, "r") as f:
+            data = json.load(f)
+            icon = ICONS.get(data.get("icon", ""), "󰖐")
+            temp = data.get("temp", "")
+            city = data.get("city", "")
+            condition = data.get("condition", "")
+            if not temp:
+                return ""
+            
+            mode = sys.argv[1] if len(sys.argv) > 1 else "corner"
+            if mode in ("corner", "city"):
+                if city:
+                    return f"{icon}  {temp}  •  {city}"
+                return f"{icon}  {temp}"
+            elif mode == "full":
+                return f"{icon}  {temp}  •  {condition}"
+            elif mode == "simple":
+                return f"{icon}  <span font_size=\"60%\">{temp}</span>"
+            return f"{icon}  {temp}  •  {city}" if city else f"{icon}  {temp}"
+    except Exception:
+        return ""
+
+if __name__ == "__main__":
+    out = get_weather()
+    if out:
+        print(out)

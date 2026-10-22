@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+DIR="$(dirname "$(realpath "$0")")"
+
+net="$("$DIR/network" 2>/dev/null)"
+bt="$("$DIR/bluetooth" 2>/dev/null)"
+bat="$("$DIR/battery" all 2>/dev/null)"
+
+out=""
+[ -n "$net" ] && out="$net"
+[ -n "$bt" ] && out="${out:+${out}   }$bt"
+[ -n "$bat" ] && out="${out:+${out}   }$bat"
+
+echo "$out"
+

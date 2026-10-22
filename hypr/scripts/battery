@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+
+# Localizar la ruta de la bateria
+bat_dir=""
+for bat in /sys/class/power_supply/BAT* /sys/class/power_supply/battery; do
+    if [ -d "$bat" ]; then
+        bat_dir="$bat"
+        break
+    fi
+done
+
+if [ -z "$bat_dir" ]; then
+    exit 0
+fi
+
+capacity=$(cat "$bat_dir/capacity" 2>/dev/null)
+status=$(cat "$bat_dir/status" 2>/dev/null)
+
+if [ -z "$capacity" ]; then
+    exit 0
+fi
+
+if [ "$status" = "Charging" ]; then
+    icon="󰂄"
+elif [ "$capacity" -ge 95 ]; then
+    icon="󰁹"
+elif [ "$capacity" -ge 85 ]; then
+    icon="󰂂"
+elif [ "$capacity" -ge 75 ]; then
+    icon="󰂁"
+elif [ "$capacity" -ge 65 ]; then
+    icon="󰂀"
+elif [ "$capacity" -ge 55 ]; then
+    icon="󰁿"
+elif [ "$capacity" -ge 45 ]; then
+    icon="󰁾"
+elif [ "$capacity" -ge 35 ]; then
+    icon="󰁽"
+elif [ "$capacity" -ge 25 ]; then
+    icon="󰁼"
+elif [ "$capacity" -ge 15 ]; then
+    icon="󰁻"
+elif [ "$capacity" -ge 5 ]; then
+    icon="󰁺"
+else
+    icon="󰂎"
+fi
+
+case "$1" in
+    icon)
+        echo "$icon"
+        ;;
+    percent)
+        echo "${capacity}%"
+        ;;
+    all)
+        echo "$icon $capacity%"
+        ;;
+    *)
+        echo "$icon"
+        ;;
+esac

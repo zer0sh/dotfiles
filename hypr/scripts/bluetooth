@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# Si rfkill indica bloqueado
+if rfkill list bluetooth 2>/dev/null | grep -qi "Soft blocked: yes"; then
+    echo "󰂲"
+    exit 0
+fi
+
+# Si existe dispositivo Bluetooth activo
+if rfkill list bluetooth 2>/dev/null | grep -qi "Bluetooth"; then
+    echo "󰂯"
+    exit 0
+fi
+
+# Si no hay dispositivo o está inactivo
+echo "󰂲"
+

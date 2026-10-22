@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# Revisa Ethernet
+for iface in /sys/class/net/e*; do
+    if [ -f "$iface/operstate" ] && [ "$(cat "$iface/operstate" 2>/dev/null)" = "up" ]; then
+        echo "󰈀"
+        exit 0
+    fi
+done
+
+# Revisa Wi-Fi
+for iface in /sys/class/net/w*; do
+    if [ -f "$iface/operstate" ] && [ "$(cat "$iface/operstate" 2>/dev/null)" = "up" ]; then
+        echo "󰤨"
+        exit 0
+    fi
+done
+
+# Sin conexión
+echo "󰤭"
+

@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+default_text="󰎆  Playing now: The Void"
+
+# Verifica si playerctl existe
+if ! command -v playerctl >/dev/null 2>&1; then
+    echo "$default_text"
+    exit 0
+fi
+
+status=$(playerctl status 2>/dev/null)
+if [ -z "$status" ] || [ "$status" = "Stopped" ]; then
+    echo "$default_text"
+    exit 0
+fi
+
+# Formatear título y artista
+artist=$(playerctl metadata artist 2>/dev/null)
+title=$(playerctl metadata title 2>/dev/null)
+
+if [ -z "$title" ]; then
+    echo "$default_text"
+    exit 0
+fi
+
+if [ -n "$artist" ]; then
+    info="$title - $artist"
+else
+    info="$title"
+fi
+
+# Truncar si es muy largo para que no rompa el diseño
+max_len=50
+if [ ${#info} -gt $max_len ]; then
+    info="${info:0:$((max_len - 3))}..."
+fi
+
+if [ "$status" = "Playing" ]; then
+    echo "󰎆  $info"
+elif [ "$status" = "Paused" ]; then
+    echo "󰏤  $info"
+else
+    echo "$default_text"
+fi
