@@ -258,6 +258,35 @@ Whenever `apply-matugen.sh` runs:
 
 ![Themed GTK Applications Suite](../assets/images/apps/gtk-suite.png)
 
+### Material Bibata Dynamic Cursor Theming
+
+The mouse cursor dynamically re-tones itself on every wallpaper switch to harmoniously match the Material Design 3 primary accent, integrating [Material Bibata Cursor](https://github.com/SakibShahariar/material-bibata-cursor) created by [Sakib Shahariar](https://github.com/SakibShahariar):
+
+#### 1. Perceptual Palette Matching (CIEDE2000)
+
+Rather than converting colors through distorted HSV color spaces, the system calculates perceptual distance using the CIEDE2000 Delta-E algorithm in CIELAB space via `themes/color_match.py`. It compares the active wallpaper's `primary` hex token against 28 curated M3 tonal pairs in `themes/bibata-themes.json` (plus Classic).
+
+* **Dark Mode**: Activates the dark container body with saturated tonal border (e.g., `Bibata-Material-Lime`, `Bibata-Material-Teal`).
+* **Light Mode**: Automatically routes to the matching tone-swapped variant with `-Light` suffix (e.g., `Bibata-Material-Lime-Light`), preserving high contrast standards (>= 4.5:1).
+
+#### 2. Cross-Desktop Application Sync
+
+When `themes/apply-matugen.sh` runs:
+1. Resolves the optimal cursor theme name via `python3 themes/color_match.py <primary_hex> themes/bibata-themes.json`.
+2. Persists the active theme name to `~/.config/themes/current/cursor-theme`.
+3. Dispatches live cursor updates to Hyprland (`hyprctl setcursor <theme> 24`).
+4. Updates GNOME / GTK settings via `gsettings set org.gnome.desktop.interface cursor-theme <theme>`.
+5. Updates GTK configuration files (`~/.config/gtk-3.0/settings.ini` and `~/.config/gtk-4.0/settings.ini`).
+6. Overwrites `~/.icons/default/index.theme` for legacy X11 / XCursor applications.
+
+#### 3. Setup and Deployment
+
+The setup utility `scripts/setup-bibata-matugen.sh` deploys the official pre-built `v1.5.0` assets directly to `~/.local/share/icons/` with symlinks in `~/.icons/`, verified during initial `./install.sh`.
+
+```bash
+~/dotfiles/scripts/setup-bibata-matugen.sh
+```
+
 ---
 
 ## Core Color Roles

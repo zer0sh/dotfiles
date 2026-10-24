@@ -86,6 +86,7 @@ The shell dynamically verifies and activates installed modern CLI utilities:
 
 * **`fzf`:** Activated via `eval "$(fzf --zsh)"` providing fuzzy reverse search (`Ctrl + R`) and fuzzy path completion (`Ctrl + T`).
 * **`zoxide`:** Smart directory jumper activated via `eval "$(zoxide init zsh)"` using the `z` command.
+* **`uv`:** Ultrafast Python package and tool runner, configured with shell completions via `eval "$(uv generate-shell-completion zsh)"`.
 * **`lsd`:** Modern `ls` alternative with icons, tree views, and color schemes aliased to `ls`, `ll` (`lsd -la`), and `lt` (`lsd --tree`).
 * **[`batcat` / `bat`](../apps/bat.md):** Syntax-highlighted pager replacement aliased to `cat` (see [Bat Configuration](../apps/bat.md)).
 

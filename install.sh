@@ -73,6 +73,8 @@ for ver in gtk-3.0 gtk-4.0; do
 [Settings]
 gtk-theme-name=custom-dark
 gtk-icon-theme-name=Papirus-Matugen-Dark
+gtk-cursor-theme-name=Bibata-Material-Classic
+gtk-cursor-theme-size=24
 gtk-application-prefer-dark-theme=1
 gtk-decoration-layout=:
 EOF
@@ -82,11 +84,18 @@ if command -v gsettings >/dev/null 2>&1; then
     gsettings set org.gnome.desktop.wm.preferences button-layout ":" 2>/dev/null || true
     gsettings set org.gnome.desktop.interface gtk-theme "custom-dark" 2>/dev/null || true
     gsettings set org.gnome.desktop.interface icon-theme "Papirus-Matugen-Dark" 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Material-Classic" 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface cursor-size 24 2>/dev/null || true
 fi
 
 # Papirus Folders Matugen integration (user-level dynamic folder coloring)
 if [ -f "$REPO_DIR/scripts/setup-papirus-matugen.sh" ]; then
     "$REPO_DIR/scripts/setup-papirus-matugen.sh"
+fi
+
+# Material Bibata Cursor Matugen integration (dynamic cursor theming by Sakib Shahariar)
+if [ -f "$REPO_DIR/scripts/setup-bibata-matugen.sh" ]; then
+    "$REPO_DIR/scripts/setup-bibata-matugen.sh"
 fi
 
 # Steam (Adwaita-for-Steam) Matugen theme - native install.py route, no Flatpak
@@ -162,9 +171,9 @@ if [ -d "$REPO_DIR/zsh" ]; then
     done
 
     # Optional utilities check
-    for cmd in fzf zoxide; do
+    for cmd in fzf zoxide uv; do
         if ! command -v "$cmd" >/dev/null 2>&1; then
-            echo "[NOTE] '$cmd' is not installed. Consider installing it for full functionality (e.g., sudo apt install $cmd)."
+            echo "[NOTE] '$cmd' is not installed. Consider installing it for full functionality (e.g., sudo apt install $cmd or curl -LsSf https://astral.sh/uv/install.sh | sh)."
         fi
     done
 fi

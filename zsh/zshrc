@@ -61,6 +61,9 @@ command -v fzf >/dev/null 2>&1 && eval "$(fzf --zsh)"
 # Navegación rápida entre directorios con zoxide (comando: z)
 command -v zoxide >/dev/null 2>&1 && eval "$(zoxide init zsh)"
 
+# Gestor de paquetes y herramientas Python con uv (autocompletado en zsh)
+command -v uv >/dev/null 2>&1 && eval "$(uv generate-shell-completion zsh)"
+
 # ─── Plugins Zsh ───────────────────────────────────────────
 # 1. zsh-autosuggestions (sugerencias estilo Fish)
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)

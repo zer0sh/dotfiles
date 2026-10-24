@@ -32,6 +32,7 @@ La paleta generada debe alimentar estos componentes, en este orden:
 | Hyprlock | `themes/current/hyprlock.conf`, incluido por `hyprlock.conf` | texto, fondo secundario, acento, error y atención | próximo bloqueo de pantalla |
 | Rofi heredado | `rofi/themes/colors.rasi` | fondo, contenedor, acento y texto | nueva instancia |
 | Notificaciones | Quickshell `NotificationService` | solo estados visuales del panel; DND no cambia de color | recarga de Quickshell |
+| Cursores | `themes/current/cursor-theme` e `~/.icons/default/index.theme` | Temas `Bibata-Material-*` emparejados con CIEDE2000 por `color_match.py` (SakibShahariar) | `hyprctl setcursor` y `gsettings set cursor-theme` |
 
 ## Roles de color
 

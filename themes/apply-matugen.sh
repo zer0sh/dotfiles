@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WALLPAPER="${1:-}"
 MODE="${2:-}"
 TYPE="${3:-}"
@@ -50,6 +51,41 @@ pkill -SIGUSR2 waybar 2>/dev/null || true
 # Keep the generated outputs in sync with the palette consumed by Quickshell.
 printf '%s\n' "matugen" > "$HOME/.config/quickshell/current-theme"
 
+# Sync Material Bibata cursor with active palette (SakibShahariar/material-bibata-cursor)
+TARGET_CURSOR_THEME="Bibata-Material-Classic"
+PALETTE_FILE="$HOME/.config/themes/current/palette.json"
+COLOR_MATCH_SCRIPT="$SCRIPT_DIR/color_match.py"
+BIBATA_THEMES_DEF="$SCRIPT_DIR/bibata-themes.json"
+
+if [[ -f "$PALETTE_FILE" && -f "$COLOR_MATCH_SCRIPT" && -f "$BIBATA_THEMES_DEF" ]]; then
+    PRIMARY_HEX="$(jq -r '.primary // empty' "$PALETTE_FILE" 2>/dev/null || true)"
+    if [[ -n "$PRIMARY_HEX" ]]; then
+        MATCHED_BIBATA="$(python3 "$COLOR_MATCH_SCRIPT" "$PRIMARY_HEX" "$BIBATA_THEMES_DEF" 2>/dev/null || true)"
+        if [[ -n "$MATCHED_BIBATA" ]]; then
+            if [[ "$MODE" == "light" && "$MATCHED_BIBATA" != "Classic" ]]; then
+                TARGET_CURSOR_THEME="Bibata-Material-${MATCHED_BIBATA}-Light"
+            else
+                TARGET_CURSOR_THEME="Bibata-Material-${MATCHED_BIBATA}"
+            fi
+        fi
+    fi
+fi
+printf '%s\n' "$TARGET_CURSOR_THEME" > "$HOME/.config/themes/current/cursor-theme"
+
+# Apply cursor to Hyprland and GNOME/GTK
+hyprctl setcursor "$TARGET_CURSOR_THEME" 24 2>/dev/null || true
+gsettings set org.gnome.desktop.interface cursor-theme "$TARGET_CURSOR_THEME" 2>/dev/null || true
+gsettings set org.gnome.desktop.interface cursor-size 24 2>/dev/null || true
+
+# Update XCursor fallback configuration
+mkdir -p "$HOME/.icons/default"
+cat > "$HOME/.icons/default/index.theme" << EOF
+[Icon Theme]
+Name=Default
+Comment=Default Cursor Theme
+Inherits=$TARGET_CURSOR_THEME
+EOF
+
 # Sync GTK color-scheme and force reload of gtk.css
 if [[ "$MODE" == "light" ]]; then
     TARGET_GTK_THEME="custom-light"
@@ -68,6 +104,8 @@ for ver in gtk-3.0 gtk-4.0; do
 [Settings]
 gtk-theme-name=$TARGET_GTK_THEME
 gtk-icon-theme-name=$TARGET_ICON_THEME
+gtk-cursor-theme-name=$TARGET_CURSOR_THEME
+gtk-cursor-theme-size=24
 gtk-application-prefer-dark-theme=$([[ "$MODE" == "light" ]] && echo "0" || echo "1")
 gtk-decoration-layout=:
 EOF

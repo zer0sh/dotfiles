@@ -8,7 +8,7 @@ Online Documentation Wiki: https://zer0sh.github.io/dotfiles/
 
 ## Highlights
 
-* **Dynamic Material You Theming (Matugen):** Wallpaper-driven palette generation propagating real-time color schemes across Hyprland borders, Waybar, Wofi, Alacritty, Kitty, Hyprlock, and Quickshell.
+* **Dynamic Material You Theming (Matugen):** Wallpaper-driven palette generation propagating real-time color schemes across Hyprland borders, Waybar, Wofi, Alacritty, Kitty, Hyprlock, Quickshell, and adaptive **Material Bibata Cursors**.
 * **Modern Desktop Shell & Notifications (Quickshell):** Floating notifications and system OSDs (volume, brightness, media) anchored at the top-center with smooth downward slide-in transitions and queue displacement.
 * **Modular Hyprland Setup:** Clean separation of concerns (monitors, autostart, window rules, decorations, keybindings) paired with custom post-processing GLSL shaders.
 * **Material Design 3 App Launcher (Wofi):** Three pre-configured design presets (Card, Spotlight, Grid), seamless toggle behavior (`SUPER + Space`), and terminal font unification (`BlexMono Nerd Font`).
@@ -113,3 +113,12 @@ This repository adheres to strict conventions defined in `AGENTS.md` for AI pair
 * Conventional Commits (`feat:`, `fix:`, `style:`, `docs:`, `refactor:`, `chore:`).
 * Zero-emoji policy across code, documentation, and commits.
 * Bidirectional synchronization between dotfiles, MkDocs wiki, and Obsidian vault (`~/Workspace/vault/`).
+
+---
+
+## Acknowledgments & Upstream References
+
+* [**Material Bibata Cursor**](https://github.com/SakibShahariar/material-bibata-cursor): Adaptive Material Design 3 Bibata cursors and CIEDE2000 color-matching engine by [Sakib Shahariar](https://github.com/SakibShahariar).
+* [**Mitsugen**](https://github.com/DimitrisMilonopoulos/mitsugen): Clean Material You theming foundations for GTK 3 & GTK 4 by Dimitris Milonopoulos.
+* [**Papirus Folders**](https://github.com/PapirusDevelopmentTeam/papirus-folders): Folder icon color switcher by the Papirus Development Team.
+* [**Bibata Cursor**](https://github.com/ful1e5/Bibata_Cursor): Original cursor set and design by Abdulkaiz Khatri.
