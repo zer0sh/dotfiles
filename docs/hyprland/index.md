@@ -53,6 +53,32 @@ source = $HOME/.config/hypr/autostart.conf
 * **Polkit Agent:** `systemctl --user start hyprpolkitagent` for GUI privilege escalation.
 * **Cliphist:** Text and image clipboard history daemons integrated with Quickshell clipboard drawer.
 * **Wallpaper & Theme:** Automatic restoration via `$HOME/.config/hypr/scripts/restore-wallpaper` and [Matugen theming engine](../apps/matugen.md).
+* **Desktop Environment Sync:** `dbus-update-activation-environment` and `systemctl --user import-environment` for `WAYLAND_DISPLAY` and `XDG_CURRENT_DESKTOP`.
+
+---
+
+## Desktop Portals & GNOME App Latency
+
+Applications built on GTK4 and Libadwaita (Nautilus, GNOME Calculator, Text Editor, Loupe) may experience a severe startup delay (~3.5 seconds) if portal backends are improperly prioritized.
+
+### Cause of Delay
+`xdg-desktop-portal-gnome` expects GNOME Shell and Mutter services on D-Bus. When running under Hyprland, these services do not exist, causing D-Bus calls to hang until reaching their timeout. Masking the systemd service alone is insufficient because D-Bus service activation files (`/usr/share/dbus-1/services/`) still trigger queries.
+
+### Resolution
+1. **Purge GNOME Portal Backend:**
+   ```bash
+   sudo apt remove --purge xdg-desktop-portal-gnome
+   ```
+2. **Configure Preferred Portals (`~/.config/xdg-desktop-portal/portals.conf`):**
+   ```ini
+   [preferred]
+   default=hyprland;gtk
+   ```
+3. **Environment Activation (`autostart.conf`):**
+   ```ini
+   exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+   exec-once = systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+   ```
 
 ---
 

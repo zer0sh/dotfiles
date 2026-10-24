@@ -34,6 +34,8 @@ All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr
 
 | Shortcut | Action | IPC Command | Reference |
 | :--- | :--- | :--- | :--- |
+| `SUPER + Tab` | Workspace overview / Next window | `quickshell ipc call overview next` | [Workspace Overview](../quickshell/overview.md) |
+| `SUPER + SHIFT + Tab` | Workspace overview / Previous window | `quickshell ipc call overview prev` | [Workspace Overview](../quickshell/overview.md) |
 | `CTRL + ALT + Del` | Power menu | `quickshell ipc call powermenu toggle` | [Control Center](../quickshell/index.md) |
 | `SUPER + W` | Wallpaper picker | `quickshell ipc call wallpaper toggle` | [Matugen Integration](../apps/matugen.md) |
 | `SUPER + M` | Mini music player | `quickshell ipc call miniplayer toggle` | [OSD & Mini Player](../quickshell/osd-notifications.md) |

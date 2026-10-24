@@ -32,6 +32,7 @@ Scope {
     onPanelVisibleChanged: {
         if (panelVisible) {
             _showing = true
+            _panelOpen = true
             wifiStatusProc.running = true
             btStatusProc.running = true
             btConnectedProc.running = true
@@ -42,16 +43,8 @@ Scope {
             nightLightCheckProc.running = true
             dndCheckProc.running = true
         } else {
+            _showing = false
             _panelOpen = false
-            resetPageTimer.running = true
-        }
-    }
-
-    Timer {
-        id: resetPageTimer
-        interval: 300
-        repeat: false
-        onTriggered: {
             controlCenter.currentPage = "main"
             controlCenter.notificationsExpanded = false
         }
@@ -526,15 +519,6 @@ Scope {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
-            Component.onCompleted: openDelayTimer.start()
-
-            Timer {
-                id: openDelayTimer
-                interval: 16
-                repeat: false
-                onTriggered: if (controlCenter.panelVisible) controlCenter._panelOpen = true
-            }
-
             Shortcut {
                 sequence: "Escape"
                 onActivated: {
@@ -551,9 +535,7 @@ Scope {
                 onClicked: controlCenter.panelVisible = false
             }
 
-            // Clip region: top edge sits below the shelf.
-            // The panel animates inside this region so it appears to
-            // emerge from the shelf rather than sliding through it.
+            // Top region attached directly below Waybar
             Item {
                 id: panelClip
                 anchors.left: parent.left
@@ -561,83 +543,39 @@ Scope {
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.topMargin: Root.Theme.shelfHeight
-                clip: true
 
                 Rectangle {
                     id: panel
 
                     width: Root.Theme.panelWidth
+                    height: pageContainer.height + 2
                     anchors.right: parent.right
                     anchors.rightMargin: Root.Theme.spacingSmall
+                    y: 0
 
-                    // parent is now panelClip (height = screen - shelf).
-                    // hidden  → y = -panel.height - spacing  (above clip, hidden)
-                    // visible → y = spacing  (below shelf)
+                    // Dynamic Island geometry: top edge is flat and attached seamlessly
+                    // to the bar, while bottom corners curve into a smooth capsule.
+                    radius: 28
+                    topLeftRadius: 0
+                    topRightRadius: 0
+                    bottomLeftRadius: 28
+                    bottomRightRadius: 28
 
-                    states: [
-                        State {
-                            name: "visible"
-                            when: controlCenter._panelOpen
-                            PropertyChanges {
-                                target: panel
-                                y: Root.Theme.spacingSmall
-                            }
-                        },
-                        State {
-                            name: "hidden"
-                            when: !controlCenter._panelOpen
-                            PropertyChanges {
-                                target: panel
-                                y: -panel.height - Root.Theme.spacingSmall
-                            }
-                        }
-                    ]
+                    // Background matching Waybar exactly (alpha 0.80, same base color, no border)
+                    color: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
+                    border.width: 0
+                    clip: true
 
-                    transitions: [
-                        Transition {
-                            from: "hidden"
-                            to: "visible"
-                            NumberAnimation {
-                                property: "y"
-                                duration: Root.Theme.animDuration
-                                easing.type: Easing.OutCubic
-                            }
-                        },
-                        Transition {
-                            from: "visible"
-                            to: "hidden"
-                            SequentialAnimation {
-                                NumberAnimation {
-                                    property: "y"
-                                    duration: Root.Theme.animDuration
-                                    easing.type: Easing.OutCubic
-                                }
-                                ScriptAction {
-                                    script: controlCenter._showing = false
-                                }
-                            }
-                        }
-                    ]
+                    // block click-through to overlay close area
+                    MouseArea {
+                        anchors.fill: parent
+                    }
 
-                radius: 30
-                // Dark translucent glass surface with Hyprland blur behind it
-                color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.70)
-                border.width: 1.5
-                border.color: Qt.rgba(255, 255, 255, 0.16)
-                clip: true
-
-                // block click-through to overlay close area
-                MouseArea {
-                    anchors.fill: parent
-                }
-
-                height: pageContainer.height
-                implicitHeight: pageContainer.height
-
-                Item {
-                    id: pageContainer
-                    width: panel.width
-                    height: mainPage.height
+                    Item {
+                        id: pageContainer
+                        width: panel.width
+                        height: mainPage.height
+                        y: 2
 
                     // MAIN PAGE
                     Item {

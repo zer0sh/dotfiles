@@ -34,6 +34,9 @@ Item {
         if (themeKey === "matugen" && Root.Theme._generated) {
             return Root.Theme._generated;
         }
+        if (themeKey === "custom" && Root.Theme._customTheme) {
+            return Root.Theme._customTheme;
+        }
         return (Root.Theme._themes && Root.Theme._themes[themeKey])
             ? Root.Theme._themes[themeKey]
             : (Root.Theme._themes ? Root.Theme._themes["md3-cobalt-night"] : null);

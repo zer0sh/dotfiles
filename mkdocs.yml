@@ -59,6 +59,7 @@ nav:
           - Screen Locking & Idle: hyprland/hyprlock.md
       - Quickshell:
           - Control Center: quickshell/index.md
+          - Workspace Overview: quickshell/overview.md
           - Notifications & OSDs: quickshell/osd-notifications.md
           - Floating Launcher & Wallpapers: quickshell/launcher-wallpapers.md
           - Keyboard Shortcuts: quickshell/shortcuts-overlay.md

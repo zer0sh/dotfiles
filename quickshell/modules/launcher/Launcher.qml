@@ -127,9 +127,11 @@ Scope {
     // ── Themes Model & State ─────────────────────────────────────
     readonly property var themesList: [
         { id: "matugen", name: "Wallpaper (Matugen)", desc: "Dynamic Material You generated from active wallpaper" },
+        { id: "custom", name: "Custom", desc: "Deep onyx surfaces with personalized accent tone" },
         { id: "md3-cobalt-night", name: "Cobalt Night", desc: "Deep cobalt blue and midnight sapphire" },
         { id: "md3-amethyst", name: "Amethyst", desc: "Deep amethyst purple and lavender" },
         { id: "md3-arctic-mist", name: "Arctic Mist", desc: "Polar cyan and frosted ice blue" },
+        { id: "md3-crimson-night", name: "Crimson Night", desc: "Vivid crimson red on deep onyx black surfaces" },
         { id: "cyberpunk", name: "Cyberpunk", desc: "Neon turquoise, magenta and electric violet" }
     ]
 
@@ -147,6 +149,19 @@ Scope {
         { id: "scheme-neutral", name: "Neutral", icon: "lens" }
     ]
 
+    readonly property var customAccentsList: [
+        { id: "#FF2B44", name: "Carmesí", color: "#FF2B44" },
+        { id: "#FF5722", name: "Lava", color: "#FF5722" },
+        { id: "#FFB300", name: "Ámbar", color: "#FFB300" },
+        { id: "#10B981", name: "Esmeralda", color: "#10B981" },
+        { id: "#00F5D4", name: "Turquesa", color: "#00F5D4" },
+        { id: "#06B6D4", name: "Cyan", color: "#06B6D4" },
+        { id: "#3B82F6", name: "Cobalto", color: "#3B82F6" },
+        { id: "#8B5CF6", name: "Amatista", color: "#8B5CF6" },
+        { id: "#EC4899", name: "Fucsia", color: "#EC4899" },
+        { id: "#F43F5E", name: "Rosa", color: "#F43F5E" }
+    ]
+
     readonly property bool isMatugenSelected: {
         if (currentMode !== "theme") return false;
         if (filteredThemes.length === 0) return false;
@@ -154,6 +169,44 @@ Scope {
             return filteredThemes[selectedIndex].id === "matugen";
         }
         return Root.Theme.currentTheme === "matugen";
+    }
+
+    readonly property bool isCustomSelected: {
+        if (currentMode !== "theme") return false;
+        if (filteredThemes.length === 0) return false;
+        if (selectedIndex >= 0 && selectedIndex < filteredThemes.length) {
+            return filteredThemes[selectedIndex].id === "custom";
+        }
+        return Root.Theme.currentTheme === "custom";
+    }
+
+    Process {
+        id: customAccentReadProc
+        command: ["/bin/sh", "-c", "cat ~/.config/quickshell/custom-accent 2>/dev/null || echo '#FF2B44'"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var c = text.trim();
+                if (c !== "" && c.charAt(0) === "#") {
+                    Root.Theme.customAccent = c;
+                }
+            }
+        }
+    }
+
+    Process {
+        id: customAccentApplyProc
+    }
+
+    function applyCustomAccent(colorHex) {
+        if (!colorHex || colorHex === "") return;
+        Root.Theme.customAccent = colorHex;
+        if (Root.Theme.currentTheme !== "custom") {
+            Root.Theme.currentTheme = "custom";
+            actionExecProc.command = ["/bin/sh", "-c", "printf '%s\\n' 'custom' > ~/.config/quickshell/current-theme"];
+            actionExecProc.running = true;
+        }
+        customAccentApplyProc.command = ["/bin/sh", "-c", "printf '%s\\n' '" + colorHex + "' > ~/.config/quickshell/custom-accent && /home/zero/.config/quickshell/scripts/apply-theme.sh custom"];
+        customAccentApplyProc.running = true;
     }
 
     Process {
@@ -199,6 +252,7 @@ Scope {
         searchText = "/theme ";
         panelVisible = true;
         matugenSchemeReadProc.running = true;
+        customAccentReadProc.running = true;
         var curIdx = 0;
         for (var i = 0; i < themesList.length; i++) {
             if (themesList[i].id === Root.Theme.currentTheme) {
@@ -723,7 +777,7 @@ Scope {
 
                 height: {
                     if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "gadgets") return 340;
-                    if (launcher.currentMode === "theme") return launcher.isMatugenSelected ? 392 : 340;
+                    if (launcher.currentMode === "theme") return (launcher.isMatugenSelected || launcher.isCustomSelected) ? 392 : 340;
                     if (launcher.currentMode === "actions") {
                         var actCount = launcher.filteredActions.length;
                         return Math.min(460, Math.max(140, actCount * 50 + 76));
@@ -1063,6 +1117,137 @@ Scope {
                             }
                         }
 
+                        Rectangle {
+                            id: customAccentsBar
+                            anchors.top: parent.top
+                            anchors.left: parent.left
+                            anchors.right: parent.right
+                            height: launcher.isCustomSelected ? 40 : 0
+                            visible: height > 0
+                            opacity: launcher.isCustomSelected ? 1.0 : 0.0
+                            color: "transparent"
+                            clip: true
+
+                            Behavior on height { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+                            Behavior on opacity { NumberAnimation { duration: 180 } }
+
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.leftMargin: 4
+                                anchors.rightMargin: 4
+                                spacing: 10
+
+                                // Etiqueta de sección
+                                Row {
+                                    Layout.alignment: Qt.AlignVCenter
+                                    spacing: 6
+
+                                    Text {
+                                        text: "format_paint"
+                                        font.family: Root.Theme.iconFont
+                                        font.pixelSize: 16
+                                        color: Root.Theme.primary
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+
+                                    Text {
+                                        text: "Acento:"
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: 12
+                                        font.weight: Font.DemiBold
+                                        color: Root.Theme.textSecondary
+                                        anchors.verticalCenter: parent.verticalCenter
+                                    }
+                                }
+
+                                // Carrusel de pastillas de color de acento
+                                ListView {
+                                    id: accentsCarousel
+                                    Layout.fillWidth: true
+                                    Layout.fillHeight: true
+                                    orientation: ListView.Horizontal
+                                    spacing: 6
+                                    clip: true
+                                    boundsBehavior: Flickable.StopAtBounds
+                                    model: launcher.customAccentsList
+
+                                    delegate: Rectangle {
+                                        id: accentChip
+                                        readonly property var accentData: modelData
+                                        readonly property bool isActive: (Root.Theme.customAccent.toUpperCase() === accentData.color.toUpperCase())
+                                        readonly property bool isHovered: accentChipMouse.containsMouse
+
+                                        width: accentChipRow.implicitWidth + 24
+                                        height: 30
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        radius: 15
+
+                                        color: isActive
+                                            ? Qt.rgba(Qt.color(accentData.color).r, Qt.color(accentData.color).g, Qt.color(accentData.color).b, 0.22)
+                                            : (isHovered ? Root.Theme.surfaceBright : Root.Theme.surfaceContainer)
+                                        border.width: isActive ? 2 : 1
+                                        border.color: isActive
+                                            ? Qt.color(accentData.color)
+                                            : (isHovered
+                                                ? Qt.rgba(Qt.color(accentData.color).r, Qt.color(accentData.color).g, Qt.color(accentData.color).b, 0.45)
+                                                : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.35))
+
+                                        Behavior on color { ColorAnimation { duration: 140 } }
+                                        Behavior on border.color { ColorAnimation { duration: 140 } }
+
+                                        Row {
+                                            id: accentChipRow
+                                            anchors.centerIn: parent
+                                            spacing: 7
+
+                                            Rectangle {
+                                                width: 12
+                                                height: 12
+                                                radius: 6
+                                                color: accentData.color
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                border.width: 1
+                                                border.color: Qt.rgba(1, 1, 1, 0.3)
+                                            }
+
+                                            Text {
+                                                text: accentData.name
+                                                font.family: Root.Theme.fontFamily
+                                                font.pixelSize: 12
+                                                font.weight: accentChip.isActive ? Font.Bold : Font.Normal
+                                                color: accentChip.isActive
+                                                    ? Root.Theme.textPrimary
+                                                    : (accentChip.isHovered ? Root.Theme.textPrimary : Root.Theme.textSecondary)
+                                                anchors.verticalCenter: parent.verticalCenter
+                                                Behavior on color { ColorAnimation { duration: 140 } }
+                                            }
+                                        }
+
+                                        MouseArea {
+                                            id: accentChipMouse
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: {
+                                                launcher.applyCustomAccent(accentData.color);
+                                            }
+                                        }
+                                    }
+
+                                    WheelHandler {
+                                        acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                                        onWheel: function(event) {
+                                            var delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
+                                            var step = delta * 1.5;
+                                            var targetX = accentsCarousel.contentX - step;
+                                            var maxX = Math.max(0, accentsCarousel.contentWidth - accentsCarousel.width);
+                                            accentsCarousel.contentX = Math.max(0, Math.min(maxX, targetX));
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         function scrollToCard(index, immediate) {
                             var itemWidth = 236 + 16;
                             var targetX = index * itemWidth + 118 - (themeCarousel.width / 2);
@@ -1089,9 +1274,9 @@ Scope {
                             id: themeCarousel
                             anchors.left: parent.left
                             anchors.right: parent.right
-                            anchors.top: matugenModesBar.bottom
+                            anchors.top: launcher.isCustomSelected ? customAccentsBar.bottom : matugenModesBar.bottom
                             anchors.bottom: parent.bottom
-                            anchors.topMargin: launcher.isMatugenSelected ? 6 : 8
+                            anchors.topMargin: (launcher.isMatugenSelected || launcher.isCustomSelected) ? 6 : 8
                             anchors.bottomMargin: 4
                             orientation: ListView.Horizontal
                             spacing: 16

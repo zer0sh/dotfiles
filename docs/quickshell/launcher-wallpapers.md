@@ -94,15 +94,22 @@ Typing `/wallpaper ` (or pressing `SUPER + W`) opens the horizontal carousel:
 
 ### 4. Theme Carousel Mode
 Typing `/theme ` or `/tema ` (also `>theme `), clicking "Theme" in the Control Center, or executing `qs ipc call launcher theme` opens the horizontal theme carousel:
-* Reuses the same 1080 px floating container (smoothly expanding from 340 px to 392 px height when Matugen is selected) and horizontal scroll architecture as the wallpaper carousel.
+* Reuses the same 1080 px floating container (smoothly expanding from 340 px to 392 px height when Matugen or Custom is selected) and horizontal scroll architecture as the wallpaper carousel.
+* **Featured Themes Order:**
+  * **1. Wallpaper (Matugen):** Dynamic Material Design 3 generation based on active wallpaper.
+  * **2. Custom Accent:** Fixed deep onyx black surfaces (`#0A0A0C`) with interactive accent color chip selector.
+  * **Static Presets:** Cobalt Night, Amethyst, Arctic Mist, Crimson Night, and Cyberpunk.
 * **Matugen Dynamic Modes Selector:**
   * When "Wallpaper (Matugen)" is selected or active, an animated top header gracefully expands with Material You mode pills for all 9 Matugen color scheme algorithms: `Vibrant`, `Fruit Salad`, `Monochrome`, `Tonal Spot`, `Expressive`, `Rainbow`, `Fidelity`, `Content`, and `Neutral`.
   * **Live Palette Preview:** Clicking any mode chip immediately applies that scheme via `apply-matugen.sh` in the background, updating desktop accent colors and Quickshell in real-time without dismissing the launcher.
   * The active scheme type is saved to `~/.config/themes/current/scheme_type` and preserved across subsequent wallpaper transitions.
+* **Custom Accent Color Bar:**
+  * When "Custom" is selected, an animated top bar expands with interactive color pills (`Carmesí`, `Lava`, `Ámbar`, `Esmeralda`, `Turquesa`, `Cyan`, `Cobalto`, `Amatista`, `Fucsia`, `Rosa`).
+  * Clicking any accent immediately updates Quickshell, saves the preference to `~/.config/quickshell/custom-accent`, and executes `apply-theme.sh custom` across Waybar, Hyprland borders, Kitty, and Alacritty in real-time.
 * **Visual Theme Cards (`ThemeCard.qml`):**
   * Displays 224x214 px cards with a dedicated 120 px preview container showcasing an interface mockup for each palette.
   * Preview includes a miniature header, active primary widget, slider with active track, accent chip, and 5 color swatches (`primary`, `primaryContainer`, `surfaceContainerHigh`, `connected`, `textPrimary`).
-  * Palette colors resolve via explicit `Qt.color` conversion, ensuring accurate rendering across both static palettes and dynamic Matugen extractions.
+  * Palette colors resolve via explicit `Qt.color` conversion, ensuring accurate rendering across static palettes, dynamic Custom accents, and Matugen extractions.
   * An "Active" badge dynamically marks the currently applied theme.
 * **Interactive Behavior:**
   * Selecting a card applies the theme instantly via `Theme.currentTheme`, persists it to `~/.config/quickshell/current-theme`, triggers `apply-theme.sh` or `apply-matugen.sh` across the system, and closes the launcher on `Enter`.

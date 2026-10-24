@@ -9,6 +9,7 @@ QtObject {
 
     // ── Active theme name ──────────────────────────────────────────
     property string currentTheme: "matugen"
+    property string customAccent: "#FF2B44"
 
     // ── Theme definitions ──────────────────────────────────────────
     readonly property var _themes: ({
@@ -51,6 +52,19 @@ QtObject {
             secondaryContainer: "#103858", textOnSecondaryContainer: "#C0E4F5",
             shelfBg: "#080F14"
         },
+        "md3-crimson-night": {
+            name: "Crimson Night",
+            panelBg: "#0A0A0C", panelBorder: "#26262C", surface: "#121215",
+            surfaceContainer: "#18181C", surfaceContainerHigh: "#222226", surfaceBright: "#323238",
+            primary: "#FF2B44", primaryContainer: "#3E0D15", onPrimaryContainer: "#FFDADB",
+            tileActive: "#FF2B44", tileActiveText: "#FFFFFF",
+            tileInactive: "#222226", tileInactiveText: "#EDEDF2",
+            sliderTrack: "#222226", sliderActiveTrack: "#FF2B44", sliderThumb: "#FF2B44",
+            textPrimary: "#EDEDF2", textSecondary: "#9B9BA6",
+            toggleOff: "#35353C", connected: "#70DF9A", error: "#FF5C6C",
+            secondaryContainer: "#381016", textOnSecondaryContainer: "#FFDADB",
+            shelfBg: "#0A0A0C"
+        },
         "cyberpunk": {
             name: "Cyberpunk",
             panelBg: "#0B0A14", panelBorder: "#3A165C", surface: "#141126",
@@ -76,7 +90,35 @@ QtObject {
             toggleOff: "#47464F", connected: "#ECB8CE", error: "#FFB4AB",
             secondaryContainer: "#474459", textOnSecondaryContainer: "#E5DFF9",
             shelfBg: "#141318"
+        },
+        "custom": {
+            name: "Custom Accent",
+            panelBg: "#0A0A0C", panelBorder: "#26262C", surface: "#121215",
+            surfaceContainer: "#18181C", surfaceContainerHigh: "#222226", surfaceBright: "#323238",
+            primary: "#FF2B44", primaryContainer: "#2A1820", onPrimaryContainer: "#EDEDF2",
+            tileActive: "#FF2B44", tileActiveText: "#FFFFFF",
+            tileInactive: "#222226", tileInactiveText: "#EDEDF2",
+            sliderTrack: "#222226", sliderActiveTrack: "#FF2B44", sliderThumb: "#FF2B44",
+            textPrimary: "#EDEDF2", textSecondary: "#9B9BA6",
+            toggleOff: "#35353C", connected: "#70DF9A", error: "#FF5C6C",
+            secondaryContainer: "#2A1820", textOnSecondaryContainer: "#EDEDF2",
+            shelfBg: "#0A0A0C"
         }
+    })
+
+    // ── Custom accent dynamic definition ───────────────────────────
+    readonly property var _customTheme: ({
+        name: "Custom Accent",
+        panelBg: "#0A0A0C", panelBorder: "#26262C", surface: "#121215",
+        surfaceContainer: "#18181C", surfaceContainerHigh: "#222226", surfaceBright: "#323238",
+        primary: customAccent, primaryContainer: "#2A1820", onPrimaryContainer: "#EDEDF2",
+        tileActive: customAccent, tileActiveText: "#FFFFFF",
+        tileInactive: "#222226", tileInactiveText: "#EDEDF2",
+        sliderTrack: "#222226", sliderActiveTrack: customAccent, sliderThumb: customAccent,
+        textPrimary: "#EDEDF2", textSecondary: "#9B9BA6",
+        toggleOff: "#35353C", connected: "#70DF9A", error: "#FF5C6C",
+        secondaryContainer: "#2A1820", textOnSecondaryContainer: "#EDEDF2",
+        shelfBg: "#0A0A0C"
     })
 
     // ── Active theme reference ─────────────────────────────────────
@@ -108,9 +150,11 @@ QtObject {
         textOnSecondaryContainer: Local.MatugenPalette.onSurface,
         shelfBg: Local.MatugenPalette.background
     }) : null
-    readonly property var _t: currentTheme === "matugen" && _generated
+    readonly property var _t: (currentTheme === "matugen" && _generated)
         ? _generated
-        : (_themes[currentTheme] || _themes["md3-cobalt-night"])
+        : (currentTheme === "custom"
+            ? _customTheme
+            : (_themes[currentTheme] || _themes["md3-cobalt-night"]))
 
     // ── Themed color properties ────────────────────────────────────
     // Surface colors
@@ -188,7 +232,7 @@ QtObject {
     readonly property int paddingSmall: 10
 
     // ── Shelf-specific ─────────────────────────────────────────────
-    readonly property int shelfHeight: 54
+    readonly property int shelfHeight: 36
 
     // ── Layout constants ───────────────────────────────────────────
     readonly property int panelWidth: 880
@@ -203,8 +247,8 @@ QtObject {
     readonly property int spacingLarge: 18
 
      // ── Animation durations (ms) ───────────────────────────────────
-    readonly property int animDuration: 200
-    readonly property int animDurationFast: 120
+    readonly property int animDuration: 0
+    readonly property int animDurationFast: 0
 
     // ── Theme metadata access ──────────────────────────────────────
     readonly property string themeName: _t.name

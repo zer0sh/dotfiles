@@ -13,6 +13,7 @@ import "modules/deskclock" as DeskClock
 import "modules/calendar" as Calendar
 import "modules/background" as Background
 import "modules/weathergadget" as WeatherGadget
+import "modules/overview" as Overview
 
 ShellRoot {
     id: root
@@ -31,8 +32,22 @@ ShellRoot {
         }
     }
 
+    Process {
+        id: customAccentReadProc
+        command: ["/bin/sh", "-c", "cat ~/.config/quickshell/custom-accent 2>/dev/null || true"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var acc = text.trim();
+                if (acc !== "" && acc.charAt(0) === "#") {
+                    Theme.customAccent = acc;
+                }
+            }
+        }
+    }
+
     Component.onCompleted: {
         themeReadProc.running = true
+        customAccentReadProc.running = true
         var _ = Notifications.NotificationService.count
         var _gm = GadgetsManager.availableGadgets
     }
@@ -112,6 +127,10 @@ ShellRoot {
         id: weatherGadget
     }
 
+    Overview.Overview {
+        id: desktopOverview
+    }
+
     // --- Mutual Exclusivity ---
 
     Connections {
@@ -121,6 +140,7 @@ ShellRoot {
                 controlCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
                 clipboardPanel.panelVisible = false;
+                desktopOverview.visible = false;
             }
         }
     }
@@ -132,6 +152,7 @@ ShellRoot {
                 powerMenu.menuOpen = false;
                 appLauncher.panelVisible = false;
                 clipboardPanel.panelVisible = false;
+                desktopOverview.visible = false;
             }
         }
     }
@@ -143,6 +164,7 @@ ShellRoot {
                 powerMenu.menuOpen = false;
                 controlCenter.panelVisible = false;
                 clipboardPanel.panelVisible = false;
+                desktopOverview.visible = false;
             }
         }
     }
@@ -154,6 +176,19 @@ ShellRoot {
                 powerMenu.menuOpen = false;
                 controlCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
+                desktopOverview.visible = false;
+            }
+        }
+    }
+
+    Connections {
+        target: desktopOverview
+        function onVisibleChanged() {
+            if (desktopOverview.visible) {
+                powerMenu.menuOpen = false;
+                controlCenter.panelVisible = false;
+                appLauncher.panelVisible = false;
+                clipboardPanel.panelVisible = false;
             }
         }
     }
