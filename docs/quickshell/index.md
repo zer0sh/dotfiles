@@ -32,6 +32,10 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
   * Compact MPRIS playback controller triggered with `SUPER + M` as defined in [Hyprland Keybindings](../hyprland/keybinds.md#quickshell-and-desktop-overlays).
 * **Application Launcher (`modules/launcher/`):**
   * Fast native application runner and app drawer complementing [Wofi Launcher](../apps/wofi.md).
+* **Workspace Overview & Exposé (`modules/overview/`):**
+  * Full-screen 2x5 grid displaying all 10 Hyprland workspaces simultaneously with proportional window layouts.
+  * Drag-and-drop window relocation across workspaces, quick window kill, and spatial keyboard navigation.
+  * Triggered globally with `SUPER + Tab` / `SUPER + SHIFT + Tab`. Detailed in the [Workspace Overview Guide](overview.md).
 * **Keyboard Shortcuts Overlay (`modules/shortcuts/`):**
   * Wayland-native cheat sheet modal triggered via `F1` featuring live search, category pills, two-column card grid, and glassmorphic styling aligned with the Control Center. Detailed in the [Keyboard Shortcuts Guide](shortcuts-overlay.md).
 
@@ -63,6 +67,7 @@ To validate QML syntax or restart Quickshell without crashing your Wayland sessi
 
 ## Related Documentation
 
+* [Workspace Overview & Exposé](overview.md): 2x5 grid exposé, proportional window geometries, and drag-and-drop window relocation.
 * [Keyboard Shortcuts Overlay](shortcuts-overlay.md): Wayland modal cheat sheet, category filtering, and live search.
 * [Notifications & OSD Dynamics](osd-notifications.md): Animation curves, screen positioning, and source maps for toasts and OSD popups.
 * [Waybar Status Bar](../apps/waybar.md): Top status bar shell integrating with Quickshell notification signals and launcher.
