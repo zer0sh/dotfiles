@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Shapes
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -761,14 +762,74 @@ Scope {
                 }
             }
 
-            // ── Contenedor Flotante Inferior Central ──────────────────
+            // Concave fillet left (Dynamic Island bottom curve connecting to screen bottom)
+            Shape {
+                id: launcherLeftFillet
+                z: 10
+                width: 28
+                height: 28
+                anchors.bottom: floatingCard.bottom
+                anchors.right: floatingCard.left
+                layer.enabled: true
+                layer.samples: 4
+
+                ShapePath {
+                    strokeWidth: 0
+                    strokeColor: "transparent"
+                    fillColor: floatingCard.color
+
+                    startX: 0
+                    startY: 28
+                    PathLine { x: 28; y: 28 }
+                    PathLine { x: 28; y: 0 }
+                    PathArc {
+                        x: 0
+                        y: 28
+                        radiusX: 28
+                        radiusY: 28
+                        direction: PathArc.Clockwise
+                    }
+                }
+            }
+
+            // Concave fillet right (Dynamic Island bottom curve connecting to screen bottom)
+            Shape {
+                id: launcherRightFillet
+                z: 10
+                width: 28
+                height: 28
+                anchors.bottom: floatingCard.bottom
+                anchors.left: floatingCard.right
+                layer.enabled: true
+                layer.samples: 4
+
+                ShapePath {
+                    strokeWidth: 0
+                    strokeColor: "transparent"
+                    fillColor: floatingCard.color
+
+                    startX: 28
+                    startY: 28
+                    PathLine { x: 0; y: 28 }
+                    PathLine { x: 0; y: 0 }
+                    PathArc {
+                        x: 28
+                        y: 28
+                        radiusX: 28
+                        radiusY: 28
+                        direction: PathArc.Clockwise
+                    }
+                }
+            }
+
+            // ── Contenedor Inferior Central (Dynamic Island) ───────────
             Rectangle {
                 id: floatingCard
                 z: 10
 
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 28
+                anchors.bottomMargin: 0
 
                 width: {
                     if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") return Math.min(1080, parent.width - 60);
@@ -786,31 +847,18 @@ Scope {
                     return Math.min(480, Math.max(140, appCount * 52 + 76));
                 }
 
-                radius: 24
-                color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.88)
-                border.width: 1
-                border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.35)
+                radius: 28
+                topLeftRadius: 28
+                topRightRadius: 28
+                bottomLeftRadius: 0
+                bottomRightRadius: 0
+
+                color: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
+                border.width: 0
                 clip: true
 
                 focus: true
                 Keys.forwardTo: [searchInput]
-
-                Behavior on width {
-                    NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
-                }
-                Behavior on height {
-                    NumberAnimation { duration: 220; easing.type: Easing.OutCubic }
-                }
-
-                // Resplandor exterior sutil
-                Rectangle {
-                    anchors.fill: parent
-                    anchors.margins: -3
-                    radius: 26
-                    color: "transparent"
-                    border.width: 1
-                    border.color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.2)
-                }
 
                 // ── Área de Contenido Superior ─────────────────────────
                 Item {
@@ -1788,7 +1836,9 @@ Scope {
                     anchors.bottom: parent.bottom
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.margins: 12
+                    anchors.leftMargin: 14
+                    anchors.rightMargin: 14
+                    anchors.bottomMargin: 14
                     height: 52
 
                     radius: 14

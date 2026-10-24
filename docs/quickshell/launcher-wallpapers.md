@@ -8,14 +8,18 @@ Quickshell implements a floating bottom-center application launcher and animated
 
 The system consists of two coordinated Quickshell modules:
 
-1. **Floating Launcher (`modules/launcher/`):**
+1. **Floating Launcher & Dynamic Island Drawer (`modules/launcher/`):**
    * Placed on `WlrLayershell.layer: WlrLayer.Overlay`.
-   * Horizontally centered at the bottom of the screen with a 28 px bottom margin.
-   * Translucent dark surface with rounded corners (22 px radius), subtle border highlight, and outer glow.
+   * Horizontally centered and docked directly to the bottom edge of the display (`anchors.bottomMargin: 0`).
+   * Dynamic Island emergence geometry: top corners rounded (`topLeftRadius: 28`, `topRightRadius: 28`), bottom corners square (`bottomLeftRadius: 0`, `bottomRightRadius: 0`), and borderless glass finish matching Waybar (`alpha 0.80`).
+   * Hardware-accelerated dual concave fillets (`QtQuick.Shapes` with 28 px radius) smoothly bridging the bottom screen edge into both vertical shoulders of the card.
    * Search input at the bottom with real-time mode detection:
      * **Application Mode (default):** Lists system desktop entries with official icons, titles, and descriptions.
-     * **Command / Actions Mode (`/` or `>`):** Activated by typing `/` (or `>`)  to expose system commands.
+     * **Command / Actions Mode (`/` or `>`):** Activated by typing `/` (or `>`) to expose system commands.
      * **Wallpaper Carousel (`/wallpaper` / `SUPER + W`):** Horizontal card carousel featuring 16:9 previews, active wallpaper glow, and a local file explorer.
+     * **Shader Selector (`/shader`):** Real-time hyprland post-processing screen shader carousel.
+     * **Theme Carousel (`/theme`):** Material Design 3 and custom theme palette selector.
+     * **Gadget Manager (`/gadgets`):** Ambient desktop widgets toggler.
 2. **Desktop Background Engine (`modules/background/Background.qml`):**
    * Placed on `WlrLayershell.layer: WlrLayer.Background` on all connected displays (`Quickshell.screens`).
    * Implements a double-buffer (ping-pong) layer switching architecture, guaranteeing reliable consecutive wallpaper transitions without QML property binding degradation.

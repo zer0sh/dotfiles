@@ -17,7 +17,7 @@ Waybar serves as the primary top status bar in this desktop environment, enginee
 
 ## Layout and Modules
 
-Waybar is docked at the top of the display with a height of 36 pixels and bottom corner rounding (`border-radius: 0 0 24px 24px`):
+Waybar is docked at the top of the display with a height of 36 pixels and a straight bottom edge (`border-radius: 0; border-bottom: none;`) engineered for seamless, organic Dynamic Island integration with Quickshell dropdown panels:
 
 ```text
 +-------------------------------------------------------------------------------------------------------+

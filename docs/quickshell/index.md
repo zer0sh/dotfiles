@@ -7,6 +7,9 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
 ## Modules Overview
 
 * **Control Center (`modules/controlcenter/`):**
+  * **Dynamic Island Shelf Architecture:** Docked directly below Waybar (`shelfHeight: 36px`, `y: 0`, `anchors.rightMargin: 0`) with a borderless glass surface (`border.width: 0`, `alpha 0.80`) matching the top status bar.
+  * **Concave Transition Fillet:** Hardware-accelerated `QtQuick.Shapes` inverted fillet (28 px radius) bridging Waybar's horizontal bottom edge with the panel's left vertical shoulder, creating a continuous molded Dynamic Island appearance.
+  * **Instant & Clean Deployment:** Completely eliminates overshoot bouncing and clipped vertical resizing for instantaneous, responsive activation.
   * **Layout Architecture:** Balanced two-column grid layout featuring a left widgets column (Analog Clock, Weather, Media Player) and a right control matrix (4x3 quick toggle grid alongside vertical glassmorphic sliders).
   * **Analog Clock Widget (`AnalogClockWidget.qml`):** Canvas-based analog dial with dynamic hour and minute hands, digital time readout, and localized English weekday and calendar date.
   * **Weather Widget (`WeatherWidget.qml`):** Live atmospheric conditions, ambient temperature, location label, and relative humidity fetched via OpenWeather API in English.
@@ -30,8 +33,9 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
   * Ambient desktop clock surface and expandable calendar panel with date navigation.
 * **Mini Music Player (`modules/osd/MiniPlayer.qml`):**
   * Compact MPRIS playback controller triggered with `SUPER + M` as defined in [Hyprland Keybindings](../hyprland/keybinds.md#quickshell-and-desktop-overlays).
-* **Application Launcher (`modules/launcher/`):**
-  * Fast native application runner and app drawer complementing [Wofi Launcher](../apps/wofi.md).
+* **Application Launcher & Dynamic Island Carousel (`modules/launcher/`):**
+  * Bottom-docked runner (`anchors.bottomMargin: 0`) with dual concave fillets (28 px radius) seamlessly emerging from the screen's bottom bezel.
+  * Powers Application Drawer, Wallpaper Carousel, Shader Selector, Theme Carousel, and Gadget Manager. Detailed in the [Launcher & Wallpapers Guide](launcher-wallpapers.md).
 * **Workspace Overview & Exposé (`modules/overview/`):**
   * Full-screen 2x5 grid displaying all 10 Hyprland workspaces simultaneously with proportional window layouts.
   * Drag-and-drop window relocation across workspaces, quick window kill, and spatial keyboard navigation.
