@@ -61,6 +61,7 @@ nav:
           - Control Center: quickshell/index.md
           - Notifications & OSDs: quickshell/osd-notifications.md
           - Floating Launcher & Wallpapers: quickshell/launcher-wallpapers.md
+          - Keyboard Shortcuts: quickshell/shortcuts-overlay.md
       - Waybar: apps/waybar.md
       - Wofi: apps/wofi.md
       - Matugen: apps/matugen.md

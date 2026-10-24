@@ -37,7 +37,7 @@ All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr
 | `CTRL + ALT + Del` | Power menu | `quickshell ipc call powermenu toggle` | [Control Center](../quickshell/index.md) |
 | `SUPER + W` | Wallpaper picker | `quickshell ipc call wallpaper toggle` | [Matugen Integration](../apps/matugen.md) |
 | `SUPER + M` | Mini music player | `quickshell ipc call miniplayer toggle` | [OSD & Mini Player](../quickshell/osd-notifications.md) |
-| `F1` | Shortcut cheatsheet overlay | `quickshell ipc call shortcuts toggle` | [Control Center](../quickshell/index.md) |
+| `F1` | Shortcut cheatsheet overlay | `quickshell ipc call shortcuts toggle` | [Shortcuts Overlay](../quickshell/shortcuts-overlay.md) |
 
 ---
 

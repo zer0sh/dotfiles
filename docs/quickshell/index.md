@@ -32,6 +32,8 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
   * Compact MPRIS playback controller triggered with `SUPER + M` as defined in [Hyprland Keybindings](../hyprland/keybinds.md#quickshell-and-desktop-overlays).
 * **Application Launcher (`modules/launcher/`):**
   * Fast native application runner and app drawer complementing [Wofi Launcher](../apps/wofi.md).
+* **Keyboard Shortcuts Overlay (`modules/shortcuts/`):**
+  * Wayland-native cheat sheet modal triggered via `F1` featuring live search, category pills, two-column card grid, and glassmorphic styling aligned with the Control Center. Detailed in the [Keyboard Shortcuts Guide](shortcuts-overlay.md).
 
 ---
 
@@ -61,6 +63,7 @@ To validate QML syntax or restart Quickshell without crashing your Wayland sessi
 
 ## Related Documentation
 
+* [Keyboard Shortcuts Overlay](shortcuts-overlay.md): Wayland modal cheat sheet, category filtering, and live search.
 * [Notifications & OSD Dynamics](osd-notifications.md): Animation curves, screen positioning, and source maps for toasts and OSD popups.
 * [Waybar Status Bar](../apps/waybar.md): Top status bar shell integrating with Quickshell notification signals and launcher.
 * [Hyprland Architecture](../hyprland/index.md): Compositor startup hooks, autostart services, and display arrangements.
