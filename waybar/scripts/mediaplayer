@@ -1,0 +1,139 @@
+#!/usr/bin/env bash
+# Waybar media player module with scrolling marquee and source selector
+
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}"
+TARGET_PLAYER_FILE="$CACHE_DIR/waybar-selected-player"
+MAX_CHARS=40
+TICK_INTERVAL=0.5
+
+# Source selection mode (on click)
+choose_player() {
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    STYLE_CSS="$SCRIPT_DIR/island-dropdown.css"
+
+    players=$(playerctl -l 2>/dev/null | sort -u)
+    if [ -z "$players" ]; then
+        notify-send -t 2500 "Media Source" "No active media players found"
+        exit 0
+    fi
+
+    # Menu options for wofi
+    menu="󰓇 Automatic (follow active)\n"
+    while IFS= read -r p; do
+        [ -n "$p" ] && menu="${menu}󰝚 $p\n"
+    done <<< "$players"
+
+    selected=$(echo -e "$menu" | wofi --dmenu -p "Media Source" -i --lines 5 --width 320 --location top --yoffset 42 --style "$STYLE_CSS")
+    [ -z "$selected" ] && exit 0
+
+    if [[ "$selected" == *"Automatic"* ]]; then
+        rm -f "$TARGET_PLAYER_FILE"
+        notify-send -t 2000 "Media Source" "Automatic mode enabled"
+    else
+        clean_player=$(echo "$selected" | sed 's/^[󰝚 ]*//' | tr -d '[:space:]')
+        echo "$clean_player" > "$TARGET_PLAYER_FILE"
+        notify-send -t 2000 "Media Source" "Selected: $clean_player"
+    fi
+    exit 0
+}
+
+if [ "$1" = "choose" ]; then
+    choose_player
+fi
+
+# Variables de estado del loop
+offset=0
+last_track=""
+
+while true; do
+    # Determine which player to query
+    player_arg=""
+    target_name="auto"
+    if [ -f "$TARGET_PLAYER_FILE" ]; then
+        saved_target=$(cat "$TARGET_PLAYER_FILE" 2>/dev/null | tr -d '[:space:]')
+        if [ -n "$saved_target" ] && playerctl -l 2>/dev/null | grep -q "^$saved_target"; then
+            player_arg="--player=$saved_target"
+            target_name="$saved_target"
+        else
+            rm -f "$TARGET_PLAYER_FILE"
+        fi
+    fi
+
+    # Query player status
+    status=$(playerctl $player_arg status 2>/dev/null)
+
+    if [ -z "$status" ] || [ "$status" = "Stopped" ]; then
+        jq -nc --arg text "" --arg tooltip "No playback" --arg class "empty" \
+            '{$text, $tooltip, $class}'
+        offset=0
+        last_track=""
+        sleep 2
+        continue
+    fi
+
+    # Metadata
+    title=$(playerctl $player_arg metadata title 2>/dev/null)
+    artist=$(playerctl $player_arg metadata artist 2>/dev/null)
+    album=$(playerctl $player_arg metadata album 2>/dev/null)
+    player_id=$(playerctl $player_arg metadata --format '{{playerName}}' 2>/dev/null)
+    [ -z "$player_id" ] && player_id="$target_name"
+
+    # Build display text
+    if [ -n "$artist" ] && [ -n "$title" ]; then
+        full_text="$artist - $title"
+    elif [ -n "$title" ]; then
+        full_text="$title"
+    elif [ -n "$artist" ]; then
+        full_text="$artist"
+    else
+        full_text="Playing"
+    fi
+
+    # Reset offset if track changed
+    if [ "$full_text" != "$last_track" ]; then
+        last_track="$full_text"
+        offset=0
+    fi
+
+    text_len=${#full_text}
+
+    # Marquee scrolling
+    if [ "$text_len" -le "$MAX_CHARS" ]; then
+        slice="$full_text"
+    else
+        sep="   •   "
+        stream="${full_text}${sep}"
+        stream_len=${#stream}
+        double_stream="${stream}${stream}"
+        slice="${double_stream:$offset:$MAX_CHARS}"
+
+        # Advance marquee only when playing
+        if [ "$status" = "Playing" ]; then
+            offset=$(( (offset + 1) % stream_len ))
+        fi
+    fi
+
+    # Status icon with leading space
+    if [ "$status" = "Playing" ]; then
+        icon=" 󰝚  "
+        css_class="playing"
+    else
+        icon=" 󰏤  "
+        css_class="paused"
+    fi
+
+    # Simple status tooltip
+    if [ "$status" = "Playing" ]; then
+        tooltip_content="Playing..."
+    else
+        tooltip_content="Paused..."
+    fi
+
+    jq -nc \
+        --arg text "${icon}${slice}" \
+        --arg tooltip "$tooltip_content" \
+        --arg class "$css_class" \
+        '{$text, $tooltip, $class}'
+
+    sleep "$TICK_INTERVAL"
+done

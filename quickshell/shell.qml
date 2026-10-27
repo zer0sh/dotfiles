@@ -14,6 +14,7 @@ import "modules/calendar" as Calendar
 import "modules/background" as Background
 import "modules/weathergadget" as WeatherGadget
 import "modules/overview" as Overview
+import "modules/mediaselector" as MediaSelector
 
 ShellRoot {
     id: root
@@ -125,6 +126,10 @@ ShellRoot {
 
     Overview.Overview {
         id: desktopOverview
+    }
+
+    MediaSelector.MediaSelector {
+        id: mediaSelector
     }
 
     // --- Mutual Exclusivity ---

@@ -219,7 +219,7 @@ Scope {
                         y: 0
                         radiusX: 28
                         radiusY: 28
-                        direction: PathArc.Counterclockwise
+                        direction: PathArc.Clockwise
                     }
                 }
             }

@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Waybar power profile indicator and toggle
+
+if [ "$1" = "toggle" ]; then
+    curr=$(powerprofilesctl get 2>/dev/null)
+    if [ "$curr" = "power-saver" ]; then
+        powerprofilesctl set balanced
+    elif [ "$curr" = "balanced" ]; then
+        powerprofilesctl set performance
+    elif [ "$curr" = "performance" ]; then
+        powerprofilesctl set power-saver
+    else
+        powerprofilesctl set balanced
+    fi
+    pkill -RTMIN+11 waybar 2>/dev/null || true
+    exit 0
+fi
+
+profile=$(powerprofilesctl get 2>/dev/null)
+
+case "$profile" in
+    "power-saver")
+        echo '{"text": "󰌪", "class": ["active", "power-saver"], "tooltip": "Power Profile: Power Saver"}'
+        ;;
+    "performance")
+        echo '{"text": "󰓅", "class": ["active", "performance"], "tooltip": "Power Profile: Performance"}'
+        ;;
+    *)
+        # Balanced or default: keep hidden in the quick actions pill
+        echo '{"text": "", "class": ["hidden"]}'
+        ;;
+esac

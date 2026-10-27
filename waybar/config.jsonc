@@ -9,7 +9,7 @@
     "hyprland/workspaces"
   ],
   "modules-center": [
-    "hyprland/window"
+    "custom/media"
   ],
   "modules-right": [
     "tray",
@@ -28,6 +28,7 @@
       "custom/caffeine",
       "custom/nightlight",
       "custom/shader",
+      "custom/powerprofile",
       "custom/notifications"
     ]
   },
@@ -55,6 +56,15 @@
     "on-click": "~/.config/waybar/scripts/shader toggle",
     "tooltip": true
   },
+  "custom/powerprofile": {
+    "exec": "~/.config/waybar/scripts/powerprofile",
+    "return-type": "json",
+    "interval": 3,
+    "signal": 11,
+    "on-click": "~/.config/waybar/scripts/powerprofile toggle",
+    "on-click-right": "qs ipc call controlcenter openBattery",
+    "tooltip": true
+  },
   "custom/launcher": {
     "format": "󰪥",
     "on-click": "qs ipc call launcher toggle",
@@ -74,9 +84,15 @@
     "interval": 60,
     "tooltip": false
   },
-  "hyprland/window": {
-    "format": "{}",
-    "tooltip": false
+  "custom/media": {
+    "exec": "~/.config/waybar/scripts/mediaplayer",
+    "return-type": "json",
+    "on-click": "qs ipc call mediaselector toggle",
+    "on-click-right": "playerctl play-pause",
+    "on-scroll-up": "playerctl next",
+    "on-scroll-down": "playerctl previous",
+    "escape": true,
+    "tooltip": true
   },
   "hyprland/workspaces": {
     "sort-by": "name",

@@ -191,40 +191,50 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
-        anchors.topMargin: 18
-        anchors.leftMargin: 16
-        anchors.rightMargin: 16
-        anchors.bottomMargin: 16
-        spacing: 14
+        anchors.margins: 20
+        spacing: 16
 
-        // ── Header Bar ──────────────────────────────────────────────
+        // ── Top Header Row (flat, matching Control Center & Battery) ──
         RowLayout {
             Layout.fillWidth: true
-            spacing: 12
+            spacing: 14
 
+            // Back button
             Rectangle {
-                width: 38
-                height: 38
-                radius: 19
-                color: Root.Theme.surfaceContainerHigh
+                Layout.preferredWidth: 40
+                Layout.preferredHeight: 40
+                radius: 20
+                color: backBtn.containsMouse ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.08)
+                border.width: 1
+                border.color: Qt.rgba(255, 255, 255, 0.12)
+                Behavior on color { ColorAnimation { duration: 100 } }
 
                 Text {
                     anchors.centerIn: parent
-                    text: "graphic_eq"
+                    text: "arrow_back"
                     font.family: Root.Theme.iconFont
                     font.pixelSize: 22
-                    color: Root.Theme.primary
+                    color: Root.Theme.textPrimary
+                }
+
+                MouseArea {
+                    id: backBtn
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: audioPanel.back()
                 }
             }
 
+            // Title & Context Status
             ColumnLayout {
-                Layout.fillWidth: true
                 spacing: 1
+                Layout.fillWidth: true
 
                 Text {
                     text: "Audio"
                     font.family: Root.Theme.fontFamily
-                    font.pixelSize: Root.Theme.fontSizeLarge
+                    font.pixelSize: 18
                     font.weight: Font.DemiBold
                     color: Root.Theme.textPrimary
                 }
@@ -235,18 +245,18 @@ Item {
                             for (var i = 0; i < audioPanel.sinks.length; i++) {
                                 if (audioPanel.sinks[i].isDefault) return audioPanel.sinks[i].label;
                             }
-                            return "Salidas de audio";
+                            return "Audio Outputs";
                         } else if (audioPanel.currentTab === "inputs") {
                             for (var j = 0; j < audioPanel.sources.length; j++) {
                                 if (audioPanel.sources[j].isDefault) return audioPanel.sources[j].label;
                             }
-                            return "Entradas de audio";
+                            return "Audio Inputs";
                         } else {
-                            return audioPanel.apps.length + " aplicacion(es) activa(s)";
+                            return audioPanel.apps.length + " active app(s)";
                         }
                     }
                     font.family: Root.Theme.fontFamily
-                    font.pixelSize: Root.Theme.fontSizeXS
+                    font.pixelSize: 13
                     color: Root.Theme.textSecondary
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -255,10 +265,12 @@ Item {
 
             // Refresh button
             Rectangle {
-                width: 36
-                height: 36
-                radius: 18
-                color: refreshMa.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
+                Layout.preferredWidth: 38
+                Layout.preferredHeight: 38
+                radius: 19
+                color: refreshMa.containsMouse ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.06)
+                border.width: 1
+                border.color: Qt.rgba(255, 255, 255, 0.10)
                 Behavior on color { ColorAnimation { duration: 100 } }
 
                 Text {
@@ -286,31 +298,6 @@ Item {
                     hoverEnabled: true
                     cursorShape: Qt.PointingHandCursor
                     onClicked: audioPanel.refresh()
-                }
-            }
-
-            // Back button
-            Rectangle {
-                width: 36
-                height: 36
-                radius: 18
-                color: backBtn.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
-                Behavior on color { ColorAnimation { duration: 100 } }
-
-                Text {
-                    anchors.centerIn: parent
-                    text: "arrow_back"
-                    font.family: Root.Theme.iconFont
-                    font.pixelSize: 20
-                    color: Root.Theme.textPrimary
-                }
-
-                MouseArea {
-                    id: backBtn
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: audioPanel.back()
                 }
             }
         }

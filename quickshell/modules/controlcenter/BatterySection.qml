@@ -13,7 +13,7 @@ Item {
 
     // Battery metrics loaded via battery-info.py
     property int capacity: 0
-    property string status: "Desconocido"
+    property string status: "Unknown"
     property bool acOnline: false
     property real energyNowWh: 0.0
     property real energyFullWh: 0.0
@@ -26,6 +26,50 @@ Item {
     property real healthPercent: 100.0
     property int timeRemainingMin: 0
     property bool isLoaded: false
+    property string currentProfile: (controlCenterRef && controlCenterRef.powerProfile) ? controlCenterRef.powerProfile : "balanced"
+
+    Connections {
+        target: controlCenterRef
+        function onPowerProfileChanged() {
+            if (controlCenterRef && controlCenterRef.powerProfile) {
+                batteryPanel.currentProfile = controlCenterRef.powerProfile;
+            }
+        }
+    }
+
+    Process {
+        id: getProfileProc
+        command: ["powerprofilesctl", "get"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var p = text.trim();
+                if (p === "power-saver" || p === "balanced" || p === "performance") {
+                    batteryPanel.currentProfile = p;
+                    if (controlCenterRef) controlCenterRef.powerProfile = p;
+                }
+            }
+        }
+    }
+
+    Process {
+        id: setProfileProc
+        onExited: {
+            getProfileProc.running = true;
+            if (controlCenterRef && typeof controlCenterRef.updateWaybar === "function") {
+                controlCenterRef.updateWaybar(11);
+            }
+        }
+    }
+
+    function setProfile(name) {
+        batteryPanel.currentProfile = name;
+        if (controlCenterRef && typeof controlCenterRef.setPowerProfile === "function") {
+            controlCenterRef.setPowerProfile(name);
+        } else {
+            setProfileProc.command = ["powerprofilesctl", "set", name];
+            setProfileProc.running = true;
+        }
+    }
 
     Process {
         id: batteryProc
@@ -35,7 +79,7 @@ Item {
                 try {
                     var data = JSON.parse(text.trim());
                     batteryPanel.capacity = data.capacity !== undefined ? data.capacity : 0;
-                    batteryPanel.status = data.status || "Desconocido";
+                    batteryPanel.status = data.status || "Unknown";
                     batteryPanel.acOnline = !!data.ac_online;
                     batteryPanel.energyNowWh = data.energy_now_wh || 0.0;
                     batteryPanel.energyFullWh = data.energy_full_wh || 0.0;
@@ -64,10 +108,14 @@ Item {
         }
     }
 
-    Component.onCompleted: batteryProc.running = true
+    Component.onCompleted: {
+        batteryProc.running = true;
+        getProfileProc.running = true;
+    }
 
     function refresh() {
         if (!batteryProc.running) batteryProc.running = true;
+        if (!getProfileProc.running) getProfileProc.running = true;
     }
 
     function batteryStateColor() {
@@ -167,12 +215,13 @@ Item {
             }
 
             Rectangle {
-                Layout.preferredWidth: 38
-                Layout.preferredHeight: 38
-                radius: 19
-                color: refreshMA.containsMouse ? Qt.rgba(255, 255, 255, 0.14) : Qt.rgba(255, 255, 255, 0.06)
+                Layout.preferredWidth: 40
+                Layout.preferredHeight: 40
+                radius: 20
+                color: refreshMA.containsMouse ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.08)
                 border.width: 1
-                border.color: Qt.rgba(255, 255, 255, 0.10)
+                border.color: Qt.rgba(255, 255, 255, 0.12)
+                Behavior on color { ColorAnimation { duration: 100 } }
 
                 Text {
                     anchors.centerIn: parent
@@ -195,12 +244,14 @@ Item {
         // Top Row: Hero Card (Gauge + Status) + Power Profile Selector
         RowLayout {
             Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.preferredHeight: 280
             spacing: 16
 
             // Hero Card
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 150
+                Layout.fillHeight: true
                 radius: 24
                 color: Qt.rgba(255, 255, 255, 0.08)
                 border.width: 1
@@ -209,26 +260,27 @@ Item {
 
                 RowLayout {
                     anchors.fill: parent
-                    anchors.margins: 18
+                    anchors.margins: 20
                     spacing: 20
 
                     // Circular battery badge
                     Rectangle {
-                        Layout.preferredWidth: 104
-                        Layout.preferredHeight: 104
-                        radius: 52
+                        Layout.preferredWidth: 116
+                        Layout.preferredHeight: 116
+                        radius: 58
+                        Layout.alignment: Qt.AlignVCenter
                         color: Qt.rgba(0, 0, 0, 0.25)
                         border.width: 3
                         border.color: batteryPanel.batteryStateColor()
 
                         ColumnLayout {
                             anchors.centerIn: parent
-                            spacing: 0
+                            spacing: 2
 
                             Text {
                                 text: batteryPanel.batteryIcon()
                                 font.family: Root.Theme.iconFont
-                                font.pixelSize: 32
+                                font.pixelSize: 36
                                 color: batteryPanel.batteryStateColor()
                                 Layout.alignment: Qt.AlignHCenter
                             }
@@ -236,7 +288,7 @@ Item {
                             Text {
                                 text: batteryPanel.capacity + "%"
                                 font.family: Root.Theme.fontFamily
-                                font.pixelSize: 22
+                                font.pixelSize: 24
                                 font.weight: Font.Bold
                                 color: Root.Theme.textPrimary
                                 Layout.alignment: Qt.AlignHCenter
@@ -247,24 +299,27 @@ Item {
                     // Battery status details
                     ColumnLayout {
                         Layout.fillWidth: true
+                        Layout.fillHeight: true
                         Layout.alignment: Qt.AlignVCenter
-                        spacing: 6
+                        spacing: 8
+
+                        Item { Layout.fillHeight: true }
 
                         RowLayout {
                             spacing: 8
                             Text {
                                 text: batteryPanel.statusText()
                                 font.family: Root.Theme.fontFamily
-                                font.pixelSize: 18
+                                font.pixelSize: 20
                                 font.weight: Font.DemiBold
                                 color: Root.Theme.textPrimary
                             }
 
                             Rectangle {
                                 visible: batteryPanel.acOnline
-                                Layout.preferredHeight: 20
-                                Layout.preferredWidth: 70
-                                radius: 10
+                                Layout.preferredHeight: 22
+                                Layout.preferredWidth: 72
+                                radius: 11
                                 color: Qt.rgba(Root.Theme.connected.r, Root.Theme.connected.g, Root.Theme.connected.b, 0.20)
 
                                 RowLayout {
@@ -298,8 +353,8 @@ Item {
                         // Progress bar
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 8
-                            radius: 4
+                            Layout.preferredHeight: 10
+                            radius: 5
                             color: Qt.rgba(255, 255, 255, 0.12)
 
                             Rectangle {
@@ -307,7 +362,7 @@ Item {
                                 anchors.top: parent.top
                                 anchors.bottom: parent.bottom
                                 width: Math.max(0, parent.width * (batteryPanel.capacity / 100.0))
-                                radius: 4
+                                radius: 5
                                 color: batteryPanel.batteryStateColor()
                                 Behavior on width { NumberAnimation { duration: 300 } }
                             }
@@ -316,9 +371,11 @@ Item {
                         Text {
                             text: batteryPanel.energyNowWh + " Wh of " + batteryPanel.energyFullWh + " Wh available"
                             font.family: Root.Theme.fontFamily
-                            font.pixelSize: 11
+                            font.pixelSize: 12
                             color: Root.Theme.textSecondary
                         }
+
+                        Item { Layout.fillHeight: true }
                     }
                 }
             }
@@ -326,7 +383,7 @@ Item {
             // Power Profile Card
             Rectangle {
                 Layout.preferredWidth: 320
-                Layout.preferredHeight: 150
+                Layout.fillHeight: true
                 radius: 24
                 color: Qt.rgba(255, 255, 255, 0.08)
                 border.width: 1
@@ -361,30 +418,32 @@ Item {
                     // 3-Segmented Pill Selector
                     RowLayout {
                         Layout.fillWidth: true
+                        Layout.fillHeight: true
                         spacing: 8
 
                         // Power Saver
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 64
+                            Layout.fillHeight: true
                             radius: 16
-                            color: (controlCenterRef && controlCenterRef.powerProfile === "power-saver")
+                            color: batteryPanel.currentProfile === "power-saver"
                                 ? Root.Theme.primary
-                                : Qt.rgba(255, 255, 255, 0.08)
+                                : (saverMA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
                             border.width: 1
-                            border.color: (controlCenterRef && controlCenterRef.powerProfile === "power-saver")
+                            border.color: batteryPanel.currentProfile === "power-saver"
                                 ? Root.Theme.primary
                                 : Qt.rgba(255, 255, 255, 0.12)
+                            Behavior on color { ColorAnimation { duration: 120 } }
 
                             ColumnLayout {
                                 anchors.centerIn: parent
-                                spacing: 2
+                                spacing: 4
 
                                 Text {
                                     text: "energy_savings_leaf"
                                     font.family: Root.Theme.iconFont
-                                    font.pixelSize: 20
-                                    color: (controlCenterRef && controlCenterRef.powerProfile === "power-saver")
+                                    font.pixelSize: 22
+                                    color: (batteryPanel.currentProfile === "power-saver")
                                         ? Root.Theme.tileActiveText
                                         : Root.Theme.textSecondary
                                     Layout.alignment: Qt.AlignHCenter
@@ -395,7 +454,7 @@ Item {
                                     font.family: Root.Theme.fontFamily
                                     font.pixelSize: 11
                                     font.weight: Font.Medium
-                                    color: (controlCenterRef && controlCenterRef.powerProfile === "power-saver")
+                                    color: (batteryPanel.currentProfile === "power-saver")
                                         ? Root.Theme.tileActiveText
                                         : Root.Theme.textPrimary
                                     Layout.alignment: Qt.AlignHCenter
@@ -403,41 +462,37 @@ Item {
                             }
 
                             MouseArea {
+                                id: saverMA
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    if (controlCenterRef) {
-                                        controlCenterRef.setPowerProfileProc.command = ["powerprofilesctl", "set", "power-saver"]
-                                        controlCenterRef.setPowerProfileProc.running = true
-                                        controlCenterRef.powerProfile = "power-saver"
-                                    }
-                                }
+                                onClicked: batteryPanel.setProfile("power-saver")
                             }
                         }
 
                         // Balanced
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 64
+                            Layout.fillHeight: true
                             radius: 16
-                            color: (controlCenterRef && controlCenterRef.powerProfile === "balanced")
+                            color: batteryPanel.currentProfile === "balanced"
                                 ? Root.Theme.primary
-                                : Qt.rgba(255, 255, 255, 0.08)
+                                : (balMA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
                             border.width: 1
-                            border.color: (controlCenterRef && controlCenterRef.powerProfile === "balanced")
+                            border.color: batteryPanel.currentProfile === "balanced"
                                 ? Root.Theme.primary
                                 : Qt.rgba(255, 255, 255, 0.12)
+                            Behavior on color { ColorAnimation { duration: 120 } }
 
                             ColumnLayout {
                                 anchors.centerIn: parent
-                                spacing: 2
+                                spacing: 4
 
                                 Text {
                                     text: "tune"
                                     font.family: Root.Theme.iconFont
-                                    font.pixelSize: 20
-                                    color: (controlCenterRef && controlCenterRef.powerProfile === "balanced")
+                                    font.pixelSize: 22
+                                    color: (batteryPanel.currentProfile === "balanced")
                                         ? Root.Theme.tileActiveText
                                         : Root.Theme.textSecondary
                                     Layout.alignment: Qt.AlignHCenter
@@ -448,7 +503,7 @@ Item {
                                     font.family: Root.Theme.fontFamily
                                     font.pixelSize: 11
                                     font.weight: Font.Medium
-                                    color: (controlCenterRef && controlCenterRef.powerProfile === "balanced")
+                                    color: (batteryPanel.currentProfile === "balanced")
                                         ? Root.Theme.tileActiveText
                                         : Root.Theme.textPrimary
                                     Layout.alignment: Qt.AlignHCenter
@@ -456,41 +511,37 @@ Item {
                             }
 
                             MouseArea {
+                                id: balMA
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    if (controlCenterRef) {
-                                        controlCenterRef.setPowerProfileProc.command = ["powerprofilesctl", "set", "balanced"]
-                                        controlCenterRef.setPowerProfileProc.running = true
-                                        controlCenterRef.powerProfile = "balanced"
-                                    }
-                                }
+                                onClicked: batteryPanel.setProfile("balanced")
                             }
                         }
 
                         // Performance
                         Rectangle {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 64
+                            Layout.fillHeight: true
                             radius: 16
-                            color: (controlCenterRef && controlCenterRef.powerProfile === "performance")
+                            color: batteryPanel.currentProfile === "performance"
                                 ? Root.Theme.primary
-                                : Qt.rgba(255, 255, 255, 0.08)
+                                : (perfMA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
                             border.width: 1
-                            border.color: (controlCenterRef && controlCenterRef.powerProfile === "performance")
+                            border.color: batteryPanel.currentProfile === "performance"
                                 ? Root.Theme.primary
                                 : Qt.rgba(255, 255, 255, 0.12)
+                            Behavior on color { ColorAnimation { duration: 120 } }
 
                             ColumnLayout {
                                 anchors.centerIn: parent
-                                spacing: 2
+                                spacing: 4
 
                                 Text {
                                     text: "speed"
                                     font.family: Root.Theme.iconFont
-                                    font.pixelSize: 20
-                                    color: (controlCenterRef && controlCenterRef.powerProfile === "performance")
+                                    font.pixelSize: 22
+                                    color: (batteryPanel.currentProfile === "performance")
                                         ? Root.Theme.tileActiveText
                                         : Root.Theme.textSecondary
                                     Layout.alignment: Qt.AlignHCenter
@@ -501,7 +552,7 @@ Item {
                                     font.family: Root.Theme.fontFamily
                                     font.pixelSize: 11
                                     font.weight: Font.Medium
-                                    color: (controlCenterRef && controlCenterRef.powerProfile === "performance")
+                                    color: (batteryPanel.currentProfile === "performance")
                                         ? Root.Theme.tileActiveText
                                         : Root.Theme.textPrimary
                                     Layout.alignment: Qt.AlignHCenter
@@ -509,16 +560,11 @@ Item {
                             }
 
                             MouseArea {
+                                id: perfMA
                                 anchors.fill: parent
                                 hoverEnabled: true
                                 cursorShape: Qt.PointingHandCursor
-                                onClicked: {
-                                    if (controlCenterRef) {
-                                        controlCenterRef.setPowerProfileProc.command = ["powerprofilesctl", "set", "performance"]
-                                        controlCenterRef.setPowerProfileProc.running = true
-                                        controlCenterRef.powerProfile = "performance"
-                                    }
-                                }
+                                onClicked: batteryPanel.setProfile("performance")
                             }
                         }
                     }
@@ -526,17 +572,17 @@ Item {
             }
         }
 
-        // Hardware Metrics Grid (4 Cards: Salud, Consumo, Ciclos, Protección)
-        GridLayout {
+        // Hardware Metrics Grid (4 Cards: Health, Power Draw, Cycles, Protection)
+        RowLayout {
             Layout.fillWidth: true
-            columns: 4
-            columnSpacing: 14
-            rowSpacing: 14
+            Layout.fillHeight: true
+            Layout.preferredHeight: 180
+            spacing: 14
 
-            // Card 1: Salud de la batería
+            // Card 1: Battery Health
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 110
+                Layout.fillHeight: true
                 radius: 20
                 color: Qt.rgba(255, 255, 255, 0.08)
                 border.width: 1
@@ -545,10 +591,11 @@ Item {
 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: 14
-                    spacing: 4
+                    anchors.margins: 18
+                    spacing: 0
 
                     RowLayout {
+                        Layout.fillWidth: true
                         spacing: 6
                         Text {
                             text: "health_and_safety"
@@ -565,19 +612,25 @@ Item {
                         }
                     }
 
+                    Item { Layout.fillHeight: true }
+
                     Text {
                         text: batteryPanel.healthPercent + "%"
                         font.family: Root.Theme.fontFamily
-                        font.pixelSize: 22
+                        font.pixelSize: 24
                         font.weight: Font.Bold
                         color: Root.Theme.textPrimary
                     }
+
+                    Item { Layout.preferredHeight: 6 }
 
                     Text {
                         text: batteryPanel.energyFullWh + " / " + batteryPanel.energyDesignWh + " Wh"
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 11
                         color: Root.Theme.textSecondary
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
                     }
                 }
             }
@@ -585,7 +638,7 @@ Item {
             // Card 2: Real-time power draw
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 110
+                Layout.fillHeight: true
                 radius: 20
                 color: Qt.rgba(255, 255, 255, 0.08)
                 border.width: 1
@@ -594,10 +647,11 @@ Item {
 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: 14
-                    spacing: 4
+                    anchors.margins: 18
+                    spacing: 0
 
                     RowLayout {
+                        Layout.fillWidth: true
                         spacing: 6
                         Text {
                             text: "bolt"
@@ -614,19 +668,25 @@ Item {
                         }
                     }
 
+                    Item { Layout.fillHeight: true }
+
                     Text {
                         text: batteryPanel.powerW + " W"
                         font.family: Root.Theme.fontFamily
-                        font.pixelSize: 22
+                        font.pixelSize: 24
                         font.weight: Font.Bold
                         color: Root.Theme.textPrimary
                     }
 
+                    Item { Layout.preferredHeight: 6 }
+
                     Text {
-                        text: batteryPanel.voltageV + " V • " + (batteryPanel.status === "Charging" ? "Charging" : "Discharge")
+                        text: batteryPanel.voltageV + " V • " + (batteryPanel.status === "Charging" ? "Charging" : (batteryPanel.acOnline ? "AC" : "Discharge"))
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 11
                         color: Root.Theme.textSecondary
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
                     }
                 }
             }
@@ -634,7 +694,7 @@ Item {
             // Card 3: Charge cycles and technology
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 110
+                Layout.fillHeight: true
                 radius: 20
                 color: Qt.rgba(255, 255, 255, 0.08)
                 border.width: 1
@@ -643,10 +703,11 @@ Item {
 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: 14
-                    spacing: 4
+                    anchors.margins: 18
+                    spacing: 0
 
                     RowLayout {
+                        Layout.fillWidth: true
                         spacing: 6
                         Text {
                             text: "autorenew"
@@ -663,19 +724,25 @@ Item {
                         }
                     }
 
+                    Item { Layout.fillHeight: true }
+
                     Text {
                         text: batteryPanel.cycles + " cycles"
                         font.family: Root.Theme.fontFamily
-                        font.pixelSize: 22
+                        font.pixelSize: 24
                         font.weight: Font.Bold
                         color: Root.Theme.textPrimary
                     }
+
+                    Item { Layout.preferredHeight: 6 }
 
                     Text {
                         text: batteryPanel.technology + " • Normal"
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 11
                         color: Root.Theme.textSecondary
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
                     }
                 }
             }
@@ -683,7 +750,7 @@ Item {
             // Card 4: Conservation / Battery Protection Limit
             Rectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: 110
+                Layout.fillHeight: true
                 radius: 20
                 color: Qt.rgba(255, 255, 255, 0.08)
                 border.width: 1
@@ -692,10 +759,11 @@ Item {
 
                 ColumnLayout {
                     anchors.fill: parent
-                    anchors.margins: 14
-                    spacing: 4
+                    anchors.margins: 18
+                    spacing: 0
 
                     RowLayout {
+                        Layout.fillWidth: true
                         spacing: 6
                         Text {
                             text: "verified_user"
@@ -712,24 +780,28 @@ Item {
                         }
                     }
 
+                    Item { Layout.fillHeight: true }
+
                     Text {
                         text: batteryPanel.threshold !== "" ? ("Limit " + batteryPanel.threshold + "%") : "100% Standard"
                         font.family: Root.Theme.fontFamily
-                        font.pixelSize: 22
+                        font.pixelSize: 24
                         font.weight: Font.Bold
                         color: Root.Theme.textPrimary
                     }
+
+                    Item { Layout.preferredHeight: 6 }
 
                     Text {
                         text: "Conservation mode"
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 11
                         color: Root.Theme.connected
+                        elide: Text.ElideRight
+                        Layout.fillWidth: true
                     }
                 }
             }
         }
-
-        Item { Layout.fillHeight: true }
     }
 }

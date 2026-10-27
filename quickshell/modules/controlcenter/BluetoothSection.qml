@@ -385,171 +385,153 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: 0
+        anchors.margins: 20
+        spacing: 16
 
-        // ── Header Bar ───────────────────────────────────────────
-        Item {
+        // ── Top Header Row (flat, matching Control Center & Battery) ──
+        RowLayout {
             Layout.fillWidth: true
-            Layout.preferredHeight: 64
+            spacing: 14
 
+            // Back button
             Rectangle {
-                anchors.fill: parent
-                color: Root.Theme.surface
-                radius: Root.Theme.panelRadius
-            }
-            Rectangle {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                height: Root.Theme.panelRadius
-                color: Root.Theme.surface
-            }
+                Layout.preferredWidth: 40
+                Layout.preferredHeight: 40
+                radius: 20
+                color: backArea.containsMouse ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.08)
+                border.width: 1
+                border.color: Qt.rgba(255, 255, 255, 0.12)
+                Behavior on color { ColorAnimation { duration: 100 } }
 
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: Root.Theme.paddingNormal
-                anchors.rightMargin: 24
-                spacing: 12
-
-                // Back button
-                Rectangle {
-                    width: 38
-                    height: 38
-                    radius: Root.Theme.radiusSmall
-                    color: backArea.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "󰁍" // nf-md-arrow_left
-                        color: backArea.containsMouse ? Root.Theme.textPrimary : Root.Theme.textSecondary
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: 20
-                    }
-
-                    MouseArea {
-                        id: backArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: bt.back()
-                    }
+                Text {
+                    anchors.centerIn: parent
+                    text: "arrow_back"
+                    font.family: Root.Theme.iconFont
+                    font.pixelSize: 22
+                    color: Root.Theme.textPrimary
                 }
 
-                // Title + Status
-                ColumnLayout {
-                    spacing: 0
-                    Layout.fillWidth: true
-
-                    Text {
-                        text: "Bluetooth Radar"
-                        color: Root.Theme.textPrimary
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: Root.Theme.fontSizeLarge
-                        font.weight: Font.DemiBold
-                    }
-
-                    Text {
-                        text: !bt.enabled
-                            ? "Disabled"
-                            : (bt.connectedName !== "" ? "Connected to " + bt.connectedName : "Ready")
-                        color: bt.connectedName !== "" ? Root.Theme.primary : Root.Theme.textSecondary
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: Root.Theme.fontSizeXS
-                    }
-                }
-
-                // Scan / Discovery button
-                Rectangle {
-                    width: 38
-                    height: 38
-                    radius: Root.Theme.radiusSmall
-                    visible: bt.enabled
-                    color: scanArea.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
-
-                    Text {
-                        id: scanIcon
-                        anchors.centerIn: parent
-                        text: "󰑐"
-                        color: Root.Theme.textSecondary
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: 18
-                    }
-
-                    RotationAnimation {
-                        target: scanIcon
-                        property: "rotation"
-                        from: 0
-                        to: 360
-                        duration: 1000
-                        loops: Animation.Infinite
-                        running: bt.discoveryScanning
-                    }
-
-                    MouseArea {
-                        id: scanArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: bt.startDiscovery()
-                    }
-                }
-
-                // Pause / Resume Orbit Animation Button
-                Rectangle {
-                    width: 38
-                    height: 38
-                    radius: Root.Theme.radiusSmall
-                    visible: bt.enabled
-                    color: pauseBtMA.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: bt.animationPaused ? "󰐊" : "󰏤" // nf-md-play / nf-md-pause
-                        color: bt.animationPaused ? Root.Theme.primary : Root.Theme.textSecondary
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: 18
-                    }
-
-                    MouseArea {
-                        id: pauseBtMA
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: bt.toggleAnimation()
-                    }
-                }
-
-                // Bluetooth Toggle Switch
-                Rectangle {
-                    width: 52
-                    height: 28
-                    radius: 14
-                    color: bt.enabled ? Root.Theme.primary : Root.Theme.surfaceContainerHigh
-
-                    Rectangle {
-                        width: 22
-                        height: 22
-                        radius: 11
-                        y: 3
-                        x: bt.enabled ? parent.width - width - 3 : 3
-                        color: Root.Theme.textPrimary
-                        Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.InOutQuad } }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: bt.togglePower()
-                    }
+                MouseArea {
+                    id: backArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: bt.back()
                 }
             }
 
+            // Title + Status
+            ColumnLayout {
+                spacing: 1
+                Layout.fillWidth: true
+
+                Text {
+                    text: "Bluetooth Radar"
+                    color: Root.Theme.textPrimary
+                    font.family: Root.Theme.fontFamily
+                    font.pixelSize: 18
+                    font.weight: Font.DemiBold
+                }
+
+                Text {
+                    text: !bt.enabled
+                        ? "Disabled"
+                        : (bt.connectedName !== "" ? "Connected to " + bt.connectedName : "Ready")
+                    color: bt.connectedName !== "" ? Root.Theme.primary : Root.Theme.textSecondary
+                    font.family: Root.Theme.fontFamily
+                    font.pixelSize: 13
+                }
+            }
+
+            // Scan / Discovery button
             Rectangle {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                height: 1
-                color: Root.Theme.surfaceContainerHigh
+                Layout.preferredWidth: 38
+                Layout.preferredHeight: 38
+                radius: 19
+                visible: bt.enabled
+                color: scanArea.containsMouse ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.06)
+                border.width: 1
+                border.color: Qt.rgba(255, 255, 255, 0.10)
+                Behavior on color { ColorAnimation { duration: 100 } }
+
+                Text {
+                    id: scanIcon
+                    anchors.centerIn: parent
+                    text: "refresh"
+                    font.family: Root.Theme.iconFont
+                    font.pixelSize: 20
+                    color: Root.Theme.textSecondary
+                }
+
+                RotationAnimation {
+                    target: scanIcon
+                    property: "rotation"
+                    from: 0
+                    to: 360
+                    duration: 1000
+                    loops: Animation.Infinite
+                    running: bt.discoveryScanning
+                }
+
+                MouseArea {
+                    id: scanArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: bt.startDiscovery()
+                }
+            }
+
+            // Pause / Resume Orbit Animation Button
+            Rectangle {
+                Layout.preferredWidth: 38
+                Layout.preferredHeight: 38
+                radius: 19
+                visible: bt.enabled
+                color: pauseBtMA.containsMouse ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.06)
+                border.width: 1
+                border.color: Qt.rgba(255, 255, 255, 0.10)
+                Behavior on color { ColorAnimation { duration: 100 } }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: bt.animationPaused ? "play_arrow" : "pause"
+                    font.family: Root.Theme.iconFont
+                    font.pixelSize: 20
+                    color: bt.animationPaused ? Root.Theme.primary : Root.Theme.textSecondary
+                }
+
+                MouseArea {
+                    id: pauseBtMA
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: bt.toggleAnimation()
+                }
+            }
+
+            // Bluetooth Toggle Switch
+            Rectangle {
+                Layout.preferredWidth: 52
+                Layout.preferredHeight: 28
+                radius: 14
+                color: bt.enabled ? Root.Theme.primary : Root.Theme.surfaceContainerHigh
+
+                Rectangle {
+                    width: 22
+                    height: 22
+                    radius: 11
+                    y: 3
+                    x: bt.enabled ? parent.width - width - 3 : 3
+                    color: Root.Theme.textPrimary
+                    Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.InOutQuad } }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: bt.togglePower()
+                }
             }
         }
 

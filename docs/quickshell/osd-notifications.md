@@ -55,6 +55,7 @@ Volume and brightness OSD cards sharing the same placement, geometry, and surfac
 | **Volume OSD** | `modules/osd/VolumeOsd.qml` | Listens to PipeWire sink changes and animates top-center card. |
 | **Brightness OSD** | `modules/osd/BrightnessOsd.qml` | Listens to `brightnessctl` and animates top-center card. |
 | **Song Transition Toast** | `modules/osd/MusicOsd.qml` | Dynamic Island popup anchored to Waybar displaying thumbnail art, track title, and artist on MPRIS track transitions. |
+| **Media Source Selector** | `modules/mediaselector/MediaSelector.qml` | Centered Dynamic Island dropdown panel with dual concave fillets, allowing live selection between Automatic and specific MPRIS players. |
 | **Unified Music Player** | `modules/launcher/Launcher.qml` | Bottom-docked non-modal interactive player accessible via `/music` or `SUPER + M` (see [Launcher & Wallpapers Guide](launcher-wallpapers.md)). |
 
 ---

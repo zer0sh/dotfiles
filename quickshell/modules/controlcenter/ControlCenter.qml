@@ -194,7 +194,18 @@ Scope {
 
     Process {
         id: setPowerProfileProc
-        onExited: powerProfileProc.running = true
+        onExited: {
+            powerProfileProc.running = true
+            updateWaybar(11)
+        }
+    }
+
+    property alias setPowerProfileProc: setPowerProfileProc
+
+    function setPowerProfile(profile) {
+        controlCenter.powerProfile = profile
+        setPowerProfileProc.command = ["powerprofilesctl", "set", profile]
+        setPowerProfileProc.running = true
     }
 
     function powerProfileLabel() {

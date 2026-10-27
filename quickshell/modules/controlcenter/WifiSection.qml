@@ -385,206 +385,191 @@ Item {
 
     ColumnLayout {
         anchors.fill: parent
-        spacing: 0
+        anchors.margins: 20
+        spacing: 16
 
-        // ── Header Bar ───────────────────────────────────────────
-        Item {
+        // ── Top Header Row (flat, matching Control Center & Battery) ──
+        RowLayout {
             Layout.fillWidth: true
-            Layout.preferredHeight: 64
+            spacing: 14
 
+            // Back button
             Rectangle {
-                anchors.fill: parent
-                color: Root.Theme.surface
-                radius: Root.Theme.panelRadius
-            }
-            Rectangle {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                height: Root.Theme.panelRadius
-                color: Root.Theme.surface
-            }
+                Layout.preferredWidth: 40
+                Layout.preferredHeight: 40
+                radius: 20
+                color: backArea.containsMouse ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.08)
+                border.width: 1
+                border.color: Qt.rgba(255, 255, 255, 0.12)
+                Behavior on color { ColorAnimation { duration: 100 } }
 
-            RowLayout {
-                anchors.fill: parent
-                anchors.leftMargin: Root.Theme.paddingNormal
-                anchors.rightMargin: 24
-                spacing: 12
-
-                // Back navigation button
-                Rectangle {
-                    width: 38
-                    height: 38
-                    radius: Root.Theme.radiusSmall
-                    color: backArea.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "󰁍"
-                        color: backArea.containsMouse ? Root.Theme.textPrimary : Root.Theme.textSecondary
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: 20
-                    }
-
-                    MouseArea {
-                        id: backArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: wifiPanel.back()
-                    }
+                Text {
+                    anchors.centerIn: parent
+                    text: "arrow_back"
+                    font.family: Root.Theme.iconFont
+                    font.pixelSize: 22
+                    color: Root.Theme.textPrimary
                 }
 
-                // Title + Status indicator
-                ColumnLayout {
-                    spacing: 0
-                    Layout.fillWidth: true
+                MouseArea {
+                    id: backArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: wifiPanel.back()
+                }
+            }
 
-                    Text {
-                        text: "Wi-Fi Radar"
-                        color: Root.Theme.textPrimary
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: Root.Theme.fontSizeLarge
-                        font.weight: Font.DemiBold
-                    }
+            // Title + Status indicator
+            ColumnLayout {
+                spacing: 1
+                Layout.fillWidth: true
 
-                    Text {
-                        text: !wifiPanel.wifiEnabled
-                            ? "Disabled"
-                            : (wifiPanel.connectedSsid !== "" ? "Connected to " + wifiPanel.connectedSsid : "Disconnected")
-                        color: wifiPanel.connectedSsid !== "" ? Root.Theme.primary : Root.Theme.textSecondary
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: Root.Theme.fontSizeXS
-                    }
+                Text {
+                    text: "Wi-Fi Radar"
+                    color: Root.Theme.textPrimary
+                    font.family: Root.Theme.fontFamily
+                    font.pixelSize: 18
+                    font.weight: Font.DemiBold
                 }
 
-                // Telemetry HUD Toggle
-                Rectangle {
-                    width: 38
-                    height: 38
-                    radius: Root.Theme.radiusSmall
-                    visible: wifiPanel.wifiEnabled
-                    color: wifiPanel.showHud ? Root.Theme.primary : (hudArea.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent")
+                Text {
+                    text: !wifiPanel.wifiEnabled
+                        ? "Disabled"
+                        : (wifiPanel.connectedSsid !== "" ? "Connected to " + wifiPanel.connectedSsid : "Disconnected")
+                    color: wifiPanel.connectedSsid !== "" ? Root.Theme.primary : Root.Theme.textSecondary
+                    font.family: Root.Theme.fontFamily
+                    font.pixelSize: 13
+                }
+            }
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: "󰓜"
-                        color: wifiPanel.showHud ? Root.Theme.tileActiveText : Root.Theme.textSecondary
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: 18
+            // Telemetry HUD Toggle
+            Rectangle {
+                Layout.preferredWidth: 38
+                Layout.preferredHeight: 38
+                radius: 19
+                visible: wifiPanel.wifiEnabled
+                color: wifiPanel.showHud ? Root.Theme.primary : (hudArea.containsMouse ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.06))
+                border.width: 1
+                border.color: Qt.rgba(255, 255, 255, 0.10)
+                Behavior on color { ColorAnimation { duration: 100 } }
+
+                Text {
+                    anchors.centerIn: parent
+                    text: "speed"
+                    font.family: Root.Theme.iconFont
+                    font.pixelSize: 20
+                    color: wifiPanel.showHud ? Root.Theme.tileActiveText : Root.Theme.textSecondary
+                }
+
+                MouseArea {
+                    id: hudArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        wifiPanel.showHud = !wifiPanel.showHud;
+                        if (wifiPanel.showHud) metricsProc.running = true;
                     }
+                }
+            }
 
-                    MouseArea {
-                        id: hudArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            wifiPanel.showHud = !wifiPanel.showHud;
-                            if (wifiPanel.showHud) metricsProc.running = true;
+            // Refresh scan button
+            Rectangle {
+                Layout.preferredWidth: 38
+                Layout.preferredHeight: 38
+                radius: 19
+                visible: wifiPanel.wifiEnabled
+                color: refreshArea.containsMouse ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.06)
+                border.width: 1
+                border.color: Qt.rgba(255, 255, 255, 0.10)
+                Behavior on color { ColorAnimation { duration: 100 } }
+
+                Text {
+                    id: refreshIcon
+                    anchors.centerIn: parent
+                    text: "refresh"
+                    font.family: Root.Theme.iconFont
+                    font.pixelSize: 20
+                    color: Root.Theme.textSecondary
+                }
+
+                RotationAnimation {
+                    target: refreshIcon
+                    property: "rotation"
+                    from: 0
+                    to: 360
+                    duration: 1000
+                    loops: Animation.Infinite
+                    running: wifiPanel.scanning
+                }
+
+                MouseArea {
+                    id: refreshArea
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: {
+                        if (!wifiPanel.scanning && wifiPanel.wifiEnabled) {
+                            wifiPanel.scanning = true;
+                            wifiPanel.errorMessage = "";
+                            rescanProc.running = true;
+                            metricsProc.running = true;
                         }
                     }
                 }
+            }
 
-                // Refresh scan button
-                Rectangle {
-                    width: 38
-                    height: 38
-                    radius: Root.Theme.radiusSmall
-                    visible: wifiPanel.wifiEnabled
-                    color: refreshArea.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
+            // Pause / Resume Orbit Animation Button
+            Rectangle {
+                Layout.preferredWidth: 38
+                Layout.preferredHeight: 38
+                radius: 19
+                visible: wifiPanel.wifiEnabled
+                color: pauseBtnMA.containsMouse ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.06)
+                border.width: 1
+                border.color: Qt.rgba(255, 255, 255, 0.10)
+                Behavior on color { ColorAnimation { duration: 100 } }
 
-                    Text {
-                        id: refreshIcon
-                        anchors.centerIn: parent
-                        text: "󰑐"
-                        color: Root.Theme.textSecondary
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: 18
-                    }
-
-                    RotationAnimation {
-                        target: refreshIcon
-                        property: "rotation"
-                        from: 0
-                        to: 360
-                        duration: 1000
-                        loops: Animation.Infinite
-                        running: wifiPanel.scanning
-                    }
-
-                    MouseArea {
-                        id: refreshArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: {
-                            if (!wifiPanel.scanning && wifiPanel.wifiEnabled) {
-                                wifiPanel.scanning = true;
-                                wifiPanel.errorMessage = "";
-                                rescanProc.running = true;
-                                metricsProc.running = true;
-                            }
-                        }
-                    }
+                Text {
+                    anchors.centerIn: parent
+                    text: wifiPanel.animationPaused ? "play_arrow" : "pause"
+                    font.family: Root.Theme.iconFont
+                    font.pixelSize: 20
+                    color: wifiPanel.animationPaused ? Root.Theme.primary : Root.Theme.textSecondary
                 }
 
-                // Pause / Resume Orbit Animation Button
-                Rectangle {
-                    width: 38
-                    height: 38
-                    radius: Root.Theme.radiusSmall
-                    visible: wifiPanel.wifiEnabled
-                    color: pauseBtnMA.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: wifiPanel.animationPaused ? "󰐊" : "󰏤" // nf-md-play / nf-md-pause
-                        color: wifiPanel.animationPaused ? Root.Theme.primary : Root.Theme.textSecondary
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: 18
-                    }
-
-                    MouseArea {
-                        id: pauseBtnMA
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: wifiPanel.toggleAnimation()
-                    }
-                }
-
-                // Wi-Fi Power Switch
-                Rectangle {
-                    width: 52
-                    height: 28
-                    radius: 14
-                    color: wifiPanel.wifiEnabled ? Root.Theme.primary : Root.Theme.surfaceContainerHigh
-
-                    Rectangle {
-                        width: 22
-                        height: 22
-                        radius: 11
-                        y: 3
-                        x: wifiPanel.wifiEnabled ? parent.width - width - 3 : 3
-                        color: Root.Theme.textPrimary
-                        Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.InOutQuad } }
-                    }
-
-                    MouseArea {
-                        anchors.fill: parent
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: wifiPanel.toggleWifi()
-                    }
+                MouseArea {
+                    id: pauseBtnMA
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: wifiPanel.toggleAnimation()
                 }
             }
 
+            // Wi-Fi Power Switch
             Rectangle {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-                height: 1
-                color: Root.Theme.surfaceContainerHigh
+                Layout.preferredWidth: 52
+                Layout.preferredHeight: 28
+                radius: 14
+                color: wifiPanel.wifiEnabled ? Root.Theme.primary : Root.Theme.surfaceContainerHigh
+
+                Rectangle {
+                    width: 22
+                    height: 22
+                    radius: 11
+                    y: 3
+                    x: wifiPanel.wifiEnabled ? parent.width - width - 3 : 3
+                    color: Root.Theme.textPrimary
+                    Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.InOutQuad } }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: wifiPanel.toggleWifi()
+                }
             }
         }
 

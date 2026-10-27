@@ -18,6 +18,22 @@ window#waybar {
     transition-duration: 0.3s;
 }
 
+/* ---------- General Tooltips ---------- */
+tooltip {
+    background: alpha(@surface_container_high, 0.94);
+    border: 1px solid alpha(@outline, 0.35);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    padding: 6px 12px;
+}
+
+tooltip label {
+    color: @text;
+    font-family: "Google Sans", "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+}
+
 /* ========== LEFT MODULES ========== */
 
 /* Launcher button — ChromeOS circle */
@@ -88,10 +104,35 @@ window#waybar {
     background: @accent;
 }
 
-/* ========== CENTER MODULE ========== */
+/* ========== CENTER MODULE (Media Pill) ========== */
 
-#window {
-    color: alpha(@text, 0.85);
+#custom-media {
+    padding: 0 16px;
+    margin: 4px 0;
+    min-width: 260px;
+    border-radius: 18px;
+    background: alpha(@text, 0.08);
+    color: @text;
+    transition: all 0.2s ease;
+}
+
+#custom-media:hover {
+    background: alpha(@text, 0.14);
+}
+
+#custom-media.playing {
+    color: @accent;
+}
+
+#custom-media.paused {
+    color: alpha(@text, 0.60);
+}
+
+#custom-media.empty {
+    padding: 0;
+    margin: 0;
+    min-width: 0;
+    background: transparent;
 }
 
 /* ========== RIGHT MODULES ========== */
@@ -136,7 +177,8 @@ window#waybar {
 
 #custom-caffeine,
 #custom-nightlight,
-#custom-shader {
+#custom-shader,
+#custom-powerprofile {
     padding: 0;
     margin: 0;
     background: transparent;
@@ -146,7 +188,10 @@ window#waybar {
 
 #custom-caffeine.active,
 #custom-nightlight.active,
-#custom-shader.active {
+#custom-shader.active,
+#custom-powerprofile.active,
+#custom-powerprofile.power-saver,
+#custom-powerprofile.performance {
     padding: 0 6px;
     margin: 0;
     border-radius: 14px;
@@ -158,13 +203,17 @@ window#waybar {
 
 #custom-caffeine.active:hover,
 #custom-nightlight.active:hover,
-#custom-shader.active:hover {
+#custom-shader.active:hover,
+#custom-powerprofile.active:hover,
+#custom-powerprofile.power-saver:hover,
+#custom-powerprofile.performance:hover {
     background: alpha(@text, 0.08);
 }
 
 #custom-caffeine label,
 #custom-nightlight label,
-#custom-shader label {
+#custom-shader label,
+#custom-powerprofile label {
     margin: 0;
     padding: 0;
 }
