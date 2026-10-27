@@ -1,6 +1,6 @@
 # Notifications & OSDs
 
-This guide details the architecture, screen positioning, and animation dynamics for **floating notification toasts** and **on-screen display (OSD) cards** (Volume, Brightness, Music, and Mini Player) in [Quickshell](index.md) running on the [Hyprland compositor](../hyprland/index.md).
+This guide details the architecture, screen positioning, and animation dynamics for **floating notification toasts** and **on-screen display (OSD) cards** (Volume, Brightness, and Song Transition OSD) in [Quickshell](index.md) running on the [Hyprland compositor](../hyprland/index.md).
 
 ---
 
@@ -8,19 +8,24 @@ This guide details the architecture, screen positioning, and animation dynamics 
 
 All floating indicators follow a standardized behavioral contract:
 
-1. **Screen Placement:** Top of the screen, horizontally centered (`anchors.top: true`, `anchors.horizontalCenter: parent.horizontalCenter`).
-2. **Top Margin:** `topMargin: 46 px` (reserves a comfortable visual gap beneath [Waybar's](../apps/waybar.md) 36 px height).
-3. **Theming:** Colors, translucency, and borders are rendered using [Matugen Dynamic Palette Tokens](../apps/matugen.md#core-color-roles) (`surface_container`, `outline`, `on_surface`).
-4. **Entrance Animation (Downward Slide):**
-   * Translates from `_slideY: -28` to `0` over 260–280 ms using `Easing.OutCubic` acceleration.
-   * Fades in opacity from `0` to `1` over 220 ms using `Easing.OutQuad`.
-5. **Queue Dynamics:** When a new notification arrives, it occupies the top slot and fluidly pushes older active notifications downward using `move: Transition`.
-6. **Dismissal Animation:** Gently moves upward (`to: -20`) and fades out (`opacity: 0`) before unmounting from the model.
-7. **LayerShell Surface Lifecycle & Input Masking:**
+1. **Dynamic Island Integration with Waybar:**
+   * **Placement:** Anchored to the top of the screen and centered horizontally (`anchors.top: true`, `anchors.horizontalCenter: parent.horizontalCenter`).
+   * **Top Anchor:** Directly docked beneath Waybar (`topMargin: Root.Theme.shelfHeight`, 36 px) with zero dead space.
+   * **Concave Shoulders:** Dual hardware-accelerated concave fillets (`QtQuick.Shapes` with a 28 px radius and `PathArc`) smoothly bridge Waybar's horizontal lower edge with the toast container's vertical shoulders.
+   * **Corner Radii:** Square top corners (`topLeftRadius: 0`, `topRightRadius: 0`) and generously rounded bottom corners (`bottomLeftRadius: 28`, `bottomRightRadius: 28`).
+   * **Surface Finish:** Borderless translucent glass surface (`border.width: 0`, alpha 0.80) matching Waybar's shelf background.
+2. **Theming:** Colors, translucency, and accents are rendered dynamically using [Matugen Dynamic Palette Tokens](../apps/matugen.md#core-color-roles) (`_shelfBgColor`, `primary`, `textPrimary`, `textSecondary`).
+3. **Entrance Animation (Emergence from Waybar):**
+   * Encapsulated within a clipped viewport (`clip: true`) so notifications physically slide out from beneath Waybar.
+   * Translates from `_slideY: -height` to `0` over 280 ms using `Easing.OutCubic` acceleration.
+   * Fades in opacity from `0` to `1` over 200 ms using `Easing.OutQuad`.
+4. **Queue Dynamics:** When a new notification arrives, it prepends to the stack (`insert(0)`) and fluidly pushes older active notifications downward using `move: Transition`.
+5. **Dismissal Animation:** Gently moves upward (`to: -height`) and fades out (`opacity: 0`) before unmounting from the model.
+6. **LayerShell Surface Lifecycle & Input Masking:**
    * **Dynamic Loader Lifecycle:** The `PanelWindow` is instantiated via a `Loader { active: toastModel.count > 0 }`. When no toasts are active, the surface is completely unmapped from the Wayland compositor, eliminating stale layer surfaces.
-   * **Targeted Surface Dimensions:** Instead of spanning full-screen width, the window specifies `implicitWidth: 380` and dynamic height (`Math.min(600, toastModel.count * 140 + 60)`), anchored only at `anchors.top: true` so the compositor centers it horizontally.
-   * **Layer `Top`:** Placed on `WlrLayer.Top` (rather than `Overlay`), preventing pointer grabs and focus disruption on normal desktop windows.
-   * **Input Masking:** Uses `mask: Region { item: toastCol }` to restrict mouse interaction strictly to active notification cards. All transparent areas pass clicks through to underlying windows.
+   * **Targeted Surface Dimensions:** Anchored at `anchors.top: true` with `implicitWidth: 440` and dynamic height (`Math.min(700, Root.Theme.shelfHeight + toastCol.implicitHeight + 40)`).
+   * **Layer `Top`:** Placed on `WlrLayer.Top`, preventing pointer grabs and focus disruption on normal desktop windows.
+   * **Input Masking:** Uses `mask: Region { item: toastWrapper }` to restrict mouse interaction strictly to active notification cards and their concave fillets. All surrounding monitor areas pass pointer events directly through to underlying windows.
 
 ---
 
@@ -43,38 +48,38 @@ Volume and brightness OSD cards sharing the same placement, geometry, and surfac
 | Component | Source File | Responsibility |
 | :--- | :--- | :--- |
 | **Notification Service** | `modules/notifications/NotificationService.qml` | DBus server claiming `org.freedesktop.Notifications`, history store, and Waybar count signal sync. |
-| **Toast Window** | `modules/notifications/NotificationToastLayer.qml` | Top floating window, model prepending (`insert(0)`), and column move transition. |
-| **Notification Toast Card** | `modules/notifications/NotificationPopup.qml` | Floating card styling, slide-down appearance, and dismissal animations. |
+| **Toast Window** | `modules/notifications/NotificationToastLayer.qml` | Top floating window with Waybar Dynamic Island fillets, model prepending (`insert(0)`), and column move transition. |
+| **Notification Toast Card** | `modules/notifications/NotificationPopup.qml` | Dynamic Island styled card, slide-down appearance, and dismissal animations. |
 | **Collapsible Notification Card** | `modules/controlcenter/ControlCenter.qml` | Embedded collapsible drawer with `Notifications • ( # )` title, 180° rotating toggle chevron, Clear all button, and scrollable card feed. |
 | **Notification Feed Item** | `modules/notifications/NotificationItem.qml` | Individual notification item styling in the Control Center drawer. |
 | **Volume OSD** | `modules/osd/VolumeOsd.qml` | Listens to PipeWire sink changes and animates top-center card. |
 | **Brightness OSD** | `modules/osd/BrightnessOsd.qml` | Listens to `brightnessctl` and animates top-center card. |
-| **Music Track Toast** | `modules/osd/MusicOsd.qml` | Automatic top-center popup on MPRIS track transition. |
-| **Mini Music Player** | `modules/osd/MiniPlayer.qml` | Interactive player triggered via `SUPER + M` (see [Keybindings Catalog](../hyprland/keybinds.md#quickshell-and-desktop-overlays)). |
+| **Song Transition Toast** | `modules/osd/MusicOsd.qml` | Dynamic Island popup anchored to Waybar displaying thumbnail art, track title, and artist on MPRIS track transitions. |
+| **Unified Music Player** | `modules/launcher/Launcher.qml` | Bottom-docked non-modal interactive player accessible via `/music` or `SUPER + M` (see [Launcher & Wallpapers Guide](launcher-wallpapers.md)). |
 
 ---
 
 ## Making Future Adjustments
 
 ### Adjusting Vertical Distance
-Edit `topMargin` in the container `Item` or `toastCol`:
+Edit `topMargin` in `toastWrapper`:
 ```qml
-anchors.topMargin: 46 // Increase to push further down, decrease to lift closer to bar
+anchors.topMargin: Root.Theme.shelfHeight // Docked flush against Waybar
 ```
 
 ### Changing Animation Speed
 Inside the `appearAnim` block:
 ```qml
 NumberAnimation {
-    target: osdCard; property: "_slideY"
-    from: -28; to: 0; duration: 260; easing.type: Easing.OutCubic
+    target: root; property: "_slideY"
+    from: -Math.max(60, card.height); to: 0; duration: 280; easing.type: Easing.OutCubic
 }
 ```
 
 ### Live Testing
 * **Trigger notification:**
   ```bash
-  notify-send "Test" "Smooth slide-down animation"
+  notify-send "Test" "Smooth Dynamic Island slide-down animation"
   ```
 * **Trigger volume OSD:**
   ```bash

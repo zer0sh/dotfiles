@@ -20,6 +20,7 @@ The system consists of two coordinated Quickshell modules:
      * **Shader Selector (`/shader`):** Real-time hyprland post-processing screen shader carousel.
      * **Theme Carousel (`/theme`):** Material Design 3 and custom theme palette selector.
      * **Gadget Manager (`/gadgets`):** Ambient desktop widgets toggler.
+     * **Music Player Mode (`/music` / `SUPER + M`):** Bottom-docked MPRIS controller with non-modal desktop click passthrough.
 2. **Desktop Background Engine (`modules/background/Background.qml`):**
    * Placed on `WlrLayershell.layer: WlrLayer.Background` on all connected displays (`Quickshell.screens`).
    * Implements a double-buffer (ping-pong) layer switching architecture, guaranteeing reliable consecutive wallpaper transitions without QML property binding degradation.
@@ -130,6 +131,19 @@ Typing `/gadgets `, `/widgets `, or `/gadget ` (also with `>`), selecting "Deskt
   * **Freeform Drag Handle:** A centered Material You style drag pill allows repositioning the widget freely across the screen. Coordinates are calculated dynamically using Layershell panel margins and automatically saved to `~/.config/quickshell/gadgets.json`.
   * **Close Button (`✕`):** Clicking the close button in the header hides the gadget immediately and updates state persistence. The gadget can be restored at any time via the `/gadgets` launcher carousel.
 
+### 6. Unified Music Player Mode (`/music`)
+Typing `/music `, `/musica `, `>music `, or pressing `SUPER + M` (`qs ipc call miniplayer toggle`) opens the unified bottom-docked music player:
+* **Non-Modal Passthrough Surface:**
+  * Disables modal screen dimming (`dimBg.visible: false`).
+  * Relinquishes keyboard focus grabs (`WlrKeyboardFocus.None`), allowing full desktop interaction while music is open.
+  * Masks mouse pointer events strictly to the active player card and its bottom fillets via `mask: Region { item: musicRegionItem }`, ensuring all transparent desktop areas pass clicks directly to background windows.
+* **Full MPRIS Controls:**
+  * 140x140 px album art with hover focus overlay (clicking raises or launches the player application using `focus-player.sh`).
+  * Track title and artist / identity labels with text truncation.
+  * Interactive seekable progress bar with real-time position polling and `mm:ss` timestamp indicators.
+  * Previous, Play/Pause toggle, and Next playback controls.
+  * Explicit close button (`✕`) in the player header and search bar.
+
 ---
 
 ## IPC Commands and Keybindings
@@ -139,6 +153,10 @@ The launcher and background engine expose IPC endpoints:
 ```bash
 # Toggle application launcher
 qs ipc call launcher toggle
+
+# Open unified music player directly
+qs ipc call launcher music
+qs ipc call miniplayer toggle
 
 # Open wallpaper carousel directly
 qs ipc call launcher wallpaper

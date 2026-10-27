@@ -118,14 +118,16 @@ gsettings set org.gnome.desktop.interface gtk-theme "$TARGET_GTK_THEME" 2>/dev/n
 gsettings set org.gnome.desktop.interface icon-theme 'Adwaita' 2>/dev/null || true
 gsettings set org.gnome.desktop.interface icon-theme "$TARGET_ICON_THEME" 2>/dev/null || true
 
-# Refresh Spicetify theme colors if active theme is matugen
+# Refresh Spicetify theme colors in background if active theme is matugen
 SPICETIFY_BIN="$(which spicetify 2>/dev/null || echo "$HOME/.spicetify/spicetify")"
 if [[ -x "$SPICETIFY_BIN" ]] && [[ -f "$HOME/.config/spicetify/config-xpui.ini" ]] && grep -q "current_theme *= *matugen" "$HOME/.config/spicetify/config-xpui.ini" 2>/dev/null; then
-    "$SPICETIFY_BIN" apply -n 2>/dev/null || true
-    # If Spotify is currently open in Hyprland, reload its interface live without restarting
-    if command -v hyprctl >/dev/null 2>&1 && hyprctl clients 2>/dev/null | grep -q "class: Spotify"; then
-        hyprctl dispatch sendshortcut "CTRL SHIFT, R, class:^(Spotify)$" 2>/dev/null || true
-    fi
+    (
+        "$SPICETIFY_BIN" apply -n 2>/dev/null || true
+        # If Spotify is currently open in Hyprland, reload its interface live without restarting
+        if command -v hyprctl >/dev/null 2>&1 && hyprctl clients 2>/dev/null | grep -q "class: Spotify"; then
+            hyprctl dispatch sendshortcut "CTRL SHIFT, R, class:^(Spotify)$" 2>/dev/null || true
+        fi
+    ) &
 fi
 
 # Refresh wallpaper thumbnails after the color/theme change has been applied.

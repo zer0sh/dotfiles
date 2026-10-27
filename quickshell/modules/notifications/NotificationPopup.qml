@@ -10,13 +10,14 @@ Item {
     property string summary:  ""
     property string body:     ""
     property string urgency:  "NORMAL"
+    property bool   isTop:    true
 
     signal dismissed(int notifId)
 
-    width:  parent ? parent.width : 360
+    width:  parent ? parent.width : 380
     height: card.height
 
-    property real _slideY:  -28
+    property real _slideY:  -80
     property real _opacity: 0
 
     Component.onCompleted: appearAnim.start()
@@ -25,13 +26,13 @@ Item {
         id: appearAnim
         NumberAnimation {
             target: root; property: "_slideY"
-            from: -28
+            from: -Math.max(60, card.height)
             to: 0; duration: 280; easing.type: Easing.OutCubic
         }
         NumberAnimation {
             target: root; property: "_opacity"
             from: 0
-            to: 1; duration: 220; easing.type: Easing.OutQuad
+            to: 1; duration: 200; easing.type: Easing.OutQuad
         }
     }
 
@@ -39,7 +40,7 @@ Item {
         id: disappearAnim
         NumberAnimation {
             target: root; property: "_slideY"
-            to: -20; duration: 180; easing.type: Easing.InQuad
+            to: -Math.max(60, card.height); duration: 200; easing.type: Easing.InQuad
         }
         NumberAnimation {
             target: root; property: "_opacity"
@@ -61,22 +62,28 @@ Item {
         anchors.right: parent.right
         y:       root._slideY
         opacity: root._opacity
-        height:  cardContent.implicitHeight + 28
-        radius:  27
-        color:   Qt.rgba(Root.Theme.panelBg.r,
-                         Root.Theme.panelBg.g,
-                         Root.Theme.panelBg.b, 0.92)
-        border.width: 1
-        border.color: root.urgency === "CRITICAL"
-            ? Root.Theme.error
-            : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g,
-                     Root.Theme.primary.b, 0.55)
+        height:  cardContent.implicitHeight + 24
+
+        // Dynamic Island geometry: top edge flat against Waybar when top item, rounded capsule otherwise
+        radius:            28
+        topLeftRadius:     root.isTop ? 0 : 28
+        topRightRadius:    root.isTop ? 0 : 28
+        bottomLeftRadius:  28
+        bottomRightRadius: 28
+
+        // Matching Waybar and Control Center glass surface
+        color: Qt.rgba(Root.Theme._shelfBgColor.r,
+                       Root.Theme._shelfBgColor.g,
+                       Root.Theme._shelfBgColor.b, 0.80)
+        border.width: 0
 
         Rectangle {
             visible: root.urgency === "CRITICAL"
             anchors.left: parent.left
             anchors.top: parent.top
             anchors.bottom: parent.bottom
+            anchors.topMargin: root.isTop ? 0 : 6
+            anchors.bottomMargin: 6
             width: 4
             radius: 2
             color: Root.Theme.error
@@ -87,7 +94,7 @@ Item {
             anchors.fill: parent
             anchors.leftMargin: 20
             anchors.rightMargin: 20
-            anchors.topMargin: 14
+            anchors.topMargin: root.isTop ? 10 : 14
             anchors.bottomMargin: 14
             spacing: 4
 
@@ -110,31 +117,6 @@ Item {
                     font.weight: Font.DemiBold
                     elide: Text.ElideRight
                     Layout.fillWidth: true
-                }
-
-                Rectangle {
-                    visible: false
-                    width: 24; height: 24; radius: 12
-                    color: dismissArea.containsMouse
-                        ? Qt.rgba(Root.Theme.textSecondary.r, Root.Theme.textSecondary.g, Root.Theme.textSecondary.b, 0.15)
-                        : "transparent"
-                    Behavior on color { ColorAnimation { duration: 100 } }
-
-                    Text {
-                        anchors.centerIn: parent
-                        text: "󰅖"
-                        color: Root.Theme.textSecondary
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: 12
-                    }
-
-                    MouseArea {
-                        id: dismissArea
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.dismissed(root.notifId)
-                    }
                 }
             }
 
@@ -168,6 +150,10 @@ Item {
             color: Root.Theme.textPrimary
             opacity: cardHover.containsMouse ? 0.04 : 0
             radius: parent.radius
+            topLeftRadius: parent.topLeftRadius
+            topRightRadius: parent.topRightRadius
+            bottomLeftRadius: parent.bottomLeftRadius
+            bottomRightRadius: parent.bottomRightRadius
             Behavior on opacity { NumberAnimation { duration: 120 } }
         }
 

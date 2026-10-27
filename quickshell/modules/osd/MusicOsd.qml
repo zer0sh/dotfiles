@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Shapes
 import Quickshell
 import Quickshell.Wayland
 import Quickshell.Services.Mpris
@@ -10,7 +11,13 @@ Scope {
 
     property MprisPlayer _player: null
     property QtObject miniPlayerRef: null
-    property int _lastUniqueId: -1
+    property string _lastTrackKey: ""
+    property bool _lastPlayingState: false
+    property bool _isInitialized: false
+
+    function show() {
+        if (osdWin) osdWin.showOsd()
+    }
 
     // MPRIS notifies track changes through postTrackChanged. This slow
     // discovery poll only detects players appearing/disappearing.
@@ -33,7 +40,10 @@ Scope {
         }
     }
 
-    Component.onCompleted: _refreshPlayer()
+    Component.onCompleted: {
+        _refreshPlayer()
+        _isInitialized = true
+    }
 
     function _refreshPlayer() {
         var oldPlayer = _player
@@ -43,7 +53,7 @@ Scope {
         if (list && list.length > 0) {
             for (var i = 0; i < list.length; i++) {
                 var p = list[i]
-                if (p.isPlaying) {
+                if (p && p.isPlaying) {
                     newPlayer = p
                     break
                 }
@@ -51,15 +61,27 @@ Scope {
             if (!newPlayer) newPlayer = list[0]
         }
 
-        var miniBlocked = miniPlayerRef && miniPlayerRef.panelVisible
+        var miniBlocked = miniPlayerRef && miniPlayerRef.panelVisible && (miniPlayerRef.currentMode === undefined || miniPlayerRef.currentMode === "music")
 
         if (newPlayer !== oldPlayer) {
             _player = newPlayer
-            _lastUniqueId = -1
-            if (newPlayer && !miniBlocked) osdWin.showOsd()
-        } else if (newPlayer && newPlayer.uniqueId !== _lastUniqueId) {
-            _lastUniqueId = newPlayer.uniqueId
-            if (!miniBlocked) osdWin.showOsd()
+        }
+
+        if (_player) {
+            var trackTitle = _player.trackTitle || ""
+            var trackArtist = _player.trackArtist || ""
+            var isPlaying = _player.isPlaying || (_player.playbackState === MprisPlaybackState.Playing)
+            var currentKey = (_player.identity || "") + "::" + trackTitle + "::" + trackArtist
+
+            var trackChanged = (currentKey !== _lastTrackKey && trackTitle !== "")
+            var resumedPlaying = (isPlaying && !_lastPlayingState && trackTitle !== "")
+
+            _lastTrackKey = currentKey
+            _lastPlayingState = isPlaying
+
+            if (_isInitialized && !miniBlocked && (trackChanged || resumedPlaying) && isPlaying) {
+                osdWin.showOsd()
+            }
         }
     }
 
@@ -72,149 +94,274 @@ Scope {
         WlrLayershell.namespace: "quickshell:music-osd"
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-        anchors.top:   true
-        anchors.left:  true
-        anchors.right: true
-        implicitHeight: 120
+        anchors.top: true
+        implicitWidth: 440
+        implicitHeight: Math.max(120, Root.Theme.shelfHeight + osdCard.implicitHeight + 20)
+
+        mask: Region {
+            item: osdWrapper
+        }
 
         function showOsd() {
             dismissAnim.stop()
+            appearAnim.stop()
             if (!visible) {
+                osdCard._slideY = -Math.max(60, osdCard.implicitHeight)
                 osdCard._opacity = 0
-                osdCard._slideY = -28
                 visible = true
-                appearAnim.start()
             }
+            appearAnim.start()
             dismissTimer.restart()
+        }
+
+        function dismiss() {
+            dismissTimer.stop()
+            if (!dismissAnim.running) {
+                appearAnim.stop()
+                dismissAnim.start()
+            }
         }
 
         Timer {
             id: dismissTimer
-            interval: 3000
+            interval: 3500
             repeat: false
-            onTriggered: dismissAnim.start()
+            onTriggered: osdWin.dismiss()
         }
 
-        // Appear: slide down + fade in
         ParallelAnimation {
             id: appearAnim
             NumberAnimation {
-                target: osdCard; property: "_opacity"
-                from: 0; to: 1; duration: 220; easing.type: Easing.OutQuad
+                target: osdCard; property: "_slideY"
+                from: -Math.max(60, osdCard.implicitHeight)
+                to: 0; duration: 280; easing.type: Easing.OutCubic
             }
             NumberAnimation {
-                target: osdCard; property: "_slideY"
-                from: -28; to: 0; duration: 260; easing.type: Easing.OutCubic
+                target: osdCard; property: "_opacity"
+                from: 0
+                to: 1; duration: 200; easing.type: Easing.OutQuad
             }
         }
 
-        // Dismiss: slide up + fade out, then hide window
         SequentialAnimation {
             id: dismissAnim
             ParallelAnimation {
                 NumberAnimation {
-                    target: osdCard; property: "_opacity"
-                    to: 0; duration: 180; easing.type: Easing.InQuad
+                    target: osdCard; property: "_slideY"
+                    to: -Math.max(60, osdCard.implicitHeight); duration: 200; easing.type: Easing.InQuad
                 }
                 NumberAnimation {
-                    target: osdCard; property: "_slideY"
-                    to: -20; duration: 180; easing.type: Easing.InQuad
+                    target: osdCard; property: "_opacity"
+                    to: 0; duration: 160; easing.type: Easing.InQuad
                 }
             }
             ScriptAction { script: osdWin.visible = false }
         }
 
         Item {
+            id: osdWrapper
+            width: 380
+            height: osdCard.implicitHeight
+            anchors.top: parent.top
+            anchors.topMargin: Root.Theme.shelfHeight
             anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top:              parent.top
-            anchors.topMargin:        46
-            width: 360
-            height: 56
 
-            Rectangle {
-                id: osdCard
-                property real _opacity: 0
-                property real _slideY: -28
+            // Concave fillet left (Dynamic Island shoulder connecting to Waybar bottom edge)
+            Shape {
+                id: leftFillet
+                width: 28
+                height: 28
+                anchors.top: parent.top
+                anchors.right: parent.left
+                layer.enabled: true
+                layer.samples: 4
 
-                width: parent.width
-                height: parent.height
-                y: _slideY
-                opacity: _opacity
+                ShapePath {
+                    strokeWidth: 0
+                    strokeColor: "transparent"
+                    fillColor: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
 
-                radius: 27
-                color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.80)
-                border.width: 1
-                border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.45)
-
-                RowLayout {
-                    anchors.fill: parent
-                    anchors.leftMargin: 10
-                    anchors.rightMargin: 12
-                    spacing: 10
-
-                    Rectangle {
-                        Layout.preferredWidth: 36
-                        Layout.preferredHeight: 36
-                        radius: 8
-                        color: _player && _player.trackArtUrl !== "" ? "transparent" : Root.Theme.surfaceContainerHigh
-
-                        Image {
-                            anchors.fill: parent
-                            source: _player ? _player.trackArtUrl : ""
-                            fillMode: Image.PreserveAspectCrop
-                        }
-
-                        Text {
-                            anchors.centerIn: parent
-                            text: "󰝚"
-                            font.family: Root.Theme.fontFamily
-                            font.pixelSize: 16
-                            color: Root.Theme.textSecondary
-                            visible: !_player || _player.trackArtUrl === ""
-                        }
-                    }
-
-                    ColumnLayout {
-                        Layout.fillWidth: true
-                        spacing: 1
-
-                        Text {
-                            text: "Playing now..."
-                            font.family: Root.Theme.fontFamily
-                            font.pixelSize: Root.Theme.fontSizeNormal
-                            font.weight: Font.DemiBold
-                            color: Root.Theme.textPrimary
-                            elide: Text.ElideRight
-                            Layout.fillWidth: true
-                        }
-
-                        Text {
-                            text: _player && _player.trackArtist !== "" ? _player.trackArtist : (_player ? _player.identity : "")
-                            font.family: Root.Theme.fontFamily
-                            font.pixelSize: Root.Theme.fontSizeSmall
-                            color: Root.Theme.textSecondary
-                            elide: Text.ElideRight
-                            Layout.fillWidth: true
-                        }
-                    }
-
-                    Text {
-                        visible: false
-                        text: _player && _player.playbackState === MprisPlaybackState.Playing ? "󰏤" : "󰐊"
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: 20
-                        color: Root.Theme.primary
-                        Layout.alignment: Qt.AlignVCenter
+                    startX: 0
+                    startY: 0
+                    PathLine { x: 28; y: 0 }
+                    PathLine { x: 28; y: 28 }
+                    PathArc {
+                        x: 0
+                        y: 0
+                        radiusX: 28
+                        radiusY: 28
+                        direction: PathArc.Counterclockwise
                     }
                 }
+            }
 
-                MouseArea {
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    cursorShape: Qt.PointingHandCursor
-                    onClicked: {
-                        dismissTimer.stop()
-                        dismissAnim.start()
+            // Concave fillet right (Dynamic Island shoulder connecting to Waybar bottom edge)
+            Shape {
+                id: rightFillet
+                width: 28
+                height: 28
+                anchors.top: parent.top
+                anchors.left: parent.right
+                layer.enabled: true
+                layer.samples: 4
+
+                ShapePath {
+                    strokeWidth: 0
+                    strokeColor: "transparent"
+                    fillColor: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
+
+                    startX: 28
+                    startY: 0
+                    PathLine { x: 0; y: 0 }
+                    PathLine { x: 0; y: 28 }
+                    PathArc {
+                        x: 28
+                        y: 0
+                        radiusX: 28
+                        radiusY: 28
+                        direction: PathArc.Counterclockwise
+                    }
+                }
+            }
+
+            // Clipping container so the card slides out smoothly from behind Waybar
+            Item {
+                id: osdClip
+                anchors.fill: parent
+                clip: true
+
+                Rectangle {
+                    id: osdCard
+                    property real _slideY: -height
+                    property real _opacity: 0
+
+                    width: parent.width
+                    height: implicitHeight
+                    y: _slideY
+                    opacity: _opacity
+                    implicitHeight: cardContent.implicitHeight + 24
+
+                    // Dynamic Island geometry: top edge flat against Waybar, rounded bottom
+                    radius: 28
+                    topLeftRadius: 0
+                    topRightRadius: 0
+                    bottomLeftRadius: 28
+                    bottomRightRadius: 28
+
+                    color: Qt.rgba(Root.Theme._shelfBgColor.r,
+                                   Root.Theme._shelfBgColor.g,
+                                   Root.Theme._shelfBgColor.b, 0.80)
+                    border.width: 0
+
+                    RowLayout {
+                        id: cardContent
+                        anchors.fill: parent
+                        anchors.leftMargin: 16
+                        anchors.rightMargin: 16
+                        anchors.topMargin: 10
+                        anchors.bottomMargin: 14
+                        spacing: 12
+
+                        // Album art thumbnail or music fallback icon
+                        Rectangle {
+                            Layout.preferredWidth: 46
+                            Layout.preferredHeight: 46
+                            Layout.alignment: Qt.AlignVCenter
+                            radius: 12
+                            color: Root.Theme.surfaceContainerHigh
+                            clip: true
+
+                            Image {
+                                anchors.fill: parent
+                                source: _player ? _player.trackArtUrl : ""
+                                fillMode: Image.PreserveAspectCrop
+                                visible: _player && _player.trackArtUrl !== ""
+                            }
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "󰎆"
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: 22
+                                color: Root.Theme.primary
+                                visible: !_player || _player.trackArtUrl === ""
+                            }
+                        }
+
+                        // Track info (Notification style)
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            Layout.alignment: Qt.AlignVCenter
+                            spacing: 2
+
+                            RowLayout {
+                                Layout.fillWidth: true
+                                spacing: 6
+
+                                Text {
+                                    text: {
+                                        var app = (_player && _player.identity) ? _player.identity.toUpperCase() : "MUSIC"
+                                        return app + " • NOW PLAYING"
+                                    }
+                                    color: Root.Theme.primary
+                                    font.family: Root.Theme.fontFamily
+                                    font.pixelSize: Root.Theme.fontSizeXS
+                                    font.weight: Font.DemiBold
+                                    elide: Text.ElideRight
+                                    Layout.fillWidth: true
+                                }
+                            }
+
+                            Text {
+                                text: (_player && _player.trackTitle !== "") ? _player.trackTitle : "Unknown Title"
+                                color: Root.Theme.textPrimary
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: Root.Theme.fontSizeNormal
+                                font.weight: Font.DemiBold
+                                elide: Text.ElideRight
+                                Layout.fillWidth: true
+                            }
+
+                            Text {
+                                text: {
+                                    if (!_player) return ""
+                                    var artist = _player.trackArtist || ""
+                                    var album = _player.trackAlbum || ""
+                                    if (artist !== "" && album !== "") return artist + " — " + album
+                                    if (artist !== "") return artist
+                                    if (album !== "") return album
+                                    return _player.identity || ""
+                                }
+                                color: Root.Theme.textSecondary
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: Root.Theme.fontSizeSmall
+                                elide: Text.ElideRight
+                                Layout.fillWidth: true
+                                visible: text !== ""
+                            }
+                        }
+                    }
+
+                    // Hover overlay
+                    Rectangle {
+                        anchors.fill: parent
+                        color: Root.Theme.textPrimary
+                        opacity: cardHover.containsMouse ? 0.04 : 0
+                        radius: parent.radius
+                        topLeftRadius: parent.topLeftRadius
+                        topRightRadius: parent.topRightRadius
+                        bottomLeftRadius: parent.bottomLeftRadius
+                        bottomRightRadius: parent.bottomRightRadius
+                        Behavior on opacity { NumberAnimation { duration: 120 } }
+                    }
+
+                    MouseArea {
+                        id: cardHover
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        cursorShape: Qt.PointingHandCursor
+                        acceptedButtons: Qt.LeftButton
+                        onClicked: osdWin.dismiss()
                     }
                 }
             }

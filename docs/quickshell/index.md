@@ -20,9 +20,9 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
     * **Bluetooth Orbital Radar:** Central host node with paired and discovered devices in dynamic orbital paths. Includes an interactive device iconography picker (Nerd Font glyphs for mouse, keyboard, headphones, speaker, gamepad, and generic device) with persistent mapping in `bluetooth_icons.json`, fixed right-side connection telemetry card, and an independent pause/resume toggle.
   * **Energy & Performance Dashboard (`BatterySection.qml`):** Dedicated hardware metrics subpage displaying charge percentage, discharge rates, full charge estimates, battery health state, power draw, charge cycles, and power profile presets (Power Saver, Balanced, Performance).
   * **Waybar Sync:** Seamless bidirectional state sync between quick toggles (Caffeine, Night Light, Shader) and top status bar indicators using POSIX signals.
-* **Notifications & Control Center Integration (`modules/controlcenter/`, `modules/notifications/`):**
+* **Notifications & Dynamic Island Toasts (`modules/controlcenter/`, `modules/notifications/`):**
   * Native DBus notification server (`org.freedesktop.Notifications`) managed by `NotificationService.qml`.
-  * Top-center floating toast layer (`NotificationToastLayer.qml`) with smooth downward entrance animations.
+  * Top-center Dynamic Island toast layer (`NotificationToastLayer.qml`) docked flush with Waybar (`shelfHeight: 36px`), featuring dual concave transition fillets (28 px radius), flat top edges, and downward slide emergence animation.
   * Collapsible notifications card embedded directly inside the Control Center featuring the title `Notifications • ( # )`, rotating toggle chevron, quick "Clear all" action, empty placeholder state, and scrollable notification list.
   * Waybar notification bell triggers `qs ipc call notifications toggle`, opening the Control Center with the notifications card smoothly expanded.
   * Full design parameters and easing curves detailed in the [Notifications & OSDs Guide](osd-notifications.md).
@@ -31,8 +31,8 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
   * Keyboard access mapped via [Hyprland Keybindings](../hyprland/keybinds.md#quickshell-and-desktop-overlays).
 * **DeskClock & Calendar (`modules/deskclock/`, `modules/calendar/`):**
   * Ambient desktop clock surface and expandable calendar panel with date navigation.
-* **Mini Music Player (`modules/osd/MiniPlayer.qml`):**
-  * Compact MPRIS playback controller triggered with `SUPER + M` as defined in [Hyprland Keybindings](../hyprland/keybinds.md#quickshell-and-desktop-overlays).
+* **Unified Music Player (`modules/launcher/`):**
+  * Bottom-docked non-modal interactive MPRIS music controller integrated inside the launcher. Triggered globally with `SUPER + M` (`qs ipc call miniplayer toggle`) or by typing `/music`, featuring passthrough desktop click masking and full playback controls.
 * **Application Launcher & Dynamic Island Carousel (`modules/launcher/`):**
   * Bottom-docked runner (`anchors.bottomMargin: 0`) with dual concave fillets (28 px radius) seamlessly emerging from the screen's bottom bezel.
   * Powers Application Drawer, Wallpaper Carousel, Shader Selector, Theme Carousel, and Gadget Manager. Detailed in the [Launcher & Wallpapers Guide](launcher-wallpapers.md).

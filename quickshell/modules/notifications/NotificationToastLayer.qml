@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Shapes
 import Quickshell
 import Quickshell.Wayland
 import "." as Notifications
@@ -42,63 +43,138 @@ Scope {
 
         sourceComponent: PanelWindow {
             id: toastWin
-            color:                "transparent"
-            exclusionMode:        ExclusionMode.Ignore
-            WlrLayershell.layer:          WlrLayer.Top
-            WlrLayershell.namespace:      "quickshell:notifications-toast"
-            WlrLayershell.keyboardFocus:  WlrKeyboardFocus.None
+            color:               "transparent"
+            exclusionMode:       ExclusionMode.Ignore
+            WlrLayershell.layer:         WlrLayer.Top
+            WlrLayershell.namespace:     "quickshell:notifications-toast"
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
             anchors.top:   true
-            implicitWidth: 380
-            implicitHeight: Math.min(600, toastModel.count * 140 + 60)
+            implicitWidth: 440
+            implicitHeight: Math.min(700, Root.Theme.shelfHeight + toastCol.implicitHeight + 40)
 
             mask: Region {
-                item: toastCol
+                item: toastWrapper
             }
 
-            Column {
-                id: toastCol
-                anchors.horizontalCenter: parent.horizontalCenter
+            Item {
+                id: toastWrapper
+                width: 380
+                height: toastCol.implicitHeight
                 anchors.top: parent.top
-                anchors.topMargin: 46
-                spacing: 10
+                anchors.topMargin: Root.Theme.shelfHeight
+                anchors.horizontalCenter: parent.horizontalCenter
 
-                move: Transition {
-                    NumberAnimation {
-                        properties: "y"
-                        duration: 250
-                        easing.type: Easing.OutCubic
+                // Concave fillet left (Dynamic Island shoulder connecting to Waybar bottom edge)
+                Shape {
+                    id: leftFillet
+                    width: 28
+                    height: 28
+                    anchors.top: parent.top
+                    anchors.right: parent.left
+                    layer.enabled: true
+                    layer.samples: 4
+                    visible: toastModel.count > 0
+
+                    ShapePath {
+                        strokeWidth: 0
+                        strokeColor: "transparent"
+                        fillColor: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
+
+                        startX: 0
+                        startY: 0
+                        PathLine { x: 28; y: 0 }
+                        PathLine { x: 28; y: 28 }
+                        PathArc {
+                            x: 0
+                            y: 0
+                            radiusX: 28
+                            radiusY: 28
+                            direction: PathArc.Counterclockwise
+                        }
                     }
                 }
 
-                Repeater {
-                    model: toastModel
+                // Concave fillet right (Dynamic Island shoulder connecting to Waybar bottom edge)
+                Shape {
+                    id: rightFillet
+                    width: 28
+                    height: 28
+                    anchors.top: parent.top
+                    anchors.left: parent.right
+                    layer.enabled: true
+                    layer.samples: 4
+                    visible: toastModel.count > 0
 
-                    delegate: Item {
-                        id: delegateItem
-                        width:  360
-                        height: popup.height
+                    ShapePath {
+                        strokeWidth: 0
+                        strokeColor: "transparent"
+                        fillColor: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
 
-                        NotificationPopup {
-                            id:      popup
-                            width:   parent.width
-                            notifId: model.notifId
-                            appName: model.appName
-                            summary: model.summary
-                            body:    model.body
-                            urgency: model.urgency
+                        startX: 28
+                        startY: 0
+                        PathLine { x: 0; y: 0 }
+                        PathLine { x: 0; y: 28 }
+                        PathArc {
+                            x: 28
+                            y: 0
+                            radiusX: 28
+                            radiusY: 28
+                            direction: PathArc.Counterclockwise
+                        }
+                    }
+                }
 
-                            onDismissed: function(id) {
-                                toastLayer.removeById(id)
+                // Clipping container for emergence animation directly out of Waybar
+                Item {
+                    id: toastClip
+                    anchors.fill: parent
+                    clip: true
+
+                    Column {
+                        id: toastCol
+                        width: parent.width
+                        spacing: 8
+
+                        move: Transition {
+                            NumberAnimation {
+                                properties: "y"
+                                duration: 250
+                                easing.type: Easing.OutCubic
                             }
                         }
 
-                        Timer {
-                            property int _notifId: model.notifId
-                            interval:  (model.timeout && model.timeout > 0) ? model.timeout : 5000
-                            running:   true
-                            repeat:    false
-                            onTriggered: popup.dismiss()
+                        Repeater {
+                            model: toastModel
+
+                            delegate: Item {
+                                id: delegateItem
+                                width:  toastCol.width
+                                height: popup.height
+
+                                NotificationPopup {
+                                    id:      popup
+                                    width:   parent.width
+                                    isTop:   index === 0
+                                    notifId: model.notifId
+                                    appName: model.appName
+                                    summary: model.summary
+                                    body:    model.body
+                                    urgency: model.urgency
+
+                                    onDismissed: function(id) {
+                                        toastLayer.removeById(id)
+                                    }
+                                }
+
+                                Timer {
+                                    property int _notifId: model.notifId
+                                    interval:  (model.timeout && model.timeout > 0) ? model.timeout : 5000
+                                    running:   true
+                                    repeat:    false
+                                    onTriggered: popup.dismiss()
+                                }
+                            }
                         }
                     }
                 }

@@ -100,11 +100,7 @@ ShellRoot {
 
     Osd.MusicOsd {
         id: musicOsd
-        miniPlayerRef: miniPlayer
-    }
-
-    Osd.MiniPlayer {
-        id: miniPlayer
+        miniPlayerRef: appLauncher
     }
 
     Osd.RecordingIndicator {

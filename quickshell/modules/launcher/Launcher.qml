@@ -4,6 +4,7 @@ import QtQuick.Shapes
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import Quickshell.Services.Mpris
 import "../.." as Root
 
 Scope {
@@ -406,6 +407,10 @@ Scope {
                     Root.GadgetsManager.toggle(selectedGadget.id);
                 }
             }
+        } else if (launcher.currentMode === "music") {
+            if (launcher._mprisPlayer) {
+                launcher._mprisPlayer.togglePlaying();
+            }
         } else if (launcher.currentMode === "actions") {
             if (launcher.selectedIndex >= 0 && launcher.selectedIndex < launcher.filteredActions.length) {
                 launcher.executeAction(launcher.filteredActions[launcher.selectedIndex]);
@@ -433,6 +438,7 @@ Scope {
         { id: "wallpaper", name: "Wallpaper Carousel", desc: "Browse and switch wallpapers with animated transitions", icon: "󰸉", aliases: ["wall", "fondo", "wallpaper"] },
         { id: "shader", name: "Shader Carousel", desc: "Browse and apply screen shaders and CRT effects", icon: "󱡄", aliases: ["shader", "shaders", "filtro", "crt", "trinitron"] },
         { id: "theme", name: "Theme Carousel", desc: "Explore and apply Material You visual palettes", icon: "󰏘", aliases: ["tema", "palette", "color"] },
+        { id: "music", name: "Music Player", desc: "Media controls, track details and playback", icon: "󰎆", aliases: ["music", "musica", "player", "reproductor"] },
         { id: "gadgets", name: "Desktop Gadgets", desc: "Toggle and manage desktop widgets", icon: "󱂬", aliases: ["widgets", "widget", "gadget", "clock", "calendar"] },
         { id: "lock", name: "Lock Screen", desc: "Lock desktop session with Hyprlock", icon: "󰌾", aliases: ["bloquear", "hyprlock"] },
         { id: "sleep", name: "Suspend", desc: "Suspend system to RAM", icon: "󰒲", aliases: ["suspender", "standby"] },
@@ -468,6 +474,9 @@ Scope {
                    searchText.startsWith("/gadget")  || searchText.startsWith("/widget") ||
                    searchText.startsWith(">gadgets") || searchText.startsWith(">widgets")) {
             return "gadgets";
+        } else if (searchText.startsWith("/music") || searchText.startsWith("/musica") ||
+                   searchText.startsWith(">music") || searchText.startsWith(">musica")) {
+            return "music";
         } else if (searchText.startsWith("/") || searchText.startsWith(">")) {
             return "actions";
         } else {
@@ -554,6 +563,68 @@ Scope {
         });
     }
 
+    // ── MPRIS Music Player State ────────────────────────────────
+    property MprisPlayer _mprisPlayer: null
+
+    function _refreshMpris() {
+        var list = Mpris.players ? Mpris.players.values : null;
+        if (!list || list.length === 0) {
+            _mprisPlayer = null;
+            return;
+        }
+        for (var i = 0; i < list.length; i++) {
+            var p = list[i];
+            if (p && p.isPlaying) {
+                _mprisPlayer = p;
+                return;
+            }
+        }
+        _mprisPlayer = list[0];
+    }
+
+    Timer {
+        interval: 1200
+        running: launcher.panelVisible && launcher.currentMode === "music"
+        repeat: true
+        onTriggered: launcher._refreshMpris()
+    }
+
+    function formatTime(sec) {
+        if (!sec || isNaN(sec) || sec < 0) return "0:00";
+        var m = Math.floor(sec / 60);
+        var s = Math.floor(sec % 60);
+        return m + ":" + (s < 10 ? "0" : "") + s;
+    }
+
+    function playerAppTarget() {
+        if (!_mprisPlayer) return "";
+        var entry = (_mprisPlayer.desktopEntry || "").toLowerCase().replace(/\.desktop$/, "");
+        var ident = (_mprisPlayer.identity || "").toLowerCase();
+        if (entry) return entry;
+        if (ident.indexOf("zen") !== -1) return "zen";
+        if (ident.indexOf("spotify") !== -1) return "spotify";
+        if (ident.indexOf("firefox") !== -1) return "firefox";
+        if (ident.indexOf("chrome") !== -1 || ident.indexOf("chromium") !== -1) return "google-chrome";
+        if (ident.indexOf("vlc") !== -1) return "vlc";
+        return ident.split(" ")[0];
+    }
+
+    function openPlayerApp() {
+        if (!_mprisPlayer) return;
+        try {
+            if (_mprisPlayer.canRaise) _mprisPlayer.raise();
+        } catch (e) {}
+        var target = playerAppTarget();
+        var title = _mprisPlayer.trackTitle || "";
+        actionExecProc.command = [
+            "/home/zero/.config/quickshell/scripts/focus-player.sh",
+            target,
+            title
+        ];
+        actionExecProc.running = true;
+        launcher.panelVisible = false;
+    }
+
     function executeAction(act) {
         if (!act) return;
         if (act.id === "wallpaper") {
@@ -573,6 +644,10 @@ Scope {
         if (act.id === "gadgets") {
             searchText = "/gadgets ";
             selectedIndex = 0;
+            return;
+        }
+        if (act.id === "music") {
+            launcher.openMusic();
             return;
         }
 
@@ -613,15 +688,31 @@ Scope {
         selectedIndex = 0;
     }
 
+    function openMusic() {
+        searchText = "/music ";
+        panelVisible = true;
+        selectedIndex = 0;
+        _refreshMpris();
+    }
+
+    function toggleMusic() {
+        if (launcher.panelVisible && launcher.currentMode === "music") {
+            launcher.panelVisible = false;
+        } else {
+            launcher.openMusic();
+        }
+    }
+
     onPanelVisibleChanged: {
         if (panelVisible) {
             _showing = true;
-            if (currentMode !== "wallpaper" && currentMode !== "theme" && currentMode !== "gadgets" && currentMode !== "shader") {
+            if (currentMode !== "wallpaper" && currentMode !== "theme" && currentMode !== "gadgets" && currentMode !== "shader" && currentMode !== "music") {
                 selectedIndex = 0;
             }
             if (allApps.length === 0) appsReadProc.running = true;
             refreshWallpapers();
             shaderCurrentProc.running = true;
+            if (currentMode === "music") _refreshMpris();
         } else {
             searchText = "";
         }
@@ -653,6 +744,9 @@ Scope {
         }
         function gadgets(): void {
             launcher.openGadgets();
+        }
+        function music(): void {
+            launcher.openMusic();
         }
         function search(query: string): void {
             launcher.panelVisible = true;
@@ -729,6 +823,20 @@ Scope {
         function hide(): void { launcher.panelVisible = false; }
     }
 
+    IpcHandler {
+        target: "musicpicker"
+        function toggle(): void { launcher.toggleMusic(); }
+        function show(): void { launcher.openMusic(); }
+        function hide(): void { launcher.panelVisible = false; }
+    }
+
+    IpcHandler {
+        target: "miniplayer"
+        function toggle(): void { launcher.toggleMusic(); }
+        function show(): void { launcher.openMusic(); }
+        function hide(): void { launcher.panelVisible = false; }
+    }
+
     // ── Ventana Flotante Caelestia ───────────────────────────────
     Loader {
         active: launcher.panelVisible
@@ -749,17 +857,32 @@ Scope {
 
             WlrLayershell.namespace: "quickshell:launcher"
             WlrLayershell.layer: WlrLayer.Overlay
-            WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
+            WlrLayershell.keyboardFocus: launcher.currentMode === "music" ? WlrKeyboardFocus.None : WlrKeyboardFocus.Exclusive
 
-            // Fondo semitransparente oscuro con clic exterior para cerrar
+            mask: Region {
+                item: launcher.currentMode === "music" ? musicRegionItem : panelWindow
+            }
+
+            // Fondo semitransparente oscuro con clic exterior para cerrar (oculto en modo música para no opacar el escritorio)
             Rectangle {
                 anchors.fill: parent
+                visible: launcher.currentMode !== "music"
                 color: Qt.rgba(0, 0, 0, 0.4)
 
                 MouseArea {
                     anchors.fill: parent
+                    enabled: launcher.currentMode !== "music"
                     onClicked: launcher.panelVisible = false
                 }
+            }
+
+            // Región interactiva exclusiva para modo música (permite clics pasantes en el resto del escritorio)
+            Item {
+                id: musicRegionItem
+                anchors.top: floatingCard.top
+                anchors.bottom: floatingCard.bottom
+                anchors.left: launcherLeftFillet.left
+                anchors.right: launcherRightFillet.right
             }
 
             // Concave fillet left (Dynamic Island bottom curve connecting to screen bottom)
@@ -817,7 +940,7 @@ Scope {
                         y: 28
                         radiusX: 28
                         radiusY: 28
-                        direction: PathArc.Clockwise
+                        direction: PathArc.Counterclockwise
                     }
                 }
             }
@@ -833,12 +956,14 @@ Scope {
 
                 width: {
                     if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") return Math.min(1080, parent.width - 60);
+                    if (launcher.currentMode === "music") return Math.min(680, parent.width - 60);
                     return 580;
                 }
 
                 height: {
                     if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "gadgets") return 340;
                     if (launcher.currentMode === "theme") return (launcher.isMatugenSelected || launcher.isCustomSelected) ? 392 : 340;
+                    if (launcher.currentMode === "music") return 250;
                     if (launcher.currentMode === "actions") {
                         var actCount = launcher.filteredActions.length;
                         return Math.min(460, Math.max(140, actCount * 50 + 76));
@@ -1787,6 +1912,385 @@ Scope {
                         }
                     }
 
+                    // --- VISTA 5: Reproductor de Música (Desde abajo) ---
+                    Item {
+                        id: musicView
+                        visible: launcher.currentMode === "music"
+                        anchors.fill: parent
+                        clip: true
+
+                        // Botón de cerrar en estado vacío
+                        Rectangle {
+                            anchors.top: parent.top
+                            anchors.right: parent.right
+                            width: 26
+                            height: 26
+                            radius: 13
+                            visible: !launcher._mprisPlayer
+                            color: closeEmptyMA.containsMouse ? Qt.rgba(255, 255, 255, 0.18) : Qt.rgba(255, 255, 255, 0.06)
+                            Behavior on color { ColorAnimation { duration: 120 } }
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "󰅖"
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: 14
+                                color: Root.Theme.textSecondary
+                            }
+
+                            MouseArea {
+                                id: closeEmptyMA
+                                anchors.fill: parent
+                                hoverEnabled: true
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: launcher.panelVisible = false
+                            }
+                        }
+
+                        // Estado vacío cuando no hay reproductor
+                        ColumnLayout {
+                            anchors.centerIn: parent
+                            spacing: 8
+                            visible: !launcher._mprisPlayer
+
+                            Text {
+                                Layout.alignment: Qt.AlignHCenter
+                                text: "󰎆"
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: 42
+                                color: Root.Theme.textSecondary
+                                opacity: 0.5
+                            }
+
+                            Text {
+                                Layout.alignment: Qt.AlignHCenter
+                                text: "No active media player"
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: 15
+                                font.weight: Font.DemiBold
+                                color: Root.Theme.textPrimary
+                            }
+
+                            Text {
+                                Layout.alignment: Qt.AlignHCenter
+                                text: "Launch Spotify, Zen or any media player to control playback here"
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: 12
+                                color: Root.Theme.textSecondary
+                                opacity: 0.7
+                            }
+                        }
+
+                        // Reproductor activo
+                        RowLayout {
+                            anchors.fill: parent
+                            anchors.margins: 4
+                            spacing: 18
+                            visible: launcher._mprisPlayer !== null
+
+                            // Portada del Álbum
+                            Rectangle {
+                                Layout.preferredWidth: 140
+                                Layout.preferredHeight: 140
+                                radius: 18
+                                clip: true
+                                color: launcher._mprisPlayer && launcher._mprisPlayer.trackArtUrl !== ""
+                                    ? "transparent"
+                                    : Root.Theme.surfaceContainerHigh
+
+                                Image {
+                                    anchors.fill: parent
+                                    source: launcher._mprisPlayer ? launcher._mprisPlayer.trackArtUrl : ""
+                                    fillMode: Image.PreserveAspectCrop
+                                }
+
+                                Text {
+                                    anchors.centerIn: parent
+                                    text: "󰎆"
+                                    font.family: Root.Theme.fontFamily
+                                    font.pixelSize: 40
+                                    color: Root.Theme.textSecondary
+                                    visible: !launcher._mprisPlayer || launcher._mprisPlayer.trackArtUrl === ""
+                                }
+
+                                Rectangle {
+                                    anchors.fill: parent
+                                    radius: parent.radius
+                                    color: Qt.rgba(0, 0, 0, 0.35)
+                                    opacity: artHover.containsMouse ? 1.0 : 0.0
+                                    Behavior on opacity { NumberAnimation { duration: 150 } }
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "open_in_new"
+                                        font.family: Root.Theme.iconFont
+                                        font.pixelSize: 26
+                                        color: "#FFFFFF"
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: artHover
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: launcher.openPlayerApp()
+                                }
+                            }
+
+                            // Columna de Información y Controles
+                            ColumnLayout {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                spacing: 6
+                                Layout.alignment: Qt.AlignVCenter
+
+                                // Fila superior: Badge de Aplicación y botones
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 8
+
+                                    Rectangle {
+                                        Layout.preferredHeight: 24
+                                        Layout.preferredWidth: appBadgeText.implicitWidth + 18
+                                        radius: 12
+                                        color: Qt.rgba(255, 255, 255, 0.08)
+
+                                        RowLayout {
+                                            anchors.centerIn: parent
+                                            spacing: 6
+
+                                            Text {
+                                                text: "󰎈"
+                                                font.family: Root.Theme.fontFamily
+                                                font.pixelSize: 12
+                                                color: Root.Theme.primary
+                                            }
+
+                                            Text {
+                                                id: appBadgeText
+                                                text: launcher._mprisPlayer ? launcher._mprisPlayer.identity : "Media"
+                                                font.family: Root.Theme.fontFamily
+                                                font.pixelSize: 11
+                                                font.weight: Font.DemiBold
+                                                color: Root.Theme.textSecondary
+                                            }
+                                        }
+                                    }
+
+                                    Item { Layout.fillWidth: true }
+
+                                    // Botón para saltar a la ventana de la app
+                                    Rectangle {
+                                        Layout.preferredWidth: 26
+                                        Layout.preferredHeight: 26
+                                        radius: 13
+                                        color: focusMA.containsMouse ? Qt.rgba(255, 255, 255, 0.15) : Qt.rgba(255, 255, 255, 0.06)
+                                        Behavior on color { ColorAnimation { duration: 120 } }
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "open_in_new"
+                                            font.family: Root.Theme.iconFont
+                                            font.pixelSize: 15
+                                            color: focusMA.containsMouse ? Root.Theme.primary : Root.Theme.textSecondary
+                                        }
+
+                                        MouseArea {
+                                            id: focusMA
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: launcher.openPlayerApp()
+                                        }
+                                    }
+
+                                    // Botón para cerrar el reproductor
+                                    Rectangle {
+                                        Layout.preferredWidth: 26
+                                        Layout.preferredHeight: 26
+                                        radius: 13
+                                        color: closePlayerMA.containsMouse ? Qt.rgba(Root.Theme.error.r, Root.Theme.error.g, Root.Theme.error.b, 0.3) : Qt.rgba(255, 255, 255, 0.06)
+                                        Behavior on color { ColorAnimation { duration: 120 } }
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "󰅖"
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 14
+                                            color: closePlayerMA.containsMouse ? "#FFFFFF" : Root.Theme.textSecondary
+                                        }
+
+                                        MouseArea {
+                                            id: closePlayerMA
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: launcher.panelVisible = false
+                                        }
+                                    }
+                                }
+
+                                // Título de la pista
+                                Text {
+                                    text: launcher._mprisPlayer && launcher._mprisPlayer.trackTitle !== "" ? launcher._mprisPlayer.trackTitle : "No track playing"
+                                    font.family: Root.Theme.fontFamily
+                                    font.pixelSize: 17
+                                    font.weight: Font.Bold
+                                    color: Root.Theme.textPrimary
+                                    elide: Text.ElideRight
+                                    Layout.fillWidth: true
+                                }
+
+                                // Artista / Álbum
+                                Text {
+                                    text: launcher._mprisPlayer && launcher._mprisPlayer.trackArtist !== "" ? launcher._mprisPlayer.trackArtist : (launcher._mprisPlayer && launcher._mprisPlayer.trackAlbum !== "" ? launcher._mprisPlayer.trackAlbum : "Unknown artist")
+                                    font.family: Root.Theme.fontFamily
+                                    font.pixelSize: 13
+                                    color: Root.Theme.textSecondary
+                                    elide: Text.ElideRight
+                                    Layout.fillWidth: true
+                                }
+
+                                // Barra de Progreso
+                                ColumnLayout {
+                                    Layout.fillWidth: true
+                                    spacing: 3
+
+                                    Rectangle {
+                                        id: progressTrack
+                                        Layout.fillWidth: true
+                                        height: 5
+                                        radius: 3
+                                        color: Qt.rgba(255, 255, 255, 0.12)
+
+                                        Rectangle {
+                                            anchors.top: parent.top
+                                            anchors.bottom: parent.bottom
+                                            anchors.left: parent.left
+                                            width: parent.width * (launcher._mprisPlayer && launcher._mprisPlayer.length > 0 ? Math.min(launcher._mprisPlayer.position / launcher._mprisPlayer.length, 1.0) : 0)
+                                            radius: parent.radius
+                                            color: Root.Theme.primary
+                                            Behavior on width { NumberAnimation { duration: 150 } }
+                                        }
+
+                                        MouseArea {
+                                            anchors.fill: parent
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: function(mouse) {
+                                                if (launcher._mprisPlayer && launcher._mprisPlayer.length > 0 && launcher._mprisPlayer.canSeek) {
+                                                    var frac = Math.max(0, Math.min(1, mouse.x / width));
+                                                    launcher._mprisPlayer.position = frac * launcher._mprisPlayer.length;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    // Fila de tiempos (posición / duración)
+                                    RowLayout {
+                                        Layout.fillWidth: true
+                                        visible: launcher._mprisPlayer && launcher._mprisPlayer.length > 0
+
+                                        Text {
+                                            text: launcher.formatTime(launcher._mprisPlayer ? launcher._mprisPlayer.position : 0)
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 11
+                                            color: Root.Theme.textSecondary
+                                        }
+
+                                        Item { Layout.fillWidth: true }
+
+                                        Text {
+                                            text: launcher.formatTime(launcher._mprisPlayer ? launcher._mprisPlayer.length : 0)
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 11
+                                            color: Root.Theme.textSecondary
+                                        }
+                                    }
+                                }
+
+                                // Botones de Control (Prev, Play/Pause, Next)
+                                RowLayout {
+                                    Layout.fillWidth: true
+                                    Layout.alignment: Qt.AlignHCenter
+                                    spacing: 16
+
+                                    Rectangle {
+                                        Layout.preferredWidth: 36
+                                        Layout.preferredHeight: 36
+                                        radius: 18
+                                        color: prevLauncherMA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : "transparent"
+                                        Behavior on color { ColorAnimation { duration: 120 } }
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "󰒫"
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 20
+                                            color: launcher._mprisPlayer && launcher._mprisPlayer.canGoPrevious ? Root.Theme.textPrimary : Root.Theme.textDisabled
+                                        }
+
+                                        MouseArea {
+                                            id: prevLauncherMA
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: if (launcher._mprisPlayer) launcher._mprisPlayer.previous()
+                                        }
+                                    }
+
+                                    Rectangle {
+                                        Layout.preferredWidth: 42
+                                        Layout.preferredHeight: 42
+                                        radius: 21
+                                        color: playLauncherMA.containsMouse ? Root.Theme.primaryContainer : Root.Theme.primary
+                                        Behavior on color { ColorAnimation { duration: 120 } }
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: launcher._mprisPlayer && launcher._mprisPlayer.playbackState === MprisPlaybackState.Playing ? "󰏤" : "󰐊"
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 20
+                                            color: Root.Theme.tileActiveText
+                                        }
+
+                                        MouseArea {
+                                            id: playLauncherMA
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: if (launcher._mprisPlayer) launcher._mprisPlayer.togglePlaying()
+                                        }
+                                    }
+
+                                    Rectangle {
+                                        Layout.preferredWidth: 36
+                                        Layout.preferredHeight: 36
+                                        radius: 18
+                                        color: nextLauncherMA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : "transparent"
+                                        Behavior on color { ColorAnimation { duration: 120 } }
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: "󰒬"
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 20
+                                            color: launcher._mprisPlayer && launcher._mprisPlayer.canGoNext ? Root.Theme.textPrimary : Root.Theme.textDisabled
+                                        }
+
+                                        MouseArea {
+                                            id: nextLauncherMA
+                                            anchors.fill: parent
+                                            hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
+                                            onClicked: if (launcher._mprisPlayer) launcher._mprisPlayer.next()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
                     // --- VISTA 3: Lista de Aplicaciones (Vertical) ---
                     Item {
                         id: appsView
@@ -1861,6 +2365,7 @@ Scope {
                                 if (launcher.currentMode === "shader") return "󱡄";
                                 if (launcher.currentMode === "theme") return "󰏘";
                                 if (launcher.currentMode === "gadgets") return "󱂬";
+                                if (launcher.currentMode === "music") return "󰎆";
                                 if (launcher.currentMode === "actions") return "󰘳";
                                 return "󰍉";
                             }
@@ -1889,7 +2394,8 @@ Scope {
                                 if ((launcher.currentMode !== "wallpaper" || (!text.startsWith("/wallpaper") && !text.startsWith(">wallpaper")))
                                     && (launcher.currentMode !== "shader" || (!text.startsWith("/shader") && !text.startsWith(">shader")))
                                     && (launcher.currentMode !== "theme" || (!text.startsWith("/theme") && !text.startsWith(">theme")))
-                                    && (launcher.currentMode !== "gadgets" || (!text.startsWith("/gadgets") && !text.startsWith(">gadgets")))) {
+                                    && (launcher.currentMode !== "gadgets" || (!text.startsWith("/gadgets") && !text.startsWith(">gadgets")))
+                                    && (launcher.currentMode !== "music" || (!text.startsWith("/music") && !text.startsWith(">music")))) {
                                     launcher.selectedIndex = 0;
                                 }
                             }
@@ -1913,6 +2419,7 @@ Scope {
                                     if (launcher.currentMode === "shader") return "Filter shaders or press Enter...";
                                     if (launcher.currentMode === "theme") return "Filter themes or press Enter...";
                                     if (launcher.currentMode === "gadgets") return "Toggle desktop gadgets with Enter or click...";
+                                    if (launcher.currentMode === "music") return "Media controls (Space: Play/Pause, Enter: Toggle)...";
                                     if (launcher.currentMode === "actions") return "Type command name or press Enter...";
                                     return "Type \"/\" for commands...";
                                 }
@@ -1928,8 +2435,20 @@ Scope {
                                 event.accepted = true;
                             }
 
+                            Keys.onSpacePressed: function(event) {
+                                if (launcher.currentMode === "music" && launcher.searchText.trim() === "/music") {
+                                    if (launcher._mprisPlayer) launcher._mprisPlayer.togglePlaying();
+                                    event.accepted = true;
+                                    return;
+                                }
+                                event.accepted = false;
+                            }
+
                             Keys.onLeftPressed: function(event) {
-                                if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") {
+                                if (launcher.currentMode === "music") {
+                                    if (launcher._mprisPlayer && launcher._mprisPlayer.canGoPrevious) launcher._mprisPlayer.previous();
+                                    event.accepted = true;
+                                } else if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") {
                                     if (launcher.selectedIndex > 0) launcher.selectedIndex--;
                                     event.accepted = true;
                                 } else {
@@ -1938,7 +2457,10 @@ Scope {
                             }
 
                             Keys.onRightPressed: function(event) {
-                                if (launcher.currentMode === "wallpaper") {
+                                if (launcher.currentMode === "music") {
+                                    if (launcher._mprisPlayer && launcher._mprisPlayer.canGoNext) launcher._mprisPlayer.next();
+                                    event.accepted = true;
+                                } else if (launcher.currentMode === "wallpaper") {
                                     if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
                                         launcher.selectedIndex++;
                                     }
@@ -2132,9 +2654,13 @@ Scope {
                                 anchors.fill: parent
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
-                                    searchInput.text = "";
-                                    launcher.searchText = "";
-                                    launcher.selectedIndex = 0;
+                                    if (launcher.currentMode === "music") {
+                                        launcher.panelVisible = false;
+                                    } else {
+                                        searchInput.text = "";
+                                        launcher.searchText = "";
+                                        launcher.selectedIndex = 0;
+                                    }
                                 }
                             }
                         }

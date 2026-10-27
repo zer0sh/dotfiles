@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Shapes
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -82,14 +83,42 @@ Scope {
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.topMargin: Root.Theme.shelfHeight
-                clip: true
+
+                // Concave fillet / curved shoulder connecting the left edge of the panel smoothly to Waybar
+                Shape {
+                    id: leftFillet
+                    width: 28
+                    height: 28
+                    anchors.top: panel.top
+                    anchors.right: panel.left
+                    layer.enabled: true
+                    layer.samples: 4
+
+                    ShapePath {
+                        strokeWidth: 0
+                        strokeColor: "transparent"
+                        fillColor: panel.color
+
+                        startX: 0
+                        startY: 0
+                        PathLine { x: 28; y: 0 }
+                        PathLine { x: 28; y: 28 }
+                        PathArc {
+                            x: 0
+                            y: 0
+                            radiusX: 28
+                            radiusY: 28
+                            direction: PathArc.Counterclockwise
+                        }
+                    }
+                }
 
                 Rectangle {
                     id: panel
 
                     width: Root.Theme.panelWidth
                     anchors.right: parent.right
-                    anchors.rightMargin: Root.Theme.spacingSmall
+                    anchors.rightMargin: 0
 
                     height: Math.min(panelContent.implicitHeight, panelClip.height - Root.Theme.spacingSmall * 2)
 
@@ -99,7 +128,7 @@ Scope {
                             when: notifCenter._panelOpen
                             PropertyChanges {
                                 target: panel
-                                y: Root.Theme.spacingSmall
+                                y: 0
                             }
                         },
                         State {
@@ -107,7 +136,7 @@ Scope {
                             when: !notifCenter._panelOpen
                             PropertyChanges {
                                 target: panel
-                                y: -panel.height - Root.Theme.spacingSmall
+                                y: -panel.height - 28
                             }
                         }
                     ]
@@ -138,13 +167,16 @@ Scope {
                         }
                     ]
 
-                    radius: Root.Theme.panelRadius
-                    color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.78)
-                    border.width: 1
-                    border.color: Qt.rgba(Root.Theme.primary.r,
-                                           Root.Theme.primary.g,
-                                           Root.Theme.primary.b,
-                                           0.55)
+                    // Dynamic Island geometry: top edge flat against Waybar, bottom corners curved
+                    radius: 28
+                    topLeftRadius: 0
+                    topRightRadius: 0
+                    bottomLeftRadius: 28
+                    bottomRightRadius: 28
+
+                    // Background matching Waybar exactly (alpha 0.80, borderless)
+                    color: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
+                    border.width: 0
                     clip: true
 
                     // Block click-through
