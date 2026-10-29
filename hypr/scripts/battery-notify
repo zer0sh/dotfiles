@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# battery-notify — Lightweight battery and charger notification daemon
+# ==============================================================================
+
+PIDFILE="/tmp/battery-notify.pid"
+if [ -f "$PIDFILE" ]; then
+    OLD_PID=$(cat "$PIDFILE" 2>/dev/null)
+    if [ -n "$OLD_PID" ] && [ -d "/proc/$OLD_PID" ] && [ "$OLD_PID" != "$$" ]; then
+        exit 0
+    fi
+fi
+echo "$$" > "$PIDFILE"
+
+cleanup() {
+    rm -f "$PIDFILE"
+    exit 0
+}
+trap cleanup SIGTERM SIGINT EXIT
+
+# Find the battery device
+bat_dir=""
+for bat in /sys/class/power_supply/BAT* /sys/class/power_supply/battery; do
+    if [ -d "$bat" ]; then
+        bat_dir="$bat"
+        break
+    fi
+done
+
+# If no battery found (e.g. desktop), exit silently
+if [ -z "$bat_dir" ]; then
+    exit 0
+fi
+
+# Determine whether the laptop is connected to an external power source
+is_powered() {
+    local status
+    status=$(cat "$bat_dir/status" 2>/dev/null)
+
+    # Discharging explicitly means running on battery
+    if [ "$status" = "Discharging" ]; then
+        return 1
+    fi
+
+    # Actively charging or completely full while plugged
+    if [ "$status" = "Charging" ] || [ "$status" = "Full" ]; then
+        return 0
+    fi
+
+    # AC adapter online check (mains power)
+    if [ -f "/sys/class/power_supply/AC/online" ] && [ "$(cat /sys/class/power_supply/AC/online 2>/dev/null)" = "1" ]; then
+        return 0
+    fi
+
+    return 1
+}
+
+# Initialize previous state without firing false notifications on startup
+if is_powered; then
+    prev_plugged=true
+else
+    prev_plugged=false
+fi
+
+notified_20=false
+notified_10=false
+
+while true; do
+    capacity=$(cat "$bat_dir/capacity" 2>/dev/null)
+    status=$(cat "$bat_dir/status" 2>/dev/null)
+
+    if is_powered; then
+        curr_plugged=true
+    else
+        curr_plugged=false
+    fi
+
+    # State transition: Charger plugged in
+    if [ "$prev_plugged" = false ] && [ "$curr_plugged" = true ]; then
+        notify-send -u normal -a "Battery" -i "battery-charging" \
+            "󰂄 Charger Connected" \
+            "Battery is charging (${capacity}%)."
+        prev_plugged=true
+        notified_20=false
+        notified_10=false
+        sleep 1
+        continue
+
+    # State transition: Charger disconnected
+    elif [ "$prev_plugged" = true ] && [ "$curr_plugged" = false ]; then
+        notify-send -u normal -a "Battery" -i "battery-low" \
+            "󰂃 Charger Disconnected" \
+            "Running on battery power (${capacity}%)."
+        prev_plugged=false
+        sleep 1
+        continue
+    fi
+
+    # Threshold warnings only when discharging
+    if [ "$curr_plugged" = false ] && [[ "$capacity" =~ ^[0-9]+$ ]]; then
+        # Critical level (<= 10%)
+        if [ "$capacity" -le 10 ]; then
+            if [ "$notified_10" = false ]; then
+                notify-send -u critical -a "Battery" -i "battery-empty" \
+                    "󰂎 Critical Battery (${capacity}%)!" \
+                    "Battery level is critically low. Connect the charger immediately."
+                notified_10=true
+                notified_20=true
+            fi
+        # Low level (<= 20% and > 10%)
+        elif [ "$capacity" -le 20 ]; then
+            if [ "$notified_20" = false ]; then
+                notify-send -u normal -a "Battery" -i "battery-caution" \
+                    "󰁺 Low Battery (${capacity}%)" \
+                    "Battery is running low. Please connect the charger."
+                notified_20=true
+            fi
+        else
+            notified_20=false
+            notified_10=false
+        fi
+    fi
+
+    sleep 1
+done

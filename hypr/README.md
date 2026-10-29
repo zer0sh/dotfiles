@@ -25,7 +25,7 @@ Reglas de ventanas (Window Rules) y gestión de layouts (Dwindle/Master).
 Configuraciones globales como sensibilidad del ratón, layout del teclado y opciones misceláneas de Hyprland.
 
 ## Herramientas Adicionales
-- **Scripts:** Ubicados en `scripts/` para control de volumen, brillo y filtros.
+- **Scripts:** Ubicados en `scripts/` para control de volumen, brillo, filtros y notificaciones de batería y cargador (`battery-notify`).
 - **Shaders:** Ubicados en `shaders/` para efectos visuales personalizados.
 - **Idle & Lock:** `hypridle.conf` y `hyprlock.conf` para la gestión de energía y bloqueo de pantalla.
 
