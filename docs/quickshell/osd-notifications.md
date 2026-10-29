@@ -86,12 +86,10 @@ NumberAnimation {
   ```bash
   wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
   ```
-* **Battery states:** this configuration exposes no battery OSD or IPC test
-  hook, so warning and critical cards cannot be faked from the shell
-  (`qs ipc call battery ...` returns `Target not found`). Battery warnings are
-  rendered by Waybar's `battery` module, which switches to its `warning`,
-  `critical` and `charging` states from live system data (see
-  `waybar/config.jsonc`).
+* **Battery & Charger Notifications:** Handled by the background daemon `~/.config/hypr/scripts/battery-notify` (started in `autostart.conf`). It triggers native Quickshell Dynamic Island toasts:
+  * Charger connection (`󰂄 Charger Connected`) and disconnection (`󰂃 Charger Disconnected`).
+  * Low battery warning at 20% (`󰁺 Low Battery (20%)`, normal urgency).
+  * Critical battery alert at 10% (`󰂎 Critical Battery (10%)!`, critical urgency with MD3 error accent stripe and indicator dot).
 
 ---
 

@@ -54,6 +54,7 @@ source = $HOME/.config/hypr/autostart.conf
 * **Cliphist:** Text and image clipboard history daemons integrated with Quickshell clipboard drawer.
 * **Wallpaper & Theme:** Automatic restoration via `$HOME/.config/hypr/scripts/restore-wallpaper` and [Matugen theming engine](../apps/matugen.md).
 * **Desktop Environment Sync:** `dbus-update-activation-environment` and `systemctl --user import-environment` for `WAYLAND_DISPLAY` and `XDG_CURRENT_DESKTOP`.
+* **Battery & Charger Monitor:** Real-time daemon `$HOME/.config/hypr/scripts/battery-notify` monitoring AC connection/disconnection and dispatching 20% / 10% low battery notifications.
 
 ---
 

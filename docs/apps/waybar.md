@@ -13,6 +13,7 @@ Waybar serves as the primary top status bar in this desktop environment, enginee
 * **Helper Scripts:**
     * `~/.config/waybar/scripts/notifications`: Reads real-time notification queue state
     * `~/.config/waybar/scripts/mediaplayer`: MPRIS playback monitor with 40-character ticker marquee and Quickshell Dynamic Island integration
+    * `~/.config/waybar/scripts/powerprofile`: Real-time power profiles daemon monitor and toggle (`power-saver`, `balanced`, `performance`)
 
 ---
 
@@ -43,12 +44,13 @@ Waybar is docked at the top of the display with a height of 36 pixels and a stra
 ### 3. Right Section
 * **`tray`:** Wayland system tray for background application icons (`icon-size: 14px`, `spacing: 8px`). The container collapses to zero width and margins when empty, rendering active icons inside rounded capsule badges (`border-radius: 14px`, `background: alpha(@text, 0.08)`).
 * **Quick Actions & Notifications Pill (`group/quick_actions`):**
-    * Unified capsule pill hosting quick hardware indicators alongside the notification bell (`custom/caffeine`, `custom/nightlight`, `custom/shader`, `custom/notifications`).
+    * Unified capsule pill hosting quick hardware indicators alongside the notification bell (`custom/caffeine`, `custom/nightlight`, `custom/shader`, `custom/powerprofile`, `custom/notifications`).
     * **Empty state collapse:** When all quick toggles are inactive, the pill seamlessly scales to contain solely the notification bell (`#custom-notifications`), eliminating any residual empty container spacing or layout shifts.
     * **Active indicators:** When one or more toggles are engaged, their accented glyphs (`color: @accent`, `font-size: 16px`) appear inline to the left of the notification bell, sharing the unified capsule container (`border-radius: 18px`, `background: alpha(@text, 0.08)`).
     * **`custom/caffeine`:** Displays coffee cup glyph (`󰅶`) when session wake-lock is engaged via POSIX signal `SIGRTMIN+8`.
     * **`custom/nightlight`:** Displays eye glyph (`󰈈`) when `hyprsunset` warm light filter (4000K) is active via POSIX signal `SIGRTMIN+9`.
     * **`custom/shader`:** Displays screen shader glyph (`󰸉`) when screen decoration shader is applied via POSIX signal `SIGRTMIN+10`.
+    * **`custom/powerprofile`:** Displays active power profile glyphs when operating outside the balanced default: leaf glyph (`󰌪`) for `power-saver` or speedometer glyph (`󰓅`) for `performance`. Completely collapses in `balanced` mode. Synchronizes instantly via POSIX signal `SIGRTMIN+11` from Quickshell Control Center and power profile daemon events. Left click cycles profiles; right click opens the Quickshell Energy & Performance dashboard.
     * **`custom/notifications`:** Notification bell integrated with Quickshell Notification Service and DND state:
         * Displays standard bell glyph (`󰂚`) in neutral text color (`@text`) when notification history is empty.
         * Displays bell glyph with unread count (`󰂚  [N]`) highlighted in accent color (`@accent`) when notifications are pending.
