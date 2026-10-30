@@ -9,7 +9,7 @@ Rectangle {
 
     signal openAudio()
 
-    implicitWidth: 60
+    implicitWidth: 44
     implicitHeight: 310
 
     PwObjectTracker {
@@ -65,11 +65,11 @@ Rectangle {
     Text {
         id: percentText
         anchors.top: parent.top
-        anchors.topMargin: 16
+        anchors.topMargin: 14
         anchors.horizontalCenter: parent.horizontalCenter
         text: root.currentMuted ? "Mute" : root.volumePercent + "%"
         font.family: Root.Theme.fontFamily
-        font.pixelSize: 13
+        font.pixelSize: 11
         font.weight: Font.DemiBold
         color: (root.currentVolume > 0.88 && !root.currentMuted)
             ? Root.Theme.tileActiveText
@@ -83,11 +83,11 @@ Rectangle {
     Text {
         id: iconText
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 16
+        anchors.bottomMargin: 14
         anchors.horizontalCenter: parent.horizontalCenter
         text: root.volumeIcon(root.currentVolume, root.currentMuted)
         font.family: Root.Theme.iconFont
-        font.pixelSize: 24
+        font.pixelSize: 20
         color: (root.currentVolume > 0.14 && !root.currentMuted)
             ? Root.Theme.tileActiveText
             : Root.Theme.textPrimary

@@ -79,7 +79,7 @@ Scope {
                     ShapePath {
                         strokeWidth: 0
                         strokeColor: "transparent"
-                        fillColor: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
+                        fillColor: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.80)
 
                         startX: 0
                         startY: 0
@@ -109,7 +109,7 @@ Scope {
                     ShapePath {
                         strokeWidth: 0
                         strokeColor: "transparent"
-                        fillColor: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
+                        fillColor: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.80)
 
                         startX: 28
                         startY: 0

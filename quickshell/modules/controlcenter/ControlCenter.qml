@@ -872,13 +872,25 @@ Scope {
 
                                     RowLayout {
                                         anchors.fill: parent
-                                        anchors.margins: 14
-                                        spacing: 14
+                                        anchors.margins: 10
+                                        spacing: 7
 
                                         VolumeSection {
                                             Layout.fillWidth: true
                                             Layout.fillHeight: true
-                                            onOpenAudio: controlCenter.currentPage = "audio"
+                                            onOpenAudio: {
+                                                audioSubPage.currentTab = "outputs"
+                                                controlCenter.currentPage = "audio"
+                                            }
+                                        }
+
+                                        MicSection {
+                                            Layout.fillWidth: true
+                                            Layout.fillHeight: true
+                                            onOpenAudio: {
+                                                audioSubPage.currentTab = "inputs"
+                                                controlCenter.currentPage = "audio"
+                                            }
                                         }
 
                                         BrightnessSection {
@@ -1162,6 +1174,7 @@ Scope {
 
                     // AUDIO SUB-PAGE
                     AudioSection {
+                        id: audioSubPage
                         width: pageContainer.width
                         height: pageContainer.height
                         x: controlCenter.currentPage === "audio" ? 0 : pageContainer.width

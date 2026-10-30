@@ -13,7 +13,7 @@ All floating indicators follow a standardized behavioral contract:
    * **Top Anchor:** Directly docked beneath Waybar (`topMargin: Root.Theme.shelfHeight`, 36 px) with zero dead space.
    * **Concave Shoulders:** Dual hardware-accelerated concave fillets (`QtQuick.Shapes` with a 28 px radius and `PathArc`) smoothly bridge Waybar's horizontal lower edge with the toast container's vertical shoulders.
    * **Corner Radii:** Square top corners (`topLeftRadius: 0`, `topRightRadius: 0`) and generously rounded bottom corners (`bottomLeftRadius: 28`, `bottomRightRadius: 28`).
-   * **Surface Finish:** Borderless translucent glass surface (`border.width: 0`, alpha 0.80) matching Waybar's shelf background.
+   * **Surface Finish:** Borderless translucent glass surface (`border.width: 1`, hairline outline) with exact opacity and color parity (`alpha 0.80`, `Qt.rgba(panelBg.r, panelBg.g, panelBg.b, 0.80)`) matching Waybar's `window#waybar` background (`alpha(@bg, 0.80)` on `#0A0A0C`). Both the notification cards and the concave shoulder fillets share this identical alpha channel, eliminating darker contrast boundaries.
 2. **Theming:** Colors, translucency, and accents are rendered dynamically using [Matugen Dynamic Palette Tokens](../apps/matugen.md#core-color-roles) (`_shelfBgColor`, `primary`, `textPrimary`, `textSecondary`).
 3. **Entrance Animation (Emergence from Waybar):**
    * Encapsulated within a clipped viewport (`clip: true`) so notifications physically slide out from beneath Waybar.

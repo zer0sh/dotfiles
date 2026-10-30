@@ -174,9 +174,12 @@ Scope {
                     bottomLeftRadius: 28
                     bottomRightRadius: 28
 
-                    // Background matching Waybar exactly (alpha 0.80, borderless)
-                    color: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
-                    border.width: 0
+                    // Deep obsidian background with subtle hairline outline matching Waybar alpha
+                    color: Qt.rgba(Root.Theme.panelBg.r,
+                                   Root.Theme.panelBg.g,
+                                   Root.Theme.panelBg.b, 0.80)
+                    border.width: 1
+                    border.color: Qt.rgba(1, 1, 1, 0.10)
                     clip: true
 
                     // Block click-through
@@ -273,16 +276,20 @@ Scope {
                                 height: 44
                                 radius: 22
                                 color: clearAllMA.containsMouse
-                                    ? Qt.rgba(Root.Theme.textSecondary.r, Root.Theme.textSecondary.g, Root.Theme.textSecondary.b, 0.12)
-                                    : "transparent"
-
+                                    ? Qt.rgba(Root.Theme.error.r, Root.Theme.error.g, Root.Theme.error.b, 0.15)
+                                    : Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.60)
+                                border.width: 1
+                                border.color: clearAllMA.containsMouse
+                                    ? Root.Theme.error
+                                    : Qt.rgba(Root.Theme.outline.r, Root.Theme.outline.g, Root.Theme.outline.b, 0.30)
                                 Behavior on color { ColorAnimation { duration: 120 } }
+                                Behavior on border.color { ColorAnimation { duration: 120 } }
 
                                 Text {
                                     id: clearAllLabel
                                     anchors.centerIn: parent
                                     text: "Clear all"
-                                    color: "#E5E1E9"
+                                    color: clearAllMA.containsMouse ? Root.Theme.error : Root.Theme.textPrimary
                                     font.family: Root.Theme.fontFamily
                                     font.pixelSize: Root.Theme.fontSizeNormal
                                     font.weight: Font.DemiBold

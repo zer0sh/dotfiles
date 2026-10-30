@@ -29,15 +29,16 @@ Item {
         anchors.rightMargin: Root.Theme.paddingNormal
         height: cardContent.implicitHeight + 24  // 12 top + 12 bottom
         radius: 16
-        color: Qt.rgba(Root.Theme.surfaceContainerHigh.r,
-                       Root.Theme.surfaceContainerHigh.g,
-                       Root.Theme.surfaceContainerHigh.b, 0.85)
+        color: Qt.rgba(Root.Theme.surfaceContainer.r,
+                       Root.Theme.surfaceContainer.g,
+                       Root.Theme.surfaceContainer.b, 0.95)
         border.width: 1
-        border.color: urgency === "CRITICAL"
-            ? Root.Theme.error
-            : Qt.rgba(Root.Theme.panelBorder.r,
-                     Root.Theme.panelBorder.g,
-                     Root.Theme.panelBorder.b, 0.5)
+        border.color: cardHover.containsMouse
+            ? Root.Theme.primary
+            : (urgency === "CRITICAL"
+                ? Root.Theme.error
+                : Qt.rgba(1, 1, 1, 0.10))
+        Behavior on border.color { ColorAnimation { duration: 150 } }
 
         ColumnLayout {
             id: cardContent
@@ -88,14 +89,14 @@ Item {
                 Rectangle {
                     width: 26; height: 26; radius: 13
                     color: dismissArea.containsMouse
-                        ? Qt.rgba(Root.Theme.textSecondary.r, Root.Theme.textSecondary.g, Root.Theme.textSecondary.b, 0.15)
+                        ? Qt.rgba(Root.Theme.error.r, Root.Theme.error.g, Root.Theme.error.b, 0.20)
                         : "transparent"
                     Behavior on color { ColorAnimation { duration: 100 } }
 
                     Text {
                         anchors.centerIn: parent
                         text: "󰅖"
-                        color: Root.Theme.textSecondary
+                        color: dismissArea.containsMouse ? Root.Theme.error : Root.Theme.textSecondary
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 13
                     }
@@ -146,8 +147,8 @@ Item {
         // Hover overlay
         Rectangle {
             anchors.fill: parent
-            color: Root.Theme.textPrimary
-            opacity: cardHover.containsMouse ? 0.04 : 0
+            color: Root.Theme.primary
+            opacity: cardHover.containsMouse ? 0.05 : 0
             radius: parent.radius
             Behavior on opacity { NumberAnimation { duration: 120 } }
         }

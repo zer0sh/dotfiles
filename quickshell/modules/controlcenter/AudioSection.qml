@@ -327,7 +327,7 @@ Item {
                     }
 
                     Text {
-                        text: "Salidas"
+                        text: "Outputs"
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: Root.Theme.fontSizeSmall
                         font.weight: audioPanel.currentTab === "outputs" ? Font.DemiBold : Font.Normal
@@ -362,7 +362,7 @@ Item {
                     }
 
                     Text {
-                        text: "Entradas"
+                        text: "Inputs"
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: Root.Theme.fontSizeSmall
                         font.weight: audioPanel.currentTab === "inputs" ? Font.DemiBold : Font.Normal
@@ -536,7 +536,7 @@ Item {
                                 }
 
                                 Text {
-                                    text: "Activo"
+                                    text: "Active"
                                     font.family: Root.Theme.fontFamily
                                     font.pixelSize: Root.Theme.fontSizeXS
                                     font.weight: Font.DemiBold
@@ -703,7 +703,7 @@ Item {
             Layout.fillHeight: true
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-            text: audioPanel.currentTab === "inputs" ? "No se encontraron entradas de audio" : "No se encontraron salidas de audio"
+            text: audioPanel.currentTab === "inputs" ? "No audio input devices found" : "No audio output devices found"
             font.family: Root.Theme.fontFamily
             font.pixelSize: Root.Theme.fontSizeNormal
             color: Root.Theme.textSecondary
@@ -786,7 +786,7 @@ Item {
                             spacing: 1
 
                             Text {
-                                text: modelData.name || "Aplicacion"
+                                text: modelData.name || "Application"
                                 font.family: Root.Theme.fontFamily
                                 font.pixelSize: Root.Theme.fontSizeNormal
                                 font.weight: Font.DemiBold
@@ -796,7 +796,7 @@ Item {
                             }
 
                             Text {
-                                text: modelData.title || modelData.binary || "Stream de audio"
+                                text: modelData.title || modelData.binary || "Audio stream"
                                 font.family: Root.Theme.fontFamily
                                 font.pixelSize: Root.Theme.fontSizeXS
                                 color: Root.Theme.textSecondary
@@ -940,7 +940,7 @@ Item {
             }
 
             Text {
-                text: "No hay aplicaciones reproduciendo audio"
+                text: "No applications playing audio"
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: Root.Theme.fontSizeNormal
                 color: Root.Theme.textSecondary

@@ -19,3 +19,6 @@ alias gd='git diff'
 alias glog='git log --oneline --graph --decorate'
 
 alias cwd='pwd | wl-copy | cliphist store'
+
+# Antigravity Brain Visualizer
+alias start-env='$HOME/Workspace/playground/antigravity-brain-visualizer/agy-brain-viz'

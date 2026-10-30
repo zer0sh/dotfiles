@@ -4,13 +4,13 @@
 * {
     font-family: "Google Sans", "JetBrainsMono Nerd Font", sans-serif;
     font-weight: bold;
-    font-size: 15px;
+    font-size: 16px;
     min-height: 0;
 }
 
 /* ---------- Bar ---------- */
 window#waybar {
-    background-color: alpha(@bg, 0.80);
+    background-color: alpha(@bg, 0.95);
     color: @text;
     border-radius: 0;
     border-bottom: none;
@@ -38,7 +38,6 @@ tooltip label {
 
 /* Launcher button — ChromeOS circle */
 #custom-launcher {
-    font-size: 20px;
     padding: 0px 14px 0 9px;
     margin: 4px 2px 4px 6px;
     border-radius: 50%;
@@ -49,22 +48,6 @@ tooltip label {
 
 #custom-launcher:hover {
     background: alpha(@text, 0.12);
-}
-
-/* Wallpaper picker button */
-#custom-wallpaper {
-    font-size: 18px;
-    padding: 0 11px;
-    margin: 4px 4px 4px 2px;
-    border-radius: 50%;
-    background: alpha(@text, 0.10);
-    color: @text;
-    transition: all 0.2s ease;
-}
-
-#custom-wallpaper:hover {
-    background: alpha(@text, 0.16);
-    color: @accent;
 }
 
 /* Workspaces — pill indicators */
@@ -112,12 +95,14 @@ tooltip label {
     min-width: 260px;
     border-radius: 18px;
     background: alpha(@text, 0.08);
+    border: 1px solid alpha(@text, 0.10);
     color: @text;
     transition: all 0.2s ease;
 }
 
 #custom-media:hover {
     background: alpha(@text, 0.14);
+    border-color: alpha(@text, 0.18);
 }
 
 #custom-media.playing {
@@ -298,10 +283,6 @@ tooltip label {
 
 #network.disconnected {
     color: alpha(@text, 0.40);
-}
-
-#bluetooth {
-    font-size: 18px;
 }
 
 #bluetooth.disabled {

@@ -7,7 +7,7 @@ import "../.." as Root
 Rectangle {
     id: root
 
-    implicitWidth: 60
+    implicitWidth: 44
     implicitHeight: 310
 
     property real brightness: 0.5
@@ -78,11 +78,11 @@ Rectangle {
     Text {
         id: percentText
         anchors.top: parent.top
-        anchors.topMargin: 16
+        anchors.topMargin: 14
         anchors.horizontalCenter: parent.horizontalCenter
         text: Math.round(root.brightness * 100) + "%"
         font.family: Root.Theme.fontFamily
-        font.pixelSize: 13
+        font.pixelSize: 11
         font.weight: Font.DemiBold
         color: root.brightness > 0.88 ? Root.Theme.tileActiveText : Root.Theme.textPrimary
         z: 2
@@ -94,11 +94,11 @@ Rectangle {
     Text {
         id: iconText
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 16
+        anchors.bottomMargin: 14
         anchors.horizontalCenter: parent.horizontalCenter
         text: root.brightnessIcon(root.brightness)
         font.family: Root.Theme.iconFont
-        font.pixelSize: 24
+        font.pixelSize: 20
         color: root.brightness > 0.14 ? Root.Theme.tileActiveText : Root.Theme.textPrimary
         z: 2
 

@@ -71,11 +71,17 @@ Item {
         bottomLeftRadius:  28
         bottomRightRadius: 28
 
-        // Matching Waybar and Control Center glass surface
-        color: Qt.rgba(Root.Theme._shelfBgColor.r,
-                       Root.Theme._shelfBgColor.g,
-                       Root.Theme._shelfBgColor.b, 0.80)
-        border.width: 0
+        // Deep obsidian surface — high contrast standardized with Theme tokens matching Waybar alpha
+        color: Qt.rgba(Root.Theme.panelBg.r,
+                       Root.Theme.panelBg.g,
+                       Root.Theme.panelBg.b, 0.80)
+        border.width: 1
+        border.color: cardHover.containsMouse
+            ? Root.Theme.primary
+            : (root.urgency === "CRITICAL"
+                ? Root.Theme.error
+                : Qt.rgba(1, 1, 1, 0.12))
+        Behavior on border.color { ColorAnimation { duration: 150 } }
 
         Rectangle {
             visible: root.urgency === "CRITICAL"
@@ -103,9 +109,8 @@ Item {
                 spacing: 6
 
                 Rectangle {
-                    visible: root.urgency === "CRITICAL"
                     width: 6; height: 6; radius: 3
-                    color: Root.Theme.error
+                    color: root.urgency === "CRITICAL" ? Root.Theme.error : Root.Theme.primary
                     Layout.alignment: Qt.AlignVCenter
                 }
 
@@ -115,6 +120,7 @@ Item {
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: Root.Theme.fontSizeXS
                     font.weight: Font.DemiBold
+                    font.capitalization: Font.AllUppercase
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
@@ -147,8 +153,8 @@ Item {
 
         Rectangle {
             anchors.fill: parent
-            color: Root.Theme.textPrimary
-            opacity: cardHover.containsMouse ? 0.04 : 0
+            color: Root.Theme.primary
+            opacity: cardHover.containsMouse ? 0.08 : 0
             radius: parent.radius
             topLeftRadius: parent.topLeftRadius
             topRightRadius: parent.topRightRadius

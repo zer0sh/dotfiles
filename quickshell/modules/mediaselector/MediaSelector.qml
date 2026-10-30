@@ -235,8 +235,12 @@ Scope {
                         bottomLeftRadius: 28
                         bottomRightRadius: 28
 
-                        // Background matching Waybar exactly
-                        color: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.85)
+                        // Deep obsidian background with refined hairline border
+                        color: Qt.rgba(Root.Theme.panelBg.r,
+                                       Root.Theme.panelBg.g,
+                                       Root.Theme.panelBg.b, 0.95)
+                        border.width: 1
+                        border.color: Qt.rgba(1, 1, 1, 0.10)
                         clip: true
 
                         // Block click-through
@@ -294,13 +298,16 @@ Scope {
                                     Layout.leftMargin: 12
                                     Layout.rightMargin: 12
                                     radius: 14
-                                    color: autoMA.containsMouse
-                                        ? Qt.rgba(255, 255, 255, 0.12)
-                                        : (mediaSelector.currentSelectedPlayer === "auto"
-                                            ? Qt.rgba(255, 255, 255, 0.08)
-                                            : "transparent")
+                                    color: mediaSelector.currentSelectedPlayer === "auto"
+                                        ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.16)
+                                        : (autoMA.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.60))
+                                    border.width: 1
+                                    border.color: mediaSelector.currentSelectedPlayer === "auto"
+                                        ? Root.Theme.primary
+                                        : (autoMA.containsMouse ? Qt.rgba(1, 1, 1, 0.18) : Qt.rgba(1, 1, 1, 0.08))
 
                                     Behavior on color { ColorAnimation { duration: 120 } }
+                                    Behavior on border.color { ColorAnimation { duration: 120 } }
 
                                     RowLayout {
                                         anchors.fill: parent
@@ -388,11 +395,16 @@ Scope {
 
                                         readonly property bool isSelected: mediaSelector.currentSelectedPlayer === playerId || mediaSelector.currentSelectedPlayer === modelData.identity
 
-                                        color: itemMA.containsMouse
-                                            ? Qt.rgba(255, 255, 255, 0.12)
-                                            : (isSelected ? Qt.rgba(255, 255, 255, 0.08) : "transparent")
+                                        color: isSelected
+                                            ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.16)
+                                            : (itemMA.containsMouse ? Qt.rgba(1, 1, 1, 0.08) : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.60))
+                                        border.width: 1
+                                        border.color: isSelected
+                                            ? Root.Theme.primary
+                                            : (itemMA.containsMouse ? Qt.rgba(1, 1, 1, 0.18) : Qt.rgba(1, 1, 1, 0.08))
 
                                         Behavior on color { ColorAnimation { duration: 120 } }
+                                        Behavior on border.color { ColorAnimation { duration: 120 } }
 
                                         RowLayout {
                                             anchors.fill: parent
