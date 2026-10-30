@@ -1,0 +1,2930 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Official documentation for zer0sh's Hyprland, Quickshell, and terminal environment">
+      
+      
+        <meta name="author" content="zer0sh">
+      
+      
+        <link rel="canonical" href="https://zer0sh.github.io/dotfiles/quickshell/gadgets/">
+      
+      
+        <link rel="prev" href="../launcher-wallpapers/">
+      
+      
+        <link rel="next" href="../clipboard/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Desktop Gadgets - zer0sh Dotfiles</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#desktop-gadgets-suite" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="zer0sh Dotfiles" class="md-header__button md-logo" aria-label="zer0sh Dotfiles" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zer0sh Dotfiles
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Desktop Gadgets
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zer0sh/dotfiles" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zer0sh/dotfiles
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="zer0sh Dotfiles" class="md-nav__button md-logo" aria-label="zer0sh Dotfiles" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    zer0sh Dotfiles
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zer0sh/dotfiles" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zer0sh/dotfiles
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Home
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desktop
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Desktop
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hyprland
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hyprland
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/keybinds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keybindings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/xwayland/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XWayland & Window Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/shaders/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shaders & Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/hyprlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Screen Locking & Idle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickshell
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Quickshell
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control Center
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspace Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../osd-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications & OSDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../launcher-wallpapers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Floating Launcher & Wallpapers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desktop Gadgets
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desktop Gadgets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-visual-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture &amp; Visual Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-engineering-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Engineering Principles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Engineering Principles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-borderless-containerless-visual-philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Borderless &amp; Containerless Visual Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-fullscreen-bottom-layer-wlrlayerbottom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Fullscreen Bottom Layer (WlrLayer.Bottom)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-dynamic-wayland-input-masking-mask-region" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Dynamic Wayland Input Masking (mask: Region)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-direct-native-drag-drag-anywhere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Direct Native Drag ("Drag Anywhere")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-discrete-hover-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Discrete Hover Controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-gadget-catalog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detailed Gadget Catalog
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed Gadget Catalog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-desk-clock-deskclockqml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Desk Clock (DeskClock.qml)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Desk Clock (DeskClock.qml)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Capabilities:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-desktop-calendar-calendarqml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Desktop Calendar (Calendar.qml)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Desktop Calendar (Calendar.qml)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-capabilities_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Capabilities:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-weather-forecast-weathergadgetqml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Weather Forecast (WeatherGadget.qml)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Weather Forecast (WeatherGadget.qml)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-capabilities_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Capabilities:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-hardware-pulse-hardwarepulseqml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Hardware Pulse (HardwarePulse.qml)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Hardware Pulse (HardwarePulse.qml)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-capabilities_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Capabilities:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-ambient-scratchpad-scratchpadqml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Ambient Scratchpad (Scratchpad.qml)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Ambient Scratchpad (Scratchpad.qml)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-capabilities_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Capabilities:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-daily-spark-dailysparkqml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Daily Spark (DailySpark.qml)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Daily Spark (DailySpark.qml)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-capabilities_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Capabilities:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-management-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State Management &amp; Persistence
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="State Management &amp; Persistence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gadgetsjson-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gadgets.json Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#persistence-mechanics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Persistence Mechanics:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#application-launcher-integration-gadgets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Application Launcher Integration (/gadgets)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Application Launcher Integration (/gadgets)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#features-of-the-gadgets-carousel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features of the Gadgets Carousel:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-ipc-command-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete IPC Command Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Complete IPC Command Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#central-gadget-manager-gadgets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Central Gadget Manager (gadgets)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#individual-gadget-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Individual Gadget Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#launcher-gadgets-carousel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Launcher Gadgets Carousel
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting &amp; Maintenance
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../clipboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clipboard Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../shortcuts-overlay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keyboard Shortcuts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/waybar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Waybar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/wofi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wofi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/matugen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Matugen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/steam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steam
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/zen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zen Browser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Terminals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Terminals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/alacritty/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Alacritty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/kitty/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kitty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/zsh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zsh
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/vim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/fastfetch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fastfetch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/bat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../apps/btop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Btop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workflow
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Workflow
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dotfiles/workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Philosophy & Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dotfiles/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release & SemVer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-visual-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture &amp; Visual Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-engineering-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Engineering Principles
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core Engineering Principles">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-borderless-containerless-visual-philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Borderless &amp; Containerless Visual Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-fullscreen-bottom-layer-wlrlayerbottom" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Fullscreen Bottom Layer (WlrLayer.Bottom)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-dynamic-wayland-input-masking-mask-region" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Dynamic Wayland Input Masking (mask: Region)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-direct-native-drag-drag-anywhere" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Direct Native Drag ("Drag Anywhere")
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-discrete-hover-controls" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Discrete Hover Controls
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-gadget-catalog" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detailed Gadget Catalog
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed Gadget Catalog">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-desk-clock-deskclockqml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Desk Clock (DeskClock.qml)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="1. Desk Clock (DeskClock.qml)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Capabilities:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-desktop-calendar-calendarqml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Desktop Calendar (Calendar.qml)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Desktop Calendar (Calendar.qml)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-capabilities_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Capabilities:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-weather-forecast-weathergadgetqml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Weather Forecast (WeatherGadget.qml)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Weather Forecast (WeatherGadget.qml)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-capabilities_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Capabilities:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-hardware-pulse-hardwarepulseqml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Hardware Pulse (HardwarePulse.qml)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Hardware Pulse (HardwarePulse.qml)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-capabilities_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Capabilities:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-ambient-scratchpad-scratchpadqml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Ambient Scratchpad (Scratchpad.qml)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="5. Ambient Scratchpad (Scratchpad.qml)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-capabilities_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Capabilities:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-daily-spark-dailysparkqml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Daily Spark (DailySpark.qml)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="6. Daily Spark (DailySpark.qml)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#key-capabilities_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Capabilities:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#state-management-persistence" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State Management &amp; Persistence
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="State Management &amp; Persistence">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gadgetsjson-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        gadgets.json Schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#persistence-mechanics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Persistence Mechanics:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#application-launcher-integration-gadgets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Application Launcher Integration (/gadgets)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Application Launcher Integration (/gadgets)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#features-of-the-gadgets-carousel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features of the Gadgets Carousel:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#complete-ipc-command-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complete IPC Command Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Complete IPC Command Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#central-gadget-manager-gadgets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Central Gadget Manager (gadgets)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#individual-gadget-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Individual Gadget Endpoints
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#launcher-gadgets-carousel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Launcher Gadgets Carousel
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-maintenance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting &amp; Maintenance
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="desktop-gadgets-suite">Desktop Gadgets Suite</h1>
+<p>The Quickshell Desktop Gadgets system provides a lightweight, borderless, and containerless desktop widget ecosystem built natively for Wayland and Hyprland. Designed with zero visual clutter, each gadget floats directly above the desktop wallpaper without artificial background panels, window borders, or blur boxes, blending seamlessly into your active workspace.</p>
+<p>The suite features 6 ambient desktop gadgets powered by Qt Quick, Wayland Layer Shell input masking, and reactive Python telemetry backends, with real-time drag-and-drop repositioning, bidirectional JSON persistence, and full IPC automation.</p>
+<hr />
+<h2 id="architecture-visual-overview">Architecture &amp; Visual Overview</h2>
+<pre class="mermaid"><code>flowchart TD
+    subgraph Wayland Compsitor ["Wayland &amp; Hyprland Environment"]
+        LayerShell["WlrLayershell (WlrLayer.Bottom)"]
+        Exclusion["ExclusionMode.Ignore (Zero Window Displacement)"]
+        Mask["Dynamic Input Mask (Region item: mainCard)"]
+    end
+
+    subgraph Native Interaction Engine ["Zero-Jitter Drag &amp; Interaction"]
+        MouseArea["MouseArea (drag.target: mainCard)"]
+        HighFPS["Direct Native GPU Drag @ Monitor Refresh Rate"]
+        HoverControls["Discrete Hover Controls (Close ✕ &amp; Cycle 󰑐)"]
+    end
+
+    subgraph Desktop Gadgets ["The 6 Desktop Gadgets"]
+        DeskClock["Desk Clock (DeskClock.qml)"]
+        Calendar["Desktop Calendar (Calendar.qml)"]
+        Weather["Weather Forecast (WeatherGadget.qml)"]
+        HwPulse["Hardware Pulse (HardwarePulse.qml)"]
+        Scratchpad["Ambient Scratchpad (Scratchpad.qml)"]
+        DailySpark["Daily Spark (DailySpark.qml)"]
+    end
+
+    subgraph State &amp; Persistence ["Central State Management"]
+        Manager["GadgetsManager.qml (Singleton)"]
+        ConfigJSON["~/.config/quickshell/gadgets.json"]
+        ScratchJSON["~/.config/quickshell/scratchpad.json"]
+    end
+
+    subgraph Control Surfaces ["Invocation &amp; IPC Interfaces"]
+        Launcher["Quickshell Launcher (/gadgets Carousel)"]
+        CLI["Quickshell IPC (qs ipc call ...)"]
+        Keybinds["Hyprland Keybindings &amp; Scripts"]
+    end
+
+    LayerShell &amp; Exclusion --&gt; Mask
+    Mask --&gt; MouseArea
+    MouseArea --&gt; HighFPS
+    HighFPS --&gt;|On Released: Math.round(x, y)| Manager
+    HoverControls --&gt; Manager
+
+    DeskClock &amp; Calendar &amp; Weather &amp; HwPulse &amp; Scratchpad &amp; DailySpark --&gt; Manager
+    Manager &lt;--&gt;|Async Process read/write| ConfigJSON
+    Scratchpad &lt;--&gt;|Async Process read/write| ScratchJSON
+
+    Launcher &lt;--&gt;|Toggle / Preview Cards| Manager
+    CLI --&gt;|IPC Handlers| Manager
+    Keybinds --&gt; CLI</code></pre>
+<hr />
+<h2 id="file-structure">File Structure</h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>quickshell/
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>├── GadgetsManager.qml                    # Central state manager, coordinate storage &amp; IPC router
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>├── gadgets.json                         # Default coordinate and visibility state map
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>├── data/
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>│   ├── quotes.json                      # Curated dictionary of philosophical &amp; tech quotes
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>│   └── scratchpad.json                  # Default task items and to-do fallback seed
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>├── modules/
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>│   ├── deskclock/
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>│   │   └── DeskClock.qml                # Monumental 168px digital clock &amp; day progress meter
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>│   ├── calendar/
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>│   │   └── Calendar.qml                 # Interactive monthly calendar with month navigation
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>│   ├── weathergadget/
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>│   │   └── WeatherGadget.qml            # Live weather telemetry &amp; 2-day forecast card
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>│   ├── hardwarepulse/
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>│   │   └── HardwarePulse.qml            # Real-time CPU, RAM, thermal alerts &amp; battery pulse
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>│   ├── scratchpad/
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>│   │   └── Scratchpad.qml               # Interactive to-do checklist with inline creation
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>│   ├── dailyspark/
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>│   │   └── DailySpark.qml               # Curated quotes card with 3-hour auto-rotation
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>│   └── launcher/
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>│       ├── Launcher.qml                 # Launcher container hosting the /gadgets mode
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>│       └── GadgetCard.qml               # 224x214 px carousel card with live gadget UI mockups
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a>└── scripts/
+</span><span id="__span-0-24"><a id="__codelineno-0-24" name="__codelineno-0-24" href="#__codelineno-0-24"></a>    ├── hardware-pulse.py                # Telemetry collector (/proc &amp; /sys parser, zero dependencies)
+</span><span id="__span-0-25"><a id="__codelineno-0-25" name="__codelineno-0-25" href="#__codelineno-0-25"></a>    └── weather.py                       # Weather daemon with caching &amp; wttr.in fallback
+</span></code></pre></div>
+<hr />
+<h2 id="core-engineering-principles">Core Engineering Principles</h2>
+<h3 id="1-borderless-containerless-visual-philosophy">1. Borderless &amp; Containerless Visual Philosophy</h3>
+<p>Unlike traditional desktop widgets that wrap content inside heavy translucent glass cards, drop shadows, or bounding borders, Quickshell Desktop Gadgets are completely <strong>borderless and containerless</strong>. Typography, icons, and progress meters float directly over the desktop background. This minimalist design ensures that your wallpaper remains the focal point while ambient information stays legible and unobtrusive.</p>
+<h3 id="2-fullscreen-bottom-layer-wlrlayerbottom">2. Fullscreen Bottom Layer (<code>WlrLayer.Bottom</code>)</h3>
+<p>Each gadget is hosted inside an individual <code>PanelWindow</code> configured with:
+* <code>WlrLayershell.layer: WlrLayer.Bottom</code>: The window renders directly above the desktop wallpaper (<code>WlrLayer.Background</code>) but strictly below regular application windows (<code>WlrLayer.Top</code> and normal Wayland surfaces). Application windows tile and float across gadgets without any z-order interference.
+* <code>exclusionMode: ExclusionMode.Ignore</code>: Informs the compositor (Hyprland) that gadgets do not reserve screen space. They cause <strong>zero window layout displacement</strong>, never compressing your tiling columns or shifting panels like Waybar.
+* <code>WlrLayershell.keyboardFocus: WlrKeyboardFocus.None</code>: The layer shell surface does not trap global keyboard focus, ensuring normal shortcuts continue to function without interruption.</p>
+<h3 id="3-dynamic-wayland-input-masking-mask-region">3. Dynamic Wayland Input Masking (<code>mask: Region</code>)</h3>
+<p>In Wayland Layer Shell, a transparent fullscreen surface would normally capture all mouse input, blocking clicks to desktop icons, wallpaper menus, or underlying windows. </p>
+<p>To resolve this, every gadget employs dynamic input masking:</p>
+<div class="language-qml highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">mask:</span> <span class="nx">Region</span> <span class="p">{</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="k">item:</span> <span class="nx">mainCard</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>The compositor restricts hit-testing strictly to the bounding geometry of <code>mainCard</code>. Any mouse click outside the active card passes directly through to the desktop background or the window underneath.</p>
+<h3 id="4-direct-native-drag-drag-anywhere">4. Direct Native Drag ("Drag Anywhere")</h3>
+<p>Conventional Wayland floating widgets often suffer from severe cursor jitter or rubber-banding during mouse dragging, caused by round-trip latency between client-side drag events and compositor surface repositioning requests.</p>
+<p>Quickshell eliminates this bottleneck through a <strong>Direct Native Drag</strong> design:
+1. The <code>PanelWindow</code> stays anchored fullscreen (<code>top</code>, <code>bottom</code>, <code>left</code>, <code>right: true</code>).
+2. Inside the window, <code>mainCard</code> uses Qt Quick's hardware-accelerated <code>MouseArea</code>:
+   <div class="language-qml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">MouseArea</span> <span class="p">{</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="kd">id: dragArea</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="k">anchors.fill:</span> <span class="nx">parent</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>    <span class="k">cursorShape:</span> <span class="nx">pressed</span> <span class="o">?</span> <span class="k">Qt.ClosedHandCursor :</span> <span class="p">(</span><span class="nx">containsMouse</span> <span class="o">?</span> <span class="k">Qt.OpenHandCursor :</span> <span class="nx">Qt</span><span class="p">.</span><span class="nx">ArrowCursor</span><span class="p">)</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="k">drag.target:</span> <span class="nx">mainCard</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="k">drag.axis:</span> <span class="nx">Drag</span><span class="p">.</span><span class="nx">XAndYAxis</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="k">onPressed:</span> <span class="nx">mainCard</span><span class="p">.</span><span class="nx">isDragging</span> <span class="o">=</span> <span class="kc">true</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="k">onReleased:</span> <span class="p">{</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        <span class="kd">var</span> <span class="nx">fx</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">mainCard</span><span class="p">.</span><span class="nx">x</span><span class="p">)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>        <span class="kd">var</span> <span class="nx">fy</span> <span class="o">=</span> <span class="nb">Math</span><span class="p">.</span><span class="nx">round</span><span class="p">(</span><span class="nx">mainCard</span><span class="p">.</span><span class="nx">y</span><span class="p">)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        <span class="nx">Root</span><span class="p">.</span><span class="nx">GadgetsManager</span><span class="p">.</span><span class="nx">setPosition</span><span class="p">(</span><span class="s2">"gadgetId"</span><span class="p">,</span> <span class="nx">fx</span><span class="p">,</span> <span class="nx">fy</span><span class="p">)</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>        <span class="nx">mainCard</span><span class="p">.</span><span class="nx">isDragging</span> <span class="o">=</span> <span class="kc">false</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="p">}</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a><span class="p">}</span>
+</span></code></pre></div>
+3. Moving the gadget executes locally on the GPU at your monitor's native refresh rate (144Hz, 165Hz, or 240Hz) with zero compositor round-trips.
+4. When released, integer coordinates (<code>Math.round</code>) are committed to <code>GadgetsManager.qml</code> and saved to disk.</p>
+<h3 id="5-discrete-hover-controls">5. Discrete Hover Controls</h3>
+<p>Gadgets do not render permanent title bars or close icons. Instead, moving the mouse over the gadget card smoothly reveals contextual controls via an animated opacity transition (<code>NumberAnimation { duration: 180 }</code>):
+* <strong>Close Button (<code>✕</code>):</strong> Positioned in the upper-right corner. Clicking it invokes <code>GadgetsManager.setEnabled(id, false)</code>, hiding the gadget instantly and updating persistent storage.
+* <strong>Action Icons:</strong> Gadgets like Daily Spark reveal interactive cycling buttons (<code>󰑐</code>) only when hovered.</p>
+<hr />
+<h2 id="detailed-gadget-catalog">Detailed Gadget Catalog</h2>
+<h3 id="1-desk-clock-deskclockqml">1. Desk Clock (<code>DeskClock.qml</code>)</h3>
+<p>A monumental digital clock designed to anchor the desktop with large typography, daily progress tracking, and contextual greetings.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>┌────────────────────────────────────────────────────────┐
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>│                                                      ✕ │
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>│                                                        │
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>│                        14•28                           │
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>│                                                        │
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>│            [========================......]            │
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>│                          60%                           │
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>│                                                        │
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>│              Buenas tardes, seguimos en la lucha.      │
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>│                                                        │
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>└────────────────────────────────────────────────────────┘
+</span></code></pre></div>
+<h4 id="key-capabilities">Key Capabilities:</h4>
+<ul>
+<li><strong>Monumental Typography:</strong> Time display rendered in 168 px bold digits (scaled +40% over standard displays) using <code>style: Text.Sunken</code> and dynamic <code>Theme.primary</code> color highlight.</li>
+<li><strong>Day Progress Meter:</strong> Calculates elapsed daytime fraction ($t_{\text{total}} = h \times 3600 + m \times 60 + s$) relative to the full 86,400-second day:
+  $$\text{Progress} = \frac{h \times 3600 + m \times 60 + s}{86400}$$
+  Renders a 14 px rounded progress bar with smooth 1000 ms cubic easing (<code>Easing.OutCubic</code>) accompanied by an exact percentage readout (e.g. <code>58%</code>).</li>
+<li><strong>Contextual Greeting Engine:</strong> Automatically switches tone across 6 distinct time-of-day slots:</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Time Range</th>
+<th style="text-align: left;">Time Slot</th>
+<th style="text-align: left;">Sample Greetings</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>06:00 – 10:59</code></td>
+<td style="text-align: left;">Morning</td>
+<td style="text-align: left;"><em>"Good morning, have a great day."</em>, <em>"Rise and shine."</em>, <em>"Let's make it count."</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>11:00 – 13:59</code></td>
+<td style="text-align: left;">Lunch / Midday</td>
+<td style="text-align: left;"><em>"Lunch time, a comer como Dios manda."</em>, <em>"It's lunch o'clock. Buen provecho."</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>14:00 – 17:59</code></td>
+<td style="text-align: left;">Afternoon</td>
+<td style="text-align: left;"><em>"Buenas tardes, keep going."</em>, <em>"Good afternoon. You got this."</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>18:00 – 21:59</code></td>
+<td style="text-align: left;">Evening</td>
+<td style="text-align: left;"><em>"Good evening, you made it."</em>, <em>"Buenas noches. We survived another one."</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>22:00 – 02:59</code></td>
+<td style="text-align: left;">Bedtime</td>
+<td style="text-align: left;"><em>"Bro, seriously? A mimir."</em>, <em>"It's 22:00. What are you doing?"</em>, <em>"Sleep.exe should be running."</em></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>03:00 – 05:59</code></td>
+<td style="text-align: left;">Deep Night / Dawn</td>
+<td style="text-align: left;"><em>"¿Quién te hizo tanto daño?"</em>, <em>"Bro... who hurt you?"</em>, <em>"It's 4 AM. We need to talk."</em></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="2-desktop-calendar-calendarqml">2. Desktop Calendar (<code>Calendar.qml</code>)</h3>
+<p>A clean, interactive monthly calendar matrix providing immediate date awareness without launching an external calendar suite.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>┌──────────────────────────────────────────────┐
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>│                                            ✕ │
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>│            ‹    October 2026    ›            │
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>│                     [Today]                  │
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>│                                              │
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>│   Sun   Mon   Tue   Wed   Thu   Fri   Sat    │
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>│                     1     2     3     4      │
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>│    5     6     7     8     9    10    11      │
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>│   12    13    14    15    16    17    18      │
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>│   19    20    21    22    23    24    25      │
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>│   26    27    28    [29]  30    31           │
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>└──────────────────────────────────────────────┘
+</span></code></pre></div>
+<h4 id="key-capabilities_1">Key Capabilities:</h4>
+<ul>
+<li><strong>Interactive Navigation:</strong> Dedicated previous (<code>‹</code>) and next (<code>›</code>) month navigation controls with automatic year roll-over and an instant "Today" reset button.</li>
+<li><strong>Dynamic Grid Computation:</strong> Automatically calculates days in month (<code>new Date(year, month + 1, 0).getDate()</code>) and leading weekday offsets (<code>new Date(year, month, 1).getDay()</code>).</li>
+<li><strong>Active Day Indicator:</strong> Highlights the current date with a rounded <code>Theme.primary</code> accent badge and bold high-contrast text. Inactive dates show muted text, with interactive hover highlights across all dates.</li>
+</ul>
+<hr />
+<h3 id="3-weather-forecast-weathergadgetqml">3. Weather Forecast (<code>WeatherGadget.qml</code>)</h3>
+<p>An ambient meteorological station delivering live local conditions and short-term forecasting.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>┌──────────────────────────────────────────┐
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>│                                        ✕ │
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>│   󰖐  21°       Bogota                    │
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>│                Partly cloudy             │
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>│                Feels like 20°  •  62%    │
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>│                                          │
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>│   ┌──────────────────┐┌────────────────┐ │
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>│   │ Tomorrow         ││ Overmorrow     │ │
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a>│   │ 󰖐 20°            ││ 󰖖 19°          │ │
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>│   └──────────────────┘└────────────────┘ │
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>└──────────────────────────────────────────┘
+</span></code></pre></div>
+<h4 id="key-capabilities_2">Key Capabilities:</h4>
+<ul>
+<li><strong>Telemetry Engine:</strong> Powered by <code>quickshell/scripts/weather.py</code>. Automatically queries <code>wttr.in</code> without requiring mandatory API keys, with transparent caching (<code>~/.cache/weather.json</code>) and OpenWeatherMap fallback support.</li>
+<li><strong>Live Weather Data:</strong></li>
+<li>Real-time temperature and felt temperature (<code>feels_like</code>).</li>
+<li>Current meteorological condition description and location name.</li>
+<li>Dynamic Material Design weather icon mapping (<code>wb_sunny</code>, <code>partly_cloudy_day</code>, <code>rainy</code>, <code>thunderstorm</code>, etc.).</li>
+<li>Relative ambient humidity percentage.</li>
+<li><strong>2-Day Forecast Cards:</strong> Displays cards for Tomorrow and Overmorrow, including weather icons, conditions, and expected temperatures.</li>
+<li><strong>Update Cadence:</strong> Automatically refreshes every 15 minutes (<code>900,000 ms</code>), with instant on-demand refresh available via IPC (<code>qs ipc call weathergadget refresh</code>).</li>
+</ul>
+<hr />
+<h3 id="4-hardware-pulse-hardwarepulseqml">4. Hardware Pulse (<code>HardwarePulse.qml</code>)</h3>
+<p>A minimalist system telemetry monitor tracking hardware load, thermal safety, and power status.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>┌────────────────────────────────────────────┐
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>│ HARDWARE PULSE                      72°C ✕ │
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>│                                            │
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>│ 󰍛 CPU                              42.5%  │
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>│ [==================......................] │
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>│                                            │
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>│ 󰘚 RAM                     6.4 / 15.8 GB   │
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>│ [===================.....................] │
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>│                                            │
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>│ 󰂄 BATTERY                 88% (Charging)  │
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>└────────────────────────────────────────────┘
+</span></code></pre></div>
+<h4 id="key-capabilities_3">Key Capabilities:</h4>
+<ul>
+<li><strong>Ultra-Fast Linux Sysfs Parser:</strong> Driven by <code>quickshell/scripts/hardware-pulse.py</code>. Reads <code>/proc/stat</code>, <code>/proc/meminfo</code>, <code>/sys/class/thermal/</code>, and <code>/sys/class/power_supply/</code> directly in Python. Requires zero external pip packages and executes in under 5 ms.</li>
+<li><strong>CPU Load &amp; Reactive Thermal Alerts:</strong></li>
+<li>Real-time CPU percentage with a responsive fill bar.</li>
+<li>Temperature readout (<code>cpuTemp</code>).</li>
+<li><strong>Reactive Thermal Warning:</strong> When the CPU temperature reaches or exceeds 80°C (<code>cpuTemp &gt;= 80</code>), the temperature readout dynamically shifts to high-visibility alert color (<code>Theme.error</code>).</li>
+<li><strong>Memory Telemetry:</strong> Displays currently consumed memory against total physical RAM in GB (<code>6.4 / 15.8 GB</code>), accompanied by a proportional load bar.</li>
+<li><strong>Intelligent Battery Monitor:</strong> Displays charge percentage, charging state (Charging, Discharging, Full), and dynamic battery glyphs (<code>󰂄</code>, <code>󰁹</code>, <code>󰂀</code>). On desktop systems without a battery, the battery row is automatically hidden (<code>batteryLevel &lt; 0</code>).</li>
+<li><strong>Update Interval:</strong> Polls hardware vitals every 3 seconds (<code>3000 ms</code>).</li>
+</ul>
+<hr />
+<h3 id="5-ambient-scratchpad-scratchpadqml">5. Ambient Scratchpad (<code>Scratchpad.qml</code>)</h3>
+<p>A permanent, floating desktop to-do checklist and scratchpad for quick capture of thoughts, tasks, and commands.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>┌────────────────────────────────────────────┐
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>│ SCRATCHPAD                   2 pending   ✕ │
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>│                                            │
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>│ 󰄵  Refine Hyprland &amp; Waybar config         │
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>│ 󰄱  Customize new Quickshell gadgets    [✕] │
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>│ 󰄱  Audit network security rules            │
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>│                                            │
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>│ +  Add new task and press Enter…           │
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>└────────────────────────────────────────────┘
+</span></code></pre></div>
+<h4 id="key-capabilities_4">Key Capabilities:</h4>
+<ul>
+<li><strong>Interactive Checklist:</strong></li>
+<li>Click any task row to toggle completion. Checked tasks receive strikethrough typography (<code>font.strikeout: true</code>), dimmed opacity, and an updated checkbox glyph (<code>󰄵</code> vs <code>󰄱</code>).</li>
+<li>Hovering over any item reveals an inline deletion button (<code>✕</code>) to remove the entry.</li>
+<li><strong>Inline Task Creation:</strong></li>
+<li>Bottom input field with italicized placeholder (<code>"Add new task and press Enter…"</code>).</li>
+<li>Type a note and press <code>Enter</code> to append it immediately with a unique timestamp identifier.</li>
+<li><strong>Live Header Counter:</strong> Displays the number of active uncompleted tasks in real time (e.g., <code>2 pending</code>).</li>
+<li><strong>Bidirectional JSON Persistence:</strong> Reads and writes to <code>~/.config/quickshell/scratchpad.json</code> via asynchronous background processes, ensuring tasks survive desktop restarts.</li>
+</ul>
+<hr />
+<h3 id="6-daily-spark-dailysparkqml">6. Daily Spark (<code>DailySpark.qml</code>)</h3>
+<p>A desktop quote widget delivering curated philosophy, engineering wisdom, and design principles.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>┌────────────────────────────────────────────────────────┐
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>│                                                      ✕ │
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>│   “Simplicity is prerequisite for reliability.”        │
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>│                                                        │
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>│               — Edsger W. Dijkstra   [󰑐]               │
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>└────────────────────────────────────────────────────────┘
+</span></code></pre></div>
+<h4 id="key-capabilities_5">Key Capabilities:</h4>
+<ul>
+<li><strong>Curated Wisdom Dictionary:</strong> Reads from <code>quickshell/data/quotes.json</code> (fallback <code>~/.config/quickshell/data/quotes.json</code>). Features thought leaders including:</li>
+<li><strong>Philosophy:</strong> Seneca, Marcus Aurelius, Epictetus, Lao Tzu.</li>
+<li><strong>Computer Science &amp; Engineering:</strong> Edsger W. Dijkstra, Linus Torvalds, Alan Kay, Donald Knuth.</li>
+<li><strong>Design &amp; Simplicity:</strong> Dieter Rams, Steve Jobs.</li>
+<li><strong>Automatic 3-Hour Rotation:</strong> Automatically advances to a new quote every 3 hours (<code>10,800,000 ms</code>) via an internal timer.</li>
+<li><strong>Hover Cycle Button:</strong> Hovering over the card reveals an icon button (<code>󰑐</code>) next to the author's name, allowing instant manual cycling to the next quote.</li>
+</ul>
+<hr />
+<h2 id="state-management-persistence">State Management &amp; Persistence</h2>
+<p>All gadget states (visibility and screen coordinates) are centrally managed by the singleton <code>GadgetsManager.qml</code> and persisted to <code>~/.config/quickshell/gadgets.json</code>.</p>
+<h3 id="gadgetsjson-schema"><code>gadgets.json</code> Schema</h3>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">  </span><span class="nt">"deskclock"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="nt">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="w">    </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">670</span><span class="p">,</span>
+</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a><span class="w">    </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span>
+</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="w">  </span><span class="nt">"calendar"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-8"><a id="__codelineno-9-8" name="__codelineno-9-8" href="#__codelineno-9-8"></a><span class="w">    </span><span class="nt">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+</span><span id="__span-9-9"><a id="__codelineno-9-9" name="__codelineno-9-9" href="#__codelineno-9-9"></a><span class="w">    </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">1460</span><span class="p">,</span>
+</span><span id="__span-9-10"><a id="__codelineno-9-10" name="__codelineno-9-10" href="#__codelineno-9-10"></a><span class="w">    </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">650</span>
+</span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-9-12"><a id="__codelineno-9-12" name="__codelineno-9-12" href="#__codelineno-9-12"></a><span class="w">  </span><span class="nt">"weather"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-13"><a id="__codelineno-9-13" name="__codelineno-9-13" href="#__codelineno-9-13"></a><span class="w">    </span><span class="nt">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+</span><span id="__span-9-14"><a id="__codelineno-9-14" name="__codelineno-9-14" href="#__codelineno-9-14"></a><span class="w">    </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">1480</span><span class="p">,</span>
+</span><span id="__span-9-15"><a id="__codelineno-9-15" name="__codelineno-9-15" href="#__codelineno-9-15"></a><span class="w">    </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span>
+</span><span id="__span-9-16"><a id="__codelineno-9-16" name="__codelineno-9-16" href="#__codelineno-9-16"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-9-17"><a id="__codelineno-9-17" name="__codelineno-9-17" href="#__codelineno-9-17"></a><span class="w">  </span><span class="nt">"hardwarepulse"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-18"><a id="__codelineno-9-18" name="__codelineno-9-18" href="#__codelineno-9-18"></a><span class="w">    </span><span class="nt">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-9-19"><a id="__codelineno-9-19" name="__codelineno-9-19" href="#__codelineno-9-19"></a><span class="w">    </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span>
+</span><span id="__span-9-20"><a id="__codelineno-9-20" name="__codelineno-9-20" href="#__codelineno-9-20"></a><span class="w">    </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">120</span>
+</span><span id="__span-9-21"><a id="__codelineno-9-21" name="__codelineno-9-21" href="#__codelineno-9-21"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-9-22"><a id="__codelineno-9-22" name="__codelineno-9-22" href="#__codelineno-9-22"></a><span class="w">  </span><span class="nt">"scratchpad"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-23"><a id="__codelineno-9-23" name="__codelineno-9-23" href="#__codelineno-9-23"></a><span class="w">    </span><span class="nt">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-9-24"><a id="__codelineno-9-24" name="__codelineno-9-24" href="#__codelineno-9-24"></a><span class="w">    </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span>
+</span><span id="__span-9-25"><a id="__codelineno-9-25" name="__codelineno-9-25" href="#__codelineno-9-25"></a><span class="w">    </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">650</span>
+</span><span id="__span-9-26"><a id="__codelineno-9-26" name="__codelineno-9-26" href="#__codelineno-9-26"></a><span class="w">  </span><span class="p">},</span>
+</span><span id="__span-9-27"><a id="__codelineno-9-27" name="__codelineno-9-27" href="#__codelineno-9-27"></a><span class="w">  </span><span class="nt">"dailyspark"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-9-28"><a id="__codelineno-9-28" name="__codelineno-9-28" href="#__codelineno-9-28"></a><span class="w">    </span><span class="nt">"enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+</span><span id="__span-9-29"><a id="__codelineno-9-29" name="__codelineno-9-29" href="#__codelineno-9-29"></a><span class="w">    </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">560</span><span class="p">,</span>
+</span><span id="__span-9-30"><a id="__codelineno-9-30" name="__codelineno-9-30" href="#__codelineno-9-30"></a><span class="w">    </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">720</span>
+</span><span id="__span-9-31"><a id="__codelineno-9-31" name="__codelineno-9-31" href="#__codelineno-9-31"></a><span class="w">  </span><span class="p">}</span>
+</span><span id="__span-9-32"><a id="__codelineno-9-32" name="__codelineno-9-32" href="#__codelineno-9-32"></a><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="persistence-mechanics">Persistence Mechanics:</h3>
+<ul>
+<li><strong>Non-Blocking Startup:</strong> <code>readProc</code> runs asynchronously during <code>Component.onCompleted</code>, merging saved coordinates and flags over default values without freezing Quickshell initialization.</li>
+<li><strong>Atomic Shell Write:</strong> When a gadget is repositioned or toggled, <code>GadgetsManager.saveState()</code> executes an asynchronous shell command with escaped JSON, writing atomically to <code>~/.config/quickshell/gadgets.json</code>.</li>
+<li><strong>State Signal Propagation:</strong> Emits <code>stateChanged()</code>, synchronizing all open panels and the launcher carousel simultaneously.</li>
+</ul>
+<hr />
+<h2 id="application-launcher-integration-gadgets">Application Launcher Integration (<code>/gadgets</code>)</h2>
+<p>The desktop gadgets suite is directly integrated into Quickshell's bottom launcher drawer:</p>
+<ol>
+<li>Open the launcher (<code>SUPER + Space</code> or <code>qs ipc call launcher toggle</code>).</li>
+<li>Type <code>/gadgets</code>, <code>/widgets</code>, or <code>/gadget</code> (or trigger it directly via <code>qs ipc call launcher gadgets</code>).</li>
+<li>The launcher smoothly transitions into a horizontal card carousel displaying <code>GadgetCard.qml</code> instances for all 6 gadgets.</li>
+</ol>
+<h3 id="features-of-the-gadgets-carousel">Features of the Gadgets Carousel:</h3>
+<ul>
+<li><strong>Real-Time UI Mockups:</strong> Each 224x214 px card renders a dedicated 120 px live visual preview of the gadget's actual appearance and layout.</li>
+<li><strong>Dynamic Status Badges:</strong> Cards display a green <code>Active</code> badge with checkmark or a muted <code>Hidden</code> badge indicating the gadget's current desktop state.</li>
+<li><strong>Interactive Toggling:</strong> Click any card or press <code>Enter</code> to instantly show or hide that gadget on the desktop.</li>
+<li><strong>Smooth Elevations:</strong> Cards feature hover lift animations (<code>y: -5 px</code>, <code>scale: 1.05</code>) with primary accent glows matching the system theme.</li>
+</ul>
+<hr />
+<h2 id="complete-ipc-command-reference">Complete IPC Command Reference</h2>
+<p>Every gadget and the central manager register dedicated IPC endpoints reachable via the <code>qs ipc call</code> utility:</p>
+<h3 id="central-gadget-manager-gadgets">Central Gadget Manager (<code>gadgets</code>)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Command</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>qs ipc call gadgets toggle &lt;id&gt;</code></td>
+<td style="text-align: left;">Toggles visibility of the specified gadget (<code>deskclock</code>, <code>calendar</code>, <code>weather</code>, <code>hardwarepulse</code>, <code>scratchpad</code>, <code>dailyspark</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>qs ipc call gadgets show &lt;id&gt;</code></td>
+<td style="text-align: left;">Enables and displays the specified gadget</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>qs ipc call gadgets hide &lt;id&gt;</code></td>
+<td style="text-align: left;">Disables and hides the specified gadget</td>
+</tr>
+</tbody>
+</table>
+<h3 id="individual-gadget-endpoints">Individual Gadget Endpoints</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Target</th>
+<th style="text-align: left;">Command</th>
+<th style="text-align: left;">Parameters</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>deskclock</code></td>
+<td style="text-align: left;"><code>qs ipc call deskclock toggle</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Toggle Desk Clock visibility</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>deskclock</code></td>
+<td style="text-align: left;"><code>qs ipc call deskclock move &lt;x&gt; &lt;y&gt;</code></td>
+<td style="text-align: left;"><code>int x, int y</code></td>
+<td style="text-align: left;">Reposition clock to absolute coordinates</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>calendar</code></td>
+<td style="text-align: left;"><code>qs ipc call calendar toggle</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Toggle Desktop Calendar visibility</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>calendar</code></td>
+<td style="text-align: left;"><code>qs ipc call calendar move &lt;x&gt; &lt;y&gt;</code></td>
+<td style="text-align: left;"><code>int x, int y</code></td>
+<td style="text-align: left;">Reposition calendar to absolute coordinates</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>weathergadget</code></td>
+<td style="text-align: left;"><code>qs ipc call weathergadget toggle</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Toggle Weather Forecast visibility</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>weathergadget</code></td>
+<td style="text-align: left;"><code>qs ipc call weathergadget refresh</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Force immediate weather telemetry update</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>hardwarepulse</code></td>
+<td style="text-align: left;"><code>qs ipc call hardwarepulse toggle</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Toggle Hardware Pulse visibility</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>hardwarepulse</code></td>
+<td style="text-align: left;"><code>qs ipc call hardwarepulse refresh</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Force immediate hardware metrics update</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>scratchpad</code></td>
+<td style="text-align: left;"><code>qs ipc call scratchpad toggle</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Toggle Ambient Scratchpad visibility</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>scratchpad</code></td>
+<td style="text-align: left;"><code>qs ipc call scratchpad add "&lt;text&gt;"</code></td>
+<td style="text-align: left;"><code>string text</code></td>
+<td style="text-align: left;">Append a new to-do task remotely via CLI</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dailyspark</code></td>
+<td style="text-align: left;"><code>qs ipc call dailyspark toggle</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Toggle Daily Spark visibility</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>dailyspark</code></td>
+<td style="text-align: left;"><code>qs ipc call dailyspark next</code></td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Cycle immediately to the next quote</td>
+</tr>
+</tbody>
+</table>
+<h3 id="launcher-gadgets-carousel">Launcher Gadgets Carousel</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Command</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>qs ipc call launcher gadgets</code></td>
+<td style="text-align: left;">Opens the launcher directly in <code>/gadgets</code> carousel mode</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="troubleshooting-maintenance">Troubleshooting &amp; Maintenance</h2>
+<details class="question">
+<summary>How do I reset all gadgets to their default positions?</summary>
+<p>To restore factory coordinate positions, stop Quickshell and delete or reset the configuration file:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>killall<span class="w"> </span>quickshell
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>rm<span class="w"> </span>~/.config/quickshell/gadgets.json
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>quickshell<span class="w"> </span><span class="p">&amp;</span>
+</span></code></pre></div>
+Quickshell will regenerate <code>gadgets.json</code> with standard balanced coordinates.</p>
+</details>
+<details class="question">
+<summary>A gadget does not respond to clicks outside its card</summary>
+<p>This indicates that Wayland input masking is working properly. The transparent fullscreen window deliberately passes all clicks through to your wallpaper or underlying windows. Clicks are only captured directly on the widget's content area (<code>mask: Region { item: mainCard }</code>).</p>
+</details>
+<details class="question">
+<summary>Weather widget displays 'Loading...' or fallback data</summary>
+<p>Verify internet connectivity and test the backend script manually in your terminal:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>python3<span class="w"> </span>~/.config/quickshell/scripts/weather.py
+</span></code></pre></div>
+If <code>wttr.in</code> is temporarily rate-limited, ensure <code>~/.cache/weather.json</code> is writable. You can optionally export your OpenWeatherMap key in <code>~/.config/weather/api_key</code> and city in <code>~/.config/weather/city</code>.</p>
+</details>
+<details class="question">
+<summary>Hardware Pulse CPU temperature reads 0°C</summary>
+<p>Check your Linux thermal zone permissions:
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>ls<span class="w"> </span>-l<span class="w"> </span>/sys/class/thermal/thermal_zone*/temp
+</span></code></pre></div>
+On custom kernels or non-standard hardware, verify which thermal zone corresponds to your CPU package and ensure unprivileged read access is permitted.</p>
+</details>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+    
+  </body>
+</html>

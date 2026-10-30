@@ -1,0 +1,2488 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Official documentation for zer0sh's Hyprland, Quickshell, and terminal environment">
+      
+      
+        <meta name="author" content="zer0sh">
+      
+      
+        <link rel="canonical" href="https://zer0sh.github.io/dotfiles/apps/zen/">
+      
+      
+        <link rel="prev" href="../steam/">
+      
+      
+        <link rel="next" href="../../terminals/alacritty/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Zen Browser - zer0sh Dotfiles</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#zen-browser-dynamic-theming" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="zer0sh Dotfiles" class="md-header__button md-logo" aria-label="zer0sh Dotfiles" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zer0sh Dotfiles
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Zen Browser
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zer0sh/dotfiles" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zer0sh/dotfiles
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="zer0sh Dotfiles" class="md-nav__button md-logo" aria-label="zer0sh Dotfiles" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    zer0sh Dotfiles
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zer0sh/dotfiles" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zer0sh/dotfiles
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Home
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desktop
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Desktop
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hyprland
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hyprland
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/keybinds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keybindings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/xwayland/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XWayland & Window Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/shaders/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shaders & Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/hyprlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Screen Locking & Idle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickshell
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Quickshell
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control Center
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspace Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/osd-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications & OSDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/launcher-wallpapers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Floating Launcher & Wallpapers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/gadgets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desktop Gadgets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/clipboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clipboard Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/shortcuts-overlay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keyboard Shortcuts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../waybar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Waybar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wofi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wofi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../matugen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Matugen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../steam/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steam
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zen Browser
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zen Browser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure-and-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Structure and Paths
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-matugen-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Matugen Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#theme-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Theme Coverage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Theme Coverage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#chrome-template-zen-userchromecss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chrome template (zen-userchrome.css)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-template-zen-usercontentcss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content template (zen-usercontent.css)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reload-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reload Strategy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-installation-dotfiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Installation (Dotfiles)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-installation-zen-browser-theme-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Installation: Zen Browser Theme Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Manual Installation: Zen Browser Theme Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-validate-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Validate prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-locate-the-active-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Locate the active profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-back-up-the-files-that-will-be-modified" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Back up the files that will be modified
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-create-the-template-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Create the template files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-register-the-templates-in-configtoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Register the templates in config.toml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-create-the-chrome-folder-and-the-entry-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Create the chrome/ folder and the entry files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-enable-the-profile-stylesheet-preference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Enable the profile stylesheet preference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-generate-the-colors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Generate the colors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-9-restart-zen-browser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 9: Restart Zen Browser
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-10-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 10: Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Terminals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Terminals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/alacritty/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Alacritty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/kitty/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kitty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/zsh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zsh
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/vim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fastfetch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fastfetch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../btop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Btop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workflow
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Workflow
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dotfiles/workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Philosophy & Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dotfiles/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release & SemVer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure-and-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Structure and Paths
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-matugen-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Matugen Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#theme-coverage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Theme Coverage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Theme Coverage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#chrome-template-zen-userchromecss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Chrome template (zen-userchrome.css)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#content-template-zen-usercontentcss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Content template (zen-usercontent.css)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reload-strategy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reload Strategy
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-installation-dotfiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Installation (Dotfiles)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-installation-zen-browser-theme-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Installation: Zen Browser Theme Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Manual Installation: Zen Browser Theme Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-validate-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Validate prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-locate-the-active-profile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Locate the active profile
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-back-up-the-files-that-will-be-modified" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Back up the files that will be modified
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-create-the-template-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Create the template files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-register-the-templates-in-configtoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Register the templates in config.toml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-create-the-chrome-folder-and-the-entry-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Create the chrome/ folder and the entry files
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-enable-the-profile-stylesheet-preference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Enable the profile stylesheet preference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-generate-the-colors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Generate the colors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-9-restart-zen-browser" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 9: Restart Zen Browser
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-10-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 10: Verification
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="zen-browser-dynamic-theming">Zen Browser Dynamic Theming</h1>
+<p>Zen Browser is integrated into the dynamic Material You theming pipeline using <a href="../matugen/">Matugen</a> templates. The templates render harmonic colors extracted from the active wallpaper into the browser profile, covering the browser chrome (sidebar, tabs, toolbar, urlbar, panels, menus) and the internal <code>about:</code> pages. The templates are adapted from the <a href="https://github.com/InioX/matugen-themes">InioX/matugen-themes</a> Zen Browser section (MIT license).</p>
+<hr />
+<h2 id="requirements">Requirements</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Requirement</th>
+<th style="text-align: left;">Minimum</th>
+<th style="text-align: left;">Purpose</th>
+<th style="text-align: left;">Validate with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Zen Browser</strong></td>
+<td style="text-align: left;">1.14 or newer</td>
+<td style="text-align: left;">Firefox-based browser with a profile at <code>~/.zen</code></td>
+<td style="text-align: left;"><code>zen --version</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>matugen</strong></td>
+<td style="text-align: left;">4.x</td>
+<td style="text-align: left;">Renders the Material Design 3 palette from a wallpaper</td>
+<td style="text-align: left;"><code>command -v matugen</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Matugen engine config</strong></td>
+<td style="text-align: left;">any</td>
+<td style="text-align: left;">Provides <code>~/.config/matugen/config.toml</code> and <code>~/.config/matugen/templates/</code></td>
+<td style="text-align: left;"><code>test -f "$HOME/.config/matugen/config.toml"</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>curl</strong></td>
+<td style="text-align: left;">any</td>
+<td style="text-align: left;">Downloads the templates (manual installation only)</td>
+<td style="text-align: left;"><code>command -v curl</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>bash or zsh</strong></td>
+<td style="text-align: left;">any</td>
+<td style="text-align: left;">Runs the snippets of this guide</td>
+<td style="text-align: left;"><code>echo $0</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Profile stylesheet pref</strong></td>
+<td style="text-align: left;"><code>true</code></td>
+<td style="text-align: left;">Loads <code>userChrome.css</code> / <code>userContent.css</code> (off by default since Zen 1.14)</td>
+<td style="text-align: left;"><code>about:config</code> entry <code>toolkit.legacyUserProfileCustomizations.stylesheets</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Window transparency pref</strong></td>
+<td style="text-align: left;"><code>true</code></td>
+<td style="text-align: left;">Allows transparent background for Hyprland system blur</td>
+<td style="text-align: left;"><code>about:config</code> entry <code>browser.tabs.allow_transparent_browser</code></td>
+</tr>
+</tbody>
+</table>
+<p>No <code>sudo</code> privileges are required. The integration does not modify browser binaries or installation directories; it only touches files inside the user profile and the matugen configuration.</p>
+<hr />
+<h2 id="file-structure-and-paths">File Structure and Paths</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Action</th>
+<th style="text-align: left;">Path</th>
+<th style="text-align: left;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Create</td>
+<td style="text-align: left;"><code>~/dotfiles/matugen/templates/zen-userchrome.css</code></td>
+<td style="text-align: left;">Chrome UI template (source of truth in the repository)</td>
+</tr>
+<tr>
+<td style="text-align: left;">Create</td>
+<td style="text-align: left;"><code>~/dotfiles/matugen/templates/zen-usercontent.css</code></td>
+<td style="text-align: left;">Internal <code>about:</code> pages template</td>
+</tr>
+<tr>
+<td style="text-align: left;">Modify (backup first)</td>
+<td style="text-align: left;"><code>~/dotfiles/matugen/config.toml</code></td>
+<td style="text-align: left;">Registers <code>[templates.zen-userchrome]</code> and <code>[templates.zen-usercontent]</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Create (rendered by matugen)</td>
+<td style="text-align: left;"><code>~/.zen/xbjonc67.Default Profile/chrome/zen-userChrome.css</code></td>
+<td style="text-align: left;">Output of the chrome template</td>
+</tr>
+<tr>
+<td style="text-align: left;">Create (rendered by matugen)</td>
+<td style="text-align: left;"><code>~/.zen/xbjonc67.Default Profile/chrome/zen-userContent.css</code></td>
+<td style="text-align: left;">Output of the content template</td>
+</tr>
+<tr>
+<td style="text-align: left;">Create (entry file)</td>
+<td style="text-align: left;"><code>~/.zen/xbjonc67.Default Profile/chrome/userChrome.css</code></td>
+<td style="text-align: left;">Single <code>@import</code> line pointing at the rendered chrome file</td>
+</tr>
+<tr>
+<td style="text-align: left;">Create (entry file)</td>
+<td style="text-align: left;"><code>~/.zen/xbjonc67.Default Profile/chrome/userContent.css</code></td>
+<td style="text-align: left;">Single <code>@import</code> line pointing at the rendered content file</td>
+</tr>
+<tr>
+<td style="text-align: left;">Modify (append)</td>
+<td style="text-align: left;"><code>~/.zen/xbjonc67.Default Profile/user.js</code></td>
+<td style="text-align: left;">Enables stylesheets and transparent window prefs</td>
+</tr>
+<tr>
+<td style="text-align: left;">Create</td>
+<td style="text-align: left;"><code>~/dotfiles/scripts/setup-zen-matugen.sh</code></td>
+<td style="text-align: left;">Deployment and verification automation</td>
+</tr>
+<tr>
+<td style="text-align: left;">Modify</td>
+<td style="text-align: left;"><code>~/dotfiles/install.sh</code></td>
+<td style="text-align: left;">Runs the setup script when Zen Browser is detected</td>
+</tr>
+</tbody>
+</table>
+<p>The profile folder name (<code>xbjonc67.Default Profile</code>) is specific to this machine. Resolve the active profile of any installation with:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"^Path=|^IsRelative=|^Default=1"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.zen/profiles.ini"</span>
+</span></code></pre></div>
+<p>Note: unlike every other consumer, the Zen outputs are rendered directly into
+the profile <code>chrome/</code> folder instead of <code>~/.config/themes/current/</code>, because
+Zen (like every Firefox fork) only loads stylesheets from the profile. The
+generated files are plain static CSS, so nothing else consumes the central
+theme store for this target.</p>
+<hr />
+<h2 id="dynamic-matugen-architecture">Dynamic Matugen Architecture</h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Wallpaper Image (.png / .jpg)
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>          |
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>          v
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>   [ matugen image ]
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>          |
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>          +--&gt; evaluates ~/.config/matugen/templates/zen-userchrome.css
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>          |        -&gt; ~/.zen/&lt;profile&gt;/chrome/zen-userChrome.css
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>          |        -&gt; imported by ~/.zen/&lt;profile&gt;/chrome/userChrome.css
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>          |
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>          +--&gt; evaluates ~/.config/matugen/templates/zen-usercontent.css
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>                   -&gt; ~/.zen/&lt;profile&gt;/chrome/zen-userContent.css
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>                   -&gt; imported by ~/.zen/&lt;profile&gt;/chrome/userContent.css
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>          |
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>          v
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>Zen Browser UI (sidebar, tabs, toolbar, urlbar, panels, about: pages)
+</span></code></pre></div>
+<hr />
+<h2 id="theme-coverage">Theme Coverage</h2>
+<h3 id="chrome-template-zen-userchromecss">Chrome template (<code>zen-userchrome.css</code>)</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature / Element</th>
+<th style="text-align: left;">Implementation Details</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>System Blur &amp; Transparency</strong></td>
+<td style="text-align: left;">Semi-transparent backgrounds (<code>color-mix</code> with <code>colors.background.default</code> at 72-78%) with <code>backdrop-filter: blur(20px)</code> for Hyprland integration.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Material You Active Tabs</strong></td>
+<td style="text-align: left;">Active tab pill (<code>border-radius: 20px</code>) filled with <code>colors.primary_container.default</code> and bold <code>colors.on_primary_container.default</code> text.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Tab Controls &amp; New Tab</strong></td>
+<td style="text-align: left;">Pill-shaped new tab button (<code>border-radius: 20px</code>) with aligned margins and smooth hover transitions.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Unified URL &amp; Search Bar</strong></td>
+<td style="text-align: left;">Matches top bar background (<code>colors.background.default</code> mix) with <code>var(--zen-border-radius, 10px)</code> geometry and an active <code>colors.primary.default</code> border.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Floating Search (Ctrl+F)</strong></td>
+<td style="text-align: left;">Centered findbar with frosted glass effect, rounded inputs (<code>8px</code>), and accent-styled navigation buttons.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Statuspanel Link Preview</strong></td>
+<td style="text-align: left;">Bottom-left hover URL preview in frosted glass with dynamic green / accent font (<code>colors.primary.default</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Scrollbars</strong></td>
+<td style="text-align: left;">Minimalist thin scrollbars using <code>colors.outline_variant.default</code>.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="content-template-zen-usercontentcss">Content template (<code>zen-usercontent.css</code>)</h3>
+<ul>
+<li><strong>Default Dynamic Hyperlinks:</strong> Global <code>:where(:link)</code> and <code>:where(:visited)</code> anchors automatically inherit the wallpaper accent tone (<code>colors.primary.default</code>) on unstyled websites without overriding custom page CSS.</li>
+<li><strong>Internal <code>about:</code> Pages:</strong> Full Material Design 3 token overrides for <code>about:preferences</code>, <code>about:addons</code>, <code>about:config</code>, <code>about:logins</code>, <code>about:support</code>, <code>about:home</code>, <code>about:newtab</code>, and <code>about:blank</code>.</li>
+</ul>
+<hr />
+<h2 id="reload-strategy">Reload Strategy</h2>
+<p><code>userChrome.css</code> and <code>userContent.css</code> are read <strong>only at browser startup</strong>.
+After every wallpaper change the palette is regenerated automatically, but Zen
+must be fully restarted to display it:</p>
+<ol>
+<li>Close every Zen window (the process must exit completely).</li>
+<li>Open Zen again from the application launcher.</li>
+</ol>
+<p>An in-app relaunch (<code>about:profiles</code> restart or the built-in restart action)
+is known to leave stale stylesheets in some Zen releases; a manual full
+restart is the reliable method.</p>
+<hr />
+<h2 id="automatic-installation-dotfiles">Automatic Installation (Dotfiles)</h2>
+<p>The integration is deployed by the standard dotfiles routine:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>~/dotfiles/install.sh
+</span></code></pre></div>
+<p>Or manually at any time with the standalone script:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>~/dotfiles/scripts/setup-zen-matugen.sh
+</span></code></pre></div>
+<p>The script resolves the default profile from <code>profiles.ini</code> (native and Flatpak
+installations are supported), creates the <code>chrome/</code> folder, backs up and
+patches the entry files, enables the stylesheet preference in <code>user.js</code>,
+regenerates the palette from the stored wallpaper, and prints a verification
+report. It is idempotent: running it twice never duplicates the <code>@import</code>
+lines or the preference.</p>
+<hr />
+<h2 id="manual-installation-zen-browser-theme-integration">Manual Installation: Zen Browser Theme Integration</h2>
+<p>Standalone instructions to add the Zen Browser theme integration to an
+existing matugen installation without cloning the full dotfiles repository.
+This is the second application of the manual installation format pioneered in
+<a href="../matugen/#manual-installation-vs-code-theme-integration-pilot">Matugen (VS Code pilot)</a>.</p>
+<p>All snippets are compatible with <code>bash</code> and <code>zsh</code>, use explicit paths (no glob
+patterns), quote every path (Zen profile folders usually contain spaces), and
+are safe to paste into an interactive shell.</p>
+<h3 id="step-1-validate-prerequisites">Step 1: Validate prerequisites</h3>
+<p>Run the checks. Every line must report <code>OK</code> before continuing. The preference
+used to load profile stylesheets is validated in Step 7:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>matugen<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"matugen       : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"matugen       : MISSING"</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>curl<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"curl          : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"curl          : MISSING"</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.zen/profiles.ini"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"zen registry  : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"zen registry  : MISSING"</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"templates dir : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"templates dir : MISSING"</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"config.toml   : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"config.toml   : MISSING"</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"profile pref  : CHECK MANUALLY (expected MISSING, Step 7 enables it)"</span>
+</span></code></pre></div>
+<p>The profile stylesheet preference (<code>toolkit.legacyUserProfileCustomizations.stylesheets</code>) lives inside the profile, which is resolved in Step 2, so it is validated there instead.</p>
+<p>If a line reports <code>MISSING</code>:</p>
+<ul>
+<li><code>matugen</code>: install it from <a href="https://github.com/InioX/matugen">https://github.com/InioX/matugen</a>.</li>
+<li><code>curl</code>: install it with your package manager (<code>apt install curl</code> on Debian).</li>
+<li><code>zen registry</code>: install Zen Browser, or create the file with
+  <code>touch "$HOME/.zen/profiles.ini"</code> only if you manage the profile manually.</li>
+<li><code>templates dir</code>: create it with <code>mkdir -p "$HOME/.config/matugen/templates"</code>.</li>
+<li><code>config.toml</code>: create an empty one with <code>touch "$HOME/.config/matugen/config.toml"</code>.</li>
+</ul>
+<h3 id="step-2-locate-the-active-profile">Step 2: Locate the active profile</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">"^Path=|^IsRelative=|^Default=1"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.zen/profiles.ini"</span>
+</span></code></pre></div>
+<p>Identify the <code>Path=</code> value of the block marked with <code>Default=1</code>. From this
+point on, replace <code>&lt;profile-path&gt;</code> in every snippet with that value, keeping
+the double quotes (profile names contain spaces). Example for this machine:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nv">PROFILE_DIR</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.zen/xbjonc67.Default Profile"</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"profile dir   : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"profile dir   : MISSING"</span>
+</span></code></pre></div>
+<h3 id="step-3-back-up-the-files-that-will-be-modified">Step 3: Back up the files that will be modified</h3>
+<p>The only existing files altered by this procedure are <code>config.toml</code>, the entry
+files (<code>userChrome.css</code> / <code>userContent.css</code>, when they already exist) and
+<code>user.js</code>. Backups carry the exact date and time of the operation:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nv">BACKUP_STAMP</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>date<span class="w"> </span>+%Y%m%d-%H%M%S<span class="k">)</span><span class="s2">"</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml.</span><span class="nv">$BACKUP_STAMP</span><span class="s2">.bak"</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/userChrome.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/userChrome.css"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/userChrome.css.</span><span class="nv">$BACKUP_STAMP</span><span class="s2">.bak"</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/userContent.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/userContent.css"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/userContent.css.</span><span class="nv">$BACKUP_STAMP</span><span class="s2">.bak"</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/user.js"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/user.js"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/user.js.</span><span class="nv">$BACKUP_STAMP</span><span class="s2">.bak"</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Backups created with stamp: </span><span class="nv">$BACKUP_STAMP</span><span class="s2">"</span>
+</span></code></pre></div>
+<p>If template files from a previous attempt already exist, they are backed up
+the same way before being replaced:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/zen-userchrome.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/zen-userchrome.css"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/zen-userchrome.css.</span><span class="nv">$BACKUP_STAMP</span><span class="s2">.bak"</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/zen-usercontent.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/zen-usercontent.css"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/zen-usercontent.css.</span><span class="nv">$BACKUP_STAMP</span><span class="s2">.bak"</span>
+</span></code></pre></div>
+<h3 id="step-4-create-the-template-files">Step 4: Create the template files</h3>
+<p>Download both templates directly from the repository:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates"</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>-o<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/zen-userchrome.css"</span><span class="w"> </span><span class="s2">"https://raw.githubusercontent.com/zer0sh/dotfiles/main/matugen/templates/zen-userchrome.css"</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>-o<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/zen-usercontent.css"</span><span class="w"> </span><span class="s2">"https://raw.githubusercontent.com/zer0sh/dotfiles/main/matugen/templates/zen-usercontent.css"</span>
+</span></code></pre></div>
+<p>Alternatively, copy the file contents manually from the repository pages
+(<a href="https://github.com/zer0sh/dotfiles/blob/main/matugen/templates/zen-userchrome.css">zen-userchrome.css</a>,
+<a href="https://github.com/zer0sh/dotfiles/blob/main/matugen/templates/zen-usercontent.css">zen-usercontent.css</a>)
+into the destination paths shown above.</p>
+<p>Confirm both files exist and are not empty:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/zen-userchrome.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"zen-userchrome.css : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"zen-userchrome.css : MISSING"</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/zen-usercontent.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"zen-usercontent.css : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"zen-usercontent.css : MISSING"</span>
+</span></code></pre></div>
+<h3 id="step-5-register-the-templates-in-configtoml">Step 5: Register the templates in <code>config.toml</code></h3>
+<p>Edit the block below <strong>before pasting it</strong>: replace both occurrences of
+<code>&lt;profile-path&gt;</code> with the value obtained in Step 2. The block is idempotent:
+it appends the sections only when they are not already registered, and the
+heredoc delimiter is quoted, so no variable or shell expansion happens inside
+it:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="k">if</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"^\[templates.zen-userchrome\]"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml"</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Already registered in config.toml, nothing to do."</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="k">else</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a><span class="w">    </span>cat<span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml"</span><span class="w"> </span><span class="s">&lt;&lt;'EOF'</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
+</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="s"># Zen Browser (imported by &lt;profile&gt;/chrome/userChrome.css and userContent.css)</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="s">[templates.zen-userchrome]</span>
+</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="s">input_path = "~/.config/matugen/templates/zen-userchrome.css"</span>
+</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a><span class="s">output_path = "~/.zen/&lt;profile-path&gt;/chrome/zen-userChrome.css"</span>
+</span><span id="__span-11-10"><a id="__codelineno-11-10" name="__codelineno-11-10" href="#__codelineno-11-10"></a>
+</span><span id="__span-11-11"><a id="__codelineno-11-11" name="__codelineno-11-11" href="#__codelineno-11-11"></a><span class="s">[templates.zen-usercontent]</span>
+</span><span id="__span-11-12"><a id="__codelineno-11-12" name="__codelineno-11-12" href="#__codelineno-11-12"></a><span class="s">input_path = "~/.config/matugen/templates/zen-usercontent.css"</span>
+</span><span id="__span-11-13"><a id="__codelineno-11-13" name="__codelineno-11-13" href="#__codelineno-11-13"></a><span class="s">output_path = "~/.zen/&lt;profile-path&gt;/chrome/zen-userContent.css"</span>
+</span><span id="__span-11-14"><a id="__codelineno-11-14" name="__codelineno-11-14" href="#__codelineno-11-14"></a><span class="s">EOF</span>
+</span><span id="__span-11-15"><a id="__codelineno-11-15" name="__codelineno-11-15" href="#__codelineno-11-15"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Registered in config.toml."</span>
+</span><span id="__span-11-16"><a id="__codelineno-11-16" name="__codelineno-11-16" href="#__codelineno-11-16"></a><span class="k">fi</span>
+</span></code></pre></div>
+<h3 id="step-6-create-the-chrome-folder-and-the-entry-files">Step 6: Create the <code>chrome/</code> folder and the entry files</h3>
+<p>The entry files contain a single <code>@import</code> each, pointing at the rendered
+template with an <strong>absolute</strong> path. Relative imports are ignored by Firefox
+style sheets, so the path must start with <code>/home/&lt;user&gt;</code>:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome"</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nv">BACKUP_STAMP</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>date<span class="w"> </span>+%Y%m%d-%H%M%S<span class="k">)</span><span class="s2">"</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">for</span><span class="w"> </span>entry<span class="w"> </span><span class="k">in</span><span class="w"> </span>userChrome.css<span class="w"> </span>userContent.css<span class="p">;</span><span class="w"> </span><span class="k">do</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span><span class="nv">target</span><span class="o">=</span><span class="s2">"zen-</span><span class="nv">$entry</span><span class="s2">"</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">    </span><span class="nv">import_line</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span><span class="nb">printf</span><span class="w"> </span><span class="s1">'@import url("%s");'</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/</span><span class="nv">$target</span><span class="s2">"</span><span class="k">)</span><span class="s2">"</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/</span><span class="nv">$entry</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>grep<span class="w"> </span>-Fq<span class="w"> </span><span class="s2">"</span><span class="nv">$target</span><span class="s2">"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/</span><span class="nv">$entry</span><span class="s2">"</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"</span><span class="nv">$entry</span><span class="s2"> already imports </span><span class="nv">$target</span><span class="s2">."</span>
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="w">    </span><span class="k">elif</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/</span><span class="nv">$entry</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">        </span>cp<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/</span><span class="nv">$entry</span><span class="s2">"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/</span><span class="nv">$entry</span><span class="s2">.</span><span class="nv">$BACKUP_STAMP</span><span class="s2">.bak"</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="w">        </span><span class="nb">printf</span><span class="w"> </span><span class="s1">'%s\n%s\n'</span><span class="w"> </span><span class="s2">"</span><span class="nv">$import_line</span><span class="s2">"</span><span class="w"> </span><span class="s2">"</span><span class="k">$(</span>cat<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/</span><span class="nv">$entry</span><span class="s2">"</span><span class="k">)</span><span class="s2">"</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/</span><span class="nv">$entry</span><span class="s2">"</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Updated </span><span class="nv">$entry</span><span class="s2"> (backup created)."</span>
+</span><span id="__span-12-12"><a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a><span class="w">    </span><span class="k">else</span>
+</span><span id="__span-12-13"><a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a><span class="w">        </span><span class="nb">printf</span><span class="w"> </span><span class="s1">'%s\n'</span><span class="w"> </span><span class="s2">"</span><span class="nv">$import_line</span><span class="s2">"</span><span class="w"> </span>&gt;<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/</span><span class="nv">$entry</span><span class="s2">"</span>
+</span><span id="__span-12-14"><a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a><span class="w">        </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Created </span><span class="nv">$entry</span><span class="s2">."</span>
+</span><span id="__span-12-15"><a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a><span class="w">    </span><span class="k">fi</span>
+</span><span id="__span-12-16"><a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a><span class="k">done</span>
+</span></code></pre></div>
+<p>The import line is prepended because CSS ignores <code>@import</code> rules placed after
+any style rule. Personal customizations that already exist in the entry files
+are preserved below the import.</p>
+<h3 id="step-7-enable-the-profile-stylesheet-preference">Step 7: Enable the profile stylesheet preference</h3>
+<p>Zen disables profile stylesheets by default since v1.14 (aligned with the
+Firefox default). Either toggle it in the browser:</p>
+<ol>
+<li>Open <code>about:config</code> in the address bar.</li>
+<li>Search for <code>toolkit.legacyUserProfileCustomizations.stylesheets</code>.</li>
+<li>Set it to <code>true</code>.</li>
+</ol>
+<p>or persist it from the shell (the <code>user.js</code> file is re-applied on every
+startup, so the preference can never be flipped back by an update):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="nv">PREF</span><span class="o">=</span><span class="s1">'toolkit.legacyUserProfileCustomizations.stylesheets'</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="k">if</span><span class="w"> </span>grep<span class="w"> </span>-Fq<span class="w"> </span><span class="s2">"\"</span><span class="nv">$PREF</span><span class="s2">\", true"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/user.js"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Preference already enabled in user.js."</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="k">else</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a><span class="w">    </span><span class="nb">printf</span><span class="w"> </span><span class="s1">'user_pref("%s", true);\n'</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PREF</span><span class="s2">"</span><span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/user.js"</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Preference appended to user.js."</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="k">fi</span>
+</span></code></pre></div>
+<h3 id="step-8-generate-the-colors">Step 8: Generate the colors</h3>
+<p>Replace the wallpaper path with your own absolute path. The
+<code>--source-color-index 0</code> flag disables the interactive color picker, so the
+command also works from keybindings or non-interactive shells:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>matugen<span class="w"> </span>image<span class="w"> </span><span class="s2">"/absolute/path/to/your-wallpaper.jpg"</span><span class="w"> </span>--mode<span class="w"> </span>dark<span class="w"> </span>--source-color-index<span class="w"> </span><span class="m">0</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.zen/xbjonc67.Default Profile/chrome/zen-userChrome.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"rendered chrome  : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"rendered chrome  : MISSING"</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.zen/xbjonc67.Default Profile/chrome/zen-userContent.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"rendered content : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"rendered content : MISSING"</span>
+</span></code></pre></div>
+<p>Adjust <code>&lt;profile-path&gt;</code> in both paths if your profile folder differs.</p>
+<h3 id="step-9-restart-zen-browser">Step 9: Restart Zen Browser</h3>
+<p>Close every Zen window and open it again from the application launcher. The
+theme is applied at startup only.</p>
+<h3 id="step-10-verification">Step 10: Verification</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/zen-userChrome.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"chrome file   : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"chrome file   : MISSING"</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/zen-userContent.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"content file  : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"content file  : MISSING"</span>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a>grep<span class="w"> </span>-Fq<span class="w"> </span><span class="s2">"zen-userChrome.css"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/userChrome.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"chrome import : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"chrome import : MISSING"</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>grep<span class="w"> </span>-Fq<span class="w"> </span><span class="s2">"zen-userContent.css"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/userContent.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"content import: OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"content import: MISSING"</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>grep<span class="w"> </span>-Fq<span class="w"> </span><span class="s2">"\"toolkit.legacyUserProfileCustomizations.stylesheets\", true"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/user.js"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"preference    : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"preference    : MISSING (or set manually in about:config)"</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"{{"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$PROFILE_DIR</span><span class="s2">/chrome/zen-userChrome.css"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"rendered css  : TEMPLATE VARIABLES LEFT"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"rendered css  : OK"</span>
+</span></code></pre></div>
+<p>The last check reports <code>TEMPLATE VARIABLES LEFT</code> when matugen has not
+processed the templates yet; run Step 8 again in that case.</p>
+<h3 id="troubleshooting">Troubleshooting</h3>
+<ul>
+<li><strong>Nothing changed after the restart:</strong> open <code>about:config</code> and confirm that
+  <code>toolkit.legacyUserProfileCustomizations.stylesheets</code> is <code>true</code>. If it was
+  toggled after the browser was opened, restart Zen completely (close every
+  window instead of using an in-app relaunch, which is known to keep stale
+  stylesheets in some releases).</li>
+<li><strong>The import has no effect:</strong> verify that the <code>@import</code> line is the first
+  statement of <code>userChrome.css</code> / <code>userContent.css</code>. Imports placed after a
+  style rule are ignored by the CSS specification.</li>
+<li><strong>Colors did not change after a wallpaper switch:</strong> run Step 8 again and
+  confirm the output paths registered in <code>config.toml</code> match your profile
+  folder exactly, including spaces.</li>
+<li><strong>Template placeholders visible in the rendered file:</strong> the <code>output_path</code>
+  registered in <code>config.toml</code> does not match the file imported by the entry
+  files; fix the path and regenerate.</li>
+<li><strong>Inspect the applied styles:</strong> press <code>Ctrl+Alt+Shift+I</code> to open the Browser
+  Toolbox and check that <code>zen-userChrome.css</code> is listed in the style editor.</li>
+<li><strong>Restore the previous configuration:</strong> copy the backups created in Steps 3
+  and 6 back over the original files using the exact names printed by the
+  backup commands, then restart Zen.</li>
+</ul>
+<hr />
+<h2 id="related-documentation">Related Documentation</h2>
+<ul>
+<li><a href="../matugen/">Matugen Engine</a>: Palette generation, central theme store and orchestration script.</li>
+<li><a href="../../hyprland/">Hyprland Compositor</a>: Window manager border theming and reload signals.</li>
+<li><a href="../../quickshell/">Quickshell Control Center</a>: Real-time wallpaper selector that triggers palette regeneration.</li>
+<li><a href="../steam/">Steam Client Theming</a>: Post-hook based consumer for comparison.</li>
+<li><a href="../../terminals/alacritty/">Alacritty Terminal</a>: Consumer with automatic live reload (contrast with Zen, which requires a restart).</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+    
+  </body>
+</html>

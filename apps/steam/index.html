@@ -1,0 +1,2535 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Official documentation for zer0sh's Hyprland, Quickshell, and terminal environment">
+      
+      
+        <meta name="author" content="zer0sh">
+      
+      
+        <link rel="canonical" href="https://zer0sh.github.io/dotfiles/apps/steam/">
+      
+      
+        <link rel="prev" href="../matugen/">
+      
+      
+        <link rel="next" href="../zen/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.8.0">
+    
+    
+      
+        <title>Steam - zer0sh Dotfiles</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.57a0d79d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.fb2fffe2.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#steam-client-theming" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="zer0sh Dotfiles" class="md-header__button md-logo" aria-label="zer0sh Dotfiles" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            zer0sh Dotfiles
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Steam
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="deep-purple" data-md-color-accent="deep-purple"  aria-hidden="true"  type="radio" name="__palette" id="__palette_0">
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/zer0sh/dotfiles" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zer0sh/dotfiles
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="zer0sh Dotfiles" class="md-nav__button md-logo" aria-label="zer0sh Dotfiles" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    zer0sh Dotfiles
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/zer0sh/dotfiles" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    zer0sh/dotfiles
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Home
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../gallery/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Gallery
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desktop
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Desktop
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Hyprland
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Hyprland
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/keybinds/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keybindings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/xwayland/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    XWayland & Window Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/shaders/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shaders & Filters
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../hyprland/hyprlock/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Screen Locking & Idle
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quickshell
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Quickshell
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Control Center
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workspace Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/osd-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications & OSDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/launcher-wallpapers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Floating Launcher & Wallpapers
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/gadgets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Desktop Gadgets
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/clipboard/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Clipboard Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../quickshell/shortcuts-overlay/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Keyboard Shortcuts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../waybar/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Waybar
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../wofi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Wofi
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../matugen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Matugen
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steam
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Steam
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure-and-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Structure and Paths
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-matugen-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Matugen Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-matugen-template-matugentemplatessteamcss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Matugen Template (matugen/templates/steam.css)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-matugen-mapping-matugenconfigtoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Matugen Mapping (matugen/config.toml)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-installation-dotfiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Installation (Dotfiles)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-installation-adwaita-for-steam-theme-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Installation: Adwaita-for-Steam Theme Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Manual Installation: Adwaita-for-Steam Theme Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-validate-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Validate prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-back-up-the-files-that-will-be-modified" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Back up the files that will be modified
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-create-the-template-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Create the template file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-register-the-template-in-configtoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Register the template in config.toml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-clone-adwaita-for-steam-and-link-the-custom-stylesheet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Clone Adwaita-for-Steam and link the custom stylesheet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-generate-the-colors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Generate the colors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-inject-the-theme-into-steam" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Inject the theme into Steam
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-restart-steam-and-verify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Restart Steam and verify
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-time-wallpaper-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real-time Wallpaper Synchronization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-adwsteamgtk-graphical-wrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional: AdwSteamGtk Graphical Wrapper
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-millennium-modding-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional: Millennium Modding Framework
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optional: Millennium Modding Framework">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installation-debian-and-other-distributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation (Debian and other distributions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paths-touched-by-millennium" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paths touched by Millennium
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updating-and-uninstalling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updating and uninstalling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../zen/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zen Browser
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CLI
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    CLI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Terminals
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Terminals
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/alacritty/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Alacritty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/kitty/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Kitty
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/zsh/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Zsh
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../terminals/vim/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Vim
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fastfetch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fastfetch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bat/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Bat
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../btop/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Btop
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Workflow
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Workflow
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dotfiles/workflow/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Philosophy & Workflow
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../dotfiles/releases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Release & SemVer
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Requirements
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure-and-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Structure and Paths
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dynamic-matugen-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Dynamic Matugen Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration Details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Configuration Details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-matugen-template-matugentemplatessteamcss" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Matugen Template (matugen/templates/steam.css)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-matugen-mapping-matugenconfigtoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Matugen Mapping (matugen/config.toml)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#automatic-installation-dotfiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Automatic Installation (Dotfiles)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#manual-installation-adwaita-for-steam-theme-integration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Manual Installation: Adwaita-for-Steam Theme Integration
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Manual Installation: Adwaita-for-Steam Theme Integration">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-validate-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Validate prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-back-up-the-files-that-will-be-modified" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Back up the files that will be modified
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-create-the-template-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Create the template file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-register-the-template-in-configtoml" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Register the template in config.toml
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-clone-adwaita-for-steam-and-link-the-custom-stylesheet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Clone Adwaita-for-Steam and link the custom stylesheet
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-generate-the-colors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Generate the colors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-inject-the-theme-into-steam" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Inject the theme into Steam
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-restart-steam-and-verify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Restart Steam and verify
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#real-time-wallpaper-synchronization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Real-time Wallpaper Synchronization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-adwsteamgtk-graphical-wrapper" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional: AdwSteamGtk Graphical Wrapper
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#optional-millennium-modding-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional: Millennium Modding Framework
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optional: Millennium Modding Framework">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installation-debian-and-other-distributions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Installation (Debian and other distributions)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#paths-touched-by-millennium" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Paths touched by Millennium
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#updating-and-uninstalling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Updating and uninstalling
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="steam-client-theming">Steam Client Theming</h1>
+<p>The Steam desktop client is integrated into the dynamic Material You theming pipeline using <a href="../matugen/">Matugen</a> templates and the native installer of <a href="https://github.com/Foldex/Adwaita-for-Steam">Adwaita-for-Steam</a> (Foldex fork, MIT). The pipeline extracts harmonic colors from the active desktop wallpaper and renders custom CSS variables that cover Steam's window surfaces, headerbars, popovers, sidebars, cards, and accent highlights.</p>
+<p>The injection runs through <code>install.py</code> with Python 3 only. <strong>Flatpak and the AdwSteamGtk graphical wrapper are not required</strong>; they remain an optional alternative (see <a href="#optional-adwsteamgtk-graphical-wrapper">Optional: AdwSteamGtk Graphical Wrapper</a>).</p>
+<hr />
+<h2 id="requirements">Requirements</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Requirement</th>
+<th style="text-align: left;">Minimum</th>
+<th style="text-align: left;">Purpose</th>
+<th style="text-align: left;">Validate with</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Steam (native)</strong></td>
+<td style="text-align: left;">any</td>
+<td style="text-align: left;">Receives the patched stylesheets under <code>~/.local/share/Steam/steamui</code></td>
+<td style="text-align: left;"><code>command -v steam</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Millennium</strong> <em>(optional)</em></td>
+<td style="text-align: left;">3.x</td>
+<td style="text-align: left;">Steam modding framework for companion skins and plugins; not required by this pipeline</td>
+<td style="text-align: left;"><code>test -f /usr/lib/millennium/libmillennium_hhx64.so</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>python3</strong></td>
+<td style="text-align: left;">3.9+ (system ships 3.13)</td>
+<td style="text-align: left;">Executes <code>install.py</code></td>
+<td style="text-align: left;"><code>python3 --version</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>git</strong></td>
+<td style="text-align: left;">any</td>
+<td style="text-align: left;">Clones Adwaita-for-Steam once</td>
+<td style="text-align: left;"><code>command -v git</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>matugen</strong></td>
+<td style="text-align: left;">4.x</td>
+<td style="text-align: left;">Renders the Material Design 3 palette from a wallpaper</td>
+<td style="text-align: left;"><code>command -v matugen</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Matugen engine config</strong></td>
+<td style="text-align: left;">any</td>
+<td style="text-align: left;">Provides <code>~/.config/matugen/config.toml</code> and <code>~/.config/matugen/templates/</code></td>
+<td style="text-align: left;"><code>test -f "$HOME/.config/matugen/config.toml"</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>bash or zsh</strong></td>
+<td style="text-align: left;">any</td>
+<td style="text-align: left;">Runs the snippets of this guide</td>
+<td style="text-align: left;"><code>echo $0</code></td>
+</tr>
+</tbody>
+</table>
+<p>No <code>sudo</code> privileges are required. Every path touched by the integration lives under <code>$HOME</code>, and the Steam client directory is only modified inside the user-owned <code>steamui</code> folder.</p>
+<hr />
+<h2 id="file-structure-and-paths">File Structure and Paths</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Action</th>
+<th style="text-align: left;">Path</th>
+<th style="text-align: left;">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">Create</td>
+<td style="text-align: left;"><code>~/dotfiles/matugen/templates/steam.css</code></td>
+<td style="text-align: left;">Template source of truth in the repository</td>
+</tr>
+<tr>
+<td style="text-align: left;">Modify (backup first)</td>
+<td style="text-align: left;"><code>~/dotfiles/matugen/config.toml</code></td>
+<td style="text-align: left;">Registers <code>[templates.steam]</code> and the injection <code>post_hook</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Create (rendered by matugen)</td>
+<td style="text-align: left;"><code>~/.config/themes/current/steam.css</code></td>
+<td style="text-align: left;">Central theme store output</td>
+</tr>
+<tr>
+<td style="text-align: left;">Clone (once)</td>
+<td style="text-align: left;"><code>~/.local/share/Adwaita-for-Steam</code></td>
+<td style="text-align: left;">Foldex fork of Adwaita-for-Steam</td>
+</tr>
+<tr>
+<td style="text-align: left;">Create (symlink)</td>
+<td style="text-align: left;"><code>~/.local/share/Adwaita-for-Steam/custom/custom.css</code> -&gt; <code>~/.config/themes/current/steam.css</code></td>
+<td style="text-align: left;">The installer dereferences this link on every run</td>
+</tr>
+<tr>
+<td style="text-align: left;">Create (injected)</td>
+<td style="text-align: left;"><code>~/.local/share/Steam/steamui/libraryroot.custom.css</code></td>
+<td style="text-align: left;"><code>@import</code> manifest, includes <code>adwaita/custom/custom.css</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Create (injected)</td>
+<td style="text-align: left;"><code>~/.local/share/Steam/steamui/adwaita/</code></td>
+<td style="text-align: left;">Full theme copy consumed through <code>https://steamloopback.host</code></td>
+</tr>
+<tr>
+<td style="text-align: left;">Backup (created by installer)</td>
+<td style="text-align: left;"><code>~/.local/share/Steam/steamui/css/library.original.css</code></td>
+<td style="text-align: left;">Pristine copy of <code>library.css</code> before patching</td>
+</tr>
+<tr>
+<td style="text-align: left;">Create</td>
+<td style="text-align: left;"><code>~/dotfiles/scripts/setup-steam-matugen.sh</code></td>
+<td style="text-align: left;">Deployment and verification automation</td>
+</tr>
+<tr>
+<td style="text-align: left;">Modify</td>
+<td style="text-align: left;"><code>~/dotfiles/install.sh</code></td>
+<td style="text-align: left;">Runs the setup script when Steam is detected</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="dynamic-matugen-architecture">Dynamic Matugen Architecture</h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>Wallpaper Image (.png / .jpg)
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>          |
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>          v
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>   [ matugen image ]
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>          |
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>          v (evaluates ~/.config/matugen/templates/steam.css)
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>~/.config/themes/current/steam.css
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>          |
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>          +--&gt; (symlink) ~/.local/share/Adwaita-for-Steam/custom/custom.css
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>          |
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>          v (post_hook)
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>cd ~/.local/share/Adwaita-for-Steam &amp;&amp; python3 install.py --custom-css -t normal
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>          |
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>          v (patches and copies into)
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>~/.local/share/Steam/steamui/   (libraryroot.custom.css + adwaita/ theme)
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>          |
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>          v (loaded when)
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>Steam Client UI (Library, Friends, Settings, Overlays)
+</span></code></pre></div>
+<hr />
+<h2 id="configuration-details">Configuration Details</h2>
+<h3 id="1-matugen-template-matugentemplatessteamcss">1. Matugen Template (<code>matugen/templates/steam.css</code>)</h3>
+<p>The template defines Adwaita-compatible variables translated from Material Design 3 color tokens. The RGB triplets are <strong>comma-separated</strong> because Adwaita-for-Steam consumes them through legacy <code>rgb(var(--name))</code> and <code>rgba(var(--name), alpha)</code> functions:</p>
+<div class="language-css highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c">/*</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="c">* GTK 4 / Adwaita for Steam Colors</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="c">* Material You dynamic template generated by Matugen</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c">*</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="c">* RGB triplets are comma-separated because Adwaita-for-Steam consumes them</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="c">* through legacy rgb(var(--name)) and rgba(var(--name), alpha) functions.</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="c">*/</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="p">:</span><span class="nd">root</span><span class="w"> </span><span class="p">{</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="nv">--adw-accent-rgb</span><span class="p">:</span><span class="w"> </span><span class="err">{{</span><span class="w"> </span><span class="n">colors</span><span class="o">.</span><span class="n">primary</span><span class="o">.</span><span class="kc">default</span><span class="o">.</span><span class="kc">red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.primary.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.primary.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">    </span><span class="nt">--adw-accent-bg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.primary.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.primary.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.primary.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="w">    </span><span class="nt">--adw-accent-fg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_primary.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_primary.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_primary.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="w">    </span><span class="nt">--adw-window-bg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.background.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.background.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.background.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="w">    </span><span class="nt">--adw-window-fg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_background.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_background.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_background.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="w">    </span><span class="nt">--adw-headerbar-bg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.surface_dim.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.surface_dim.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.surface_dim.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="w">    </span><span class="nt">--adw-headerbar-fg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_surface.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_surface.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_surface.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="w">    </span><span class="nt">--adw-popover-bg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.surface_dim.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.surface_dim.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.surface_dim.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="w">    </span><span class="nt">--adw-popover-fg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_surface.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_surface.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_surface.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a><span class="w">    </span><span class="nt">--adw-view-bg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.surface.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.surface.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.surface.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a><span class="w">    </span><span class="nt">--adw-view-fg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_surface.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_surface.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_surface.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a><span class="w">    </span><span class="nt">--adw-card-bg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.surface.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.surface.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.surface.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a><span class="w">    </span><span class="nt">--adw-card-fg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_surface.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_surface.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_surface.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a><span class="w">    </span><span class="nt">--adw-sidebar-bg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.background.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.background.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.background.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-30"><a id="__codelineno-1-30" name="__codelineno-1-30" href="#__codelineno-1-30"></a><span class="w">    </span><span class="nt">--adw-sidebar-fg-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_background.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_background.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.on_background.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-31"><a id="__codelineno-1-31" name="__codelineno-1-31" href="#__codelineno-1-31"></a><span class="w">    </span><span class="nt">--adw-sidebar-border-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.background.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.background.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.background.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-32"><a id="__codelineno-1-32" name="__codelineno-1-32" href="#__codelineno-1-32"></a><span class="w">    </span><span class="nt">--adw-sidebar-backdrop-rgb</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.background.default.red</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.background.default.green</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">,</span><span class="w"> </span><span class="p">{</span><span class="err">{</span><span class="w"> </span><span class="err">colors.background.default.blue</span><span class="w"> </span><span class="p">}</span><span class="err">}</span><span class="o">;</span>
+</span><span id="__span-1-33"><a id="__codelineno-1-33" name="__codelineno-1-33" href="#__codelineno-1-33"></a><span class="err">}</span>
+</span></code></pre></div>
+<p>The variables are declared in <code>:root</code>, so every <code>adwaita</code> stylesheet (imported before <code>custom/custom.css</code>) resolves them against the current palette. Upstream defaults cover the variables the template does not override (destructive, warning, success and online/offline colors).</p>
+<h3 id="2-matugen-mapping-matugenconfigtoml">2. Matugen Mapping (<code>matugen/config.toml</code>)</h3>
+<p>The engine config renders the template into the central store and re-injects the theme:</p>
+<div class="language-toml highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">[templates.steam]</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">input_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/matugen/templates/steam.css"</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">output_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"~/.config/themes/current/steam.css"</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">post_hook</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'cd "$HOME/.local/share/Adwaita-for-Steam" &amp;&amp; python3 install.py --custom-css -t normal &gt;/dev/null 2&gt;&amp;1 || true'</span>
+</span></code></pre></div>
+<p>Hook behavior:</p>
+<ul>
+<li><code>cd</code> into the clone first, because <code>install.py</code> refuses to run outside its repository root.</li>
+<li><code>--custom-css</code> imports <code>custom/custom.css</code> (the symlink to <code>themes/current/steam.css</code>) as the last stylesheet, so the palette overrides every upstream default.</li>
+<li><code>-t normal</code> targets native Steam (<code>~/.steam/steam</code>); the <code>flatpak</code> target is never used.</li>
+<li>Output is silenced and the command always succeeds (<code>|| true</code>), so a missing Steam installation or a missing clone can never break palette generation.</li>
+</ul>
+<hr />
+<h2 id="automatic-installation-dotfiles">Automatic Installation (Dotfiles)</h2>
+<p>Running <code>~/dotfiles/install.sh</code> invokes the setup script when Steam is detected:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">if</span><span class="w"> </span><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>steam<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.steam/steam"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="s2">"</span><span class="nv">$REPO_DIR</span><span class="s2">/scripts/setup-steam-matugen.sh"</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="k">fi</span>
+</span></code></pre></div>
+<p>The setup script is idempotent and can be re-run at any time:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>~/dotfiles/scripts/setup-steam-matugen.sh
+</span></code></pre></div>
+<p>It validates dependencies, clones Adwaita-for-Steam once, links the custom stylesheet, renders the palette with the same flags as <code>apply-matugen.sh</code>, injects the theme, and prints a verification report.</p>
+<hr />
+<h2 id="manual-installation-adwaita-for-steam-theme-integration">Manual Installation: Adwaita-for-Steam Theme Integration</h2>
+<p>Standalone instructions to add the Steam theme integration to an existing matugen installation without cloning the full dotfiles repository. This follows the manual installation format pioneered in <a href="../matugen/#manual-installation-vs-code-theme-integration-pilot">Matugen (VS Code pilot)</a>.</p>
+<p>All snippets are compatible with <code>bash</code> and <code>zsh</code>, use explicit quoted paths, and are safe to paste into an interactive shell.</p>
+<h3 id="step-1-validate-prerequisites">Step 1: Validate prerequisites</h3>
+<p>Run the checks. Every line must report <code>OK</code> before continuing:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>steam<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"steam         : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"steam         : MISSING"</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.steam/steam"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"steam dir     : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"steam dir     : MISSING"</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>python3<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"python3       : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"python3       : MISSING"</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>git<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"git           : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"git           : MISSING"</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">command</span><span class="w"> </span>-v<span class="w"> </span>matugen<span class="w"> </span>&gt;/dev/null<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"matugen       : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"matugen       : MISSING"</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"templates dir : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"templates dir : MISSING"</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"config.toml   : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"config.toml   : MISSING"</span>
+</span></code></pre></div>
+<p>If a line reports <code>MISSING</code>:</p>
+<ul>
+<li><code>steam</code> / <code>steam dir</code>: install the native Steam client (<code>apt install steam</code> on Debian) or skip this integration.</li>
+<li><code>python3</code>: install it with your package manager (<code>apt install python3</code> on Debian).</li>
+<li><code>git</code>: install it with your package manager (<code>apt install git</code> on Debian).</li>
+<li><code>matugen</code>: install it from <a href="https://github.com/InioX/matugen">https://github.com/InioX/matugen</a>.</li>
+<li><code>templates dir</code>: create it with <code>mkdir -p "$HOME/.config/matugen/templates"</code>.</li>
+<li><code>config.toml</code>: create an empty one with <code>touch "$HOME/.config/matugen/config.toml"</code>.</li>
+</ul>
+<h3 id="step-2-back-up-the-files-that-will-be-modified">Step 2: Back up the files that will be modified</h3>
+<p>The only existing files altered by this procedure are <code>config.toml</code> and, when a previous clone already exists, its <code>custom/custom.css</code>. Backups carry the exact date and time of the operation:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nv">BACKUP_STAMP</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>date<span class="w"> </span>+%Y%m%d-%H%M%S<span class="k">)</span><span class="s2">"</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml.</span><span class="nv">$BACKUP_STAMP</span><span class="s2">.bak"</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share/Adwaita-for-Steam/custom/custom.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share/Adwaita-for-Steam/custom/custom.css"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share/Adwaita-for-Steam/custom/custom.css.</span><span class="nv">$BACKUP_STAMP</span><span class="s2">.bak"</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nb">echo</span><span class="w"> </span><span class="s2">"Backups created with stamp: </span><span class="nv">$BACKUP_STAMP</span><span class="s2">"</span>
+</span></code></pre></div>
+<p>The template file from a previous attempt is backed up the same way before being replaced:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="nb">test</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/steam.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>cp<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/steam.css"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/steam.css.</span><span class="nv">$BACKUP_STAMP</span><span class="s2">.bak"</span>
+</span></code></pre></div>
+<h3 id="step-3-create-the-template-file">Step 3: Create the template file</h3>
+<p>Download it directly from the repository:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates"</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span>-o<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/steam.css"</span><span class="w"> </span><span class="s2">"https://raw.githubusercontent.com/zer0sh/dotfiles/main/matugen/templates/steam.css"</span>
+</span></code></pre></div>
+<p>Alternatively, copy the contents manually from <a href="https://github.com/zer0sh/dotfiles/blob/main/matugen/templates/steam.css">steam.css</a> into the destination path shown above.</p>
+<p>Confirm the file exists and is not empty:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/templates/steam.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"steam.css : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"steam.css : MISSING"</span>
+</span></code></pre></div>
+<h3 id="step-4-register-the-template-in-configtoml">Step 4: Register the template in <code>config.toml</code></h3>
+<p>The block below is idempotent: it appends the section only when it is not already registered, and the heredoc delimiter is quoted, so no shell expansion happens inside it:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="k">if</span><span class="w"> </span>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"^\[templates.steam\]"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml"</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Already registered in config.toml, nothing to do."</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="k">else</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="w">    </span>cat<span class="w"> </span>&gt;&gt;<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml"</span><span class="w"> </span><span class="s">&lt;&lt;'EOF'</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="s"># Steam (Adwaita-for-Steam install.py injects the rendered palette)</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="s">[templates.steam]</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a><span class="s">input_path = "~/.config/matugen/templates/steam.css"</span>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="s">output_path = "~/.config/themes/current/steam.css"</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="s">post_hook = 'cd "$HOME/.local/share/Adwaita-for-Steam" &amp;&amp; python3 install.py --custom-css -t normal &gt;/dev/null 2&gt;&amp;1 || true'</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="s">EOF</span>
+</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"Registered in config.toml."</span>
+</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a><span class="k">fi</span>
+</span></code></pre></div>
+<p>If an older <code>[templates.steam]</code> block exists with an <code>adwaita-steam-gtk</code> or <code>flatpak run</code> hook, edit that <code>post_hook</code> line and replace it with the one above.</p>
+<h3 id="step-5-clone-adwaita-for-steam-and-link-the-custom-stylesheet">Step 5: Clone Adwaita-for-Steam and link the custom stylesheet</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share"</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="nb">test</span><span class="w"> </span>-d<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share/Adwaita-for-Steam"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span>git<span class="w"> </span>clone<span class="w"> </span>--depth<span class="w"> </span><span class="m">1</span><span class="w"> </span>https://github.com/Foldex/Adwaita-for-Steam.git<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share/Adwaita-for-Steam"</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>mkdir<span class="w"> </span>-p<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share/Adwaita-for-Steam/custom"</span>
+</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>ln<span class="w"> </span>-sf<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/themes/current/steam.css"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share/Adwaita-for-Steam/custom/custom.css"</span>
+</span></code></pre></div>
+<p>This replaces the example <code>custom/custom.css</code> shipped by the repository (preserved by the Step 2 backup if it contained custom content). The installer dereferences the symlink while staging, so the clone always carries the current palette without further intervention.</p>
+<h3 id="step-6-generate-the-colors">Step 6: Generate the colors</h3>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nv">WALLPAPER</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>cat<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/themes/current/wallpaper"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">true</span><span class="k">)</span><span class="s2">"</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nv">MODE</span><span class="o">=</span><span class="s2">"</span><span class="k">$(</span>cat<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/themes/current/mode"</span><span class="w"> </span><span class="m">2</span>&gt;/dev/null<span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span>dark<span class="k">)</span><span class="s2">"</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">if</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-n<span class="w"> </span><span class="s2">"</span><span class="nv">$WALLPAPER</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">[</span><span class="w"> </span>-f<span class="w"> </span><span class="s2">"</span><span class="nv">$WALLPAPER</span><span class="s2">"</span><span class="w"> </span><span class="o">]</span><span class="p">;</span><span class="w"> </span><span class="k">then</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="w">    </span>matugen<span class="w"> </span>image<span class="w"> </span><span class="s2">"</span><span class="nv">$WALLPAPER</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="w">        </span>--config<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/matugen/config.toml"</span><span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="w">        </span>-t<span class="w"> </span>scheme-vibrant<span class="w"> </span>--contrast<span class="w"> </span><span class="m">0</span>.2<span class="w"> </span><span class="se">\</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="w">        </span>--mode<span class="w"> </span><span class="s2">"</span><span class="nv">$MODE</span><span class="s2">"</span><span class="w"> </span>--source-color-index<span class="w"> </span><span class="m">0</span><span class="w"> </span>--quiet
+</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="k">else</span>
+</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="w">    </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"No active wallpaper in the theme store yet; run themes/apply-matugen.sh first."</span>
+</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="k">fi</span>
+</span><span id="__span-12-11"><a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a><span class="nb">test</span><span class="w"> </span>-s<span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.config/themes/current/steam.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"steam.css : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"steam.css : MISSING"</span>
+</span></code></pre></div>
+<p>The flags mirror <code>~/dotfiles/themes/apply-matugen.sh</code>; <code>--source-color-index 0</code> bypasses the interactive color picker.</p>
+<h3 id="step-7-inject-the-theme-into-steam">Step 7: Inject the theme into Steam</h3>
+<p>Run the installer from its repository root (the subshell keeps your current directory unchanged):</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="o">(</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share/Adwaita-for-Steam"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python3<span class="w"> </span>install.py<span class="w"> </span>--custom-css<span class="w"> </span>-t<span class="w"> </span>normal<span class="w"> </span><span class="o">)</span>
+</span></code></pre></div>
+<p>Expected output includes <code>Applying custom css...</code>, <code>Patching Steam Client Library Files...</code> and <code>Done!</code>. On the first run the installer renames the pristine <code>steamui/css/library.css</code> to <code>library.original.css</code> and replaces it with an <code>@import</code> wrapper of the same byte size.</p>
+<h3 id="step-8-restart-steam-and-verify">Step 8: Restart Steam and verify</h3>
+<p>Exit Steam completely (including the tray icon) and launch it again, then run:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"^/\*patched\*/"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share/Steam/steamui/css/library.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"library patch : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"library patch : MISSING"</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"custom/custom.css"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share/Steam/steamui/libraryroot.custom.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"custom import : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"custom import : MISSING"</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>grep<span class="w"> </span>-q<span class="w"> </span><span class="s2">"adw-accent-rgb"</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share/Steam/steamui/adwaita/custom/custom.css"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"palette copy  : OK"</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"palette copy  : MISSING"</span>
+</span></code></pre></div>
+<p>All three lines must report <code>OK</code>, and the Steam Library must display the wallpaper-derived palette after the restart.</p>
+<h3 id="troubleshooting">Troubleshooting</h3>
+<ul>
+<li><strong>Theme not visible:</strong> Steam loads its stylesheets at startup. Exit the client completely (tray included) and launch it again.</li>
+<li><strong>Steam updated and the theme disappeared:</strong> Steam restores <code>library.css</code> during client updates. Re-run Step 7 (or the setup script); every wallpaper change also re-applies the theme automatically through the <code>post_hook</code>.</li>
+<li><strong><code>install.py</code> reports that the theme directory does not exist:</strong> the command was not run from the clone root. Use the subshell form of Step 7.</li>
+<li><strong>Colors missing or invalid:</strong> verify the symlink (<code>readlink -f "$HOME/.local/share/Adwaita-for-Steam/custom/custom.css"</code>) and that <code>themes/current/steam.css</code> contains comma-separated triplets such as <code>--adw-accent-rgb: 158, 217, 0;</code>.</li>
+<li><strong>Revert to the Steam default appearance:</strong></li>
+</ul>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="o">(</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/share/Adwaita-for-Steam"</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>python3<span class="w"> </span>install.py<span class="w"> </span>--uninstall<span class="w"> </span>-t<span class="w"> </span>normal<span class="w"> </span><span class="o">)</span>
+</span></code></pre></div>
+<p>This empties <code>libraryroot.custom.css</code> and removes the <code>steamui/adwaita/</code> copy; <code>library.css</code> stays as the harmless <code>@import</code> wrapper pointing at <code>library.original.css</code>.</p>
+<hr />
+<h2 id="real-time-wallpaper-synchronization">Real-time Wallpaper Synchronization</h2>
+<p>When wallpaper transitions occur via Quickshell launcher or control center, <code>matugen image</code> renders all templates. The configured <code>post_hook</code> silently runs <code>install.py --custom-css -t normal</code>, so the Steam clone and the <code>steamui</code> folder always receive the fresh palette without manual intervention. The Steam client itself must be restarted to display the refreshed colors; there is no supported hot reload outside of Steam's <code>-dev</code> mode.</p>
+<hr />
+<h2 id="optional-adwsteamgtk-graphical-wrapper">Optional: AdwSteamGtk Graphical Wrapper</h2>
+<p><a href="https://github.com/Foldex/AdwSteamGtk">AdwSteamGtk</a> is a GTK front-end for the same theme. It is <strong>not required</strong> by this pipeline and is only distributed as a Flatpak:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>flatpak<span class="w"> </span>install<span class="w"> </span>flathub<span class="w"> </span>io.github.Foldex.AdwSteamGtk
+</span></code></pre></div>
+<p>If it is installed, <code>install.sh</code> additionally links the central store output to its custom stylesheet locations (<code>~/.config/AdwSteamGtk/custom.css</code> and the Flatpak equivalent), and <strong>Preferences -&gt; Custom CSS</strong> must be enabled inside the application for those links to be honored. The native <code>install.py</code> route described above keeps working independently of this wrapper.</p>
+<hr />
+<h2 id="optional-millennium-modding-framework">Optional: Millennium Modding Framework</h2>
+<p><a href="https://steambrew.app">Millennium</a> (SteamClientHomebrew, MIT) is an open-source modding framework that loads custom themes and plugins into the Steam UI. It is listed as an optional requirement of this setup: the matugen/Adwaita-for-Steam pipeline <strong>works without it</strong>, because both operate on different layers:</p>
+<ul>
+<li>Adwaita-for-Steam patches <code>steamui/css/library.css</code> and serves stylesheets through <code>https://steamloopback.host</code>.</li>
+<li>Millennium LD-preloads its shared objects into <code>steamwebhelper</code> to inject the JavaScript and plugin layer.</li>
+</ul>
+<p>The two have been validated together on this setup without conflicts.</p>
+<h3 id="installation-debian-and-other-distributions">Installation (Debian and other distributions)</h3>
+<p>The official installer downloads the latest stable release from GitHub and verifies its sha256 checksum. It requires <code>sudo</code> for <code>/usr/lib/millennium</code> (and refuses to run as root) plus one i386 prerequisite on Debian:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>sudo<span class="w"> </span>dpkg<span class="w"> </span>--add-architecture<span class="w"> </span>i386<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>update<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>libssl-dev:i386
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a>curl<span class="w"> </span>-fsSL<span class="w"> </span><span class="s2">"https://steambrew.app/install.sh"</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+</span></code></pre></div>
+<p>Confirm the prompt, then restart Steam completely so the new shared objects are loaded. Arch Linux users can install the <code>millennium</code> AUR package instead; Flatpak and Snap Steam are not supported by Millennium.</p>
+<h3 id="paths-touched-by-millennium">Paths touched by Millennium</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Path</th>
+<th style="text-align: left;">Owner</th>
+<th style="text-align: left;">Content</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>/usr/lib/millennium/*.so</code></td>
+<td style="text-align: left;">root</td>
+<td style="text-align: left;">Bootstrap and preload shared objects (system layer)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>~/.steam/steam/ubuntu12_32/libXtst.so.6</code>, <code>~/.steam/steam/ubuntu12_64/libXtst.so.6</code></td>
+<td style="text-align: left;">user</td>
+<td style="text-align: left;">Preload symlinks created by the installer</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>~/.local/share/millennium/</code></td>
+<td style="text-align: left;">user</td>
+<td style="text-align: left;"><code>themes/</code>, <code>plugins/</code> and the plugin <code>~/.venv</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>~/.steam/steam/package/beta</code></td>
+<td style="text-align: left;">user</td>
+<td style="text-align: left;">Removed by the installer (forces the stable Steam channel)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="updating-and-uninstalling">Updating and uninstalling</h3>
+<p>Re-run the installer command above to update to the latest stable release, and restart Steam afterwards. Removal instructions live in the official <a href="https://docs.steambrew.app/users/parting-ways/uninstall">Uninstalling</a> guide.</p>
+<hr />
+<h2 id="related-documentation">Related Documentation</h2>
+<ul>
+<li><a href="../matugen/">Matugen Dynamic Theming Engine</a>: Material Design 3 palette generator and templates.</li>
+<li><a href="../../hyprland/">Hyprland Compositor</a>: Compositor configuration and window rules.</li>
+<li><a href="../../quickshell/">Quickshell Control Center</a>: Wallpaper selection and real-time palette trigger.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate"], "search": "../../assets/javascripts/workers/search.a7633da7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c21346df.min.js"></script>
+      
+    
+  </body>
+</html>
