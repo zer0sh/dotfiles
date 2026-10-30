@@ -1,0 +1,131 @@
+{
+  "$schema": "https://zer0.sh/schemas/architecture-v1.json",
+  "project": "dotfiles",
+  "version": "1.0.0",
+  "title": "DECLARATIVE WAYLAND / HYPRLAND WORKSTATION",
+  "zones": [
+    { "id": "compositor", "label": "ZONE // 01: WAYLAND PROTOCOLS & HYPRLAND COMPOSITOR" },
+    { "id": "shell", "label": "ZONE // 02: MATERIAL YOU THEMING & DESKTOP SHELL" },
+    { "id": "terminal", "label": "ZONE // 03: POSIX TERMINAL & DECLARATIVE AUTOMATION" }
+  ],
+  "nodes": [
+    {
+      "id": "hw-inputs",
+      "zone": "compositor",
+      "col": 0,
+      "badge": "HARDWARE INTERFACE",
+      "label": "Kernel Libinput Subsystem",
+      "status": "POLLING",
+      "color": "cyan",
+      "details": ["1000Hz Mouse Polling", "Wayland Touch Gestures"]
+    },
+    {
+      "id": "hyprland-core",
+      "zone": "compositor",
+      "col": 1,
+      "badge": "WAYLAND COMPOSITOR",
+      "label": "Hyprland Compositor",
+      "status": "RUNNING",
+      "color": "emerald",
+      "details": [
+        "Debian 13 (Trixie) Wayland Session",
+        "Fluid Window Physics & Gestures"
+      ]
+    },
+    {
+      "id": "glsl-shaders",
+      "zone": "compositor",
+      "col": 2,
+      "badge": "GPU POST-PROCESSING",
+      "label": "GLSL Shader Pipeline",
+      "status": "COMPILED",
+      "color": "amber",
+      "details": ["Custom Screen Color Filters", "Zero GPU Render Stutter"]
+    },
+    {
+      "id": "matugen",
+      "zone": "shell",
+      "col": 0,
+      "badge": "COLOR SYNCHRONIZER",
+      "label": "Matugen Material You Engine",
+      "status": "REACTIVE",
+      "color": "emerald",
+      "details": [
+        "Wallpaper-Driven 16-Color Palette",
+        "Live Template Propagation"
+      ]
+    },
+    {
+      "id": "quickshell",
+      "zone": "shell",
+      "col": 1,
+      "badge": "DESKTOP SHELL // QML",
+      "label": "Quickshell Notification Center",
+      "status": "ACTIVE",
+      "color": "cyan",
+      "details": [
+        "Volume, Brightness & Media OSDs",
+        "Slide-in Staggered Alert Queue"
+      ]
+    },
+    {
+      "id": "waybar",
+      "zone": "shell",
+      "col": 2,
+      "badge": "STATUS TELEMETRY BAR",
+      "label": "Waybar Modular HUD",
+      "status": "ONLINE",
+      "color": "amber",
+      "details": [
+        "Real-time CPU/MEM & PipeWire Audio",
+        "Hyprland Active Workspaces"
+      ]
+    },
+    {
+      "id": "alacritty",
+      "zone": "terminal",
+      "col": 0,
+      "badge": "GPU TERMINAL EMULATOR",
+      "label": "Alacritty + BlexMono Font",
+      "status": "ACTIVE",
+      "color": "cyan",
+      "details": ["OpenGL Acceleration", "BlexMono Nerd Font Glyphs"]
+    },
+    {
+      "id": "zsh-shell",
+      "zone": "terminal",
+      "col": 1,
+      "badge": "OPTIMIZED SHELL",
+      "label": "Zsh Environment (~50ms)",
+      "status": "EXPEDITED",
+      "color": "emerald",
+      "details": [
+        "Lazy-loaded Completion Modules",
+        "Single-line Git State Prompt"
+      ]
+    },
+    {
+      "id": "dotbot",
+      "zone": "terminal",
+      "col": 2,
+      "badge": "DECLARATIVE GITOPS",
+      "label": "Dotbot Symlink Automation",
+      "status": "DECLARATIVE",
+      "color": "amber",
+      "details": [
+        "Idempotent ~/dotfiles -> ~/.config",
+        "Automated GitHub Pages SemVer Releases"
+      ]
+    }
+  ],
+  "flows": [
+    { "from": "hw-inputs", "to": "hyprland-core", "busType": "primary" },
+    { "from": "hyprland-core", "to": "glsl-shaders", "busType": "primary" },
+    { "from": "hyprland-core", "to": "matugen", "busType": "ingress" },
+    { "from": "matugen", "to": "quickshell", "busType": "primary" },
+    { "from": "matugen", "to": "waybar", "busType": "primary" },
+    { "from": "matugen", "to": "alacritty", "busType": "ingress" },
+    { "from": "alacritty", "to": "zsh-shell", "busType": "primary" },
+    { "from": "zsh-shell", "to": "dotbot", "busType": "primary" }
+  ]
+}

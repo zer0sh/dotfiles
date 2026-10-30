@@ -160,69 +160,11 @@ Scope {
 
         Item {
             id: osdWrapper
-            width: 380
+            width: 436
             height: osdCard.implicitHeight
             anchors.top: parent.top
             anchors.topMargin: Root.Theme.shelfHeight
             anchors.horizontalCenter: parent.horizontalCenter
-
-            // Concave fillet left (Dynamic Island shoulder connecting to Waybar bottom edge)
-            Shape {
-                id: leftFillet
-                width: 28
-                height: 28
-                anchors.top: parent.top
-                anchors.right: parent.left
-                layer.enabled: true
-                layer.samples: 4
-
-                ShapePath {
-                    strokeWidth: 0
-                    strokeColor: "transparent"
-                    fillColor: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
-
-                    startX: 0
-                    startY: 0
-                    PathLine { x: 28; y: 0 }
-                    PathLine { x: 28; y: 28 }
-                    PathArc {
-                        x: 0
-                        y: 0
-                        radiusX: 28
-                        radiusY: 28
-                        direction: PathArc.Counterclockwise
-                    }
-                }
-            }
-
-            // Concave fillet right (Dynamic Island shoulder connecting to Waybar bottom edge)
-            Shape {
-                id: rightFillet
-                width: 28
-                height: 28
-                anchors.top: parent.top
-                anchors.left: parent.right
-                layer.enabled: true
-                layer.samples: 4
-
-                ShapePath {
-                    strokeWidth: 0
-                    strokeColor: "transparent"
-                    fillColor: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
-
-                    startX: 28
-                    startY: 0
-                    PathLine { x: 0; y: 0 }
-                    PathLine { x: 0; y: 28 }
-                    PathArc {
-                        x: 28
-                        y: 0
-                        radiusX: 28
-                        radiusY: 28
-                        direction: PathArc.Clockwise
-                    }
-                }
-            }
 
             // Clipping container so the card slides out smoothly from behind Waybar
             Item {
@@ -230,28 +172,101 @@ Scope {
                 anchors.fill: parent
                 clip: true
 
-                Rectangle {
+                Item {
                     id: osdCard
                     property real _slideY: -height
                     property real _opacity: 0
 
-                    width: parent.width
+                    width: 380
                     height: implicitHeight
+                    anchors.horizontalCenter: parent.horizontalCenter
                     y: _slideY
                     opacity: _opacity
                     implicitHeight: cardContent.implicitHeight + 24
 
-                    // Dynamic Island geometry: top edge flat against Waybar, rounded bottom
-                    radius: 28
-                    topLeftRadius: 0
-                    topRightRadius: 0
-                    bottomLeftRadius: 28
-                    bottomRightRadius: 28
+                    // Silueta continua con hombros cóncavos y borde de ventana
+                    Shape {
+                        id: osdShape
+                        anchors.top: parent.top
+                        anchors.bottom: parent.bottom
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        width: parent.width + 56
+                        layer.enabled: true
+                        layer.samples: 4
 
-                    color: Qt.rgba(Root.Theme._shelfBgColor.r,
-                                   Root.Theme._shelfBgColor.g,
-                                   Root.Theme._shelfBgColor.b, 0.80)
-                    border.width: 0
+                        // 1. Relleno unificado
+                        ShapePath {
+                            strokeWidth: 0
+                            strokeColor: "transparent"
+                            fillColor: Qt.rgba(Root.Theme._shelfBgColor.r,
+                                               Root.Theme._shelfBgColor.g,
+                                               Root.Theme._shelfBgColor.b, 0.85)
+
+                            startX: 0
+                            startY: 0
+
+                            PathArc {
+                                x: 28; y: 28
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Clockwise
+                            }
+                            PathLine { x: 28; y: Math.max(28, osdShape.height - 28) }
+                            PathArc {
+                                x: 56; y: osdShape.height
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Counterclockwise
+                            }
+                            PathLine { x: Math.max(56, osdShape.width - 56); y: osdShape.height }
+                            PathArc {
+                                x: osdShape.width - 28; y: Math.max(28, osdShape.height - 28)
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Counterclockwise
+                            }
+                            PathLine { x: osdShape.width - 28; y: 28 }
+                            PathArc {
+                                x: osdShape.width; y: 0
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Clockwise
+                            }
+                            PathLine { x: 0; y: 0 }
+                        }
+
+                        // 2. Borde exterior continuo estilo ventana
+                        ShapePath {
+                            strokeWidth: 2
+                            strokeColor: Root.Theme.primary
+                            fillColor: "transparent"
+                            capStyle: ShapePath.FlatCap
+                            joinStyle: ShapePath.RoundJoin
+
+                            startX: 0
+                            startY: 0
+
+                            PathArc {
+                                x: 28; y: 28
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Clockwise
+                            }
+                            PathLine { x: 28; y: Math.max(28, osdShape.height - 28) }
+                            PathArc {
+                                x: 56; y: osdShape.height
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Counterclockwise
+                            }
+                            PathLine { x: Math.max(56, osdShape.width - 56); y: osdShape.height }
+                            PathArc {
+                                x: osdShape.width - 28; y: Math.max(28, osdShape.height - 28)
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Counterclockwise
+                            }
+                            PathLine { x: osdShape.width - 28; y: 28 }
+                            PathArc {
+                                x: osdShape.width; y: 0
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Clockwise
+                            }
+                        }
+                    }
 
                     RowLayout {
                         id: cardContent

@@ -28,7 +28,7 @@ The system consists of two coordinated Quickshell modules:
    * Applies the "Zoom & Blur" (Emergence) transition:
      * Outgoing wallpaper scales from 1.0 to 1.15 while fading opacity from 1.0 to 0.0 in 750 ms (`Easing.InOutQuad`).
      * Incoming wallpaper scales from 0.88 to 1.0 while fading opacity from 0.0 to 1.0 in 750 ms (`Easing.InOutQuad`).
-   * Triggers `apply-matugen.sh` asynchronously to regenerate system palettes across Hyprland, Waybar, Alacritty, and Quickshell.
+   * Triggers `apply-matugen.sh` asynchronously only when `matugen` was previously selected, preserving active manual themes upon wallpaper transitions.
 
 ### Wallpaper Carousel Preview
 
@@ -117,7 +117,7 @@ Typing `/theme ` or `/tema ` (also `>theme `), clicking "Theme" in the Control C
   * Palette colors resolve via explicit `Qt.color` conversion, ensuring accurate rendering across static palettes, dynamic Custom accents, and Matugen extractions.
   * An "Active" badge dynamically marks the currently applied theme.
 * **Interactive Behavior:**
-  * Selecting a card applies the theme instantly via `Theme.currentTheme`, persists it to `~/.config/quickshell/current-theme`, triggers `apply-theme.sh` or `apply-matugen.sh` across the system, and closes the launcher on `Enter`.
+  * Selecting a card applies the theme instantly via `Theme.currentTheme`, persists it to `~/.config/quickshell/current-theme`, and triggers `apply-theme.sh` or `apply-matugen.sh` across the system without abruptly closing the launcher, allowing live visual exploration until dismissed via `Escape` or clicking outside.
   * Full keyboard support with `Left` / `Right` navigation, `Enter` to apply, and text filtering (e.g. `>theme cobalt`).
 
 ### 5. Desktop Gadgets Mode (`/gadgets` or `/widgets`)

@@ -247,7 +247,6 @@ Scope {
         Root.Theme.currentTheme = themeId;
         actionExecProc.command = ["/bin/sh", "-c", "printf '%s\\n' '" + themeId + "' > ~/.config/quickshell/current-theme"];
         actionExecProc.running = true;
-        launcher.panelVisible = false;
     }
 
     function openThemes() {
@@ -394,7 +393,6 @@ Scope {
                 if (selectedTheme && selectedTheme.id) {
                     if (selectedTheme.id === "matugen") {
                         launcher.applyMatugenScheme(launcher.activeMatugenScheme);
-                        launcher.panelVisible = false;
                     } else {
                         launcher.applyTheme(selectedTheme.id);
                     }
@@ -885,61 +883,99 @@ Scope {
                 anchors.right: launcherRightFillet.right
             }
 
-            // Concave fillet left (Dynamic Island bottom curve connecting to screen bottom)
+            // Silueta continua inferior: hombros cóncavos + cuerpo con borde de 2px de color acento
             Shape {
-                id: launcherLeftFillet
+                id: launcherCardShape
                 z: 10
-                width: 28
-                height: 28
+                anchors.top: floatingCard.top
                 anchors.bottom: floatingCard.bottom
-                anchors.right: floatingCard.left
+                anchors.horizontalCenter: floatingCard.horizontalCenter
+                width: floatingCard.width + 56
                 layer.enabled: true
                 layer.samples: 4
 
+                // 1. Relleno continuo unificado
                 ShapePath {
                     strokeWidth: 0
                     strokeColor: "transparent"
-                    fillColor: floatingCard.color
+                    fillColor: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.85)
 
                     startX: 0
-                    startY: 28
-                    PathLine { x: 28; y: 28 }
-                    PathLine { x: 28; y: 0 }
+                    startY: launcherCardShape.height
+
+                    // Curva cóncava inferior izquierda
                     PathArc {
-                        x: 0
-                        y: 28
-                        radiusX: 28
-                        radiusY: 28
+                        x: 28; y: Math.max(28, launcherCardShape.height - 28)
+                        radiusX: 28; radiusY: 28
+                        direction: PathArc.Counterclockwise
+                    }
+                    // Lateral izquierdo
+                    PathLine { x: 28; y: 28 }
+                    // Esquina superior izquierda redondeada
+                    PathArc {
+                        x: 56; y: 0
+                        radiusX: 28; radiusY: 28
                         direction: PathArc.Clockwise
                     }
-                }
-            }
-
-            // Concave fillet right (Dynamic Island bottom curve connecting to screen bottom)
-            Shape {
-                id: launcherRightFillet
-                z: 10
-                width: 28
-                height: 28
-                anchors.bottom: floatingCard.bottom
-                anchors.left: floatingCard.right
-                layer.enabled: true
-                layer.samples: 4
-
-                ShapePath {
-                    strokeWidth: 0
-                    strokeColor: "transparent"
-                    fillColor: floatingCard.color
-
-                    startX: 28
-                    startY: 28
-                    PathLine { x: 0; y: 28 }
-                    PathLine { x: 0; y: 0 }
+                    // Borde superior horizontal
+                    PathLine { x: Math.max(56, launcherCardShape.width - 56); y: 0 }
+                    // Esquina superior derecha redondeada
                     PathArc {
-                        x: 28
-                        y: 28
-                        radiusX: 28
-                        radiusY: 28
+                        x: launcherCardShape.width - 28; y: 28
+                        radiusX: 28; radiusY: 28
+                        direction: PathArc.Clockwise
+                    }
+                    // Lateral derecho
+                    PathLine { x: launcherCardShape.width - 28; y: Math.max(28, launcherCardShape.height - 28) }
+                    // Curva cóncava inferior derecha
+                    PathArc {
+                        x: launcherCardShape.width; y: launcherCardShape.height
+                        radiusX: 28; radiusY: 28
+                        direction: PathArc.Counterclockwise
+                    }
+                    // Cierre inferior contra el borde de la pantalla
+                    PathLine { x: 0; y: launcherCardShape.height }
+                }
+
+                // 2. Borde exterior continuo estilo ventana de color acento (abierto hacia abajo)
+                ShapePath {
+                    strokeWidth: 2
+                    strokeColor: Root.Theme.primary
+                    fillColor: "transparent"
+                    capStyle: ShapePath.FlatCap
+                    joinStyle: ShapePath.RoundJoin
+
+                    startX: 0
+                    startY: launcherCardShape.height
+
+                    // Curva cóncava inferior izquierda
+                    PathArc {
+                        x: 28; y: Math.max(28, launcherCardShape.height - 28)
+                        radiusX: 28; radiusY: 28
+                        direction: PathArc.Counterclockwise
+                    }
+                    // Lateral izquierdo
+                    PathLine { x: 28; y: 28 }
+                    // Esquina superior izquierda redondeada
+                    PathArc {
+                        x: 56; y: 0
+                        radiusX: 28; radiusY: 28
+                        direction: PathArc.Clockwise
+                    }
+                    // Borde superior horizontal
+                    PathLine { x: Math.max(56, launcherCardShape.width - 56); y: 0 }
+                    // Esquina superior derecha redondeada
+                    PathArc {
+                        x: launcherCardShape.width - 28; y: 28
+                        radiusX: 28; radiusY: 28
+                        direction: PathArc.Clockwise
+                    }
+                    // Lateral derecho
+                    PathLine { x: launcherCardShape.width - 28; y: Math.max(28, launcherCardShape.height - 28) }
+                    // Curva cóncava inferior derecha
+                    PathArc {
+                        x: launcherCardShape.width; y: launcherCardShape.height
+                        radiusX: 28; radiusY: 28
                         direction: PathArc.Counterclockwise
                     }
                 }
@@ -972,13 +1008,7 @@ Scope {
                     return Math.min(480, Math.max(140, appCount * 52 + 76));
                 }
 
-                radius: 28
-                topLeftRadius: 28
-                topRightRadius: 28
-                bottomLeftRadius: 0
-                bottomRightRadius: 0
-
-                color: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.80)
+                color: "transparent"
                 border.width: 0
                 clip: true
 
@@ -1485,11 +1515,7 @@ Scope {
                                         launcher.selectedIndex = index;
                                         if (itemData) {
                                             if (itemData.id === "matugen") {
-                                                if (Root.Theme.currentTheme === "matugen") {
-                                                    launcher.panelVisible = false;
-                                                } else {
-                                                    launcher.applyMatugenScheme(launcher.activeMatugenScheme);
-                                                }
+                                                launcher.applyMatugenScheme(launcher.activeMatugenScheme);
                                             } else {
                                                 launcher.applyTheme(itemData.id);
                                             }
@@ -1997,6 +2023,8 @@ Scope {
                                 color: launcher._mprisPlayer && launcher._mprisPlayer.trackArtUrl !== ""
                                     ? "transparent"
                                     : Root.Theme.surfaceContainerHigh
+                                border.width: 1.5
+                                border.color: Root.Theme.primary
 
                                 Image {
                                     anchors.fill: parent
@@ -2347,10 +2375,8 @@ Scope {
 
                     radius: 14
                     color: Root.Theme.surfaceContainer
-                    border.width: searchInput.activeFocus ? 1.5 : 1
-                    border.color: searchInput.activeFocus
-                        ? Root.Theme.primary
-                        : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.3)
+                    border.width: 2
+                    border.color: Root.Theme.primary
 
                     RowLayout {
                         anchors.fill: parent

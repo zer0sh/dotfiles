@@ -184,9 +184,8 @@ Scope {
 
                     radius: Root.Theme.panelRadius
                     color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.78)
-                    border.width: 1
-                    border.color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g,
-                                          Root.Theme.primary.b, 0.55)
+                    border.width: 2
+                    border.color: Root.Theme.primary
                     clip: true
 
                     // Block click-through

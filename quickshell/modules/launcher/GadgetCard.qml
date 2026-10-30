@@ -39,10 +39,8 @@ Item {
         color: cardRoot.isSelected
             ? Root.Theme.surfaceContainerHigh
             : (mouseArea.containsMouse ? Root.Theme.surfaceContainer : Root.Theme.surface)
-        border.color: cardRoot.isSelected
-            ? Root.Theme.primary
-            : (mouseArea.containsMouse ? Root.Theme.outlineVariant : Root.Theme.panelBorder)
-        border.width: cardRoot.isSelected ? 2 : 1
+        border.color: Root.Theme.primary
+        border.width: 2
         clip: true
 
         Behavior on color { ColorAnimation { duration: 180 } }

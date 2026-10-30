@@ -84,32 +84,89 @@ Scope {
                 anchors.bottom: parent.bottom
                 anchors.topMargin: Root.Theme.shelfHeight
 
-                // Concave fillet / curved shoulder connecting the left edge of the panel smoothly to Waybar
                 Shape {
-                    id: leftFillet
-                    width: 28
-                    height: 28
+                    id: panelShape
                     anchors.top: panel.top
-                    anchors.right: panel.left
+                    anchors.bottom: panel.bottom
+                    anchors.left: panel.left
+                    anchors.right: panel.right
+                    anchors.leftMargin: -28
                     layer.enabled: true
                     layer.samples: 4
 
+                    // 1. Relleno unificado (hombro cóncavo izquierdo + cuerpo del panel)
                     ShapePath {
                         strokeWidth: 0
                         strokeColor: "transparent"
-                        fillColor: panel.color
+                        fillColor: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.85)
 
                         startX: 0
                         startY: 0
-                        PathLine { x: 28; y: 0 }
-                        PathLine { x: 28; y: 28 }
+
+                        // Curva cóncava hombro izquierdo
                         PathArc {
-                            x: 0
-                            y: 0
-                            radiusX: 28
-                            radiusY: 28
+                            x: 28; y: 28
+                            radiusX: 28; radiusY: 28
+                            direction: PathArc.Clockwise
+                        }
+                        // Lateral izquierdo
+                        PathLine { x: 28; y: Math.max(28, panelShape.height - 28) }
+                        // Esquina inferior izquierda redondeada
+                        PathArc {
+                            x: 56; y: panelShape.height
+                            radiusX: 28; radiusY: 28
                             direction: PathArc.Counterclockwise
                         }
+                        // Base horizontal
+                        PathLine { x: Math.max(56, panelShape.width - 28); y: panelShape.height }
+                        // Esquina inferior derecha redondeada
+                        PathArc {
+                            x: panelShape.width; y: Math.max(28, panelShape.height - 28)
+                            radiusX: 28; radiusY: 28
+                            direction: PathArc.Counterclockwise
+                        }
+                        // Lateral derecho
+                        PathLine { x: panelShape.width; y: 0 }
+                        // Cierre superior contra Waybar
+                        PathLine { x: 0; y: 0 }
+                    }
+
+                    // 2. Borde exterior continuo estilo ventana
+                    ShapePath {
+                        strokeWidth: 2
+                        strokeColor: Root.Theme.primary
+                        fillColor: "transparent"
+                        capStyle: ShapePath.FlatCap
+                        joinStyle: ShapePath.RoundJoin
+
+                        startX: 0
+                        startY: 0
+
+                        // Curva cóncava hombro izquierdo
+                        PathArc {
+                            x: 28; y: 28
+                            radiusX: 28; radiusY: 28
+                            direction: PathArc.Clockwise
+                        }
+                        // Lateral izquierdo
+                        PathLine { x: 28; y: Math.max(28, panelShape.height - 28) }
+                        // Esquina inferior izquierda redondeada
+                        PathArc {
+                            x: 56; y: panelShape.height
+                            radiusX: 28; radiusY: 28
+                            direction: PathArc.Counterclockwise
+                        }
+                        // Base horizontal
+                        PathLine { x: Math.max(56, panelShape.width - 28); y: panelShape.height }
+                        // Esquina inferior derecha redondeada
+                        PathArc {
+                            x: panelShape.width; y: Math.max(28, panelShape.height - 28)
+                            radiusX: 28; radiusY: 28
+                            direction: PathArc.Counterclockwise
+                        }
+                        // Lateral derecho
+                        PathLine { x: panelShape.width; y: 0 }
+                        // Abierto hacia Waybar arriba
                     }
                 }
 
@@ -167,19 +224,8 @@ Scope {
                         }
                     ]
 
-                    // Dynamic Island geometry: top edge flat against Waybar, bottom corners curved
-                    radius: 28
-                    topLeftRadius: 0
-                    topRightRadius: 0
-                    bottomLeftRadius: 28
-                    bottomRightRadius: 28
-
-                    // Deep obsidian background with subtle hairline outline matching Waybar alpha
-                    color: Qt.rgba(Root.Theme.panelBg.r,
-                                   Root.Theme.panelBg.g,
-                                   Root.Theme.panelBg.b, 0.80)
-                    border.width: 1
-                    border.color: Qt.rgba(1, 1, 1, 0.10)
+                    color: "transparent"
+                    border.width: 0
                     clip: true
 
                     // Block click-through

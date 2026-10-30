@@ -11,9 +11,9 @@ All floating indicators follow a standardized behavioral contract:
 1. **Dynamic Island Integration with Waybar:**
    * **Placement:** Anchored to the top of the screen and centered horizontally (`anchors.top: true`, `anchors.horizontalCenter: parent.horizontalCenter`).
    * **Top Anchor:** Directly docked beneath Waybar (`topMargin: Root.Theme.shelfHeight`, 36 px) with zero dead space.
-   * **Concave Shoulders:** Dual hardware-accelerated concave fillets (`QtQuick.Shapes` with a 28 px radius and `PathArc`) smoothly bridge Waybar's horizontal lower edge with the toast container's vertical shoulders.
-   * **Corner Radii:** Square top corners (`topLeftRadius: 0`, `topRightRadius: 0`) and generously rounded bottom corners (`bottomLeftRadius: 28`, `bottomRightRadius: 28`).
-   * **Surface Finish:** Borderless translucent glass surface (`border.width: 1`, hairline outline) with exact opacity and color parity (`alpha 0.80`, `Qt.rgba(panelBg.r, panelBg.g, panelBg.b, 0.80)`) matching Waybar's `window#waybar` background (`alpha(@bg, 0.80)` on `#0A0A0C`). Both the notification cards and the concave shoulder fillets share this identical alpha channel, eliminating darker contrast boundaries.
+   * **Unified Shape & Continuous Accent Border:** Integrated into a unified `QtQuick.Shapes` geometry (`layer.enabled: true`, 4x multi-sampling) combining both 28 px concave shoulder fillets and the body into a seamless canvas. A continuous 2 px accent border (`strokeWidth: 2`, `strokeColor: Root.Theme.primary`, or `Root.Theme.error` on critical urgency) traces the left concave arc, down the flank, across the rounded base, and up the right concave arc while remaining cleanly open along the Waybar interface.
+   * **Corner Radii:** Square top edge matching Waybar's bottom shelf and generously rounded bottom corners (`radius: 28`).
+   * **Surface Finish:** Clean obsidian glass surface with exact opacity and color parity (`Qt.rgba(panelBg.r, panelBg.g, panelBg.b, 0.85)`). The top toast, Control Center, and media panels share this unified continuous border without interior seam lines or hover overlays.
 2. **Theming:** Colors, translucency, and accents are rendered dynamically using [Matugen Dynamic Palette Tokens](../apps/matugen.md#core-color-roles) (`_shelfBgColor`, `primary`, `textPrimary`, `textSecondary`).
 3. **Entrance Animation (Emergence from Waybar):**
    * Encapsulated within a clipped viewport (`clip: true`) so notifications physically slide out from beneath Waybar.

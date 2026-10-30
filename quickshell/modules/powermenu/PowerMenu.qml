@@ -57,8 +57,8 @@ Scope {
                 radius: 24
                 // Semi-transparent panel background — follows active theme
                 color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.82)
-                border.color: Root.Theme.panelBorder
-                border.width: 1
+                border.color: Root.Theme.primary
+                border.width: 2
 
                 opacity: 0
                 scale: 0.93

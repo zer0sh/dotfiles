@@ -137,8 +137,8 @@ Scope {
 
                 radius: 27
                 color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.80)
-                border.width: 1
-                border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.45)
+                border.width: 2
+                border.color: Root.Theme.primary
 
                 RowLayout {
                     anchors.fill: parent

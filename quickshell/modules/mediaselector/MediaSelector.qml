@@ -118,59 +118,97 @@ Scope {
                     anchors.top: parent.top
                     height: panel.height
 
-                    // Concave fillet left (Dynamic Island shoulder)
                     Shape {
-                        id: leftFillet
-                        width: 28
-                        height: 28
-                        anchors.top: parent.top
-                        anchors.right: panel.left
+                        id: panelShape
+                        anchors.top: panel.top
+                        anchors.bottom: panel.bottom
+                        anchors.horizontalCenter: panel.horizontalCenter
+                        width: panel.width + 56
                         layer.enabled: true
                         layer.samples: 4
 
+                        // 1. Relleno unificado (hombro izquierdo + cuerpo + hombro derecho)
                         ShapePath {
                             strokeWidth: 0
                             strokeColor: "transparent"
-                            fillColor: panel.color
+                            fillColor: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.95)
 
                             startX: 0
                             startY: 0
-                            PathLine { x: 28; y: 0 }
-                            PathLine { x: 28; y: 28 }
+
+                            // Curva cóncava hombro izquierdo
                             PathArc {
-                                x: 0
-                                y: 0
-                                radiusX: 28
-                                radiusY: 28
+                                x: 28; y: 28
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Clockwise
+                            }
+                            // Lateral izquierdo
+                            PathLine { x: 28; y: Math.max(28, panelShape.height - 28) }
+                            // Esquina inferior izquierda redondeada
+                            PathArc {
+                                x: 56; y: panelShape.height
+                                radiusX: 28; radiusY: 28
                                 direction: PathArc.Counterclockwise
                             }
-                        }
-                    }
-
-                    // Concave fillet right (Dynamic Island shoulder)
-                    Shape {
-                        id: rightFillet
-                        width: 28
-                        height: 28
-                        anchors.top: parent.top
-                        anchors.left: panel.right
-                        layer.enabled: true
-                        layer.samples: 4
-
-                        ShapePath {
-                            strokeWidth: 0
-                            strokeColor: "transparent"
-                            fillColor: panel.color
-
-                            startX: 28
-                            startY: 0
-                            PathLine { x: 0; y: 0 }
-                            PathLine { x: 0; y: 28 }
+                            // Base horizontal
+                            PathLine { x: Math.max(56, panelShape.width - 56); y: panelShape.height }
+                            // Esquina inferior derecha redondeada
                             PathArc {
-                                x: 28
-                                y: 0
-                                radiusX: 28
-                                radiusY: 28
+                                x: panelShape.width - 28; y: Math.max(28, panelShape.height - 28)
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Counterclockwise
+                            }
+                            // Lateral derecho
+                            PathLine { x: panelShape.width - 28; y: 28 }
+                            // Curva cóncava hombro derecho
+                            PathArc {
+                                x: panelShape.width; y: 0
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Clockwise
+                            }
+                            // Cierre superior contra Waybar
+                            PathLine { x: 0; y: 0 }
+                        }
+
+                        // 2. Borde exterior continuo estilo ventana
+                        ShapePath {
+                            strokeWidth: 2
+                            strokeColor: Root.Theme.primary
+                            fillColor: "transparent"
+                            capStyle: ShapePath.FlatCap
+                            joinStyle: ShapePath.RoundJoin
+
+                            startX: 0
+                            startY: 0
+
+                            // Curva cóncava hombro izquierdo
+                            PathArc {
+                                x: 28; y: 28
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Clockwise
+                            }
+                            // Lateral izquierdo
+                            PathLine { x: 28; y: Math.max(28, panelShape.height - 28) }
+                            // Esquina inferior izquierda redondeada
+                            PathArc {
+                                x: 56; y: panelShape.height
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Counterclockwise
+                            }
+                            // Base horizontal
+                            PathLine { x: Math.max(56, panelShape.width - 56); y: panelShape.height }
+                            // Esquina inferior derecha redondeada
+                            PathArc {
+                                x: panelShape.width - 28; y: Math.max(28, panelShape.height - 28)
+                                radiusX: 28; radiusY: 28
+                                direction: PathArc.Counterclockwise
+                            }
+                            // Lateral derecho
+                            PathLine { x: panelShape.width - 28; y: 28 }
+                            // Curva cóncava hombro derecho
+                            PathArc {
+                                x: panelShape.width; y: 0
+                                radiusX: 28; radiusY: 28
                                 direction: PathArc.Clockwise
                             }
                         }
@@ -229,18 +267,8 @@ Scope {
                         ]
 
                         // Dynamic Island geometry: top edge flat against Waybar, bottom rounded
-                        radius: 28
-                        topLeftRadius: 0
-                        topRightRadius: 0
-                        bottomLeftRadius: 28
-                        bottomRightRadius: 28
-
-                        // Deep obsidian background with refined hairline border
-                        color: Qt.rgba(Root.Theme.panelBg.r,
-                                       Root.Theme.panelBg.g,
-                                       Root.Theme.panelBg.b, 0.95)
-                        border.width: 1
-                        border.color: Qt.rgba(1, 1, 1, 0.10)
+                        color: "transparent"
+                        border.width: 0
                         clip: true
 
                         // Block click-through

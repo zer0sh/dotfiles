@@ -59,71 +59,11 @@ Scope {
 
             Item {
                 id: toastWrapper
-                width: 380
+                width: 436
                 height: toastCol.implicitHeight
                 anchors.top: parent.top
                 anchors.topMargin: Root.Theme.shelfHeight
                 anchors.horizontalCenter: parent.horizontalCenter
-
-                // Concave fillet left (Dynamic Island shoulder connecting to Waybar bottom edge)
-                Shape {
-                    id: leftFillet
-                    width: 28
-                    height: 28
-                    anchors.top: parent.top
-                    anchors.right: parent.left
-                    layer.enabled: true
-                    layer.samples: 4
-                    visible: toastModel.count > 0
-
-                    ShapePath {
-                        strokeWidth: 0
-                        strokeColor: "transparent"
-                        fillColor: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.80)
-
-                        startX: 0
-                        startY: 0
-                        PathLine { x: 28; y: 0 }
-                        PathLine { x: 28; y: 28 }
-                        PathArc {
-                            x: 0
-                            y: 0
-                            radiusX: 28
-                            radiusY: 28
-                            direction: PathArc.Counterclockwise
-                        }
-                    }
-                }
-
-                // Concave fillet right (Dynamic Island shoulder connecting to Waybar bottom edge)
-                Shape {
-                    id: rightFillet
-                    width: 28
-                    height: 28
-                    anchors.top: parent.top
-                    anchors.left: parent.right
-                    layer.enabled: true
-                    layer.samples: 4
-                    visible: toastModel.count > 0
-
-                    ShapePath {
-                        strokeWidth: 0
-                        strokeColor: "transparent"
-                        fillColor: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.80)
-
-                        startX: 28
-                        startY: 0
-                        PathLine { x: 0; y: 0 }
-                        PathLine { x: 0; y: 28 }
-                        PathArc {
-                            x: 28
-                            y: 0
-                            radiusX: 28
-                            radiusY: 28
-                            direction: PathArc.Clockwise
-                        }
-                    }
-                }
 
                 // Clipping container for emergence animation directly out of Waybar
                 Item {
@@ -133,7 +73,8 @@ Scope {
 
                     Column {
                         id: toastCol
-                        width: parent.width
+                        width: 380
+                        anchors.horizontalCenter: parent.horizontalCenter
                         spacing: 8
 
                         move: Transition {

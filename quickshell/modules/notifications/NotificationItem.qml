@@ -32,12 +32,10 @@ Item {
         color: Qt.rgba(Root.Theme.surfaceContainer.r,
                        Root.Theme.surfaceContainer.g,
                        Root.Theme.surfaceContainer.b, 0.95)
-        border.width: 1
-        border.color: cardHover.containsMouse
-            ? Root.Theme.primary
-            : (urgency === "CRITICAL"
-                ? Root.Theme.error
-                : Qt.rgba(1, 1, 1, 0.10))
+        border.width: 2
+        border.color: (urgency === "CRITICAL")
+            ? Root.Theme.error
+            : Root.Theme.primary
         Behavior on border.color { ColorAnimation { duration: 150 } }
 
         ColumnLayout {
@@ -144,14 +142,6 @@ Item {
             }
         }
 
-        // Hover overlay
-        Rectangle {
-            anchors.fill: parent
-            color: Root.Theme.primary
-            opacity: cardHover.containsMouse ? 0.05 : 0
-            radius: parent.radius
-            Behavior on opacity { NumberAnimation { duration: 120 } }
-        }
 
         MouseArea {
             id: cardHover

@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Shapes
 import "../.." as Root
 
 Item {
@@ -56,7 +57,15 @@ Item {
         }
     }
 
-    Rectangle {
+    readonly property color currentBorderColor: (root.urgency === "CRITICAL")
+        ? Root.Theme.error
+        : Root.Theme.primary
+
+    readonly property color cardBgColor: Qt.rgba(Root.Theme.panelBg.r,
+                                                 Root.Theme.panelBg.g,
+                                                 Root.Theme.panelBg.b, 0.85)
+
+    Item {
         id: card
         anchors.left: parent.left
         anchors.right: parent.right
@@ -64,24 +73,118 @@ Item {
         opacity: root._opacity
         height:  cardContent.implicitHeight + 24
 
-        // Dynamic Island geometry: top edge flat against Waybar when top item, rounded capsule otherwise
-        radius:            28
-        topLeftRadius:     root.isTop ? 0 : 28
-        topRightRadius:    root.isTop ? 0 : 28
-        bottomLeftRadius:  28
-        bottomRightRadius: 28
+        // ── Silueta unificada superior: cuerpo + hombros cóncavos con borde continuo ──
+        Shape {
+            id: topIslandShape
+            visible: root.isTop
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+            anchors.horizontalCenter: parent.horizontalCenter
+            width: parent.width + 56
+            height: parent.height
+            layer.enabled: true
+            layer.samples: 4
 
-        // Deep obsidian surface — high contrast standardized with Theme tokens matching Waybar alpha
-        color: Qt.rgba(Root.Theme.panelBg.r,
-                       Root.Theme.panelBg.g,
-                       Root.Theme.panelBg.b, 0.80)
-        border.width: 1
-        border.color: cardHover.containsMouse
-            ? Root.Theme.primary
-            : (root.urgency === "CRITICAL"
-                ? Root.Theme.error
-                : Qt.rgba(1, 1, 1, 0.12))
-        Behavior on border.color { ColorAnimation { duration: 150 } }
+            // 1. Relleno continuo sin costuras
+            ShapePath {
+                strokeWidth: 0
+                strokeColor: "transparent"
+                fillColor: root.cardBgColor
+
+                startX: 0
+                startY: 0
+
+                // Curva cóncava hombro izquierdo
+                PathArc {
+                    x: 28; y: 28
+                    radiusX: 28; radiusY: 28
+                    direction: PathArc.Clockwise
+                }
+                // Lateral izquierdo
+                PathLine { x: 28; y: Math.max(28, topIslandShape.height - 28) }
+                // Esquina inferior izquierda
+                PathArc {
+                    x: 56; y: topIslandShape.height
+                    radiusX: 28; radiusY: 28
+                    direction: PathArc.Counterclockwise
+                }
+                // Base horizontal
+                PathLine { x: Math.max(56, topIslandShape.width - 56); y: topIslandShape.height }
+                // Esquina inferior derecha
+                PathArc {
+                    x: topIslandShape.width - 28; y: Math.max(28, topIslandShape.height - 28)
+                    radiusX: 28; radiusY: 28
+                    direction: PathArc.Counterclockwise
+                }
+                // Lateral derecho
+                PathLine { x: topIslandShape.width - 28; y: 28 }
+                // Curva cóncava hombro derecho
+                PathArc {
+                    x: topIslandShape.width; y: 0
+                    radiusX: 28; radiusY: 28
+                    direction: PathArc.Clockwise
+                }
+                // Cierre superior contra Waybar
+                PathLine { x: 0; y: 0 }
+            }
+
+            // 2. Borde perimetral estilo ventana (cubre hombros, laterales y base; abierto hacia Waybar)
+            ShapePath {
+                strokeWidth: 2
+                strokeColor: root.currentBorderColor
+                fillColor: "transparent"
+                capStyle: ShapePath.FlatCap
+                joinStyle: ShapePath.RoundJoin
+
+                Behavior on strokeColor { ColorAnimation { duration: 150 } }
+
+                startX: 0
+                startY: 0
+
+                // Curva cóncava hombro izquierdo
+                PathArc {
+                    x: 28; y: 28
+                    radiusX: 28; radiusY: 28
+                    direction: PathArc.Clockwise
+                }
+                // Lateral izquierdo
+                PathLine { x: 28; y: Math.max(28, topIslandShape.height - 28) }
+                // Esquina inferior izquierda
+                PathArc {
+                    x: 56; y: topIslandShape.height
+                    radiusX: 28; radiusY: 28
+                    direction: PathArc.Counterclockwise
+                }
+                // Base horizontal
+                PathLine { x: Math.max(56, topIslandShape.width - 56); y: topIslandShape.height }
+                // Esquina inferior derecha
+                PathArc {
+                    x: topIslandShape.width - 28; y: Math.max(28, topIslandShape.height - 28)
+                    radiusX: 28; radiusY: 28
+                    direction: PathArc.Counterclockwise
+                }
+                // Lateral derecho
+                PathLine { x: topIslandShape.width - 28; y: 28 }
+                // Curva cóncava hombro derecho
+                PathArc {
+                    x: topIslandShape.width; y: 0
+                    radiusX: 28; radiusY: 28
+                    direction: PathArc.Clockwise
+                }
+            }
+        }
+
+        // ── Notificación posterior (cápsula independiente redondeada con borde de ventana) ──
+        Rectangle {
+            id: bottomIslandRect
+            visible: !root.isTop
+            anchors.fill: parent
+            radius: 28
+            color: root.cardBgColor
+            border.width: 2
+            border.color: root.currentBorderColor
+            Behavior on border.color { ColorAnimation { duration: 150 } }
+        }
 
         Rectangle {
             visible: root.urgency === "CRITICAL"
@@ -90,6 +193,7 @@ Item {
             anchors.bottom: parent.bottom
             anchors.topMargin: root.isTop ? 0 : 6
             anchors.bottomMargin: 6
+            anchors.leftMargin: 2
             width: 4
             radius: 2
             color: Root.Theme.error
@@ -151,21 +255,11 @@ Item {
             }
         }
 
-        Rectangle {
-            anchors.fill: parent
-            color: Root.Theme.primary
-            opacity: cardHover.containsMouse ? 0.08 : 0
-            radius: parent.radius
-            topLeftRadius: parent.topLeftRadius
-            topRightRadius: parent.topRightRadius
-            bottomLeftRadius: parent.bottomLeftRadius
-            bottomRightRadius: parent.bottomRightRadius
-            Behavior on opacity { NumberAnimation { duration: 120 } }
-        }
-
         MouseArea {
             id: cardHover
             anchors.fill: parent
+            anchors.leftMargin: root.isTop ? -28 : 0
+            anchors.rightMargin: root.isTop ? -28 : 0
             hoverEnabled: true
             acceptedButtons: Qt.LeftButton
             onClicked: root.dismiss()

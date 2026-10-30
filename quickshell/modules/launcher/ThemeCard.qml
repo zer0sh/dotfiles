@@ -65,12 +65,8 @@ Item {
                 ? Qt.rgba(Root.Theme.surfaceBright.r, Root.Theme.surfaceBright.g, Root.Theme.surfaceBright.b, 0.95)
                 : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.65))
 
-        border.width: (mouseArea.containsMouse || cardRoot.isSelected) ? 2 : (cardRoot.isCurrentTheme ? 1.5 : 1)
-        border.color: (mouseArea.containsMouse || cardRoot.isSelected)
-            ? Root.Theme.primary
-            : (cardRoot.isCurrentTheme
-                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.6)
-                : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.3))
+        border.width: 2
+        border.color: Root.Theme.primary
 
         Behavior on color { ColorAnimation { duration: 180 } }
         Behavior on border.color { ColorAnimation { duration: 180 } }

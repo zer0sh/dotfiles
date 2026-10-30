@@ -66,10 +66,12 @@ Scope {
             "' > ~/.config/themes/current/wallpaper"];
         saveProc.running = true;
 
-        // Ejecutar Matugen en segundo plano
-        if (matugenProc.running) matugenProc.running = false;
-        matugenProc.command = ["/home/zero/.config/themes/apply-matugen.sh", cleanPath];
-        matugenProc.running = true;
+        // Ejecutar Matugen en segundo plano solo si matugen estaba seleccionado previamente
+        if (Root.Theme.currentTheme === "matugen") {
+            if (matugenProc.running) matugenProc.running = false;
+            matugenProc.command = ["/home/zero/.config/themes/apply-matugen.sh", cleanPath];
+            matugenProc.running = true;
+        }
 
         // Disparar transición visual en cada monitor
         requestChange(cleanPath);
