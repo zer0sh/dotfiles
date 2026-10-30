@@ -8,8 +8,8 @@ import Quickshell.Wayland
 import "../.." as Root
 
 // Clipboard history panel — bottom-sliding panel (ChromeOS / MD3 style).
-// Shows the last N copied text entries from cliphist and lets you
-// re-copy one on click or wipe everything.
+// Shows copied text entries and image previews from cliphist, with instant search,
+// one-click re-copying, and individual or full history purging.
 Scope {
     id: clipPanel
 
@@ -19,32 +19,44 @@ Scope {
 
     property var history: []
     property bool loading: false
+    property string searchQuery: ""
 
     onPanelVisibleChanged: {
         if (panelVisible) {
             _showing = true
+            searchQuery = ""
             refresh()
         } else {
             _panelOpen = false
         }
     }
 
-    // ── Load history (last 10 text entries) ─────────────────────
+    Timer {
+        id: searchDebounceTimer
+        interval: 140
+        repeat: false
+        onTriggered: clipPanel.refresh()
+    }
+
+    // ── Load history ─────────────────────────────────────────────
     function refresh() {
         loading = true
+        listProc.command = ["/usr/bin/python3", "/home/zero/.config/quickshell/scripts/clipboard-manager.py", "list", clipPanel.searchQuery, "50"]
         listProc.running = true
     }
 
     function copyItem(clipId) {
-        getProc.command = ["/bin/sh", "-c", "cliphist decode '" + clipId + "' | wl-copy"]
-        getProc.running = true
-        copyNotifyProc.command = ["/usr/bin/notify-send", "Clipboard", "Copied to clipboard"]
-        copyNotifyProc.running = true
+        copyProc.command = ["/usr/bin/python3", "/home/zero/.config/quickshell/scripts/clipboard-manager.py", "copy", clipId]
+        copyProc.running = true
+    }
+
+    function deleteItem(clipId) {
+        deleteProc.command = ["/usr/bin/python3", "/home/zero/.config/quickshell/scripts/clipboard-manager.py", "delete", clipId]
+        deleteProc.running = true
     }
 
     function clearAll() {
         wipeProc.running = true
-        refresh()
     }
 
     // ── IPC Handler ───────────────────────────────────────────────
@@ -58,38 +70,36 @@ Scope {
 
     Process {
         id: listProc
-        command: ["/bin/sh", "-c", "cliphist list | head -n 10"]
+        command: ["/usr/bin/python3", "/home/zero/.config/quickshell/scripts/clipboard-manager.py", "list", "", "50"]
         stdout: StdioCollector {
             onStreamFinished: {
-                var out = []
-                var lines = text.trim().split("\n")
-                for (var i = 0; i < lines.length; i++) {
-                    var line = lines[i]
-                    if (line === "") continue
-                    var idx = line.indexOf("\t")
-                    if (idx < 0) continue
-                    var id = line.substring(0, idx)
-                    var preview = line.substring(idx + 1)
-                    if (preview.indexOf("binary data") >= 0 || preview.trim() === "") continue
-                    out.push({ id: id, preview: preview })
+                try {
+                    clipPanel.history = JSON.parse(text.trim())
+                } catch (e) {
+                    clipPanel.history = []
                 }
-                clipPanel.history = out
                 clipPanel.loading = false
             }
         }
     }
 
     Process {
-        id: getProc
+        id: copyProc
     }
 
     Process {
-        id: copyNotifyProc
+        id: deleteProc
+        onExited: function(code) {
+            clipPanel.refresh()
+        }
     }
 
     Process {
         id: wipeProc
-        command: ["cliphist", "wipe"]
+        command: ["/usr/bin/python3", "/home/zero/.config/quickshell/scripts/clipboard-manager.py", "wipe"]
+        onExited: function(code) {
+            clipPanel.refresh()
+        }
     }
 
     // ── Overlay window / panel ────────────────────────────────────
@@ -294,9 +304,10 @@ Scope {
                         // ── Header ────────────────────────────────
                         RowLayout {
                             Layout.fillWidth: true
-                            Layout.preferredHeight: 56
+                            Layout.preferredHeight: 52
                             Layout.leftMargin: Root.Theme.paddingLarge
                             Layout.rightMargin: Root.Theme.paddingLarge
+                            Layout.topMargin: 4
                             spacing: 10
 
                             Rectangle {
@@ -334,6 +345,94 @@ Scope {
                             }
                         }
 
+                        // ── Search Input Field ────────────────────
+                        Rectangle {
+                            Layout.fillWidth: true
+                            Layout.preferredHeight: 38
+                            Layout.leftMargin: Root.Theme.paddingLarge
+                            Layout.rightMargin: Root.Theme.paddingLarge
+                            Layout.topMargin: 2
+                            Layout.bottomMargin: 8
+                            radius: 12
+                            color: Root.Theme.surfaceContainer
+                            border.width: searchInput.activeFocus ? 1.5 : 1
+                            border.color: searchInput.activeFocus
+                                ? Root.Theme.primary
+                                : Qt.rgba(255, 255, 255, 0.08)
+
+                            Behavior on border.color { ColorAnimation { duration: 150 } }
+
+                            RowLayout {
+                                anchors.fill: parent
+                                anchors.leftMargin: 12
+                                anchors.rightMargin: 10
+                                spacing: 8
+
+                                Text {
+                                    text: "󰍉"
+                                    font.family: Root.Theme.fontFamily
+                                    font.pixelSize: 16
+                                    color: searchInput.activeFocus ? Root.Theme.primary : Root.Theme.textSecondary
+                                }
+
+                                TextInput {
+                                    id: searchInput
+                                    Layout.fillWidth: true
+                                    font.family: Root.Theme.fontFamily
+                                    font.pixelSize: Root.Theme.fontSizeSmall
+                                    color: Root.Theme.textPrimary
+                                    selectByMouse: true
+                                    selectionColor: Root.Theme.primary
+                                    selectedTextColor: Root.Theme.tileActiveText
+                                    text: clipPanel.searchQuery
+
+                                    onTextChanged: {
+                                        clipPanel.searchQuery = text
+                                        searchDebounceTimer.restart()
+                                    }
+
+                                    Text {
+                                        anchors.verticalCenter: parent.verticalCenter
+                                        text: "Search history..."
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: Root.Theme.fontSizeSmall
+                                        color: Root.Theme.textSecondary
+                                        opacity: 0.6
+                                        visible: searchInput.text === ""
+                                    }
+                                }
+
+                                Rectangle {
+                                    visible: searchInput.text !== ""
+                                    Layout.preferredWidth: 22
+                                    Layout.preferredHeight: 22
+                                    radius: 11
+                                    color: clearSearchMA.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "✕"
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: 11
+                                        font.weight: Font.Bold
+                                        color: Root.Theme.textSecondary
+                                    }
+
+                                    MouseArea {
+                                        id: clearSearchMA
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: {
+                                            searchInput.text = ""
+                                            clipPanel.searchQuery = ""
+                                            clipPanel.refresh()
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                         // ── Clipboard List ────────────────────────
                         Item {
                             Layout.fillWidth: true
@@ -356,7 +455,9 @@ Scope {
                                     Layout.alignment: Qt.AlignHCenter
                                 }
                                 Text {
-                                    text: "Clipboard is empty"
+                                    text: clipPanel.searchQuery !== ""
+                                        ? "No matching clips found"
+                                        : "Clipboard is empty"
                                     color: Root.Theme.textPrimary
                                     font.family: Root.Theme.fontFamily
                                     font.pixelSize: Root.Theme.fontSizeNormal
@@ -379,7 +480,7 @@ Scope {
                             ListView {
                                 id: clipListView
                                 anchors.fill: parent
-                                anchors.topMargin: 4
+                                anchors.topMargin: 2
                                 anchors.bottomMargin: 8
                                 clip: true
                                 visible: clipPanel.history.length > 0
@@ -392,9 +493,15 @@ Scope {
                                     width: clipListView.width
                                     clipId: modelData.id
                                     preview: modelData.preview
+                                    isImage: modelData.is_image
+                                    thumb: modelData.thumb
 
                                     onClickedItem: function(id) {
                                         clipPanel.copyItem(id)
+                                    }
+
+                                    onDeleteItem: function(id) {
+                                        clipPanel.deleteItem(id)
                                     }
                                 }
 

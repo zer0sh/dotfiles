@@ -1,0 +1,102 @@
+[
+  {
+    "quote": "La simplicidad es el requisito previo para la fiabilidad.",
+    "author": "Edsger W. Dijkstra",
+    "category": "tecnología"
+  },
+  {
+    "quote": "Tienes poder sobre tu mente, no sobre los acontecimientos externos. Comprende esto y encontrarás la fuerza.",
+    "author": "Marco Aurelio",
+    "category": "filosofía"
+  },
+  {
+    "quote": "El buen diseño es el menor diseño posible.",
+    "author": "Dieter Rams",
+    "category": "diseño"
+  },
+  {
+    "quote": "La mejor manera de predecir el futuro es inventarlo.",
+    "author": "Alan Kay",
+    "category": "innovación"
+  },
+  {
+    "quote": "No nos atrevemos a muchas cosas porque son difíciles; son difíciles porque no nos atrevemos a hacerlas.",
+    "author": "Séneca",
+    "category": "filosofía"
+  },
+  {
+    "quote": "Hablar es fácil. Enséñame el código.",
+    "author": "Linus Torvalds",
+    "category": "tecnología"
+  },
+  {
+    "quote": "El diseño no es solo lo que se ve y se siente. El diseño es cómo funciona.",
+    "author": "Steve Jobs",
+    "category": "diseño"
+  },
+  {
+    "quote": "Un viaje de mil millas comienza con un solo paso.",
+    "author": "Lao Tsé",
+    "category": "filosofía"
+  },
+  {
+    "quote": "Primero resuelve el problema. Luego, escribe el código.",
+    "author": "John Johnson",
+    "category": "programación"
+  },
+  {
+    "quote": "No sufras por el mañana antes de que llegue. Quien sufre antes de lo necesario, sufre más de lo necesario.",
+    "author": "Séneca",
+    "category": "filosofía"
+  },
+  {
+    "quote": "Hacer que lo simple sea complicado es común; hacer que lo complicado sea simple, asombrosamente simple, eso es creatividad.",
+    "author": "Charles Mingus",
+    "category": "creatividad"
+  },
+  {
+    "quote": "Los programas deben ser escritos para que las personas los lean, y sólo incidentalmente para que las máquinas los ejecuten.",
+    "author": "Harold Abelson",
+    "category": "programación"
+  },
+  {
+    "quote": "La felicidad de tu vida depende de la calidad de tus pensamientos.",
+    "author": "Marco Aurelio",
+    "category": "filosofía"
+  },
+  {
+    "quote": "Detalles no son detalles. Ellos hacen el diseño.",
+    "author": "Charles Eames",
+    "category": "diseño"
+  },
+  {
+    "quote": "La perfección se alcanza, no cuando no hay nada más que añadir, sino cuando no hay nada más que quitar.",
+    "author": "Antoine de Saint-Exupéry",
+    "category": "filosofía"
+  },
+  {
+    "quote": "Cualquier tonto puede escribir código que un ordenador entienda. Los buenos programadores escriben código que los humanos pueden entender.",
+    "author": "Martin Fowler",
+    "category": "programación"
+  },
+  {
+    "quote": "La disciplina es el puente entre las metas y el logro.",
+    "author": "Jim Rohn",
+    "category": "productividad"
+  },
+  {
+    "quote": "Sé tolerante con los demás y estricto contigo mismo.",
+    "author": "Marco Aurelio",
+    "category": "estoicismo"
+  },
+  {
+    "quote": "No puedes conectar los puntos mirando hacia adelante; solo puedes conectarlos mirando hacia atrás.",
+    "author": "Steve Jobs",
+    "category": "visión"
+  },
+  {
+    "quote": "La sobriedad y la claridad son las virtudes de los maestros del oficio.",
+    "author": "Ken Thompson",
+    "category": "tecnología"
+  }
+]

@@ -13,6 +13,9 @@ import "modules/deskclock" as DeskClock
 import "modules/calendar" as Calendar
 import "modules/background" as Background
 import "modules/weathergadget" as WeatherGadget
+import "modules/hardwarepulse" as HardwarePulse
+import "modules/scratchpad" as Scratchpad
+import "modules/dailyspark" as DailySpark
 import "modules/overview" as Overview
 import "modules/mediaselector" as MediaSelector
 
@@ -122,6 +125,18 @@ ShellRoot {
 
     WeatherGadget.WeatherGadget {
         id: weatherGadget
+    }
+
+    HardwarePulse.HardwarePulse {
+        id: hardwarePulse
+    }
+
+    Scratchpad.Scratchpad {
+        id: scratchpad
+    }
+
+    DailySpark.DailySpark {
+        id: dailySpark
     }
 
     Overview.Overview {

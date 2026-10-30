@@ -27,13 +27,34 @@ QtObject {
             name: "Weather Forecast",
             desc: "Weather widget showing current conditions and 2-day forecast",
             icon: "󰖐"
+        },
+        {
+            id: "hardwarepulse",
+            name: "Hardware Pulse",
+            desc: "Minimalist telemetry showing CPU, RAM, temperature, and battery",
+            icon: "󰍛"
+        },
+        {
+            id: "scratchpad",
+            name: "Ambient Scratchpad",
+            desc: "Permanent floating to-do and quick notes with instant persistence",
+            icon: "󰄵"
+        },
+        {
+            id: "dailyspark",
+            name: "Daily Spark",
+            desc: "Inspiring philosophical and tech quotes from a curated dictionary",
+            icon: "󰘥"
         }
     ]
 
     property var stateMap: ({
-        "deskclock": { "enabled": true, "x": 1420, "y": 100 },
-        "calendar":  { "enabled": true, "x": 100,  "y": 700 },
-        "weather":   { "enabled": true, "x": 1420, "y": 520 }
+        "deskclock":     { "enabled": true,  "x": 670, "y": 100 },
+        "calendar":      { "enabled": false, "x": 1460, "y": 650 },
+        "weather":       { "enabled": false, "x": 1480, "y": 120 },
+        "hardwarepulse": { "enabled": true,  "x": 80,  "y": 120 },
+        "scratchpad":    { "enabled": true,  "x": 80,  "y": 650 },
+        "dailyspark":    { "enabled": true,  "x": 560, "y": 720 }
     })
 
     signal stateChanged()

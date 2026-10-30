@@ -62,6 +62,8 @@ nav:
           - Workspace Overview: quickshell/overview.md
           - Notifications & OSDs: quickshell/osd-notifications.md
           - Floating Launcher & Wallpapers: quickshell/launcher-wallpapers.md
+          - Desktop Gadgets: quickshell/gadgets.md
+          - Clipboard Manager: quickshell/clipboard.md
           - Keyboard Shortcuts: quickshell/shortcuts-overlay.md
       - Waybar: apps/waybar.md
       - Wofi: apps/wofi.md

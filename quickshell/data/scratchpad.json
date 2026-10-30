@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "text": "Refinar configuración de Hyprland & Waybar",
+    "done": true
+  },
+  {
+    "id": 2,
+    "text": "Personalizar nuevos gadgets de Quickshell",
+    "done": false
+  },
+  {
+    "id": 3,
+    "text": "Explorar nuevas paletas con Matugen",
+    "done": false
+  }
+]

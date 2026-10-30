@@ -57,7 +57,7 @@ Waybar is docked at the top of the display with a height of 36 pixels and an acc
         * Morphs dynamically into the Do Not Disturb glyph (`󰂛  [N]` or `󰂛`) highlighted in accent color (`@accent`) when DND mode is enabled.
         * Synchronizes in real time via POSIX signal `SIGRTMIN+1`.
         * Left click invokes `qs ipc call notifications toggle`, opening the Control Center with the notifications card expanded.
-    * **`custom/clipboard`:** Clipboard manager action button displaying clip glyph (`󰅌`). Left click invokes `qs ipc call clipboard toggle`, opening the Quickshell bottom-sliding clipboard history panel.
+    * **`custom/clipboard`:** Clipboard manager action button displaying clip glyph (`󰅌`). Left click invokes `qs ipc call clipboard toggle`, opening the Quickshell bottom-sliding [Clipboard Manager](../quickshell/clipboard.md).
 * **Unified Status Pill:** Merged continuous capsule pill containing date, time, audio, network, bluetooth, and battery/power:
     * **`custom/date`:** Formatted date (`date +'%b %d'`), styled as the rounded left edge of the unified pill.
     * **`clock`:** Local time format `{:%H:%M}` with bold typography.
