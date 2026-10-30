@@ -203,8 +203,9 @@ tooltip label {
     padding: 0;
 }
 
-/* ----- Notification bell (inside unified quick_actions pill) ----- */
-#custom-notifications {
+/* ----- Notification bell and clipboard (inside unified quick_actions pill) ----- */
+#custom-notifications,
+#custom-clipboard {
     padding: 0 10px 0 8px;
     margin: 0;
     border-radius: 14px;
@@ -213,7 +214,8 @@ tooltip label {
     transition: all 0.2s ease;
 }
 
-#custom-notifications:hover {
+#custom-notifications:hover,
+#custom-clipboard:hover {
     background: alpha(@text, 0.08);
 }
 

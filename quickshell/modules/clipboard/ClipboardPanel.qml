@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Shapes
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -136,14 +137,98 @@ Scope {
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 anchors.topMargin: Root.Theme.shelfHeight
-                clip: true
+
+                Shape {
+                    id: panelShape
+                    anchors.top: panel.top
+                    anchors.bottom: panel.bottom
+                    anchors.left: panel.left
+                    anchors.right: panel.right
+                    anchors.leftMargin: -28
+                    layer.enabled: true
+                    layer.samples: 4
+
+                    // 1. Relleno unificado (hombro cóncavo izquierdo + cuerpo del panel)
+                    ShapePath {
+                        strokeWidth: 0
+                        strokeColor: "transparent"
+                        fillColor: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.85)
+
+                        startX: 0
+                        startY: 0
+
+                        // Curva cóncava hombro izquierdo
+                        PathArc {
+                            x: 28; y: 28
+                            radiusX: 28; radiusY: 28
+                            direction: PathArc.Clockwise
+                        }
+                        // Lateral izquierdo
+                        PathLine { x: 28; y: Math.max(28, panelShape.height - 28) }
+                        // Esquina inferior izquierda redondeada
+                        PathArc {
+                            x: 56; y: panelShape.height
+                            radiusX: 28; radiusY: 28
+                            direction: PathArc.Counterclockwise
+                        }
+                        // Base horizontal
+                        PathLine { x: Math.max(56, panelShape.width - 28); y: panelShape.height }
+                        // Esquina inferior derecha redondeada
+                        PathArc {
+                            x: panelShape.width; y: Math.max(28, panelShape.height - 28)
+                            radiusX: 28; radiusY: 28
+                            direction: PathArc.Counterclockwise
+                        }
+                        // Lateral derecho
+                        PathLine { x: panelShape.width; y: 0 }
+                        // Cierre superior contra Waybar
+                        PathLine { x: 0; y: 0 }
+                    }
+
+                    // 2. Borde exterior continuo estilo ventana
+                    ShapePath {
+                        strokeWidth: 2
+                        strokeColor: Root.Theme.primary
+                        fillColor: "transparent"
+                        capStyle: ShapePath.FlatCap
+                        joinStyle: ShapePath.RoundJoin
+
+                        startX: 0
+                        startY: 0
+
+                        // Curva cóncava hombro izquierdo
+                        PathArc {
+                            x: 28; y: 28
+                            radiusX: 28; radiusY: 28
+                            direction: PathArc.Clockwise
+                        }
+                        // Lateral izquierdo
+                        PathLine { x: 28; y: Math.max(28, panelShape.height - 28) }
+                        // Esquina inferior izquierda redondeada
+                        PathArc {
+                            x: 56; y: panelShape.height
+                            radiusX: 28; radiusY: 28
+                            direction: PathArc.Counterclockwise
+                        }
+                        // Base horizontal
+                        PathLine { x: Math.max(56, panelShape.width - 28); y: panelShape.height }
+                        // Esquina inferior derecha redondeada
+                        PathArc {
+                            x: panelShape.width; y: Math.max(28, panelShape.height - 28)
+                            radiusX: 28; radiusY: 28
+                            direction: PathArc.Counterclockwise
+                        }
+                        // Lateral derecho
+                        PathLine { x: panelShape.width; y: 0 }
+                    }
+                }
 
                 Rectangle {
                     id: panel
 
-                    width: Root.Theme.panelWidth
+                    width: Math.round(Root.Theme.panelWidth * 0.7)
                     anchors.right: parent.right
-                    anchors.rightMargin: Root.Theme.spacingSmall
+                    anchors.rightMargin: 0
 
                     height: Math.min(panelContent.implicitHeight, panelClip.height - Root.Theme.spacingSmall * 2)
 
@@ -151,18 +236,25 @@ Scope {
                         State {
                             name: "visible"
                             when: clipPanel._panelOpen
-                            PropertyChanges { target: panel; y: Root.Theme.spacingSmall }
+                            PropertyChanges {
+                                target: panel
+                                y: 0
+                            }
                         },
                         State {
                             name: "hidden"
                             when: !clipPanel._panelOpen
-                            PropertyChanges { target: panel; y: -panel.height - Root.Theme.spacingSmall }
+                            PropertyChanges {
+                                target: panel
+                                y: -panel.height - 28
+                            }
                         }
                     ]
 
                     transitions: [
                         Transition {
-                            from: "hidden"; to: "visible"
+                            from: "hidden"
+                            to: "visible"
                             NumberAnimation {
                                 property: "y"
                                 duration: Root.Theme.animDuration
@@ -170,26 +262,29 @@ Scope {
                             }
                         },
                         Transition {
-                            from: "visible"; to: "hidden"
+                            from: "visible"
+                            to: "hidden"
                             SequentialAnimation {
                                 NumberAnimation {
                                     property: "y"
                                     duration: Root.Theme.animDuration
                                     easing.type: Easing.OutCubic
                                 }
-                                ScriptAction { script: clipPanel._showing = false }
+                                ScriptAction {
+                                    script: clipPanel._showing = false
+                                }
                             }
                         }
                     ]
 
-                    radius: Root.Theme.panelRadius
-                    color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.78)
-                    border.width: 2
-                    border.color: Root.Theme.primary
+                    color: "transparent"
+                    border.width: 0
                     clip: true
 
                     // Block click-through
-                    MouseArea { anchors.fill: parent }
+                    MouseArea {
+                        anchors.fill: parent
+                    }
 
                     ColumnLayout {
                         id: panelContent
@@ -220,7 +315,7 @@ Scope {
 
                             Text {
                                 text: "Clipboard"
-                                color: "#E5E1E9"
+                                color: Root.Theme.textPrimary
                                 font.family: Root.Theme.fontFamily
                                 font.pixelSize: Root.Theme.fontSizeNormal
                                 font.weight: Font.DemiBold
@@ -231,10 +326,10 @@ Scope {
 
                             Text {
                                 text: clipPanel.history.length + " items"
-                                color: "#E5E1E9"
+                                color: Root.Theme.textSecondary
                                 font.family: Root.Theme.fontFamily
                                 font.pixelSize: Root.Theme.fontSizeXS
-                                opacity: 0.5
+                                opacity: 0.7
                                 Layout.alignment: Qt.AlignVCenter
                             }
                         }
@@ -254,7 +349,7 @@ Scope {
 
                                 Text {
                                     text: "󰅌"
-                                    color: "#E5E1E9"
+                                    color: Root.Theme.textPrimary
                                     font.family: Root.Theme.fontFamily
                                     font.pixelSize: 60
                                     opacity: 0.3
@@ -262,7 +357,7 @@ Scope {
                                 }
                                 Text {
                                     text: "Clipboard is empty"
-                                    color: "#E5E1E9"
+                                    color: Root.Theme.textPrimary
                                     font.family: Root.Theme.fontFamily
                                     font.pixelSize: Root.Theme.fontSizeNormal
                                     opacity: 0.5
@@ -274,7 +369,7 @@ Scope {
                             Text {
                                 anchors.centerIn: parent
                                 text: "Loading…"
-                                color: "#E5E1E9"
+                                color: Root.Theme.textPrimary
                                 font.family: Root.Theme.fontFamily
                                 font.pixelSize: Root.Theme.fontSizeNormal
                                 opacity: 0.5
@@ -326,16 +421,20 @@ Scope {
                                 height: 44
                                 radius: 22
                                 color: clearAllMA.containsMouse
-                                    ? Qt.rgba(Root.Theme.textSecondary.r, Root.Theme.textSecondary.g, Root.Theme.textSecondary.b, 0.12)
-                                    : "transparent"
-
+                                    ? Qt.rgba(Root.Theme.error.r, Root.Theme.error.g, Root.Theme.error.b, 0.15)
+                                    : Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.60)
+                                border.width: 1
+                                border.color: clearAllMA.containsMouse
+                                    ? Root.Theme.error
+                                    : Qt.rgba(Root.Theme.outline.r, Root.Theme.outline.g, Root.Theme.outline.b, 0.30)
                                 Behavior on color { ColorAnimation { duration: 120 } }
+                                Behavior on border.color { ColorAnimation { duration: 120 } }
 
                                 Text {
                                     id: clearAllLabel
                                     anchors.centerIn: parent
                                     text: "Clear all"
-                                    color: "#E5E1E9"
+                                    color: clearAllMA.containsMouse ? Root.Theme.error : Root.Theme.textPrimary
                                     font.family: Root.Theme.fontFamily
                                     font.pixelSize: Root.Theme.fontSizeNormal
                                     font.weight: Font.DemiBold

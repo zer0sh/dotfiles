@@ -47,6 +47,7 @@ Scope {
         "power off menu": "Menú de apagado y sesión",
         "wallpaper picker": "Selector de fondos de pantalla",
         "help menu": "Menú de ayuda y atajos (F1)",
+        "clipboard history": "Historial del portapapeles",
         "mini music player": "Mini reproductor de música",
         "screen shader controls": "Selector de filtros y shaders",
         "open screen shader menu carousel": "Selector de filtros y shaders",
@@ -275,6 +276,7 @@ Scope {
                     if (lowerDesc.indexOf("terminal") !== -1 || lowerDesc.indexOf("archivos") !== -1 ||
                         lowerDesc.indexOf("lanzador") !== -1 || (lowerDesc.indexOf("pantalla") !== -1 && lowerDesc.indexOf("editor") !== -1) ||
                         lowerDesc.indexOf("música") !== -1 || lowerDesc.indexOf("wallpaper") !== -1 || lowerDesc.indexOf("fondo") !== -1 ||
+                        lowerDesc.indexOf("portapapeles") !== -1 ||
                         lowerDesc.indexOf("root") !== -1 || lowerDesc.indexOf("sudo") !== -1) {
                         cat = "apps"
                     } else if (lowerDesc.indexOf("ventana") !== -1 || dispatcher === "killactive" ||

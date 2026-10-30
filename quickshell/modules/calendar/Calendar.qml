@@ -5,7 +5,6 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import "../.." as Root
-import "../gadgets" as Gadgets
 
 // Calendar — calendario simple en el "escritorio".
 // Va en una capa Bottom (detrás de las ventanas) y no captura input.
@@ -87,58 +86,97 @@ Scope {
         WlrLayershell.namespace: "quickshell:calendar"
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-        anchors.top:    true
-        anchors.left:   true
-        margins.top:    calendar.posY
-        margins.left:   calendar.posX
-        implicitWidth:  400
-        implicitHeight: 400
+        anchors {
+            top: true
+            bottom: true
+            left: true
+            right: true
+        }
 
-        // Panel con estilo neon
-        Rectangle {
+        mask: Region {
+            item: mainCard
+        }
+
+        // Contenedor principal sin fondo ni bordes — arrastrable directamente
+        Item {
             id: mainCard
-            anchors.fill: parent
-            radius: 18
-            color: Qt.rgba(0.05, 0.05, 0.08, 0.55)
-            border.color: Root.Theme.primary
-            border.width: 2
+            x: calendar.posX
+            y: calendar.posY
+            width: 400
+            height: 400
+            property bool isDragging: false
 
-            HoverHandler {
-                id: calHover
+            Binding {
+                target: mainCard
+                property: "x"
+                value: calendar.posX
+                when: !mainCard.isDragging
+            }
+            Binding {
+                target: mainCard
+                property: "y"
+                value: calendar.posY
+                when: !mainCard.isDragging
             }
 
-            Gadgets.GadgetHeader {
-                windowRef: win
-                gadgetId: "calendar"
-                managerRef: Root.GadgetsManager
-                parentHovered: calHover.hovered
-            }
-
-            Rectangle {
+            // Arrastre libre desde cualquier punto del calendario
+            MouseArea {
+                id: dragArea
                 anchors.fill: parent
-                anchors.margins: -6
-                radius: 24
-                color: "transparent"
-                border.color: Qt.rgba(Root.Theme.primary.r,
-                                      Root.Theme.primary.g,
-                                      Root.Theme.primary.b, 0.5)
-                border.width: 2
+                hoverEnabled: true
+                cursorShape: pressed ? Qt.ClosedHandCursor : (containsMouse ? Qt.OpenHandCursor : Qt.ArrowCursor)
+                drag.target: mainCard
+                drag.axis: Drag.XAndYAxis
+
+                onPressed: {
+                    mainCard.isDragging = true
+                }
+
+                onReleased: {
+                    var fx = Math.round(mainCard.x)
+                    var fy = Math.round(mainCard.y)
+                    calendar.posX = fx
+                    calendar.posY = fy
+                    Root.GadgetsManager.setPosition("calendar", fx, fy)
+                    mainCard.isDragging = false
+                }
+            }
+
+            // Botón sutil de cierre al pasar el cursor
+            Text {
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.margins: 6
+                z: 100
+                text: "✕"
+                font.family: Root.Theme.fontFamily
+                font.pixelSize: 13
+                font.weight: Font.Bold
+                color: closeHover.hovered ? Root.Theme.error : Qt.rgba(Root.Theme.textSecondary.r, Root.Theme.textSecondary.g, Root.Theme.textSecondary.b, 0.45)
+                opacity: dragArea.containsMouse ? 1.0 : 0.0
+                Behavior on opacity { NumberAnimation { duration: 180 } }
+
+                HoverHandler { id: closeHover }
+                TapHandler {
+                    onTapped: Root.GadgetsManager.setEnabled("calendar", false)
+                }
             }
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.margins: 18
-                anchors.topMargin: 40
+                anchors.margins: 14
                 spacing: 12
 
                 // Encabezado:  ‹ August ›  (funcional)
                 RowLayout {
                     Layout.fillWidth: true
                     spacing: 10
+                    z: 10
 
                     Item {
                         width: 28
                         height: 28
+                        z: 10
                         Text {
                             anchors.centerIn: parent
                             text: "‹"
@@ -166,6 +204,7 @@ Scope {
                     Item {
                         width: 28
                         height: 28
+                        z: 10
                         Text {
                             anchors.centerIn: parent
                             text: "›"

@@ -27,8 +27,11 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
   * Waybar notification bell triggers `qs ipc call notifications toggle`, opening the Control Center with the notifications card smoothly expanded.
   * Full design parameters and easing curves detailed in the [Notifications & OSDs Guide](osd-notifications.md).
 * **Clipboard Manager (`modules/clipboard/`):**
-  * Visual history and search for text and images integrated with `cliphist`.
-  * Keyboard access mapped via [Hyprland Keybindings](../hyprland/keybinds.md#quickshell-and-desktop-overlays).
+  * **Dynamic Island Shelf Architecture:** Docked flush below Waybar (`shelfHeight: 36px`, `y: 0`, `anchors.rightMargin: 0`) with seamless 28 px concave transition fillet and continuous 2 px accent outline (`Root.Theme.primary`).
+  * **Compact Geometry:** Scaled to 616 px width (30% narrower than the standard 880 px panel) for clean, unobtrusive clipboard history management.
+  * **Unified Translucency:** Panel background with 0.85 opacity (`Root.Theme.panelBg`) and cards styled at 0.95 opacity (`Root.Theme.surfaceContainer`) matching the Notification Center design system.
+  * **Functionality:** Real-time text history populated via `cliphist list`, instant re-copying via `cliphist decode <id> | wl-copy`, and quick pill button for wiping history.
+  * **Triggering:** Accessible via Waybar quick action button or globally using `SUPER + V` (`qs ipc call clipboard toggle`). Detailed in [Hyprland Keybindings](../hyprland/keybinds.md#quickshell-and-desktop-overlays).
 * **DeskClock & Calendar (`modules/deskclock/`, `modules/calendar/`):**
   * Ambient desktop clock surface and expandable calendar panel with date navigation.
 * **Unified Music Player (`modules/launcher/`):**

@@ -44,8 +44,12 @@ quickshell/
 ├── modules/
 │   ├── background/
 │   │   └── Background.qml           # Fullscreen background layer with Zoom & Blur transition
-│   ├── gadgets/
-│   │   └── GadgetHeader.qml         # Interactive drag handle, coordinates sync, and close button
+│   ├── deskclock/
+│   │   └── DeskClock.qml            # Monumental floating digital clock with progress bar
+│   ├── calendar/
+│   │   └── Calendar.qml             # Interactive transparent monthly calendar
+│   ├── weathergadget/
+│   │   └── WeatherGadget.qml        # Transparent live weather and forecast widget
 │   └── launcher/
 │       ├── Launcher.qml             # Main overlay window, state machine, and search bar
 │       ├── WallpaperCard.qml        # 16:9 wallpaper thumbnail card and browse button
@@ -126,10 +130,10 @@ Typing `/gadgets `, `/widgets `, or `/gadget ` (also with `>`), selecting "Deskt
   * Displays 224x214 px cards showcasing live visual mockups of desktop widgets (`DeskClock`, `Calendar`, and future extensions).
   * Top-right badge dynamically indicates status: green `Active` checkmark or muted `Hidden` badge.
   * Clicking any card or pressing `Enter` toggles the gadget visibility on the desktop in real time.
-* **On-Desktop Interaction (`GadgetHeader.qml`):**
-  * **Smooth Proximity Reveal:** Desktop gadgets feature an integrated header that stays invisible during normal use and reveals smoothly (`opacity: 1.0` in 220 ms) when hovering over the widget.
-  * **Freeform Drag Handle:** A centered Material You style drag pill allows repositioning the widget freely across the screen. Coordinates are calculated dynamically using Layershell panel margins and automatically saved to `~/.config/quickshell/gadgets.json`.
-  * **Close Button (`✕`):** Clicking the close button in the header hides the gadget immediately and updates state persistence. The gadget can be restored at any time via the `/gadgets` launcher carousel.
+* **On-Desktop Interaction & Architecture:**
+  * **Zero-Container Transparency:** Desktop gadgets float seamlessly with zero backgrounds, zero borders, and zero glow rectangles directly over the wallpaper.
+  * **Direct Native Drag ("Drag Anywhere"):** Desktop gadgets use native Qt Quick `drag.target` hosted inside fullscreen `WlrLayer.Bottom` panels with dynamic input masking (`mask: Region { item: mainCard }`). Users can grab and drag the widget smoothly from anywhere on its surface at native monitor refresh rates with zero latency or rubber-banding.
+  * **Discrete Hover Close Button (`✕`):** A minimalist close button appears on hover in the top-right corner to hide the gadget and persist its state. The gadget can be restored at any time via the `/gadgets` launcher carousel.
 
 ### 6. Unified Music Player Mode (`/music`)
 Typing `/music `, `/musica `, `>music `, or pressing `SUPER + M` (`qs ipc call miniplayer toggle`) opens the unified bottom-docked music player:

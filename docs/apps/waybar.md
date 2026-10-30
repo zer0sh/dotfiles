@@ -44,8 +44,8 @@ Waybar is docked at the top of the display with a height of 36 pixels and an acc
 ### 3. Right Section
 * **`tray`:** Wayland system tray for background application icons (`icon-size: 14px`, `spacing: 8px`). The container collapses to zero width and margins when empty, rendering active icons inside rounded capsule badges (`border-radius: 14px`, `background: alpha(@text, 0.08)`).
 * **Quick Actions & Notifications Pill (`group/quick_actions`):**
-    * Unified capsule pill hosting quick hardware indicators alongside the notification bell (`custom/caffeine`, `custom/nightlight`, `custom/shader`, `custom/powerprofile`, `custom/notifications`).
-    * **Empty state collapse:** When all quick toggles are inactive, the pill seamlessly scales to contain solely the notification bell (`#custom-notifications`), eliminating any residual empty container spacing or layout shifts.
+    * Unified capsule pill hosting quick hardware indicators alongside the notification bell and clipboard manager (`custom/caffeine`, `custom/nightlight`, `custom/shader`, `custom/powerprofile`, `custom/notifications`, `custom/clipboard`).
+    * **Empty state collapse:** When all quick toggles are inactive, the pill seamlessly scales to contain solely the notification bell and clipboard button, eliminating any residual empty container spacing or layout shifts.
     * **Active indicators:** When one or more toggles are engaged, their accented glyphs (`color: @accent`, `font-size: 16px`) appear inline to the left of the notification bell, sharing the unified capsule container (`border-radius: 18px`, `background: alpha(@text, 0.08)`).
     * **`custom/caffeine`:** Displays coffee cup glyph (`󰅶`) when session wake-lock is engaged via POSIX signal `SIGRTMIN+8`.
     * **`custom/nightlight`:** Displays eye glyph (`󰈈`) when `hyprsunset` warm light filter (4000K) is active via POSIX signal `SIGRTMIN+9`.
@@ -57,6 +57,7 @@ Waybar is docked at the top of the display with a height of 36 pixels and an acc
         * Morphs dynamically into the Do Not Disturb glyph (`󰂛  [N]` or `󰂛`) highlighted in accent color (`@accent`) when DND mode is enabled.
         * Synchronizes in real time via POSIX signal `SIGRTMIN+1`.
         * Left click invokes `qs ipc call notifications toggle`, opening the Control Center with the notifications card expanded.
+    * **`custom/clipboard`:** Clipboard manager action button displaying clip glyph (`󰅌`). Left click invokes `qs ipc call clipboard toggle`, opening the Quickshell bottom-sliding clipboard history panel.
 * **Unified Status Pill:** Merged continuous capsule pill containing date, time, audio, network, bluetooth, and battery/power:
     * **`custom/date`:** Formatted date (`date +'%b %d'`), styled as the rounded left edge of the unified pill.
     * **`clock`:** Local time format `{:%H:%M}` with bold typography.

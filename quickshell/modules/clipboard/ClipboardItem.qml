@@ -2,8 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../.." as Root
 
-// Clipboard history card — one copied text entry.
-// Used by ClipboardPanel's ListView.
+// Clipboard history card — MD3 style aligned with NotificationItem
 Item {
     id: clipItem
 
@@ -23,10 +22,14 @@ Item {
         anchors.rightMargin: Root.Theme.paddingNormal
         height: cardContent.implicitHeight + 24
         radius: 16
-        color: Qt.rgba(0x0D/255, 0x11/255, 0x1F/255, 0.9)
-        border.width: 1
-        border.color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g,
-                              Root.Theme.primary.b, 0.55)
+        color: Qt.rgba(Root.Theme.surfaceContainer.r,
+                       Root.Theme.surfaceContainer.g,
+                       Root.Theme.surfaceContainer.b, 0.95)
+        border.width: 2
+        border.color: cardHover.containsMouse
+            ? Root.Theme.primary
+            : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.70)
+        Behavior on border.color { ColorAnimation { duration: 150 } }
 
         RowLayout {
             id: cardContent
@@ -58,7 +61,7 @@ Item {
             // Preview (2 lines max)
             Text {
                 text: clipItem.preview
-                color: "#E5E1E9"
+                color: Root.Theme.textPrimary
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: Root.Theme.fontSizeNormal
                 wrapMode: Text.Wrap
@@ -68,15 +71,6 @@ Item {
                 Layout.fillWidth: true
                 Layout.alignment: Qt.AlignVCenter
             }
-        }
-
-        // Hover overlay
-        Rectangle {
-            anchors.fill: parent
-            color: Root.Theme.textPrimary
-            opacity: cardHover.containsMouse ? 0.05 : 0
-            radius: parent.radius
-            Behavior on opacity { NumberAnimation { duration: 120 } }
         }
 
         MouseArea {

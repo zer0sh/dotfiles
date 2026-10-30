@@ -4,7 +4,6 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import "../.." as Root
-import "../gadgets" as Gadgets
 
 // DeskClock — reloj flotante en el "escritorio" con mensaje dinámico
 // por franja horaria y un medidor de progreso del día.
@@ -149,70 +148,96 @@ Scope {
         WlrLayershell.namespace: "quickshell:deskclock"
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-        anchors.top:    true
-        anchors.left:   true
-        margins.top:    deskClock.posY
-        margins.left:   deskClock.posX
-        implicitWidth:  400
-        implicitHeight: 400
+        anchors {
+            top: true
+            bottom: true
+            left: true
+            right: true
+        }
 
-        // Panel con estilo neon — ocupa todo el PanelWindow (ya desplazado 100px)
-        Rectangle {
+        mask: Region {
+            item: mainCard
+        }
+
+        // Contenedor principal sin fondo ni bordes — arrastrable directamente
+        Item {
             id: mainCard
-            anchors.fill: parent
-            radius: 18
-            color: Qt.rgba(0.05, 0.05, 0.08, 0.55)
-            border.color: Root.Theme.primary
-            border.width: 2
+            x: deskClock.posX
+            y: deskClock.posY
+            width: 580
+            height: 560
+            property bool isDragging: false
 
-            HoverHandler {
-                id: clockHover
+            Binding {
+                target: mainCard
+                property: "x"
+                value: deskClock.posX
+                when: !mainCard.isDragging
+            }
+            Binding {
+                target: mainCard
+                property: "y"
+                value: deskClock.posY
+                when: !mainCard.isDragging
             }
 
-            Gadgets.GadgetHeader {
-                windowRef: win
-                gadgetId: "deskclock"
-                managerRef: Root.GadgetsManager
-                parentHovered: clockHover.hovered
-            }
-
-            // Resplandor del borde (capa exterior difuminada)
-            Rectangle {
+            // Arrastre libre desde cualquier punto del gadget
+            MouseArea {
+                id: dragArea
                 anchors.fill: parent
-                anchors.margins: -6
-                radius: 24
-                color: "transparent"
-                border.color: Qt.rgba(Root.Theme.primary.r,
-                                      Root.Theme.primary.g,
-                                      Root.Theme.primary.b, 0.5)
-                border.width: 2
+                hoverEnabled: true
+                cursorShape: pressed ? Qt.ClosedHandCursor : (containsMouse ? Qt.OpenHandCursor : Qt.ArrowCursor)
+                drag.target: mainCard
+                drag.axis: Drag.XAndYAxis
+
+                onPressed: {
+                    mainCard.isDragging = true
+                }
+
+                onReleased: {
+                    var fx = Math.round(mainCard.x)
+                    var fy = Math.round(mainCard.y)
+                    deskClock.posX = fx
+                    deskClock.posY = fy
+                    Root.GadgetsManager.setPosition("deskclock", fx, fy)
+                    mainCard.isDragging = false
+                }
             }
-            Rectangle {
-                anchors.fill: parent
-                anchors.margins: -12
-                radius: 30
-                color: "transparent"
-                border.color: Qt.rgba(Root.Theme.primary.r,
-                                      Root.Theme.primary.g,
-                                      Root.Theme.primary.b, 0.2)
-                border.width: 2
+
+            // Botón sutil de cierre al pasar el cursor
+            Text {
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.margins: 8
+                z: 100
+                text: "✕"
+                font.family: Root.Theme.fontFamily
+                font.pixelSize: 15
+                font.weight: Font.Bold
+                color: closeHover.hovered ? Root.Theme.error : Qt.rgba(Root.Theme.textSecondary.r, Root.Theme.textSecondary.g, Root.Theme.textSecondary.b, 0.45)
+                opacity: dragArea.containsMouse ? 1.0 : 0.0
+                Behavior on opacity { NumberAnimation { duration: 180 } }
+
+                HoverHandler { id: closeHover }
+                TapHandler {
+                    onTapped: Root.GadgetsManager.setEnabled("deskclock", false)
+                }
             }
 
             ColumnLayout {
                 anchors.fill: parent
                 anchors.margins: 20
-                anchors.topMargin: 40
-                spacing: 14
+                spacing: 20
 
                 Item { Layout.fillHeight: true }
 
-                // Hora grande
+                // Hora grande (~40% más grande)
                 Text {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignHCenter
                     text: deskClock.currentTime
                     font.family: Root.Theme.fontFamily
-                    font.pixelSize: 120
+                    font.pixelSize: 168
                     font.weight: Font.Bold
                     color: Qt.lighter(Root.Theme.primary, 1.2)
                     horizontalAlignment: Text.AlignHCenter
@@ -224,23 +249,23 @@ Scope {
                 ColumnLayout {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignHCenter
-                    spacing: 8
+                    spacing: 10
 
                     // Barra
                     Rectangle {
                         Layout.fillWidth: true
-                        Layout.preferredHeight: 10
+                        Layout.preferredHeight: 14
                         Layout.alignment: Qt.AlignHCenter
-                        radius: 5
+                        radius: 7
                         color: Qt.rgba(Root.Theme.primary.r,
                                       Root.Theme.primary.g,
                                       Root.Theme.primary.b, 0.15)
 
                         Rectangle {
                             id: fill
-                            width: Math.max(10, parent.width * deskClock.dayProgress)
+                            width: Math.max(14, parent.width * deskClock.dayProgress)
                             height: parent.height
-                            radius: 5
+                            radius: 7
                             color: Qt.lighter(Root.Theme.primary, 1.3)
                             Behavior on width {
                                 NumberAnimation { duration: 1000; easing.type: Easing.OutCubic }
@@ -253,7 +278,7 @@ Scope {
                         Layout.fillWidth: true
                         text: deskClock.progressText
                         font.family: Root.Theme.fontFamily
-                        font.pixelSize: 12
+                        font.pixelSize: 17
                         font.weight: Font.DemiBold
                         color: Qt.lighter(Root.Theme.primary, 1.2)
                         horizontalAlignment: Text.AlignHCenter
@@ -264,10 +289,10 @@ Scope {
                 Text {
                     Layout.fillWidth: true
                     Layout.alignment: Qt.AlignHCenter
-                    Layout.preferredHeight: 48
+                    Layout.preferredHeight: 68
                     text: deskClock.message
                     font.family: Root.Theme.fontFamily
-                    font.pixelSize: 15
+                    font.pixelSize: 21
                     color: Qt.lighter(Root.Theme.primary, 1.1)
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter

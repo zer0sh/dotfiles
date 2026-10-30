@@ -29,7 +29,8 @@
       "custom/nightlight",
       "custom/shader",
       "custom/powerprofile",
-      "custom/notifications"
+      "custom/notifications",
+      "custom/clipboard"
     ]
   },
   "custom/caffeine": {
@@ -76,6 +77,11 @@
     "interval": 5,
     "signal": 1,
     "on-click": "qs ipc call notifications toggle",
+    "tooltip": false
+  },
+  "custom/clipboard": {
+    "format": "󰅌",
+    "on-click": "qs ipc call clipboard toggle",
     "tooltip": false
   },
   "custom/date": {

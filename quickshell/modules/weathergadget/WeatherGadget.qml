@@ -4,7 +4,6 @@ import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import "../.." as Root
-import "../gadgets" as Gadgets
 
 Scope {
     id: weatherGadget
@@ -93,48 +92,88 @@ Scope {
         WlrLayershell.namespace: "quickshell-weathergadget"
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-        anchors.top: true
-        anchors.left: true
-        margins.top: weatherGadget.posY
-        margins.left: weatherGadget.posX
-        implicitWidth: 350
-        implicitHeight: 290
+        anchors {
+            top: true
+            bottom: true
+            left: true
+            right: true
+        }
 
-        Rectangle {
+        mask: Region {
+            item: mainCard
+        }
+
+        // Contenedor principal sin fondo ni bordes — arrastrable directamente
+        Item {
             id: mainCard
-            anchors.fill: parent
-            radius: 24
-            color: Qt.rgba(0.05, 0.05, 0.08, 0.65)
-            border.color: Root.Theme.primary
-            border.width: 2
+            x: weatherGadget.posX
+            y: weatherGadget.posY
+            width: 350
+            height: 290
+            property bool isDragging: false
 
-            HoverHandler {
-                id: cardHover
+            Binding {
+                target: mainCard
+                property: "x"
+                value: weatherGadget.posX
+                when: !mainCard.isDragging
+            }
+            Binding {
+                target: mainCard
+                property: "y"
+                value: weatherGadget.posY
+                when: !mainCard.isDragging
             }
 
-            Gadgets.GadgetHeader {
-                windowRef: win
-                gadgetId: "weather"
-                managerRef: Root.GadgetsManager
-                parentHovered: cardHover.hovered
-            }
-
-            // Glow exterior
-            Rectangle {
+            // Arrastre libre desde cualquier punto del widget del clima
+            MouseArea {
+                id: dragArea
                 anchors.fill: parent
-                anchors.margins: -6
-                radius: 28
-                color: "transparent"
-                border.color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35)
-                border.width: 1.5
+                hoverEnabled: true
+                cursorShape: pressed ? Qt.ClosedHandCursor : (containsMouse ? Qt.OpenHandCursor : Qt.ArrowCursor)
+                drag.target: mainCard
+                drag.axis: Drag.XAndYAxis
+
+                onPressed: {
+                    mainCard.isDragging = true
+                }
+
+                onReleased: {
+                    var fx = Math.round(mainCard.x)
+                    var fy = Math.round(mainCard.y)
+                    weatherGadget.posX = fx
+                    weatherGadget.posY = fy
+                    Root.GadgetsManager.setPosition("weather", fx, fy)
+                    mainCard.isDragging = false
+                }
+            }
+
+            // Botón sutil de cierre al pasar el cursor
+            Text {
+                anchors.top: parent.top
+                anchors.right: parent.right
+                anchors.margins: 6
+                z: 100
+                text: "✕"
+                font.family: Root.Theme.fontFamily
+                font.pixelSize: 13
+                font.weight: Font.Bold
+                color: closeHover.hovered ? Root.Theme.error : Qt.rgba(Root.Theme.textSecondary.r, Root.Theme.textSecondary.g, Root.Theme.textSecondary.b, 0.45)
+                opacity: dragArea.containsMouse ? 1.0 : 0.0
+                Behavior on opacity { NumberAnimation { duration: 180 } }
+
+                HoverHandler { id: closeHover }
+                TapHandler {
+                    onTapped: Root.GadgetsManager.setEnabled("weather", false)
+                }
             }
 
             ColumnLayout {
                 anchors.fill: parent
-                anchors.topMargin: 40
-                anchors.bottomMargin: 18
-                anchors.leftMargin: 20
-                anchors.rightMargin: 20
+                anchors.topMargin: 16
+                anchors.bottomMargin: 14
+                anchors.leftMargin: 16
+                anchors.rightMargin: 16
                 spacing: 12
 
                 // Top: City & Feels like
@@ -222,13 +261,9 @@ Scope {
                     Repeater {
                         model: weatherGadget.forecast
 
-                        Rectangle {
+                        Item {
                             Layout.fillWidth: true
                             Layout.preferredHeight: 74
-                            radius: 14
-                            color: Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.5)
-                            border.color: Qt.rgba(Root.Theme.outline.r, Root.Theme.outline.g, Root.Theme.outline.b, 0.2)
-                            border.width: 1
 
                             ColumnLayout {
                                 anchors.centerIn: parent
