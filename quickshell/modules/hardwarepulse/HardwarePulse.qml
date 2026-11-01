@@ -192,12 +192,22 @@ Scope {
 
                     RowLayout {
                         Layout.fillWidth: true
+                        spacing: 6
+
                         Text {
-                            text: "󰍛 CPU"
+                            text: "󰍛"
                             font.family: Root.Theme.iconFont
                             font.pixelSize: 13
-                            font.weight: Font.DemiBold
                             color: Root.Theme.textPrimary
+                            Layout.alignment: Qt.AlignVCenter
+                        }
+                        Text {
+                            text: "CPU"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 12
+                            font.weight: Font.Bold
+                            color: Root.Theme.textPrimary
+                            Layout.alignment: Qt.AlignVCenter
                         }
                         Item { Layout.fillWidth: true }
                         Text {
@@ -232,12 +242,22 @@ Scope {
 
                     RowLayout {
                         Layout.fillWidth: true
+                        spacing: 6
+
                         Text {
-                            text: "󰘚 RAM"
+                            text: "󰘚"
                             font.family: Root.Theme.iconFont
                             font.pixelSize: 13
-                            font.weight: Font.DemiBold
                             color: Root.Theme.textPrimary
+                            Layout.alignment: Qt.AlignVCenter
+                        }
+                        Text {
+                            text: "RAM"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 12
+                            font.weight: Font.Bold
+                            color: Root.Theme.textPrimary
+                            Layout.alignment: Qt.AlignVCenter
                         }
                         Item { Layout.fillWidth: true }
                         Text {
@@ -272,11 +292,19 @@ Scope {
                     spacing: 6
 
                     Text {
-                        text: hardwarePulse.batteryStatus === "Charging" ? "󰂄 BAT" : "󰁹 BAT"
+                        text: hardwarePulse.batteryStatus === "Charging" ? "󰂄" : "󰁹"
                         font.family: Root.Theme.iconFont
                         font.pixelSize: 13
-                        font.weight: Font.DemiBold
                         color: Root.Theme.textPrimary
+                        Layout.alignment: Qt.AlignVCenter
+                    }
+                    Text {
+                        text: "BAT"
+                        font.family: Root.Theme.fontFamily
+                        font.pixelSize: 12
+                        font.weight: Font.Bold
+                        color: Root.Theme.textPrimary
+                        Layout.alignment: Qt.AlignVCenter
                     }
                     Item { Layout.fillWidth: true }
                     Text {
