@@ -48,7 +48,7 @@ source = $HOME/.config/hypr/autostart.conf
 
 ## Startup Services (`autostart.conf`)
 
-* **[Quickshell](../quickshell/index.md):** Loads desktop widgets, [top-center OSD layers & notifications](../quickshell/osd-notifications.md), and the One UI control center.
+* **[Quickshell](../quickshell/index.md):** Loads desktop widgets, [notifications](../quickshell/notifications.md), [top-center OSD layers](../quickshell/osd.md), and the One UI control center.
 * **Waybar:** Top system status bar running alongside Quickshell widgets.
 * **Polkit Agent:** `systemctl --user start hyprpolkitagent` for GUI privilege escalation.
 * **Cliphist:** Text and image clipboard history daemons integrated with Quickshell clipboard drawer.

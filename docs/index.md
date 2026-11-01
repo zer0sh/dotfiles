@@ -69,7 +69,10 @@ Explore the complete modular guide:
     Wayland-native QML interface layer with One UI inspired control cards and telemetry.
 
     * [Control Center Architecture](quickshell/index.md)
-    * [Top-Center OSDs & Notifications](quickshell/osd-notifications.md)
+    * [Desktop Notifications](quickshell/notifications.md)
+    * [On-Screen Display (OSD)](quickshell/osd.md)
+    * [Application Launcher](quickshell/launcher.md)
+    * [Wallpaper Engine](quickshell/wallpapers.md)
 
 -   :material-rocket-launch-outline:{ .lg .middle } **Launchers & Styling Engine**
 

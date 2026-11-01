@@ -50,7 +50,7 @@ nav:
   - Home:
       - Overview: index.md
       - Gallery: gallery.md
-  - Desktop:
+  - Compositor & Shell:
       - Hyprland:
           - Architecture: hyprland/index.md
           - Keybindings: hyprland/keybinds.md
@@ -60,25 +60,32 @@ nav:
       - Quickshell:
           - Control Center: quickshell/index.md
           - Workspace Overview: quickshell/overview.md
-          - Notifications & OSDs: quickshell/osd-notifications.md
-          - Floating Launcher & Wallpapers: quickshell/launcher-wallpapers.md
+          - Notifications: quickshell/notifications.md
+          - On-Screen Display (OSD): quickshell/osd.md
+          - Application Launcher: quickshell/launcher.md
+          - Wallpaper Engine: quickshell/wallpapers.md
           - Desktop Gadgets: quickshell/gadgets.md
           - Clipboard Manager: quickshell/clipboard.md
           - Keyboard Shortcuts: quickshell/shortcuts-overlay.md
-      - Waybar: apps/waybar.md
-      - Wofi: apps/wofi.md
-      - Matugen: apps/matugen.md
-      - Steam: apps/steam.md
+      - Bar & Menus:
+          - Waybar: apps/waybar.md
+          - Wofi: apps/wofi.md
+  - Theming & Design:
+      - Matugen & Colors: apps/matugen.md
+  - Applications:
       - Zen Browser: apps/zen.md
-  - CLI:
-      - Terminals:
+      - Steam: apps/steam.md
+  - CLI & Shell:
+      - Terminal Emulators:
           - Alacritty: terminals/alacritty.md
           - Kitty: terminals/kitty.md
+      - Shell & Editor:
           - Zsh: terminals/zsh.md
           - Vim: terminals/vim.md
-      - Fastfetch: apps/fastfetch.md
-      - Bat: apps/bat.md
-      - Btop: apps/btop.md
-  - Workflow:
+      - Tools & Monitoring:
+          - Btop: apps/btop.md
+          - Fastfetch: apps/fastfetch.md
+          - Bat: apps/bat.md
+  - Maintenance & Workflow:
       - Philosophy & Workflow: dotfiles/workflow.md
       - Release & SemVer: dotfiles/releases.md

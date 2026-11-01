@@ -25,7 +25,7 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
   * Top-center Dynamic Island toast layer (`NotificationToastLayer.qml`) docked flush with Waybar (`shelfHeight: 36px`), featuring dual concave transition fillets (28 px radius), flat top edges, and downward slide emergence animation.
   * Collapsible notifications card embedded directly inside the Control Center featuring the title `Notifications • ( # )`, rotating toggle chevron, quick "Clear all" action, empty placeholder state, and scrollable notification list.
   * Waybar notification bell triggers `qs ipc call notifications toggle`, opening the Control Center with the notifications card smoothly expanded.
-  * Full design parameters and easing curves detailed in the [Notifications & OSDs Guide](osd-notifications.md).
+  * Full design parameters and easing curves detailed in the [Desktop Notifications Guide](notifications.md) and [OSD Indicators Guide](osd.md).
 * **Clipboard Manager (`modules/clipboard/`):**
   * **Dynamic Island Shelf Architecture:** Docked flush below Waybar (`shelfHeight: 36px`, `y: 0`, `anchors.rightMargin: 0`) with seamless 28 px concave transition fillet and continuous 2 px accent outline (`Root.Theme.primary`).
   * **Compact Geometry:** Scaled to 616 px width (30% narrower than the standard 880 px panel) for clean, unobtrusive clipboard history management.
@@ -38,7 +38,7 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
   * Bottom-docked non-modal interactive MPRIS music controller integrated inside the launcher. Triggered globally with `SUPER + M` (`qs ipc call miniplayer toggle`) or by typing `/music`, featuring passthrough desktop click masking and full playback controls.
 * **Application Launcher & Dynamic Island Carousel (`modules/launcher/`):**
   * Bottom-docked runner (`anchors.bottomMargin: 0`) with dual concave fillets (28 px radius) seamlessly emerging from the screen's bottom bezel.
-  * Powers Application Drawer, Wallpaper Carousel, Shader Selector, Theme Carousel, and Gadget Manager. Detailed in the [Launcher & Wallpapers Guide](launcher-wallpapers.md).
+  * Powers Application Drawer, Theme Carousel, and Gadget Manager. Detailed in the [Application Launcher Guide](launcher.md) and [Wallpaper Engine Guide](wallpapers.md).
 * **Workspace Overview & Exposé (`modules/overview/`):**
   * Full-screen 2x5 grid displaying all 10 Hyprland workspaces simultaneously with proportional window layouts.
   * Drag-and-drop window relocation across workspaces, quick window kill, and spatial keyboard navigation.
@@ -76,7 +76,10 @@ To validate QML syntax or restart Quickshell without crashing your Wayland sessi
 
 * [Workspace Overview & Exposé](overview.md): 2x5 grid exposé, proportional window geometries, and drag-and-drop window relocation.
 * [Keyboard Shortcuts Overlay](shortcuts-overlay.md): Wayland modal cheat sheet, category filtering, and live search.
-* [Notifications & OSD Dynamics](osd-notifications.md): Animation curves, screen positioning, and source maps for toasts and OSD popups.
+* [Desktop Notifications](notifications.md): Animation curves, screen positioning, and source maps for toasts and history.
+* [On-Screen Displays (OSD)](osd.md): Volume, brightness, and MPRIS track change popups.
+* [Application Launcher](launcher.md): Dynamic Island runner, mode router, and bottom-docked command drawer.
+* [Wallpaper Engine](wallpapers.md): Ping-pong background switching and horizontal carousel.
 * [Waybar Status Bar](../apps/waybar.md): Top status bar shell integrating with Quickshell notification signals and launcher.
 * [Hyprland Architecture](../hyprland/index.md): Compositor startup hooks, autostart services, and display arrangements.
 * [Hyprland Keybindings](../hyprland/keybinds.md): Global hotkeys for invoking Quickshell panels, toggles, and tools.

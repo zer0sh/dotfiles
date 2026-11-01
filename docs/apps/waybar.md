@@ -74,7 +74,7 @@ Waybar and Quickshell operate in synchronized coexistence:
 
 1. **Vertical Hierarchy:**
    * Waybar occupies the top 36 pixels (`height: 36`, `layer: top`).
-   * Quickshell floating toasts and OSDs reserve a `topMargin: 46` px, creating an aligned 10 px air gap directly below Waybar's rounded bottom border (see [Notifications & OSDs](../quickshell/osd-notifications.md)).
+   * Quickshell floating toasts and OSDs reserve a `topMargin: 46` px, creating an aligned 10 px air gap directly below Waybar's rounded bottom border (see [Desktop Notifications](../quickshell/notifications.md) and [OSD Indicators](../quickshell/osd.md)).
 2. **IPC Interactivity:**
    * Clicking audio, network, or bluetooth indicators directly opens the One UI Control Center inside Quickshell.
    * Clicking the launcher circle opens the Quickshell app search matrix without requiring full-screen interruptions.
@@ -112,7 +112,8 @@ pkill -SIGUSR2 waybar
 ## Related Documentation
 
 * [Quickshell Overview](../quickshell/index.md): Control Center, desktop widgets, and IPC endpoints.
-* [Notifications & OSD Dynamics](../quickshell/osd-notifications.md): Detailed vertical spacing and toast geometry beneath Waybar.
+* [Desktop Notifications](../quickshell/notifications.md): Detailed vertical spacing and toast geometry beneath Waybar.
+* [On-Screen Displays (OSD)](../quickshell/osd.md): Volume, brightness, and MPRIS track change popups.
 * [Hyprland Architecture](../hyprland/index.md): Autostart definitions and window management rules.
 * [Matugen Theming Engine](matugen.md): Color extraction pipeline and `waybar.css` template generation.
 * [Wofi Application Launcher](wofi.md): Secondary standalone menu runner.

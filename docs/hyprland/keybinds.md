@@ -37,9 +37,9 @@ All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr
 | `SUPER + Tab` | Workspace overview / Next window | `quickshell ipc call overview next` | [Workspace Overview](../quickshell/overview.md) |
 | `SUPER + SHIFT + Tab` | Workspace overview / Previous window | `quickshell ipc call overview prev` | [Workspace Overview](../quickshell/overview.md) |
 | `CTRL + ALT + Del` | Power menu | `quickshell ipc call powermenu toggle` | [Control Center](../quickshell/index.md) |
-| `SUPER + W` | Wallpaper picker | `quickshell ipc call wallpaper toggle` | [Matugen Integration](../apps/matugen.md) |
+| `SUPER + W` | Wallpaper picker | `quickshell ipc call wallpaper toggle` | [Wallpaper Engine](../quickshell/wallpapers.md) |
 | `SUPER + V` | Clipboard history | `quickshell ipc call clipboard toggle` | [Clipboard Manager](../quickshell/clipboard.md) |
-| `SUPER + M` | Music player | `quickshell ipc call miniplayer toggle` | [Launcher & Music](../quickshell/launcher-wallpapers.md#6-unified-music-player-mode-music) |
+| `SUPER + M` | Music player | `quickshell ipc call miniplayer toggle` | [Music Player](../quickshell/launcher.md#5-unified-mpris-music-player-mode-music) |
 | `F1` | Shortcut cheatsheet overlay | `quickshell ipc call shortcuts toggle` | [Shortcuts Overlay](../quickshell/shortcuts-overlay.md) |
 
 ---
