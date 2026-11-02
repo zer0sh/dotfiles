@@ -179,6 +179,16 @@ Scope {
         onExited: btStatusProc.running = true
     }
 
+    function toggleAirplane() {
+        var next = !controlCenter.airplaneModeEnabled
+        airplaneWifiProc.command = ["nmcli", "radio", "wifi", next ? "off" : "on"]
+        airplaneBtProc.command = ["bluetoothctl", "power", next ? "off" : "on"]
+        airplaneWifiProc.running = true
+        airplaneBtProc.running = true
+        controlCenter.wifiEnabled = !next
+        controlCenter.btEnabled = !next
+    }
+
     // Power profiles provided by power-profiles-daemon / GNOME.
     Process {
         id: powerProfileProc
@@ -283,8 +293,6 @@ Scope {
     function toggleDnd() {
         var next = !Notifications.NotificationService.dndEnabled
         setDnd(next)
-        if (!next)
-            notifyChange("Do Not Disturb", "Do Not Disturb disabled")
     }
 
     function setDnd(val) {
@@ -452,6 +460,8 @@ Scope {
         }
         function toggleCaffeine(): void { controlCenter.toggleCaffeine() }
         function toggleNightLight(): void { controlCenter.toggleNightLight() }
+        function toggleAirplane(): void { controlCenter.toggleAirplane() }
+        function cyclePowerProfile(): void { controlCenter.cyclePowerProfile() }
         function toggleShader(): void {
             controlCenter.panelVisible = false
             launchShaderProc.running = true
@@ -820,14 +830,7 @@ Scope {
                                         active: controlCenter.airplaneModeEnabled
                                         icon: "airplanemode_active"
                                         label: "Airplane"
-                                        onClicked: {
-                                            airplaneWifiProc.running = true
-                                            airplaneBtProc.running = true
-                                            if (controlCenter.airplaneModeEnabled)
-                                                notifyChange("Airplane Mode", "Airplane mode disabled")
-                                            else
-                                                notifyChange("Airplane Mode", "Airplane mode enabled")
-                                        }
+                                        onClicked: controlCenter.toggleAirplane()
                                     }
 
                                     CircleToggle {

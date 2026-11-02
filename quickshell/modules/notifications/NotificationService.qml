@@ -29,6 +29,17 @@ QtObject {
         actionsSupported: false
 
         onNotification: function(notif) {
+            var sum = (notif.summary || "").toLowerCase().trim()
+            var app = (notif.appName || "").toLowerCase().trim()
+
+            // Filter out system hardware/toggle notifications that are handled by Dynamic Island OSD
+            if (sum === "volume" || sum === "brightness" || sum === "caffeine" ||
+                sum === "do not disturb" || sum === "airplane mode" ||
+                app === "volume" || app === "brightness") {
+                notif.dismiss()
+                return
+            }
+
             // Keep in tracked list for history
             notif.tracked = true
             root._notifMap[notif.id] = notif

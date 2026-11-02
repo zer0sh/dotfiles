@@ -27,12 +27,10 @@ if [ "$1" = "toggle" ]; then
         fi
         pkill -f "why=Caffeine mode" 2>/dev/null || true
         rm -f "$STATE_FILE" "$PID_FILE"
-        notify-send "Caffeine" "Caffeine mode disabled"
     else
         touch "$STATE_FILE"
         setsid systemd-inhibit --what=idle:sleep --who=Quickshell --why="Caffeine mode" sleep infinity >/dev/null 2>&1 &
         echo $! > "$PID_FILE"
-        notify-send "Caffeine" "Caffeine mode enabled"
     fi
     pkill -RTMIN+8 waybar 2>/dev/null || true
     exit 0

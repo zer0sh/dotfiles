@@ -102,6 +102,15 @@ ShellRoot {
         id: brightnessOsd
     }
 
+    Osd.MicOsd {
+        id: micOsd
+    }
+
+    Osd.StatusOsd {
+        id: statusOsd
+        controlCenterRef: controlCenter
+    }
+
     Osd.MusicOsd {
         id: musicOsd
         miniPlayerRef: appLauncher
