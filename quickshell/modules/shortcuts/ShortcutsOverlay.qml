@@ -30,29 +30,52 @@ Scope {
         "close active window": "Close active window",
         "reload hyprland config": "Reload Hyprland config",
         "open app launcher": "Open app launcher",
-        "workspace overview & window switcher": "Workspace overview & window switcher",
+        "workspace overview next": "Next workspace overview",
+        "workspace overview previous": "Previous workspace overview",
+        "workspace overview & window switcher": "Workspace overview",
         "open monitor layout editor": "Display and monitor settings",
         "lock screen": "Lock screen",
-        "screenshot full screen (save + clipboard)": "Full screen screenshot (save + clipboard)",
-        "screenshot selected area (save + clipboard)": "Selected area screenshot (save + clipboard)",
+        "capture full screen": "Capture full screen",
+        "capture selected area": "Capture selected area",
+        "screenshot full screen (save + clipboard)": "Capture full screen",
+        "screenshot selected area (save + clipboard)": "Capture selected area",
         "ocr selected area": "OCR text recognition from screen",
         "toggle screen recording": "Toggle screen recording",
         "raise volume": "Raise volume",
         "lower volume": "Lower volume",
         "toggle mute": "Toggle audio mute",
+        "toggle audio mute": "Toggle audio mute",
         "toggle microphone mute": "Toggle microphone mute",
+        "toggle microphone mute (fallback)": "Toggle microphone mute (fallback)",
         "increase brightness": "Increase brightness",
         "decrease brightness": "Decrease brightness",
+        "toggle airplane mode (rfkill)": "Toggle airplane mode (RFKill)",
+        "toggle airplane mode (wlan)": "Toggle airplane mode (WLAN)",
+        "toggle airplane mode": "Toggle airplane mode",
+        "airplane mode toggle": "Toggle airplane mode",
+        "cycle power profiles": "Cycle power profiles",
+        "power profiles cycle (performance / balanced / power-saver)": "Cycle power profiles",
+        "toggle do not disturb": "Toggle Do Not Disturb",
+        "do not disturb toggle": "Toggle Do Not Disturb",
+        "toggle caffeine (keep awake)": "Toggle Caffeine (keep awake)",
+        "caffeine toggle (keep display awake)": "Toggle Caffeine (keep awake)",
         "toggle floating mode": "Toggle floating mode",
         "toggle fullscreen": "Toggle fullscreen",
-        "launch an app as root (requires the sudo-launcher script)": "Launch app as root (sudo)",
-        "power off menu": "Power off and session menu",
-        "wallpaper picker": "Wallpaper picker",
-        "help menu": "Help menu & shortcuts (F1)",
-        "clipboard history": "Clipboard history",
-        "mini music player": "Mini music player",
+        "launch application as root": "Launch application as root",
+        "launch an app as root (requires the sudo-launcher script)": "Launch application as root",
+        "open power menu": "Open power menu",
+        "power off menu": "Open power menu",
+        "open wallpaper picker": "Open wallpaper picker",
+        "wallpaper picker": "Open wallpaper picker",
+        "open keyboard shortcuts cheatsheet": "Keyboard shortcuts cheatsheet",
+        "help menu": "Keyboard shortcuts cheatsheet",
+        "open clipboard history": "Open clipboard history",
+        "clipboard history": "Open clipboard history",
+        "toggle mini music player": "Toggle mini music player",
+        "mini music player": "Toggle mini music player",
+        "open screen shader carousel": "Open screen shader carousel",
+        "open screen shader menu carousel": "Open screen shader carousel",
         "screen shader controls": "Screen shader controls",
-        "open screen shader menu carousel": "Screen shader carousel",
         "apply sepia shader": "Apply Sepia filter",
         "apply black and white shader": "Apply Black & White filter",
         "apply noir shader": "Apply Noir filter",
@@ -276,7 +299,7 @@ Scope {
                     var cat = "system"
                     var lowerDesc = desc.toLowerCase()
 
-                    if (lowerDesc.indexOf("terminal") !== -1 || lowerDesc.indexOf("file") !== -1 || lowerDesc.indexOf("archivos") !== -1 ||
+                    if (lowerDesc.indexOf("terminal") !== -1 || lowerDesc.indexOf("file manager") !== -1 || lowerDesc.indexOf("archivos") !== -1 ||
                         lowerDesc.indexOf("launcher") !== -1 || lowerDesc.indexOf("lanzador") !== -1 ||
                         (lowerDesc.indexOf("display") !== -1 || lowerDesc.indexOf("monitor") !== -1 || lowerDesc.indexOf("pantalla") !== -1) ||
                         lowerDesc.indexOf("music") !== -1 || lowerDesc.indexOf("música") !== -1 ||
@@ -287,7 +310,8 @@ Scope {
                     } else if (lowerDesc.indexOf("window") !== -1 || lowerDesc.indexOf("ventana") !== -1 || dispatcher === "killactive" ||
                                dispatcher === "togglefloating" || dispatcher === "fullscreen") {
                         cat = "windows"
-                    } else if (lowerDesc.indexOf("workspace") !== -1 || lowerDesc.indexOf("espacio") !== -1 || dispatcher === "workspace") {
+                    } else if (lowerDesc.indexOf("workspace") !== -1 || lowerDesc.indexOf("espacio") !== -1 ||
+                               lowerDesc.indexOf("overview") !== -1 || dispatcher === "workspace") {
                         cat = "workspaces"
                     } else {
                         cat = "system"
