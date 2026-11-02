@@ -17,50 +17,52 @@ Scope {
     property string currentCategory: "all"
 
     readonly property var categories: [
-        { id: "all", label: "Todos", icon: "grid_view" },
-        { id: "apps", label: "Aplicaciones", icon: "apps" },
-        { id: "windows", label: "Ventanas", icon: "splitscreen" },
-        { id: "workspaces", label: "Espacios", icon: "view_carousel" },
-        { id: "system", label: "Sistema", icon: "tune" }
+        { id: "all", label: "All", icon: "grid_view" },
+        { id: "apps", label: "Applications", icon: "apps" },
+        { id: "windows", label: "Windows", icon: "splitscreen" },
+        { id: "workspaces", label: "Workspaces", icon: "view_carousel" },
+        { id: "system", label: "System", icon: "tune" }
     ]
 
     readonly property var translations: ({
-        "open terminal": "Abrir terminal",
-        "open file manager": "Abrir gestor de archivos",
-        "close active window": "Cerrar ventana activa",
-        "reload hyprland config": "Recargar configuración de Hyprland",
-        "open app launcher": "Abrir lanzador de aplicaciones",
-        "open monitor layout editor": "Editor de pantallas y monitores",
-        "lock screen": "Bloquear pantalla",
-        "screenshot full screen (save + clipboard)": "Capturar pantalla completa",
-        "screenshot selected area (save + clipboard)": "Capturar área seleccionada",
-        "ocr selected area": "Reconocimiento OCR de texto en pantalla",
-        "toggle screen recording": "Grabar pantalla (iniciar / detener)",
-        "raise volume": "Subir volumen",
-        "lower volume": "Bajar volumen",
-        "toggle mute": "Silenciar o restaurar audio",
-        "increase brightness": "Aumentar brillo de pantalla",
-        "decrease brightness": "Reducir brillo de pantalla",
-        "toggle floating mode": "Alternar modo flotante",
-        "toggle fullscreen": "Alternar pantalla completa",
-        "launch an app as root (requires the sudo-launcher script)": "Ejecutar app como root (sudo)",
-        "power off menu": "Menú de apagado y sesión",
-        "wallpaper picker": "Selector de fondos de pantalla",
-        "help menu": "Menú de ayuda y atajos (F1)",
-        "clipboard history": "Historial del portapapeles",
-        "mini music player": "Mini reproductor de música",
-        "screen shader controls": "Selector de filtros y shaders",
-        "open screen shader menu carousel": "Selector de filtros y shaders",
-        "apply sepia shader": "Aplicar filtro Sepia",
-        "apply black and white shader": "Aplicar filtro Blanco y Negro",
-        "apply noir shader": "Aplicar filtro Film Noir",
-        "apply vintage shader": "Aplicar filtro Vintage",
-        "apply vivid shader": "Aplicar filtro Vívido",
-        "disable screen shader": "Desactivar filtros de pantalla",
-        "move window with mouse drag": "Mover ventana flotante",
-        "resize window with mouse right-click drag": "Redimensionar ventana flotante",
-        "next workspace": "Siguiente espacio de trabajo",
-        "previous workspace": "Espacio de trabajo anterior"
+        "open terminal": "Open terminal",
+        "open file manager": "Open file manager",
+        "close active window": "Close active window",
+        "reload hyprland config": "Reload Hyprland config",
+        "open app launcher": "Open app launcher",
+        "workspace overview & window switcher": "Workspace overview & window switcher",
+        "open monitor layout editor": "Display and monitor settings",
+        "lock screen": "Lock screen",
+        "screenshot full screen (save + clipboard)": "Full screen screenshot (save + clipboard)",
+        "screenshot selected area (save + clipboard)": "Selected area screenshot (save + clipboard)",
+        "ocr selected area": "OCR text recognition from screen",
+        "toggle screen recording": "Toggle screen recording",
+        "raise volume": "Raise volume",
+        "lower volume": "Lower volume",
+        "toggle mute": "Toggle audio mute",
+        "toggle microphone mute": "Toggle microphone mute",
+        "increase brightness": "Increase brightness",
+        "decrease brightness": "Decrease brightness",
+        "toggle floating mode": "Toggle floating mode",
+        "toggle fullscreen": "Toggle fullscreen",
+        "launch an app as root (requires the sudo-launcher script)": "Launch app as root (sudo)",
+        "power off menu": "Power off and session menu",
+        "wallpaper picker": "Wallpaper picker",
+        "help menu": "Help menu & shortcuts (F1)",
+        "clipboard history": "Clipboard history",
+        "mini music player": "Mini music player",
+        "screen shader controls": "Screen shader controls",
+        "open screen shader menu carousel": "Screen shader carousel",
+        "apply sepia shader": "Apply Sepia filter",
+        "apply black and white shader": "Apply Black & White filter",
+        "apply noir shader": "Apply Noir filter",
+        "apply vintage shader": "Apply Vintage filter",
+        "apply vivid shader": "Apply Vivid filter",
+        "disable screen shader": "Disable screen filters",
+        "move window with mouse drag": "Move floating window",
+        "resize window with mouse right-click drag": "Resize floating window",
+        "next workspace": "Next workspace",
+        "previous workspace": "Previous workspace"
     })
 
     function initVars() {
@@ -154,8 +156,8 @@ Scope {
                             if (!seenMouseWs) {
                                 seenMouseWs = true
                                 result.push({
-                                    key: "SUPER + Rueda Ratón",
-                                    desc: "Navegar entre espacios de trabajo",
+                                    key: "SUPER + Mouse Wheel",
+                                    desc: "Navigate between workspaces",
                                     category: "workspaces"
                                 })
                             }
@@ -163,7 +165,7 @@ Scope {
                             seenWorkspaceNav = true
                             result.push({
                                 key: "SUPER + 1..9, 0",
-                                desc: "Cambiar a espacio de trabajo (1 al 10)",
+                                desc: "Switch to workspace (1 to 10)",
                                 category: "workspaces"
                             })
                         }
@@ -176,7 +178,7 @@ Scope {
                             seenWorkspaceMove = true
                             result.push({
                                 key: "SUPER + SHIFT + 1..9, 0",
-                                desc: "Mover ventana a espacio (1 al 10)",
+                                desc: "Move window to workspace (1 to 10)",
                                 category: "workspaces"
                             })
                         }
@@ -188,8 +190,8 @@ Scope {
                         if (!seenFocusNav) {
                             seenFocusNav = true
                             result.push({
-                                key: "SUPER + Flechas",
-                                desc: "Cambiar foco entre ventanas",
+                                key: "SUPER + Arrow Keys",
+                                desc: "Switch focus between windows",
                                 category: "windows"
                             })
                         }
@@ -200,15 +202,15 @@ Scope {
                     if (dispatcher === "movewindow") {
                         if (isMouse) {
                             result.push({
-                                key: "SUPER + Clic Izq.",
-                                desc: "Mover ventana flotante (arrastrar)",
+                                key: "SUPER + Left Click",
+                                desc: "Move floating window (drag)",
                                 category: "windows"
                             })
                         } else if (!seenWindowMove) {
                             seenWindowMove = true
                             result.push({
-                                key: "SUPER + SHIFT + Flechas",
-                                desc: "Mover posición de ventana",
+                                key: "SUPER + SHIFT + Arrow Keys",
+                                desc: "Move window position",
                                 category: "windows"
                             })
                         }
@@ -218,8 +220,8 @@ Scope {
 
                     if (dispatcher === "resizewindow") {
                         result.push({
-                            key: "SUPER + Clic Der.",
-                            desc: "Redimensionar ventana (arrastrar)",
+                            key: "SUPER + Right Click",
+                            desc: "Resize floating window (drag)",
                             category: "windows"
                         })
                         lastComment = ""
@@ -230,8 +232,8 @@ Scope {
                         if (!seenResize) {
                             seenResize = true
                             result.push({
-                                key: "SUPER + ALT + Flechas",
-                                desc: "Redimensionar tamaño de ventana",
+                                key: "SUPER + ALT + Arrow Keys",
+                                desc: "Resize active window",
                                 category: "windows"
                             })
                         }
@@ -252,17 +254,18 @@ Scope {
 
                     if (key) {
                         var cleanKey = key
-                        if (cleanKey === "space") cleanKey = "Espacio"
+                        if (cleanKey === "space") cleanKey = "Space"
                         else if (cleanKey === "Return") cleanKey = "Enter"
-                        else if (cleanKey === "Print") cleanKey = "Impr Pant"
-                        else if (cleanKey === "Delete") cleanKey = "Supr"
-                        else if (cleanKey === "mouse_down") cleanKey = "Rueda Abajo"
-                        else if (cleanKey === "mouse_up") cleanKey = "Rueda Arriba"
-                        else if (cleanKey === "XF86AudioRaiseVolume") cleanKey = "Volumen +"
-                        else if (cleanKey === "XF86AudioLowerVolume") cleanKey = "Volumen -"
-                        else if (cleanKey === "XF86AudioMute") cleanKey = "Silenciar"
-                        else if (cleanKey === "XF86MonBrightnessUp") cleanKey = "Brillo +"
-                        else if (cleanKey === "XF86MonBrightnessDown") cleanKey = "Brillo -"
+                        else if (cleanKey === "Print") cleanKey = "Print"
+                        else if (cleanKey === "Delete") cleanKey = "Delete"
+                        else if (cleanKey === "mouse_down") cleanKey = "Wheel Down"
+                        else if (cleanKey === "mouse_up") cleanKey = "Wheel Up"
+                        else if (cleanKey === "XF86AudioRaiseVolume") cleanKey = "Volume +"
+                        else if (cleanKey === "XF86AudioLowerVolume") cleanKey = "Volume -"
+                        else if (cleanKey === "XF86AudioMute") cleanKey = "Mute"
+                        else if (cleanKey === "XF86AudioMicMute") cleanKey = "Mic Mute"
+                        else if (cleanKey === "XF86MonBrightnessUp") cleanKey = "Brightness +"
+                        else if (cleanKey === "XF86MonBrightnessDown") cleanKey = "Brightness -"
                         displayKeys.push(cleanKey)
                     }
 
@@ -273,16 +276,18 @@ Scope {
                     var cat = "system"
                     var lowerDesc = desc.toLowerCase()
 
-                    if (lowerDesc.indexOf("terminal") !== -1 || lowerDesc.indexOf("archivos") !== -1 ||
-                        lowerDesc.indexOf("lanzador") !== -1 || (lowerDesc.indexOf("pantalla") !== -1 && lowerDesc.indexOf("editor") !== -1) ||
-                        lowerDesc.indexOf("música") !== -1 || lowerDesc.indexOf("wallpaper") !== -1 || lowerDesc.indexOf("fondo") !== -1 ||
-                        lowerDesc.indexOf("portapapeles") !== -1 ||
+                    if (lowerDesc.indexOf("terminal") !== -1 || lowerDesc.indexOf("file") !== -1 || lowerDesc.indexOf("archivos") !== -1 ||
+                        lowerDesc.indexOf("launcher") !== -1 || lowerDesc.indexOf("lanzador") !== -1 ||
+                        (lowerDesc.indexOf("display") !== -1 || lowerDesc.indexOf("monitor") !== -1 || lowerDesc.indexOf("pantalla") !== -1) ||
+                        lowerDesc.indexOf("music") !== -1 || lowerDesc.indexOf("música") !== -1 ||
+                        lowerDesc.indexOf("wallpaper") !== -1 || lowerDesc.indexOf("fondo") !== -1 ||
+                        lowerDesc.indexOf("clipboard") !== -1 || lowerDesc.indexOf("portapapeles") !== -1 ||
                         lowerDesc.indexOf("root") !== -1 || lowerDesc.indexOf("sudo") !== -1) {
                         cat = "apps"
-                    } else if (lowerDesc.indexOf("ventana") !== -1 || dispatcher === "killactive" ||
+                    } else if (lowerDesc.indexOf("window") !== -1 || lowerDesc.indexOf("ventana") !== -1 || dispatcher === "killactive" ||
                                dispatcher === "togglefloating" || dispatcher === "fullscreen") {
                         cat = "windows"
-                    } else if (lowerDesc.indexOf("espacio") !== -1 || dispatcher === "workspace") {
+                    } else if (lowerDesc.indexOf("workspace") !== -1 || lowerDesc.indexOf("espacio") !== -1 || dispatcher === "workspace") {
                         cat = "workspaces"
                     } else {
                         cat = "system"
@@ -415,7 +420,7 @@ Scope {
                             spacing: 2
 
                             Text {
-                                text: "Atajos de Teclado"
+                                text: "Keyboard Shortcuts"
                                 font.family: Root.Theme.fontFamily
                                 font.pixelSize: 22
                                 font.weight: Font.Bold
@@ -423,7 +428,7 @@ Scope {
                             }
 
                             Text {
-                                text: "Hyprland • Guía visual y referencias rápidas"
+                                text: "Hyprland • Visual guide and quick reference"
                                 font.family: Root.Theme.fontFamily
                                 font.pixelSize: Root.Theme.fontSizeSmall
                                 color: Root.Theme.textSecondary
@@ -509,7 +514,7 @@ Scope {
 
                                     Text {
                                         anchors.verticalCenter: parent.verticalCenter
-                                        text: "Buscar atajo..."
+                                        text: "Search shortcuts..."
                                         font.family: Root.Theme.fontFamily
                                         font.pixelSize: Root.Theme.fontSizeSmall
                                         color: Root.Theme.textSecondary
@@ -633,7 +638,7 @@ Scope {
 
                             Text {
                                 Layout.alignment: Qt.AlignHCenter
-                                text: "No se encontraron atajos"
+                                text: "No shortcuts found"
                                 font.family: Root.Theme.fontFamily
                                 font.pixelSize: Root.Theme.fontSizeNormal
                                 font.weight: Font.Medium
@@ -642,7 +647,7 @@ Scope {
 
                             Text {
                                 Layout.alignment: Qt.AlignHCenter
-                                text: "Intenta con otra palabra clave o selecciona otra categoría"
+                                text: "Try another keyword or select another category"
                                 font.family: Root.Theme.fontFamily
                                 font.pixelSize: Root.Theme.fontSizeSmall
                                 color: Root.Theme.textSecondary
@@ -794,7 +799,7 @@ Scope {
                         Item { Layout.fillWidth: true }
 
                         Text {
-                            text: shortcuts.filteredBinds.length + " atajos disponibles"
+                            text: shortcuts.filteredBinds.length + (shortcuts.filteredBinds.length === 1 ? " shortcut available" : " shortcuts available")
                             font.family: Root.Theme.fontFamily
                             font.pixelSize: Root.Theme.fontSizeXS
                             color: Root.Theme.textSecondary
@@ -811,7 +816,7 @@ Scope {
                             Text {
                                 id: hintText
                                 anchors.centerIn: parent
-                                text: "F1 o Esc para salir"
+                                text: "F1 or Esc to close"
                                 font.family: Root.Theme.fontFamily
                                 font.pixelSize: Root.Theme.fontSizeXS
                                 color: Root.Theme.textSecondary
