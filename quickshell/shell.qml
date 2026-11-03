@@ -116,6 +116,10 @@ ShellRoot {
         miniPlayerRef: appLauncher
     }
 
+    Osd.CameraOsd {
+        id: cameraOsd
+    }
+
     Osd.RecordingIndicator {
         id: recordingIndicator
     }

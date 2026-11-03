@@ -857,6 +857,66 @@ Scope {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: launcher.currentMode === "music" ? WlrKeyboardFocus.None : WlrKeyboardFocus.Exclusive
 
+            property real _scaleY: 0.0
+            property real _scaleX: 0.90
+            property real _opacity: 0.0
+            property real _dimOpacity: 0.0
+
+            Component.onCompleted: appearAnim.start()
+
+            ParallelAnimation {
+                id: appearAnim
+                NumberAnimation {
+                    target: panelWindow; property: "_scaleY"
+                    from: 0.0; to: 1.0; duration: 280
+                    easing.type: Easing.OutBack
+                    easing.overshoot: 1.14
+                }
+                NumberAnimation {
+                    target: panelWindow; property: "_scaleX"
+                    from: 0.90; to: 1.0; duration: 260
+                    easing.type: Easing.OutCubic
+                }
+                NumberAnimation {
+                    target: panelWindow; property: "_opacity"
+                    from: 0.0; to: 1.0; duration: 160
+                    easing.type: Easing.OutQuad
+                }
+                NumberAnimation {
+                    target: panelWindow; property: "_dimOpacity"
+                    from: 0.0; to: 0.40; duration: 220
+                    easing.type: Easing.OutQuad
+                }
+            }
+
+            SequentialAnimation {
+                id: dismissAnim
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: panelWindow; property: "_scaleY"
+                        to: 0.0; duration: 190; easing.type: Easing.InBack
+                        easing.overshoot: 1.1
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_scaleX"
+                        to: 0.92; duration: 170; easing.type: Easing.InQuad
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_opacity"
+                        to: 0.0; duration: 170; easing.type: Easing.InQuad
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_dimOpacity"
+                        to: 0.0; duration: 170; easing.type: Easing.InQuad
+                    }
+                }
+                ScriptAction { script: launcher.panelVisible = false }
+            }
+
+            function requestClose() {
+                if (!dismissAnim.running) dismissAnim.start()
+            }
+
             mask: Region {
                 item: launcher.currentMode === "music" ? musicRegionItem : panelWindow
             }
@@ -865,148 +925,157 @@ Scope {
             Rectangle {
                 anchors.fill: parent
                 visible: launcher.currentMode !== "music"
-                color: Qt.rgba(0, 0, 0, 0.4)
+                color: Qt.rgba(0, 0, 0, panelWindow._dimOpacity)
 
                 MouseArea {
                     anchors.fill: parent
                     enabled: launcher.currentMode !== "music"
-                    onClicked: launcher.panelVisible = false
+                    onClicked: panelWindow.requestClose()
                 }
             }
 
             // Región interactiva exclusiva para modo música (permite clics pasantes en el resto del escritorio)
             Item {
                 id: musicRegionItem
-                anchors.top: floatingCard.top
-                anchors.bottom: floatingCard.bottom
-                anchors.left: launcherLeftFillet.left
-                anchors.right: launcherRightFillet.right
+                anchors.fill: launcherIslandWrapper
             }
 
-            // Silueta continua inferior: hombros cóncavos + cuerpo con borde de 2px de color acento
-            Shape {
-                id: launcherCardShape
+            // ── Contenedor Dynamic Island con animación de extrusión inferior ──
+            Item {
+                id: launcherIslandWrapper
                 z: 10
-                anchors.top: floatingCard.top
-                anchors.bottom: floatingCard.bottom
-                anchors.horizontalCenter: floatingCard.horizontalCenter
-                width: floatingCard.width + 56
-                layer.enabled: true
-                layer.samples: 4
-
-                // 1. Relleno continuo unificado
-                ShapePath {
-                    strokeWidth: 0
-                    strokeColor: "transparent"
-                    fillColor: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.85)
-
-                    startX: 0
-                    startY: launcherCardShape.height
-
-                    // Curva cóncava inferior izquierda
-                    PathArc {
-                        x: 28; y: Math.max(28, launcherCardShape.height - 28)
-                        radiusX: 28; radiusY: 28
-                        direction: PathArc.Counterclockwise
-                    }
-                    // Lateral izquierdo
-                    PathLine { x: 28; y: 28 }
-                    // Esquina superior izquierda redondeada
-                    PathArc {
-                        x: 56; y: 0
-                        radiusX: 28; radiusY: 28
-                        direction: PathArc.Clockwise
-                    }
-                    // Borde superior horizontal
-                    PathLine { x: Math.max(56, launcherCardShape.width - 56); y: 0 }
-                    // Esquina superior derecha redondeada
-                    PathArc {
-                        x: launcherCardShape.width - 28; y: 28
-                        radiusX: 28; radiusY: 28
-                        direction: PathArc.Clockwise
-                    }
-                    // Lateral derecho
-                    PathLine { x: launcherCardShape.width - 28; y: Math.max(28, launcherCardShape.height - 28) }
-                    // Curva cóncava inferior derecha
-                    PathArc {
-                        x: launcherCardShape.width; y: launcherCardShape.height
-                        radiusX: 28; radiusY: 28
-                        direction: PathArc.Counterclockwise
-                    }
-                    // Cierre inferior contra el borde de la pantalla
-                    PathLine { x: 0; y: launcherCardShape.height }
-                }
-
-                // 2. Borde exterior continuo estilo ventana de color acento (abierto hacia abajo)
-                ShapePath {
-                    strokeWidth: 2
-                    strokeColor: Root.Theme.primary
-                    fillColor: "transparent"
-                    capStyle: ShapePath.FlatCap
-                    joinStyle: ShapePath.RoundJoin
-
-                    startX: 0
-                    startY: launcherCardShape.height
-
-                    // Curva cóncava inferior izquierda
-                    PathArc {
-                        x: 28; y: Math.max(28, launcherCardShape.height - 28)
-                        radiusX: 28; radiusY: 28
-                        direction: PathArc.Counterclockwise
-                    }
-                    // Lateral izquierdo
-                    PathLine { x: 28; y: 28 }
-                    // Esquina superior izquierda redondeada
-                    PathArc {
-                        x: 56; y: 0
-                        radiusX: 28; radiusY: 28
-                        direction: PathArc.Clockwise
-                    }
-                    // Borde superior horizontal
-                    PathLine { x: Math.max(56, launcherCardShape.width - 56); y: 0 }
-                    // Esquina superior derecha redondeada
-                    PathArc {
-                        x: launcherCardShape.width - 28; y: 28
-                        radiusX: 28; radiusY: 28
-                        direction: PathArc.Clockwise
-                    }
-                    // Lateral derecho
-                    PathLine { x: launcherCardShape.width - 28; y: Math.max(28, launcherCardShape.height - 28) }
-                    // Curva cóncava inferior derecha
-                    PathArc {
-                        x: launcherCardShape.width; y: launcherCardShape.height
-                        radiusX: 28; radiusY: 28
-                        direction: PathArc.Counterclockwise
-                    }
-                }
-            }
-
-            // ── Contenedor Inferior Central (Dynamic Island) ───────────
-            Rectangle {
-                id: floatingCard
-                z: 10
-
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 0
+                width: floatingCard.width + 56
+                height: floatingCard.height
+                opacity: panelWindow._opacity
 
-                width: {
-                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") return Math.min(1080, parent.width - 60);
-                    if (launcher.currentMode === "music") return Math.min(680, parent.width - 60);
-                    return 580;
+                transformOrigin: Item.Bottom
+                transform: Scale {
+                    origin.x: launcherIslandWrapper.width / 2
+                    origin.y: launcherIslandWrapper.height
+                    xScale: panelWindow._scaleX
+                    yScale: panelWindow._scaleY
                 }
 
-                height: {
-                    if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "gadgets") return 340;
-                    if (launcher.currentMode === "theme") return (launcher.isMatugenSelected || launcher.isCustomSelected) ? 392 : 340;
-                    if (launcher.currentMode === "music") return 250;
-                    if (launcher.currentMode === "actions") {
-                        var actCount = launcher.filteredActions.length;
-                        return Math.min(460, Math.max(140, actCount * 50 + 76));
+                // Silueta continua inferior: hombros cóncavos + cuerpo con borde de 2px de color acento
+                Shape {
+                    id: launcherCardShape
+                    anchors.fill: parent
+                    layer.enabled: true
+                    layer.samples: 8
+                    layer.smooth: true
+
+                    // 1. Relleno continuo unificado
+                    ShapePath {
+                        strokeWidth: 0
+                        strokeColor: "transparent"
+                        fillColor: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.90)
+
+                        startX: 0
+                        startY: launcherCardShape.height + 4
+
+                        PathLine { x: 0; y: launcherCardShape.height }
+
+                        // Curva cóncava inferior izquierda con tangente horizontal
+                        PathCubic {
+                            control1X: 14; control1Y: launcherCardShape.height
+                            control2X: 28; control2Y: launcherCardShape.height - 14
+                            x: 28; y: Math.max(28, launcherCardShape.height - 28)
+                        }
+                        // Lateral izquierdo
+                        PathLine { x: 28; y: 28 }
+                        // Esquina superior izquierda redondeada
+                        PathCubic {
+                            control1X: 28; control1Y: 14
+                            control2X: 42; control2Y: 0
+                            x: 56; y: 0
+                        }
+                        // Borde superior horizontal
+                        PathLine { x: Math.max(56, launcherCardShape.width - 56); y: 0 }
+                        // Esquina superior derecha redondeada
+                        PathCubic {
+                            control1X: launcherCardShape.width - 42; control1Y: 0
+                            control2X: launcherCardShape.width - 28; control2Y: 14
+                            x: launcherCardShape.width - 28; y: 28
+                        }
+                        // Lateral derecho
+                        PathLine { x: launcherCardShape.width - 28; y: Math.max(28, launcherCardShape.height - 28) }
+                        // Curva cóncava inferior derecha con tangente horizontal
+                        PathCubic {
+                            control1X: launcherCardShape.width - 28; control1Y: launcherCardShape.height - 14
+                            control2X: launcherCardShape.width - 14; control2Y: launcherCardShape.height
+                            x: launcherCardShape.width; y: launcherCardShape.height
+                        }
+                        // Cierre inferior extendido contra el borde de la pantalla
+                        PathLine { x: launcherCardShape.width; y: launcherCardShape.height + 4 }
+                        PathLine { x: 0; y: launcherCardShape.height + 4 }
                     }
-                    var appCount = launcher.filteredApps.length;
-                    return Math.min(480, Math.max(140, appCount * 52 + 76));
+
+                    // 2. Borde exterior continuo estilo ventana de color acento (abierto hacia abajo)
+                    ShapePath {
+                        strokeWidth: 2
+                        strokeColor: Root.Theme.primary
+                        fillColor: "transparent"
+                        capStyle: ShapePath.FlatCap
+                        joinStyle: ShapePath.RoundJoin
+
+                        startX: 0
+                        startY: launcherCardShape.height
+
+                        PathCubic {
+                            control1X: 14; control1Y: launcherCardShape.height
+                            control2X: 28; control2Y: launcherCardShape.height - 14
+                            x: 28; y: Math.max(28, launcherCardShape.height - 28)
+                        }
+                        PathLine { x: 28; y: 28 }
+                        PathCubic {
+                            control1X: 28; control1Y: 14
+                            control2X: 42; control2Y: 0
+                            x: 56; y: 0
+                        }
+                        PathLine { x: Math.max(56, launcherCardShape.width - 56); y: 0 }
+                        PathCubic {
+                            control1X: launcherCardShape.width - 42; control1Y: 0
+                            control2X: launcherCardShape.width - 28; control2Y: 14
+                            x: launcherCardShape.width - 28; y: 28
+                        }
+                        PathLine { x: launcherCardShape.width - 28; y: Math.max(28, launcherCardShape.height - 28) }
+                        PathCubic {
+                            control1X: launcherCardShape.width - 28; control1Y: launcherCardShape.height - 14
+                            control2X: launcherCardShape.width - 14; control2Y: launcherCardShape.height
+                            x: launcherCardShape.width; y: launcherCardShape.height
+                        }
+                    }
                 }
+
+                // ── Contenedor Inferior Central (Dynamic Island) ───────────
+                Rectangle {
+                    id: floatingCard
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.bottom: parent.bottom
+                    anchors.bottomMargin: 0
+
+                    width: {
+                        if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "theme" || launcher.currentMode === "gadgets") return Math.min(1080, panelWindow.width - 60);
+                        if (launcher.currentMode === "music") return Math.min(680, panelWindow.width - 60);
+                        return 580;
+                    }
+
+                    height: {
+                        if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "gadgets") return 340;
+                        if (launcher.currentMode === "theme") return (launcher.isMatugenSelected || launcher.isCustomSelected) ? 392 : 340;
+                        if (launcher.currentMode === "music") return 250;
+                        if (launcher.currentMode === "actions") {
+                            var actCount = launcher.filteredActions.length;
+                            return Math.min(460, Math.max(140, actCount * 50 + 76));
+                        }
+                        var appCount = launcher.filteredApps.length;
+                        return Math.min(480, Math.max(140, appCount * 52 + 76));
+                    }
+
+                    Behavior on width { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
+                    Behavior on height { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
 
                 color: "transparent"
                 border.width: 0
@@ -2457,7 +2526,7 @@ Scope {
 
                             // ── Atajos de Teclado y Navegación ──────────
                             Keys.onEscapePressed: function(event) {
-                                launcher.panelVisible = false;
+                                panelWindow.requestClose();
                                 event.accepted = true;
                             }
 
@@ -2695,4 +2764,5 @@ Scope {
             }
         }
     }
+}
 }

@@ -30,6 +30,7 @@
       "custom/shader",
       "custom/powerprofile",
       "custom/notifications",
+      "custom/camera",
       "custom/clipboard"
     ]
   },
@@ -77,6 +78,11 @@
     "interval": 5,
     "signal": 1,
     "on-click": "qs ipc call notifications toggle",
+    "tooltip": false
+  },
+  "custom/camera": {
+    "format": "󰄀",
+    "on-click": "qs ipc call camera toggle",
     "tooltip": false
   },
   "custom/clipboard": {

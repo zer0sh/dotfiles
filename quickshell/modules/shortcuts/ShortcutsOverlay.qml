@@ -150,7 +150,7 @@ Scope {
                 continue
             }
 
-            if (line.indexOf("bind =") === 0 || line.indexOf("bind ") === 0 || line.indexOf("bindm =") === 0 || line.indexOf("bindm ") === 0) {
+            if (line.match(/^bind[a-z]*\s*(=|\s)/)) {
                 var isMouse = line.indexOf("bindm") === 0
                 var rest = line.indexOf("=") !== -1 ? line.substring(line.indexOf("=") + 1).trim() : line.substring(5).trim()
                 if (rest === "") { lastComment = ""; continue }
