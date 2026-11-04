@@ -103,14 +103,15 @@ Scope {
         }
 
         function showOsd() {
+            var wasDismissing = dismissAnim.running
             dismissAnim.stop()
-            appearAnim.stop()
-            if (!visible) {
+            if (!visible || wasDismissing) {
+                appearAnim.stop()
                 osdCard._slideY = -Math.max(60, osdCard.implicitHeight)
                 osdCard._opacity = 0
                 visible = true
+                appearAnim.start()
             }
-            appearAnim.start()
             dismissTimer.restart()
         }
 

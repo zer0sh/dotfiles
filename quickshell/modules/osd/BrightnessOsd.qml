@@ -41,7 +41,7 @@ Scope {
     }
 
     Timer {
-        interval: 150
+        interval: 60
         running: true
         repeat: true
         triggeredOnStart: true
@@ -77,16 +77,17 @@ Scope {
         }
 
         function showOsd() {
+            var wasDismissing = dismissAnim.running
             dismissAnim.stop()
-            appearAnim.stop()
-            if (!visible) {
+            if (!visible || wasDismissing) {
+                appearAnim.stop()
                 osdCard._scaleY = 0.0
                 osdCard._scaleX = 0.82
                 osdCard._opacity = 0
                 cardContent.opacity = 0
                 visible = true
+                appearAnim.start()
             }
-            appearAnim.start()
             dismissTimer.restart()
         }
 

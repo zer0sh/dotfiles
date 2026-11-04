@@ -25,8 +25,8 @@ All floating OSD cards share a unified styling contract:
    * **Corner Radii:** Square top edge matching Waybar's bottom shelf and rounded bottom corners (`radius: 28`).
    * **Surface Finish:** Clean obsidian glass surface with exact opacity and color parity (`Qt.rgba(panelBg.r, panelBg.g, panelBg.b, 0.85)`).
 2. **Animation Curves:**
-   * **Entrance:** Slides down from `-height` to `0` over 240 ms using `Easing.OutCubic`, fading opacity from `0` to `1`.
-   * **Dismissal:** Automatically dismisses after 1800 ms of inactivity, fading out and retracting upward over 200 ms.
+   * **Entrance:** Extrudes downwards directly beneath Waybar with organic scale and cubic deceleration, fading opacity from `0` to `1`. Subsequent volume or brightness level changes smoothly interpolate the progress indicators without restarting the entrance extrusion animation.
+   * **Dismissal:** Automatically dismisses after 2000 ms of inactivity, fading out and retracting upward over 190 ms.
 3. **Input Handling:**
    * Placed on `WlrLayer.Overlay` with `WlrKeyboardFocus.None` to prevent stealing window focus during gaming or typing.
    * Dynamic input regions ignore mouse events, ensuring clicks pass through to underlying applications.
@@ -41,6 +41,7 @@ All floating OSD cards share a unified styling contract:
 | **Brightness OSD** | `modules/osd/BrightnessOsd.qml` | Monitors `brightnessctl` changes and animates backlight slider. |
 | **Song Transition Toast** | `modules/osd/MusicOsd.qml` | Dynamic Island popup anchored to Waybar displaying thumbnail art, track title, and artist on MPRIS track transitions. |
 | **Media Source Selector** | `modules/mediaselector/MediaSelector.qml` | Centered Dynamic Island dropdown panel with dual concave fillets, allowing live selection between Automatic and specific MPRIS players. |
+| **Camera Quick Preview** | `modules/osd/CameraOsd.qml` | Persistent Dynamic Island webcam preview with double-buffered live feed, mirror toggle, snapshot action, and zero-idle background resource usage. |
 
 ---
 
@@ -73,6 +74,19 @@ brightnessctl set 5%-
 ```bash
 # Skip to next MPRIS track
 playerctl next
+```
+
+### Camera Quick Preview
+```bash
+# Toggle camera preview window
+qs ipc call camera toggle
+
+# Explicit show or hide
+qs ipc call camera show
+qs ipc call camera hide
+
+# Take a direct snapshot
+python3 ~/.config/quickshell/scripts/camera-preview.py snapshot
 ```
 
 ---
