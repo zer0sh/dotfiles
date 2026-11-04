@@ -2,33 +2,15 @@ import QtQuick
 import QtQuick.Layouts
 import "../.." as Root
 
-Item {
+BaseCarouselCard {
     id: cardRoot
 
     property string themeKey: ""
     property string themeTitle: ""
     property string themeSubtitle: ""
     property bool isCurrentTheme: false
-    property bool isSelected: false
 
-    readonly property bool isHovered: mouseArea.containsMouse
-
-    signal activated()
-
-    width: 224
-    height: 214
-
-    // Escala dinámica y elevación
-    scale: mouseArea.containsMouse ? 1.05 : (isSelected ? 1.03 : 1.0)
-    y: mouseArea.containsMouse ? -5 : (isSelected ? -2 : 0)
-    z: mouseArea.containsMouse ? 100 : (isSelected ? 20 : 1)
-
-    Behavior on scale {
-        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
-    }
-    Behavior on y {
-        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
-    }
+    accentColor: themePrimary
 
     readonly property var cardData: {
         if (themeKey === "matugen" && Root.Theme._generated) {
@@ -55,42 +37,9 @@ Item {
     readonly property color themeSliderActiveTrack: cardData ? Qt.color(cardData.sliderActiveTrack) : Root.Theme.sliderActiveTrack
     readonly property color themeTileActiveText: cardData ? Qt.color(cardData.tileActiveText) : Root.Theme.tileActiveText
 
-    Rectangle {
-        id: bgCard
+    // Contenedor principal de contenido
+    Item {
         anchors.fill: parent
-        radius: 18
-        color: cardRoot.isSelected
-            ? Root.Theme.surfaceContainerHigh
-            : (mouseArea.containsMouse
-                ? Qt.rgba(Root.Theme.surfaceBright.r, Root.Theme.surfaceBright.g, Root.Theme.surfaceBright.b, 0.95)
-                : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.65))
-
-        border.width: 2
-        border.color: Root.Theme.primary
-
-        Behavior on color { ColorAnimation { duration: 180 } }
-        Behavior on border.color { ColorAnimation { duration: 180 } }
-
-        // Halo de resplandor exterior dinámico
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: mouseArea.containsMouse ? -8 : -5
-            radius: 24
-            color: "transparent"
-            border.width: mouseArea.containsMouse ? 2 : 1
-            border.color: (mouseArea.containsMouse || cardRoot.isSelected)
-                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, mouseArea.containsMouse ? 0.6 : 0.35)
-                : "transparent"
-            visible: mouseArea.containsMouse || cardRoot.isSelected
-
-            Behavior on anchors.margins { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
-            Behavior on border.color { ColorAnimation { duration: 200 } }
-        }
-
-        // Contenedor principal de contenido
-        Item {
-            anchors.fill: parent
-            anchors.margins: 10
 
             // Miniatura gráfica con paleta y preview del tema
             Rectangle {
@@ -306,8 +255,8 @@ Item {
                 text: cardRoot.themeTitle
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: 14
-                font.weight: (mouseArea.containsMouse || cardRoot.isSelected) ? Font.Bold : Font.Medium
-                color: (mouseArea.containsMouse || cardRoot.isSelected) ? Root.Theme.primary : Root.Theme.textPrimary
+                font.weight: (cardRoot.isHovered || cardRoot.isSelected) ? Font.Bold : Font.Medium
+                color: (cardRoot.isHovered || cardRoot.isSelected) ? Root.Theme.primary : Root.Theme.textPrimary
                 elide: Text.ElideMiddle
                 horizontalAlignment: Text.AlignHCenter
             }
@@ -328,12 +277,3 @@ Item {
             }
         }
     }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: cardRoot.activated()
-    }
-}

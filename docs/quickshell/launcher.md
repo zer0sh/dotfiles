@@ -23,9 +23,11 @@ quickshell/
 ├── modules/
 │   └── launcher/
 │       ├── Launcher.qml             # Main overlay window, state machine, and search bar
+│       ├── BaseCarouselCard.qml     # Centralized base card component for carousel styling
 │       ├── AppItem.qml              # Application list row delegate with icon and metadata
 │       ├── ActionItem.qml           # System action row delegate
 │       ├── ThemeCard.qml            # Theme palette preview card with Material 3 mockup
+│       ├── ShaderCard.qml           # Fullscreen shader filter preview card
 │       ├── GadgetCard.qml           # Desktop widget toggle card with real-time UI preview
 │       └── WallpaperCard.qml        # 16:9 wallpaper thumbnail card delegate
 └── scripts/
@@ -62,7 +64,9 @@ Typing `/` or `>` switches the list view to system actions:
 
 ### 3. Theme Carousel Mode (`/theme`)
 Typing `/theme `, `/tema `, `>theme `, or invoking `qs ipc call launcher theme` opens the horizontal theme picker:
-* Expands the container into an interactive horizontal carousel (1080 px width, 340 px to 392 px height).
+* Expands the container into an interactive centered hero carousel (1080 px width, 400 px to 440 px height).
+* Powered by `BaseCarouselCard.qml` with dynamic primary accent coloring (`accentColor: themePrimary`).
+* The selected theme is centered via `highlightRangeMode: ListView.StrictlyEnforceRange` at `scale: 1.25` and `opacity: 1.0`, while inactive cards scale down to `0.84` at `opacity: 0.45`.
 * **Theme Presets:**
   * **Wallpaper (Matugen):** Dynamic Material Design 3 extraction based on the active desktop wallpaper.
   * **Custom Accent:** Deep onyx black surfaces (`#0A0A0C`) paired with an interactive 10-color accent chip bar (`Carmesí`, `Lava`, `Ámbar`, `Esmeralda`, `Turquesa`, `Cyan`, `Cobalto`, `Amatista`, `Fucsia`, `Rosa`).
@@ -70,7 +74,13 @@ Typing `/theme `, `/tema `, `>theme `, or invoking `qs ipc call launcher theme` 
 * **Matugen Dynamic Modes Selector:** When Matugen is active, a top pill bar lets the user choose between 9 color generation algorithms (`Vibrant`, `Fruit Salad`, `Monochrome`, `Tonal Spot`, `Expressive`, `Rainbow`, `Fidelity`, `Content`, and `Neutral`) with live system-wide re-theming.
 * **Live System Integration:** Selecting a theme persists it to `~/.config/quickshell/current-theme` and triggers `apply-theme.sh` or `apply-matugen.sh` across Waybar, Hyprland borders, Kitty, and Alacritty in real time.
 
-### 4. Desktop Gadgets Mode (`/gadgets` or `/widgets`)
+### 4. Shaders Mode (`/shader`)
+Typing `/shader ` or `>shader ` opens the screen filter and GLSL post-processing carousel:
+* Features the same centered hero carousel geometry (1080 px width, 400 px height) built upon `BaseCarouselCard.qml`.
+* Displays real-time thumbnail previews of available shader filters with active status indicators.
+* Selecting or pressing Enter applies the shader directly via Hyprland IPC.
+
+### 5. Desktop Gadgets Mode (`/gadgets` or `/widgets`)
 Typing `/gadgets `, `/widgets `, or invoking `qs ipc call launcher gadgets`:
 * Displays 224x214 px cards with live previews of desktop widgets (`DeskClock`, `Calendar`, and hardware widgets).
 * Status badge dynamically displays `Active` (green) or `Hidden` (muted).

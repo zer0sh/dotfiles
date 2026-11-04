@@ -980,11 +980,12 @@ Scope {
             }
 
             mask: Region {
-                item: launcher.currentMode === "music" ? musicRegionItem : panelWindow
+                item: launcher.currentMode === "music" ? musicRegionItem : backgroundDimRect
             }
 
             // Fondo semitransparente oscuro con clic exterior para cerrar (oculto en modo música para no opacar el escritorio)
             Rectangle {
+                id: backgroundDimRect
                 anchors.fill: parent
                 visible: launcher.currentMode !== "music"
                 color: Qt.rgba(0, 0, 0, launcher.currentMode === "wallpaper" ? 0.08 : panelWindow._dimOpacity)
@@ -1130,9 +1131,8 @@ Scope {
                     }
 
                     height: {
-                        if (launcher.currentMode === "wallpaper") return 356;
-                        if (launcher.currentMode === "shader" || launcher.currentMode === "gadgets") return 340;
-                        if (launcher.currentMode === "theme") return (launcher.isMatugenSelected || launcher.isCustomSelected) ? 392 : 340;
+                        if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader") return 400;
+                        if (launcher.currentMode === "theme") return (launcher.isMatugenSelected || launcher.isCustomSelected) ? 440 : 400;
                         if (launcher.currentMode === "music") return 250;
                         if (launcher.currentMode === "actions") {
                             var actCount = launcher.filteredActions.length;
@@ -1181,14 +1181,14 @@ Scope {
                         ListView {
                             id: wallCarousel
                             anchors.fill: parent
-                            anchors.topMargin: 8
+                            anchors.topMargin: 12
                             anchors.bottomMargin: 4
                             orientation: ListView.Horizontal
-                            spacing: 16
-                            clip: true
+                            spacing: 24
+                            clip: false
 
-                            preferredHighlightBegin: (width - 236) / 2
-                            preferredHighlightEnd: (width - 236) / 2
+                            preferredHighlightBegin: (width - 260) / 2
+                            preferredHighlightEnd: (width - 260) / 2
                             highlightRangeMode: ListView.StrictlyEnforceRange
                             highlightMoveDuration: 240
 
@@ -1206,9 +1206,9 @@ Scope {
                             }
 
                             delegate: Item {
-                                width: 236
-                                height: 226
-                                z: (cardItem && cardItem.isHovered) ? 100 : (launcher.selectedIndex === index ? 40 : 1)
+                                width: 260
+                                height: 276
+                                z: (cardItem && cardItem.isHovered) ? 100 : (launcher.selectedIndex === index ? 50 : 1)
 
                                 readonly property bool isAdd: index === launcher.filteredWallpapers.length
                                 readonly property var wallData: !isAdd ? launcher.filteredWallpapers[index] : null
@@ -1600,25 +1600,11 @@ Scope {
                         }
 
                         function scrollToCard(index, immediate) {
-                            var itemWidth = 236 + 16;
-                            var targetX = index * itemWidth + 118 - (themeCarousel.width / 2);
-                            var maxX = Math.max(0, themeCarousel.contentWidth - themeCarousel.width);
-                            targetX = Math.max(0, Math.min(maxX, targetX));
+                            if (index < 0 || !themeCarousel) return;
                             if (immediate) {
-                                themeScrollAnim.stop();
-                                themeCarousel.contentX = targetX;
-                            } else {
-                                themeScrollAnim.to = targetX;
-                                themeScrollAnim.restart();
+                                themeCarousel.positionViewAtIndex(index, ListView.Center);
                             }
-                        }
-
-                        NumberAnimation {
-                            id: themeScrollAnim
-                            target: themeCarousel
-                            property: "contentX"
-                            duration: 160
-                            easing.type: Easing.OutCubic
+                            themeCarousel.currentIndex = index;
                         }
 
                         ListView {
@@ -1630,21 +1616,31 @@ Scope {
                             anchors.topMargin: (launcher.isMatugenSelected || launcher.isCustomSelected) ? 6 : 8
                             anchors.bottomMargin: 4
                             orientation: ListView.Horizontal
-                            spacing: 16
-                            clip: true
+                            spacing: 24
+                            clip: false
+
+                            preferredHighlightBegin: (width - 260) / 2
+                            preferredHighlightEnd: (width - 260) / 2
+                            highlightRangeMode: ListView.StrictlyEnforceRange
+                            highlightMoveDuration: 240
 
                             flickDeceleration: 1800
                             maximumFlickVelocity: 3000
                             boundsBehavior: Flickable.StopAtBounds
-                            highlightRangeMode: ListView.NoHighlightRange
 
                             model: launcher.filteredThemes
                             currentIndex: launcher.selectedIndex
 
+                            onWidthChanged: {
+                                if (launcher.currentMode === "theme") {
+                                    themeCarousel.positionViewAtIndex(launcher.selectedIndex, ListView.Center);
+                                }
+                            }
+
                             delegate: Item {
-                                width: 236
-                                height: 226
-                                z: (cardItem && cardItem.isHovered) ? 100 : (launcher.selectedIndex === index ? 20 : 1)
+                                width: 260
+                                height: 276
+                                z: (cardItem && cardItem.isHovered) ? 100 : (launcher.selectedIndex === index ? 50 : 1)
 
                                 readonly property var itemData: modelData
 
@@ -1672,21 +1668,30 @@ Scope {
                                 }
                             }
 
-                            // Desplazamiento horizontal fluido
+                            // Desplazamiento por pasos de selección
                             WheelHandler {
                                 acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                                property real accumulatedDelta: 0
                                 onWheel: function(event) {
                                     var delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
-                                    var step = delta * 1.8;
-                                    var targetX = themeCarousel.contentX - step;
-                                    var maxX = Math.max(0, themeCarousel.contentWidth - themeCarousel.width);
-                                    themeCarousel.contentX = Math.max(0, Math.min(maxX, targetX));
+                                    accumulatedDelta += delta;
+                                    if (accumulatedDelta <= -50) {
+                                        accumulatedDelta = 0;
+                                        if (launcher.selectedIndex < launcher.filteredThemes.length - 1) {
+                                            launcher.selectedIndex++;
+                                        }
+                                    } else if (accumulatedDelta >= 50) {
+                                        accumulatedDelta = 0;
+                                        if (launcher.selectedIndex > 0) {
+                                            launcher.selectedIndex--;
+                                        }
+                                    }
                                 }
                             }
 
                             Component.onCompleted: {
                                 if (launcher.currentMode === "theme") {
-                                    themeView.scrollToCard(launcher.selectedIndex, true);
+                                    themeCarousel.positionViewAtIndex(launcher.selectedIndex, ListView.Center);
                                 }
                             }
                         }
@@ -1697,10 +1702,10 @@ Scope {
                             anchors.left: parent.left
                             anchors.top: matugenModesBar.bottom
                             anchors.bottom: parent.bottom
-                            width: 32
+                            width: 48
                             z: 50
                             enabled: false
-                            visible: themeCarousel.contentX > 6
+                            visible: themeCarousel.currentIndex > 0
                             opacity: visible ? 1.0 : 0.0
                             Behavior on opacity { NumberAnimation { duration: 150 } }
                             gradient: Gradient {
@@ -1716,10 +1721,10 @@ Scope {
                             anchors.right: parent.right
                             anchors.top: matugenModesBar.bottom
                             anchors.bottom: parent.bottom
-                            width: 32
+                            width: 48
                             z: 50
                             enabled: false
-                            visible: themeCarousel.contentX < (themeCarousel.contentWidth - themeCarousel.width - 6)
+                            visible: themeCarousel.currentIndex < launcher.filteredThemes.length - 1
                             opacity: visible ? 1.0 : 0.0
                             Behavior on opacity { NumberAnimation { duration: 150 } }
                             gradient: Gradient {
@@ -1733,7 +1738,7 @@ Scope {
                             target: launcher
                             function onSelectedIndexChanged() {
                                 if (launcher.currentMode === "theme" && themeCarousel) {
-                                    themeView.scrollToCard(launcher.selectedIndex, false);
+                                    themeCarousel.currentIndex = launcher.selectedIndex;
                                 }
                             }
                         }
@@ -1756,48 +1761,44 @@ Scope {
                         clip: true
 
                         function scrollToCard(index, immediate) {
-                            var itemWidth = 236 + 16;
-                            var targetX = index * itemWidth + 118 - (shaderCarousel.width / 2);
-                            var maxX = Math.max(0, shaderCarousel.contentWidth - shaderCarousel.width);
-                            targetX = Math.max(0, Math.min(maxX, targetX));
+                            if (index < 0 || !shaderCarousel) return;
                             if (immediate) {
-                                shaderScrollAnim.stop();
-                                shaderCarousel.contentX = targetX;
-                            } else {
-                                shaderScrollAnim.to = targetX;
-                                shaderScrollAnim.restart();
+                                shaderCarousel.positionViewAtIndex(index, ListView.Center);
                             }
-                        }
-
-                        NumberAnimation {
-                            id: shaderScrollAnim
-                            target: shaderCarousel
-                            property: "contentX"
-                            duration: 160
-                            easing.type: Easing.OutCubic
+                            shaderCarousel.currentIndex = index;
                         }
 
                         ListView {
                             id: shaderCarousel
                             anchors.fill: parent
-                            anchors.topMargin: 8
+                            anchors.topMargin: 12
                             anchors.bottomMargin: 4
                             orientation: ListView.Horizontal
-                            spacing: 16
-                            clip: true
+                            spacing: 24
+                            clip: false
+
+                            preferredHighlightBegin: (width - 260) / 2
+                            preferredHighlightEnd: (width - 260) / 2
+                            highlightRangeMode: ListView.StrictlyEnforceRange
+                            highlightMoveDuration: 240
 
                             flickDeceleration: 1800
                             maximumFlickVelocity: 3000
                             boundsBehavior: Flickable.StopAtBounds
-                            highlightRangeMode: ListView.NoHighlightRange
 
                             model: launcher.filteredShaders
                             currentIndex: launcher.selectedIndex
 
+                            onWidthChanged: {
+                                if (launcher.currentMode === "shader") {
+                                    shaderCarousel.positionViewAtIndex(launcher.selectedIndex, ListView.Center);
+                                }
+                            }
+
                             delegate: Item {
-                                width: 236
-                                height: 226
-                                z: (cardItem && cardItem.isHovered) ? 100 : (launcher.selectedIndex === index ? 20 : 1)
+                                width: 260
+                                height: 276
+                                z: (cardItem && cardItem.isHovered) ? 100 : (launcher.selectedIndex === index ? 50 : 1)
 
                                 readonly property var itemData: modelData
 
@@ -1822,20 +1823,30 @@ Scope {
                                 }
                             }
 
+                            // Desplazamiento por pasos de selección
                             WheelHandler {
                                 acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                                property real accumulatedDelta: 0
                                 onWheel: function(event) {
                                     var delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
-                                    var step = delta * 1.8;
-                                    var targetX = shaderCarousel.contentX - step;
-                                    var maxX = Math.max(0, shaderCarousel.contentWidth - shaderCarousel.width);
-                                    shaderCarousel.contentX = Math.max(0, Math.min(maxX, targetX));
+                                    accumulatedDelta += delta;
+                                    if (accumulatedDelta <= -50) {
+                                        accumulatedDelta = 0;
+                                        if (launcher.selectedIndex < launcher.filteredShaders.length - 1) {
+                                            launcher.selectedIndex++;
+                                        }
+                                    } else if (accumulatedDelta >= 50) {
+                                        accumulatedDelta = 0;
+                                        if (launcher.selectedIndex > 0) {
+                                            launcher.selectedIndex--;
+                                        }
+                                    }
                                 }
                             }
 
                             Component.onCompleted: {
                                 if (launcher.currentMode === "shader") {
-                                    shaderView.scrollToCard(launcher.selectedIndex, true);
+                                    shaderCarousel.positionViewAtIndex(launcher.selectedIndex, ListView.Center);
                                 }
                             }
                         }
@@ -1846,10 +1857,10 @@ Scope {
                             anchors.left: parent.left
                             anchors.top: parent.top
                             anchors.bottom: parent.bottom
-                            width: 32
+                            width: 48
                             z: 50
                             enabled: false
-                            visible: shaderCarousel.contentX > 6
+                            visible: shaderCarousel.currentIndex > 0
                             opacity: visible ? 1.0 : 0.0
                             Behavior on opacity { NumberAnimation { duration: 150 } }
                             gradient: Gradient {
@@ -1865,10 +1876,10 @@ Scope {
                             anchors.right: parent.right
                             anchors.top: parent.top
                             anchors.bottom: parent.bottom
-                            width: 32
+                            width: 48
                             z: 50
                             enabled: false
-                            visible: shaderCarousel.contentX < (shaderCarousel.contentWidth - shaderCarousel.width - 6)
+                            visible: shaderCarousel.currentIndex < launcher.filteredShaders.length - 1
                             opacity: visible ? 1.0 : 0.0
                             Behavior on opacity { NumberAnimation { duration: 150 } }
                             gradient: Gradient {
@@ -1882,7 +1893,7 @@ Scope {
                             target: launcher
                             function onSelectedIndexChanged() {
                                 if (launcher.currentMode === "shader" && shaderCarousel) {
-                                    shaderView.scrollToCard(launcher.selectedIndex, false);
+                                    shaderCarousel.currentIndex = launcher.selectedIndex;
                                 }
                             }
                         }

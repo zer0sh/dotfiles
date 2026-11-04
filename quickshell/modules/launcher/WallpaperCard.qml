@@ -2,7 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import "../.." as Root
 
-Item {
+BaseCarouselCard {
     id: cardRoot
 
     property bool isAddCard: false
@@ -10,58 +10,10 @@ Item {
     property string wallTitle: ""
     property string wallThumb: ""
     property bool isCurrentWall: false
-    property bool isSelected: false
 
-    readonly property bool isHovered: mouseArea.containsMouse
-
-    signal activated()
-
-    width: 224
-    height: 214
-
-    // Escala, opacidad y perspectiva para el efecto carrusel enfocado al centro
-    scale: isSelected ? (mouseArea.containsMouse ? 1.12 : 1.10) : (mouseArea.containsMouse ? 0.95 : 0.88)
-    opacity: isSelected ? 1.0 : (mouseArea.containsMouse ? 0.85 : 0.55)
-    y: isSelected ? -6 : (mouseArea.containsMouse ? -2 : 0)
-    z: isSelected ? 40 : (mouseArea.containsMouse ? 20 : 1)
-
-    Behavior on scale {
-        NumberAnimation { duration: 240; easing.type: Easing.OutCubic }
-    }
-    Behavior on opacity {
-        NumberAnimation { duration: 240; easing.type: Easing.OutCubic }
-    }
-    Behavior on y {
-        NumberAnimation { duration: 240; easing.type: Easing.OutCubic }
-    }
-
-    Rectangle {
-        id: bgCard
+    Loader {
         anchors.fill: parent
-        radius: 18
-        color: cardRoot.isSelected
-            ? Root.Theme.surfaceContainerHigh
-            : (mouseArea.containsMouse
-                ? Qt.rgba(Root.Theme.surfaceBright.r, Root.Theme.surfaceBright.g, Root.Theme.surfaceBright.b, 0.95)
-                : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.65))
-
-        border.width: cardRoot.isSelected ? 2 : (mouseArea.containsMouse ? 1.5 : 1)
-        border.color: cardRoot.isSelected
-            ? Root.Theme.primary
-            : (mouseArea.containsMouse
-                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.5)
-                : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.25))
-
-        Behavior on color { ColorAnimation { duration: 180 } }
-        Behavior on border.color { ColorAnimation { duration: 180 } }
-        Behavior on border.width { NumberAnimation { duration: 180 } }
-
-        // --- Contenido según tipo de tarjeta ---
-        Loader {
-            anchors.fill: parent
-            anchors.margins: 10
-            sourceComponent: cardRoot.isAddCard ? addCardComp : wallCardComp
-        }
+        sourceComponent: cardRoot.isAddCard ? addCardComp : wallCardComp
     }
 
     // Componente: Tarjeta para agregar / explorar fondos locales
@@ -77,11 +29,11 @@ Item {
                 anchors.right: parent.right
                 height: 120
                 radius: 12
-                color: mouseArea.containsMouse
+                color: cardRoot.isHovered
                     ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.16)
                     : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.08)
                 border.width: 1
-                border.color: mouseArea.containsMouse
+                border.color: cardRoot.isHovered
                     ? Root.Theme.primary
                     : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35)
 
@@ -98,7 +50,7 @@ Item {
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 32
                         color: Root.Theme.primary
-                        scale: mouseArea.containsMouse ? 1.15 : 1.0
+                        scale: cardRoot.isHovered ? 1.15 : 1.0
 
                         Behavior on scale {
                             NumberAnimation { duration: 200; easing.type: Easing.OutBack }
@@ -123,8 +75,8 @@ Item {
                 text: "Add Local File..."
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: 14
-                font.weight: (mouseArea.containsMouse || cardRoot.isSelected) ? Font.Bold : Font.Medium
-                color: (mouseArea.containsMouse || cardRoot.isSelected) ? Root.Theme.primary : Root.Theme.textPrimary
+                font.weight: (cardRoot.isHovered || cardRoot.isSelected) ? Font.Bold : Font.Medium
+                color: (cardRoot.isHovered || cardRoot.isSelected) ? Root.Theme.primary : Root.Theme.textPrimary
             }
         }
     }
@@ -155,7 +107,7 @@ Item {
                     asynchronous: true
 
                     // Zoom sutil interno de la imagen al hacer hover sobre la tarjeta
-                    scale: mouseArea.containsMouse ? 1.08 : 1.0
+                    scale: cardRoot.isHovered ? 1.08 : 1.0
                     transformOrigin: Item.Center
 
                     Behavior on scale {
@@ -245,8 +197,8 @@ Item {
                 text: cardRoot.wallTitle
                 font.family: Root.Theme.fontFamily
                 font.pixelSize: 14
-                font.weight: (mouseArea.containsMouse || cardRoot.isSelected) ? Font.Bold : Font.Medium
-                color: (mouseArea.containsMouse || cardRoot.isSelected) ? Root.Theme.primary : Root.Theme.textPrimary
+                font.weight: (cardRoot.isHovered || cardRoot.isSelected) ? Font.Bold : Font.Medium
+                color: (cardRoot.isHovered || cardRoot.isSelected) ? Root.Theme.primary : Root.Theme.textPrimary
                 elide: Text.ElideMiddle
                 horizontalAlignment: Text.AlignHCenter
             }
@@ -263,13 +215,5 @@ Item {
                 color: Root.Theme.textSecondary
             }
         }
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        hoverEnabled: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: cardRoot.activated()
     }
 }

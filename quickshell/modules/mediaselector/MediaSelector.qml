@@ -82,202 +82,40 @@ Scope {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
-            Component.onCompleted: openDelayTimer.start()
-
-            Timer {
-                id: openDelayTimer
-                interval: 16
-                repeat: false
-                onTriggered: if (mediaSelector.panelVisible) mediaSelector._panelOpen = true
-            }
-
             Shortcut {
                 sequence: "Escape"
-                onActivated: mediaSelector.panelVisible = false
+                onActivated: edgePanelWrapper.close()
             }
 
-            // Click outside to dismiss
-            MouseArea {
-                anchors.fill: parent
-                onClicked: mediaSelector.panelVisible = false
-            }
-
-            // Clip region starting at the bottom edge of Waybar shelf
-            Item {
-                id: panelClip
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.topMargin: Root.Theme.shelfHeight
+            Root.EdgePanel {
+                id: edgePanelWrapper
+                edge: "top"
+                panelWidth: 360 + 56
+                panelHeight: Math.min(panelContent.implicitHeight + 20, 460)
+                shoulderRadius: 28
+                onCloseRequested: edgePanelWrapper.close()
+                onClosed: {
+                    mediaSelector.panelVisible = false;
+                    mediaSelector._panelOpen = false;
+                    mediaSelector._showing = false;
+                }
 
                 Item {
-                    id: islandWrapper
-                    width: 360
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    anchors.top: parent.top
-                    height: panel.height
+                    id: panel
+                    anchors.fill: parent
+                    anchors.leftMargin: 28
+                    anchors.rightMargin: 28
+                    anchors.topMargin: 4
+                    anchors.bottomMargin: 8
+                    clip: true
 
-                    Shape {
-                        id: panelShape
-                        anchors.top: panel.top
-                        anchors.bottom: panel.bottom
-                        anchors.horizontalCenter: panel.horizontalCenter
-                        width: panel.width + 56
-                        layer.enabled: true
-                        layer.samples: 4
-
-                        // 1. Relleno unificado (hombro izquierdo + cuerpo + hombro derecho)
-                        ShapePath {
-                            strokeWidth: 0
-                            strokeColor: "transparent"
-                            fillColor: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.95)
-
-                            startX: 0
-                            startY: 0
-
-                            // Curva cóncava hombro izquierdo
-                            PathArc {
-                                x: 28; y: 28
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Clockwise
-                            }
-                            // Lateral izquierdo
-                            PathLine { x: 28; y: Math.max(28, panelShape.height - 28) }
-                            // Esquina inferior izquierda redondeada
-                            PathArc {
-                                x: 56; y: panelShape.height
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Counterclockwise
-                            }
-                            // Base horizontal
-                            PathLine { x: Math.max(56, panelShape.width - 56); y: panelShape.height }
-                            // Esquina inferior derecha redondeada
-                            PathArc {
-                                x: panelShape.width - 28; y: Math.max(28, panelShape.height - 28)
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Counterclockwise
-                            }
-                            // Lateral derecho
-                            PathLine { x: panelShape.width - 28; y: 28 }
-                            // Curva cóncava hombro derecho
-                            PathArc {
-                                x: panelShape.width; y: 0
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Clockwise
-                            }
-                            // Cierre superior contra Waybar
-                            PathLine { x: 0; y: 0 }
-                        }
-
-                        // 2. Borde exterior continuo estilo ventana
-                        ShapePath {
-                            strokeWidth: 2
-                            strokeColor: Root.Theme.primary
-                            fillColor: "transparent"
-                            capStyle: ShapePath.FlatCap
-                            joinStyle: ShapePath.RoundJoin
-
-                            startX: 0
-                            startY: 0
-
-                            // Curva cóncava hombro izquierdo
-                            PathArc {
-                                x: 28; y: 28
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Clockwise
-                            }
-                            // Lateral izquierdo
-                            PathLine { x: 28; y: Math.max(28, panelShape.height - 28) }
-                            // Esquina inferior izquierda redondeada
-                            PathArc {
-                                x: 56; y: panelShape.height
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Counterclockwise
-                            }
-                            // Base horizontal
-                            PathLine { x: Math.max(56, panelShape.width - 56); y: panelShape.height }
-                            // Esquina inferior derecha redondeada
-                            PathArc {
-                                x: panelShape.width - 28; y: Math.max(28, panelShape.height - 28)
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Counterclockwise
-                            }
-                            // Lateral derecho
-                            PathLine { x: panelShape.width - 28; y: 28 }
-                            // Curva cóncava hombro derecho
-                            PathArc {
-                                x: panelShape.width; y: 0
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Clockwise
-                            }
-                        }
+                    // Block click-through
+                    MouseArea {
+                        anchors.fill: parent
                     }
 
-                    Rectangle {
-                        id: panel
-                        width: islandWrapper.width
-                        anchors.horizontalCenter: parent.horizontalCenter
-
-                        height: Math.min(panelContent.implicitHeight, 460)
-
-                        states: [
-                            State {
-                                name: "visible"
-                                when: mediaSelector._panelOpen
-                                PropertyChanges {
-                                    target: panel
-                                    y: 0
-                                }
-                            },
-                            State {
-                                name: "hidden"
-                                when: !mediaSelector._panelOpen
-                                PropertyChanges {
-                                    target: panel
-                                    y: -panel.height - 28
-                                }
-                            }
-                        ]
-
-                        transitions: [
-                            Transition {
-                                from: "hidden"
-                                to: "visible"
-                                NumberAnimation {
-                                    property: "y"
-                                    duration: Root.Theme.animDuration
-                                    easing.type: Easing.OutCubic
-                                }
-                            },
-                            Transition {
-                                from: "visible"
-                                to: "hidden"
-                                SequentialAnimation {
-                                    NumberAnimation {
-                                        property: "y"
-                                        duration: Root.Theme.animDuration
-                                        easing.type: Easing.OutCubic
-                                    }
-                                    ScriptAction {
-                                        script: mediaSelector._showing = false
-                                    }
-                                }
-                            }
-                        ]
-
-                        // Dynamic Island geometry: top edge flat against Waybar, bottom rounded
-                        color: "transparent"
-                        border.width: 0
-                        clip: true
-
-                        // Block click-through
-                        MouseArea {
-                            anchors.fill: parent
-                        }
-
-                        ColumnLayout {
-                            id: panelContent
+                    ColumnLayout {
+                        id: panelContent
                             width: panel.width
                             spacing: 8
 
@@ -555,9 +393,8 @@ Scope {
                                 }
                             }
                         }
-                    }  // end Rectangle (panel)
-                }  // end Item (islandWrapper)
-            }  // end Item (panelClip)
+                    }
+                }
+            }
         }
     }
-}
