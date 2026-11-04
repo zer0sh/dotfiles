@@ -47,6 +47,12 @@ Waybar is docked at the top of the display with a height of 36 pixels and an acc
     * Unified capsule pill hosting quick hardware indicators alongside the notification bell, camera preview, and clipboard manager (`custom/caffeine`, `custom/nightlight`, `custom/shader`, `custom/powerprofile`, `custom/notifications`, `custom/camera`, `custom/clipboard`).
     * **Empty state collapse:** When all quick toggles are inactive, the pill seamlessly scales to contain solely the notification bell, camera preview button, and clipboard button, eliminating any residual empty container spacing or layout shifts.
     * **Active indicators:** When one or more toggles are engaged, their accented glyphs (`color: @accent`, `font-size: 16px`) appear inline to the left of the notification bell, sharing the unified capsule container (`border-radius: 18px`, `background: alpha(@text, 0.08)`).
+    * **`custom/mic`:** Privacy microphone indicator monitoring audio recording streams in real time via PipeWire/PulseAudio events (`pactl subscribe`, zero polling):
+        * Completely invisible and collapsed when no process is recording audio.
+        * Displays recording glyphs (` 󰍬`) styled with `@critical` red color when an application captures microphone input.
+        * Displays muted recording glyphs (` 󰍭`) if audio capture is active while the source is muted.
+        * Hover tooltip displays active client applications capturing audio (`Microphone active (app)`).
+        * Left click toggles microphone mute directly via `wpctl set-mute @DEFAULT_SOURCE@ toggle`.
     * **`custom/caffeine`:** Displays coffee cup glyph (`󰅶`) when session wake-lock is engaged via POSIX signal `SIGRTMIN+8`.
     * **`custom/nightlight`:** Displays eye glyph (`󰈈`) when `hyprsunset` warm light filter (4000K) is active via POSIX signal `SIGRTMIN+9`.
     * **`custom/shader`:** Displays screen shader glyph (`󰸉`) when screen decoration shader is applied via POSIX signal `SIGRTMIN+10`.
@@ -98,8 +104,27 @@ Colors and translucency tokens are imported dynamically from the centralized the
 * `@text`: Primary typography and icon color.
 * `@accent`: Active workspace indicator and highlight borders.
 * `@warning`: Battery low threshold (<= 30%).
-* `@critical`: Battery critical threshold (<= 10%).
+* `@critical`: Battery critical threshold (<= 10%) and active microphone recording indicator.
 * `@charging`: Battery active power supply state.
+
+### Centralized Tooltips Architecture
+Waybar tooltips are styled through a centralized parent stylesheet (`~/.config/themes/tooltips.css`), matching the design system of Quickshell notification cards:
+
+```css
+/* ~/.config/themes/tooltips.css */
+tooltip,
+tooltip.background,
+.tooltip {
+    background-color: alpha(@card_bg_color, 0.95);
+    background-clip: padding-box;
+    border: 1px solid alpha(@accent_color, 0.45);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    padding: 6px 12px;
+}
+```
+
+This single parent stylesheet is shared across Waybar, GTK 3, and GTK 4 applications, ensuring system-wide visual consistency and dynamic theme adaptation across wallpaper changes.
 
 ### Reloading Waybar Stylesheet Live
 To reload Waybar styling without restarting the process:

@@ -1,2 +1,7 @@
 /* Dynamic theme import from centralized theme store */
 @import url("/home/zero/.config/themes/current/waybar.css");
+
+/* Theme variable aliases for system-wide parent stylesheets (tooltips, dialogs) */
+@define-color card_bg_color alpha(@bg, 0.95);
+@define-color accent_color @accent;
+@define-color theme_fg_color @text;

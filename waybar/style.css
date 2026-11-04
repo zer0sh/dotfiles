@@ -18,21 +18,8 @@ window#waybar {
     transition-duration: 0.3s;
 }
 
-/* ---------- General Tooltips ---------- */
-tooltip {
-    background: alpha(@surface_container_high, 0.94);
-    border: 1px solid alpha(@outline, 0.35);
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    padding: 6px 12px;
-}
-
-tooltip label {
-    color: @text;
-    font-family: "Google Sans", "JetBrainsMono Nerd Font", sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-}
+/* ---------- General Tooltips (Imported from parent stylesheet) ---------- */
+@import url("/home/zero/.config/themes/tooltips.css");
 
 /* ========== LEFT MODULES ========== */
 
@@ -161,6 +148,7 @@ tooltip label {
 }
 
 #custom-caffeine,
+#custom-mic,
 #custom-nightlight,
 #custom-shader,
 #custom-powerprofile {
@@ -169,6 +157,31 @@ tooltip label {
     background: transparent;
     border: none;
     font-size: 0;
+}
+
+#custom-mic.recording {
+    padding: 0 6px;
+    margin: 0;
+    border-radius: 14px;
+    background: transparent;
+    color: @critical;
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+#custom-mic.muted {
+    padding: 0 6px;
+    margin: 0;
+    border-radius: 14px;
+    background: transparent;
+    color: alpha(@text, 0.45);
+    font-size: 16px;
+    transition: all 0.2s ease;
+}
+
+#custom-mic.recording:hover,
+#custom-mic.muted:hover {
+    background: alpha(@text, 0.08);
 }
 
 #custom-caffeine.active,
@@ -195,6 +208,7 @@ tooltip label {
     background: alpha(@text, 0.08);
 }
 
+#custom-mic label,
 #custom-caffeine label,
 #custom-nightlight label,
 #custom-shader label,
@@ -222,7 +236,9 @@ tooltip label {
 }
 
 #custom-notifications.has-notifs,
-#custom-notifications.dnd {
+#custom-notifications.has-notifs label,
+#custom-notifications.dnd,
+#custom-notifications.dnd label {
     color: @accent;
 }
 

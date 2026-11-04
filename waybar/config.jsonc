@@ -25,6 +25,7 @@
   "group/quick_actions": {
     "orientation": "inherit",
     "modules": [
+      "custom/mic",
       "custom/caffeine",
       "custom/nightlight",
       "custom/shader",
@@ -33,6 +34,12 @@
       "custom/camera",
       "custom/clipboard"
     ]
+  },
+  "custom/mic": {
+    "exec": "~/.config/waybar/scripts/mic-indicator",
+    "return-type": "json",
+    "on-click": "wpctl set-mute @DEFAULT_SOURCE@ toggle",
+    "tooltip": true
   },
   "custom/caffeine": {
     "exec": "~/.config/waybar/scripts/caffeine",

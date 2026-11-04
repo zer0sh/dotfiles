@@ -14,8 +14,10 @@ fi
 
 if [ "$count" -gt 0 ]; then
     cls="has-notifs ${dnd_class}"
-    echo "{\"text\": \"${icon}  ${count}\", \"class\": \"${cls## }\", \"alt\": \"has-notifs\"}"
+    clean_cls=$(echo "$cls" | xargs)
+    echo "{\"text\": \"${icon}  ${count}\", \"class\": \"${clean_cls}\", \"alt\": \"has-notifs\"}"
 else
     cls="empty ${dnd_class}"
-    echo "{\"text\": \"${icon}\", \"class\": \"${cls## }\", \"alt\": \"empty\"}"
+    clean_cls=$(echo "$cls" | xargs)
+    echo "{\"text\": \"${icon}\", \"class\": \"${clean_cls}\", \"alt\": \"empty\"}"
 fi

@@ -216,3 +216,7 @@ progressbar progress, levelbar block.filled {
     background-color: @accent_bg_color;
     color: @accent_fg_color;
 }
+
+/* Centralized System Tooltips (Parent stylesheet) */
+@import url("/home/zero/.config/themes/tooltips.css");
+

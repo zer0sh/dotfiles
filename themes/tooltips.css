@@ -1,0 +1,25 @@
+/* ==========================================================================
+   Centralized System Tooltips (Parent Stylesheet)
+   Used by Waybar, GTK 3, GTK 4, and desktop components.
+   Matches Quickshell notification cards aesthetic (surface container + accent border).
+   ========================================================================== */
+
+tooltip,
+tooltip.background,
+.tooltip {
+    background-color: alpha(@card_bg_color, 0.95);
+    background-clip: padding-box;
+    border: 1px solid alpha(@accent_color, 0.45);
+    border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+    padding: 6px 12px;
+}
+
+tooltip label,
+tooltip.background label,
+.tooltip label {
+    color: @theme_fg_color;
+    font-family: "Google Sans", "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+}

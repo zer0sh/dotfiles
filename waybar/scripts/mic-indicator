@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Event-driven microphone recording indicator for Waybar (PipeWire / PulseAudio)
+
+last_json=""
+
+emit_status() {
+    local outputs
+    outputs=$(pactl list source-outputs 2>/dev/null)
+
+    local new_json
+    if [ -n "$outputs" ]; then
+        local is_muted
+        is_muted=$(pactl get-source-mute @DEFAULT_SOURCE@ 2>/dev/null | grep -i "yes")
+
+        local apps
+        apps=$(echo "$outputs" | grep "application.name = " | cut -d '"' -f 2 | tr '\n' ',' | sed 's/,$//' | sed 's/,/, /g')
+
+        if [ -n "$is_muted" ]; then
+            local tooltip="Microphone muted"
+            [ -n "$apps" ] && tooltip="Microphone muted ($apps)"
+            new_json="{\"text\": \" 󰍭\", \"class\": [\"active\", \"muted\"], \"tooltip\": \"$tooltip\"}"
+        else
+            local tooltip="Microphone active"
+            [ -n "$apps" ] && tooltip="Microphone active ($apps)"
+            new_json="{\"text\": \" 󰍬\", \"class\": [\"active\", \"recording\"], \"tooltip\": \"$tooltip\"}"
+        fi
+    else
+        new_json="{\"text\": \"\", \"class\": \"hidden\"}"
+    fi
+
+    if [ "$new_json" != "$last_json" ]; then
+        echo "$new_json"
+        last_json="$new_json"
+    fi
+}
+
+cleanup() {
+    exit 0
+}
+
+trap cleanup SIGINT SIGTERM SIGHUP EXIT
+
+# Estado inicial
+emit_status
+
+# Monitoreo por eventos en tiempo real (cero sondeo / polling)
+pactl subscribe 2>/dev/null | while read -r line; do
+    if [[ "$line" =~ (source-output|source|server) ]]; then
+        emit_status
+    fi
+done

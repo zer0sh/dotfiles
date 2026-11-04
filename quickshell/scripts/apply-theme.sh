@@ -252,6 +252,11 @@ cat > "$THEME_DIR/waybar.css" << CSSEOF
 @define-color warning ${WARNING};
 @define-color critical ${CRITICAL};
 @define-color charging ${CHARGING};
+@define-color surface_container ${SURFACE_CONTAINER};
+@define-color surface_container_high ${SURFACE_CONTAINER_HIGH};
+@define-color card_bg_color ${SURFACE_CONTAINER};
+@define-color accent_color ${ACCENT};
+@define-color theme_fg_color ${TEXT};
 CSSEOF
 pkill -SIGUSR2 waybar || true
 
@@ -439,6 +444,9 @@ headerbar, .titlebar, actionbar {
     border-bottom: none;
     box-shadow: none;
 }
+
+/* Centralized System Tooltips (Parent stylesheet) */
+@import url("/home/zero/.config/themes/tooltips.css");
 GTKEOF
 done
 
