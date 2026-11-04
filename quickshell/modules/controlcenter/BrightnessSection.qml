@@ -3,15 +3,17 @@ import QtQuick.Layouts
 import Quickshell.Io
 import "../.." as Root
 
-// Vertical Glassmorphic Brightness Capsule (Material You Pixel style)
-Rectangle {
+// Circular Brightness Controller (Material You Pixel style)
+Item {
     id: root
 
-    implicitWidth: 44
-    implicitHeight: 310
+    implicitWidth: 94
+    implicitHeight: 94
 
     property real brightness: 0.5
     property bool brightnessAvailable: true
+    property real savedBrightness: 0.5
+    property bool isMuted: brightness < 0.02
 
     // ── Read brightness via brightnessctl -m ──
     Process {
@@ -23,8 +25,11 @@ Rectangle {
                 if (parts.length >= 5) {
                     var current = parseFloat(parts[2]);
                     var max = parseFloat(parts[4]);
-                    if (!isNaN(current) && !isNaN(max) && max > 0)
-                        root.brightness = current / max;
+                    if (!isNaN(current) && !isNaN(max) && max > 0) {
+                        var val = current / max;
+                        root.brightness = val;
+                        if (val > 0.05) root.savedBrightness = val;
+                    }
                 }
             }
         }
@@ -44,80 +49,37 @@ Rectangle {
     function setBrightness(value) {
         var clamped = Math.min(Math.max(value, 0.0), 1.0);
         root.brightness = clamped;
+        if (clamped > 0.05) root.savedBrightness = clamped;
         setProc.command = ["brightnessctl", "set", Math.round(clamped * 100) + "%"];
         setProc.running = true;
     }
 
-    function brightnessIcon(level) {
+    function toggleMute() {
+        if (root.brightness > 0.02) {
+            root.savedBrightness = root.brightness;
+            setBrightness(0.0);
+        } else {
+            var restore = (root.savedBrightness > 0.05) ? root.savedBrightness : 0.5;
+            setBrightness(restore);
+        }
+    }
+
+    function brightnessIcon(level, muted) {
+        if (muted || level < 0.02) return "brightness_low";
         if (level < 0.33) return "brightness_low";
         if (level < 0.66) return "brightness_medium";
         return "brightness_high";
     }
 
-    radius: width / 2
-    color: Qt.rgba(0, 0, 0, 0.22)
-    border.width: 1
-    border.color: Qt.rgba(255, 255, 255, 0.08)
-    clip: true
     visible: root.brightnessAvailable
 
-    // Vertical Progress Fill (bottom to top)
-    Rectangle {
-        id: progressFill
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: Math.max(0, parent.height * root.brightness)
-        radius: parent.radius
-        color: Root.Theme.primary
-
-        Behavior on height { NumberAnimation { duration: 60 } }
-    }
-
-    // Top Percentage
-    Text {
-        id: percentText
-        anchors.top: parent.top
-        anchors.topMargin: 14
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: Math.round(root.brightness * 100) + "%"
-        font.family: Root.Theme.fontFamily
-        font.pixelSize: 11
-        font.weight: Font.DemiBold
-        color: root.brightness > 0.88 ? Root.Theme.tileActiveText : Root.Theme.textPrimary
-        z: 2
-
-        Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
-    }
-
-    // Bottom Brightness Icon
-    Text {
-        id: iconText
-        anchors.bottom: parent.bottom
-        anchors.bottomMargin: 14
-        anchors.horizontalCenter: parent.horizontalCenter
-        text: root.brightnessIcon(root.brightness)
-        font.family: Root.Theme.iconFont
-        font.pixelSize: 20
-        color: root.brightness > 0.14 ? Root.Theme.tileActiveText : Root.Theme.textPrimary
-        z: 2
-
-        Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
-    }
-
-    // Interaction
-    MouseArea {
-        anchors.fill: parent
-        preventStealing: true
-        cursorShape: Qt.PointingHandCursor
-        onClicked: (mouse) => updateBrightness(mouse.y)
-        onPressed: (mouse) => updateBrightness(mouse.y)
-        onPositionChanged: (mouse) => {
-            if (pressed) updateBrightness(mouse.y);
-        }
-        function updateBrightness(my) {
-            var val = Math.min(Math.max((height - my) / height, 0.0), 1.0);
-            root.setBrightness(val);
-        }
+    CircularSlider {
+        anchors.centerIn: parent
+        value: root.brightness
+        muted: root.isMuted
+        icon: root.brightnessIcon(root.brightness, root.isMuted)
+        label: "Screen"
+        onValueModified: (val) => root.setBrightness(val)
+        onIconClicked: root.toggleMute()
     }
 }

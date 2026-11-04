@@ -889,24 +889,25 @@ Scope {
                                     }
                                 }
 
-                                // Vertical Sliders Card (Glassmorphic card matching AnalogClockWidget and WeatherWidget)
+                                // Circular Controllers Card (Glassmorphic card matching AnalogClockWidget and WeatherWidget)
                                 Rectangle {
                                     Layout.fillHeight: true
-                                    Layout.preferredWidth: 168
+                                    Layout.preferredWidth: 128
                                     radius: 24
                                     color: Qt.rgba(255, 255, 255, 0.08)
                                     border.width: 1
                                     border.color: Qt.rgba(255, 255, 255, 0.14)
                                     clip: true
 
-                                    RowLayout {
+                                    ColumnLayout {
                                         anchors.fill: parent
-                                        anchors.margins: 10
-                                        spacing: 7
+                                        anchors.margins: 8
+                                        spacing: 4
 
                                         VolumeSection {
                                             Layout.fillWidth: true
                                             Layout.fillHeight: true
+                                            Layout.alignment: Qt.AlignHCenter
                                             onOpenAudio: {
                                                 audioSubPage.currentTab = "outputs"
                                                 controlCenter.currentPage = "audio"
@@ -916,6 +917,7 @@ Scope {
                                         MicSection {
                                             Layout.fillWidth: true
                                             Layout.fillHeight: true
+                                            Layout.alignment: Qt.AlignHCenter
                                             onOpenAudio: {
                                                 audioSubPage.currentTab = "inputs"
                                                 controlCenter.currentPage = "audio"
@@ -926,6 +928,7 @@ Scope {
                                             visible: controlCenter.brightnessAvailable
                                             Layout.fillWidth: true
                                             Layout.fillHeight: true
+                                            Layout.alignment: Qt.AlignHCenter
                                         }
                                     }
                                 }
