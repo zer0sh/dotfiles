@@ -4,7 +4,7 @@ set -euo pipefail
 DEST_DIR="$HOME/Pictures/walls"
 mkdir -p "$DEST_DIR"
 
-FILE="$(zenity --file-selection --title="Seleccionar Fondo de Pantalla" --file-filter="Imágenes (*.jpg, *.jpeg, *.png, *.webp, *.bmp, *.gif) | *.jpg *.jpeg *.png *.webp *.bmp *.gif" 2>/dev/null || true)"
+FILE="$(zenity --file-selection --title="Select Wallpaper" --file-filter="Images (*.jpg, *.jpeg, *.png, *.webp, *.bmp, *.gif) | *.jpg *.jpeg *.png *.webp *.bmp *.gif" 2>/dev/null || true)"
 
 if [[ -n "$FILE" && -f "$FILE" ]]; then
     filename="$(basename "$FILE")"

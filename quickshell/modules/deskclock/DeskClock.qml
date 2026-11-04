@@ -50,35 +50,35 @@ Scope {
             "Good morning. Let's make it count."
         ]},
         { hour: 11, messages: [
-            "Happy hour, almorzando como Dios manda.",
-            "Lunch time, a comer como Dios manda.",
-            "It's lunch o'clock. Buen provecho.",
-            "Hora de almorzar, no sea animal."
+            "Lunch time, enjoy your meal.",
+            "Lunch break, time to recharge.",
+            "It's lunch o'clock.",
+            "Time to take a break and eat."
         ]},
         { hour: 14, messages: [
-            "Buenas tardes, keep going.",
+            "Good afternoon, keep going.",
             "Good afternoon. You got this.",
-            "Buenas tardes, seguimos en la lucha.",
+            "Good afternoon, stay focused.",
             "Afternoon mode: ON."
         ]},
         { hour: 18, messages: [
             "Good evening, you made it.",
-            "Buenas noches. We survived another one.",
+            "Good evening. We survived another one.",
             "Good evening. Time to slow down.",
             "The day is winding down."
         ]},
         { hour: 22, messages: [
-            "Bro, seriously? A mimir.",
-            "Bro, it's bedtime. A mimir.",
-            "Mano, ya. A mimir.",
+            "Bro, seriously? Time to sleep.",
+            "Bro, it's bedtime. Get some rest.",
+            "Time to call it a day.",
             "It's 22:00. What are you doing?",
             "Sleep.exe should be running."
         ]},
         { hour: 3,  messages: [
-            "¿Quién te hizo tanto daño?",
-            "Bro... who hurt you?",
             "Who hurt you this badly?",
-            "Mano, ¿todo bien en casa?",
+            "Bro... who hurt you?",
+            "Why are you still awake?",
+            "Is everything alright at home?",
             "It's 4 AM. We need to talk."
         ]}
     ]

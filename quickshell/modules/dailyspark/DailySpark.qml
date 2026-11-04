@@ -8,9 +8,9 @@ import "../.." as Root
 Scope {
     id: dailySpark
 
-    property string currentQuote: "La simplicidad es el requisito previo para la fiabilidad."
+    property string currentQuote: "Simplicity is prerequisite for reliability."
     property string currentAuthor: "Edsger W. Dijkstra"
-    property string currentCategory: "tecnología"
+    property string currentCategory: "technology"
     property var quotesList: []
     property int currentIndex: 0
 

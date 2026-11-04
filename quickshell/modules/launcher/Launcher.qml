@@ -1291,7 +1291,7 @@ Scope {
                                     }
 
                                     Text {
-                                        text: "Modo:"
+                                        text: "Mode:"
                                         font.family: Root.Theme.fontFamily
                                         font.pixelSize: 12
                                         font.weight: Font.DemiBold
@@ -1423,7 +1423,7 @@ Scope {
                                     }
 
                                     Text {
-                                        text: "Acento:"
+                                        text: "Accent:"
                                         font.family: Root.Theme.fontFamily
                                         font.pixelSize: 12
                                         font.weight: Font.DemiBold

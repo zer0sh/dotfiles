@@ -11,8 +11,8 @@ Scope {
 
     property string configPath: "/home/zero/.config/quickshell/scratchpad.json"
     property var tasks: [
-        { "id": 1, "text": "Refinar configuración de Hyprland & Waybar", "done": true },
-        { "id": 2, "text": "Personalizar nuevos gadgets de Quickshell", "done": false }
+        { "id": 1, "text": "Refine Hyprland & Waybar configuration", "done": true },
+        { "id": 2, "text": "Customize new Quickshell gadgets", "done": false }
     ]
 
     property bool panelVisible: Root.GadgetsManager.isEnabled("scratchpad")
@@ -212,7 +212,7 @@ Scope {
                     }
                     Item { Layout.fillWidth: true }
                     Text {
-                        text: scratchpad.tasks.filter(t => !t.done).length + " pendientes"
+                        text: scratchpad.tasks.filter(t => !t.done).length + " pending"
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 10
                         font.weight: Font.Medium
@@ -314,7 +314,7 @@ Scope {
 
                         Text {
                             anchors.fill: parent
-                            text: "Añadir nota y presionar Enter…"
+                            text: "Add note and press Enter…"
                             font.family: Root.Theme.fontFamily
                             font.pixelSize: 12
                             font.italic: true

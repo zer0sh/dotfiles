@@ -1,7 +1,7 @@
 width=640
 height=500
 location=center
-prompt=󰍉  Buscar aplicaciones...
+prompt=󰍉  Search applications...
 improved=true
 term=kitty
 matching=fuzzy
