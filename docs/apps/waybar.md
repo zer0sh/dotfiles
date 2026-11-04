@@ -47,7 +47,7 @@ Waybar is docked at the top of the display with a height of 36 pixels and an acc
 * **Quick Actions & Notifications Pill (`group/quick_actions`):**
     * Unified capsule pill hosting quick hardware indicators alongside the notification bell, camera preview, and clipboard manager (`custom/caffeine`, `custom/nightlight`, `custom/shader`, `custom/powerprofile`, `custom/notifications`, `custom/camera`, `custom/clipboard`).
     * **Empty state collapse:** When all quick toggles are inactive, the pill seamlessly scales to contain solely the notification bell, camera preview button, and clipboard button, eliminating any residual empty container spacing or layout shifts.
-    * **Active indicators:** When one or more toggles are engaged, their accented glyphs (`color: @accent`, `font-size: 16px`) appear inline to the left of the notification bell, sharing the unified capsule container (`border-radius: 18px`, `background: alpha(@text, 0.08)`) with standardized proportions (`padding: 0 8px`, `margin: 0 2px`) replicating the dimensions of the camera and clipboard action buttons.
+    * **Active indicators:** When one or more toggles are engaged, their accented glyphs (`color: @accent`, `font-size: 16px`) appear inline to the left of the notification bell, sharing the unified capsule container (`border-radius: 18px`, `background: alpha(@text, 0.08)`) with standardized proportions (`padding: 0 11px 0 8px`, `margin: 0 2px`) replicating the dimensions of the camera and clipboard action buttons.
     * **`custom/mic`:** Privacy microphone indicator monitoring audio recording streams in real time via PipeWire/PulseAudio events (`pactl subscribe`, zero polling):
         * Completely invisible and collapsed when no process is recording audio.
         * Displays recording glyphs (` 󰍬`) styled with `@critical` red color when an application captures microphone input.
@@ -141,7 +141,7 @@ Action buttons and dynamic toggles within `group/quick_actions` (`camera`, `clip
 #custom-powerprofile.active,
 #custom-powerprofile.power-saver,
 #custom-powerprofile.performance {
-    padding: 0 8px;
+    padding: 0 11px 0 8px;
     margin: 0 2px;
     border-radius: 14px;
     background: transparent;
