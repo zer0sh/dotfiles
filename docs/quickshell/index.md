@@ -45,6 +45,9 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
   * Triggered globally with `SUPER + Tab` / `SUPER + SHIFT + Tab`. Detailed in the [Workspace Overview Guide](overview.md).
 * **Keyboard Shortcuts Overlay (`modules/shortcuts/`):**
   * Wayland-native cheat sheet modal triggered via `F1` featuring live search, category pills, two-column card grid, and glassmorphic styling aligned with the Control Center. Detailed in the [Keyboard Shortcuts Guide](shortcuts-overlay.md).
+* **System Settings & Profile (`modules/settings/`):**
+  * Material Design 3 modal dialog accessible via the Control Center header settings action.
+  * Features profile customization (display name and avatar synchronized with `~/.face`) alongside device hardware specifications (RAM, CPU, kernel, OS, and package telemetry).
 
 ---
 

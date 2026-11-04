@@ -2,11 +2,13 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import QtQuick.Shapes
+import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
 import "../.." as Root
 import "../notifications" as Notifications
+import "../settings" as Settings
 
 Scope {
     id: controlCenter
@@ -29,6 +31,7 @@ Scope {
     readonly property bool airplaneModeEnabled: !wifiEnabled && !btEnabled
     property bool brightnessAvailable: false
     property QtObject powerMenuRef: null
+    signal settingsClicked()
 
     onPanelVisibleChanged: {
         if (panelVisible) {
@@ -707,17 +710,36 @@ Scope {
                                 Layout.fillWidth: true
                                 spacing: 12
 
-                                Rectangle {
+                                Item {
                                     Layout.preferredWidth: 46
                                     Layout.preferredHeight: 46
-                                    radius: 23
-                                    clip: true
-                                    color: Root.Theme.surfaceContainerHigh
+
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        radius: width / 2
+                                        color: Root.Theme.surfaceContainerHigh
+                                    }
 
                                     Image {
+                                        id: ccAvatarImg
                                         anchors.fill: parent
-                                        source: "file:///home/zero/.face"
+                                        source: Settings.ProfileService.avatarUrl
+                                        cache: false
                                         fillMode: Image.PreserveAspectCrop
+                                        visible: false
+                                    }
+
+                                    Rectangle {
+                                        id: ccAvatarMask
+                                        anchors.fill: parent
+                                        radius: width / 2
+                                        visible: false
+                                    }
+
+                                    OpacityMask {
+                                        anchors.fill: parent
+                                        source: ccAvatarImg
+                                        maskSource: ccAvatarMask
                                     }
                                 }
 
@@ -725,11 +747,12 @@ Scope {
                                     spacing: 1
 
                                     Text {
-                                        text: "zero"
+                                        text: Settings.ProfileService.displayName
                                         font.family: Root.Theme.fontFamily
                                         font.pixelSize: 16
                                         font.weight: Font.DemiBold
                                         color: Root.Theme.textPrimary
+                                        elide: Text.ElideRight
                                     }
 
                                     Text {
@@ -741,6 +764,30 @@ Scope {
                                 }
 
                                 Item { Layout.fillWidth: true }
+
+                                Rectangle {
+                                    Layout.preferredWidth: 40
+                                    Layout.preferredHeight: 40
+                                    radius: 20
+                                    color: settingsBtn.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
+                                    Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: "settings"
+                                        font.family: Root.Theme.iconFont
+                                        font.pixelSize: 22
+                                        color: Root.Theme.textPrimary
+                                    }
+
+                                    MouseArea {
+                                        id: settingsBtn
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onClicked: controlCenter.settingsClicked()
+                                    }
+                                }
 
                                 Rectangle {
                                     Layout.preferredWidth: 40

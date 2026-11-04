@@ -18,15 +18,15 @@ KEY_FILE = os.path.join(CONFIG_DIR, "api_key")
 CITY_FILE = os.path.join(CONFIG_DIR, "city")
 
 DEFAULT_WEATHER = {
-    "temp": "20°",
-    "city": "Bogota",
+    "temp": "25°",
+    "city": "Cali",
     "condition": "Partly cloudy",
     "icon": "partly_cloudy_day",
-    "humidity": "65%",
-    "feels_like": "19°",
+    "humidity": "75%",
+    "feels_like": "26°",
     "forecast": [
-        {"day": "Tomorrow", "temp": "20°", "condition": "Partly cloudy", "icon": "partly_cloudy_day"},
-        {"day": "Overmorrow", "temp": "19°", "condition": "Light rain", "icon": "rainy"}
+        {"day": "Tomorrow", "temp": "28°", "condition": "Partly cloudy", "icon": "partly_cloudy_day"},
+        {"day": "Overmorrow", "temp": "27°", "condition": "Light rain", "icon": "rainy"}
     ]
 }
 
@@ -62,7 +62,7 @@ def read_config():
         except Exception:
             pass
 
-    city = "Bogota"
+    city = "Cali,Colombia"
     if os.path.exists(CITY_FILE):
         try:
             with open(CITY_FILE, "r") as f:

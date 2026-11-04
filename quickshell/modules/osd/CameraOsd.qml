@@ -56,7 +56,6 @@ Scope {
 
     function takeSnapshot() {
         flashAnim.restart()
-        dismissTimer.restart()
         if (!snapProc.running) {
             snapProc.running = true
         }
@@ -119,25 +118,12 @@ Scope {
             }
 
             appearAnim.start()
-            dismissTimer.restart()
         }
 
         function dismiss() {
-            dismissTimer.stop()
             if (!dismissAnim.running) {
                 appearAnim.stop()
                 dismissAnim.start()
-            }
-        }
-
-        Timer {
-            id: dismissTimer
-            interval: 12000
-            repeat: false
-            onTriggered: {
-                if (!cardHover.containsMouse) {
-                    osdWin.dismiss()
-                }
             }
         }
 
@@ -440,7 +426,6 @@ Scope {
                                 cursorShape: Qt.PointingHandCursor
                                 onClicked: {
                                     cameraOsd.isMirrored = !cameraOsd.isMirrored
-                                    dismissTimer.restart()
                                 }
                             }
                         }
@@ -608,14 +593,6 @@ Scope {
                             }
                         }
                     }
-                }
-
-                MouseArea {
-                    id: cardHover
-                    anchors.fill: parent
-                    hoverEnabled: true
-                    acceptedButtons: Qt.NoButton
-                    onPositionChanged: dismissTimer.restart()
                 }
             }
         }

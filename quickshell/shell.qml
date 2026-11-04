@@ -18,6 +18,7 @@ import "modules/scratchpad" as Scratchpad
 import "modules/dailyspark" as DailySpark
 import "modules/overview" as Overview
 import "modules/mediaselector" as MediaSelector
+import "modules/settings" as Settings
 
 ShellRoot {
     id: root
@@ -160,6 +161,10 @@ ShellRoot {
         id: mediaSelector
     }
 
+    Settings.SettingsWindow {
+        id: settingsWindow
+    }
+
     // --- Mutual Exclusivity ---
 
     Connections {
@@ -170,6 +175,7 @@ ShellRoot {
                 appLauncher.panelVisible = false;
                 clipboardPanel.panelVisible = false;
                 desktopOverview.visible = false;
+                settingsWindow.visible = false;
             }
         }
     }
@@ -182,7 +188,12 @@ ShellRoot {
                 appLauncher.panelVisible = false;
                 clipboardPanel.panelVisible = false;
                 desktopOverview.visible = false;
+                settingsWindow.visible = false;
             }
+        }
+        function onSettingsClicked() {
+            controlCenter.panelVisible = false;
+            settingsWindow.visible = true;
         }
     }
 
@@ -194,6 +205,7 @@ ShellRoot {
                 controlCenter.panelVisible = false;
                 clipboardPanel.panelVisible = false;
                 desktopOverview.visible = false;
+                settingsWindow.visible = false;
             }
         }
     }
@@ -206,6 +218,7 @@ ShellRoot {
                 controlCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
                 desktopOverview.visible = false;
+                settingsWindow.visible = false;
             }
         }
     }
@@ -218,6 +231,20 @@ ShellRoot {
                 controlCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
                 clipboardPanel.panelVisible = false;
+                settingsWindow.visible = false;
+            }
+        }
+    }
+
+    Connections {
+        target: settingsWindow
+        function onVisibleChanged() {
+            if (settingsWindow.visible) {
+                powerMenu.menuOpen = false;
+                controlCenter.panelVisible = false;
+                appLauncher.panelVisible = false;
+                clipboardPanel.panelVisible = false;
+                desktopOverview.visible = false;
             }
         }
     }

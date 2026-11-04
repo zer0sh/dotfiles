@@ -101,6 +101,21 @@ def get_distro():
         pass
     return pretty
 
+def get_packages():
+    count = 0
+    try:
+        status_file = "/var/lib/dpkg/status"
+        if os.path.exists(status_file):
+            with open(status_file, "r", encoding="utf-8", errors="ignore") as f:
+                for line in f:
+                    if line.startswith("Package: "):
+                        count += 1
+        if count > 0:
+            return f"{count:,} (dpkg)"
+    except Exception:
+        pass
+    return "N/A"
+
 def main():
     cpu_model, cpu_usage = get_cpu_info()
     data = {
@@ -111,8 +126,15 @@ def main():
         "cpu_model": cpu_model,
         "cpu_percent": cpu_usage,
         "memory": get_mem_info(),
-        "disk": get_disk_info()
+        "disk": get_disk_info(),
+        "packages": get_packages()
     }
+    cache_path = os.path.expanduser("~/.config/quickshell/system-info.json")
+    try:
+        with open(cache_path, "w") as f:
+            f.write(json.dumps(data))
+    except Exception:
+        pass
     print(json.dumps(data))
 
 if __name__ == "__main__":
