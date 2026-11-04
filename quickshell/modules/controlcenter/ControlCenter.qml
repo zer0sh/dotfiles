@@ -33,6 +33,17 @@ Scope {
     property QtObject powerMenuRef: null
     signal settingsClicked()
 
+    property var _edgePanelRef: null
+
+    function close(): void {
+        if (_edgePanelRef) {
+            _edgePanelRef.close()
+        } else {
+            panelVisible = false
+            _showing = false
+        }
+    }
+
     onPanelVisibleChanged: {
         if (panelVisible) {
             _showing = true
@@ -47,10 +58,14 @@ Scope {
             nightLightCheckProc.running = true
             dndCheckProc.running = true
         } else {
-            _showing = false
-            _panelOpen = false
-            controlCenter.currentPage = "main"
-            controlCenter.notificationsExpanded = false
+            if (_edgePanelRef) {
+                _edgePanelRef.close()
+            } else {
+                _showing = false
+                _panelOpen = false
+                controlCenter.currentPage = "main"
+                controlCenter.notificationsExpanded = false
+            }
         }
     }
 
@@ -550,122 +565,38 @@ Scope {
                     if (controlCenter.currentPage !== "main")
                         controlCenter.currentPage = "main"
                     else
-                        controlCenter.panelVisible = false
+                        controlCenter.close()
                 }
             }
 
-            // click-outside close area
-            MouseArea {
-                anchors.fill: parent
-                onClicked: controlCenter.panelVisible = false
-            }
-
-            // Top region attached directly below Waybar
-            Item {
-                id: panelClip
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.topMargin: Root.Theme.shelfHeight
-
-                Shape {
-                    id: panelShape
-                    anchors.top: panel.top
-                    anchors.bottom: panel.bottom
-                    anchors.left: panel.left
-                    anchors.right: panel.right
-                    anchors.leftMargin: -28
-                    layer.enabled: true
-                    layer.samples: 4
-
-                    // 1. Relleno unificado (hombro cóncavo izquierdo + cuerpo del panel)
-                    ShapePath {
-                        strokeWidth: 0
-                        strokeColor: "transparent"
-                        fillColor: Qt.rgba(Root.Theme._shelfBgColor.r, Root.Theme._shelfBgColor.g, Root.Theme._shelfBgColor.b, 0.85)
-
-                        startX: 0
-                        startY: 0
-
-                        // Curva cóncava hombro izquierdo
-                        PathArc {
-                            x: 28; y: 28
-                            radiusX: 28; radiusY: 28
-                            direction: PathArc.Clockwise
-                        }
-                        // Lateral izquierdo
-                        PathLine { x: 28; y: Math.max(28, panelShape.height - 28) }
-                        // Esquina inferior izquierda redondeada
-                        PathArc {
-                            x: 56; y: panelShape.height
-                            radiusX: 28; radiusY: 28
-                            direction: PathArc.Counterclockwise
-                        }
-                        // Base horizontal
-                        PathLine { x: Math.max(56, panelShape.width - 28); y: panelShape.height }
-                        // Esquina inferior derecha redondeada
-                        PathArc {
-                            x: panelShape.width; y: Math.max(28, panelShape.height - 28)
-                            radiusX: 28; radiusY: 28
-                            direction: PathArc.Counterclockwise
-                        }
-                        // Lateral derecho
-                        PathLine { x: panelShape.width; y: 0 }
-                        // Cierre superior contra Waybar
-                        PathLine { x: 0; y: 0 }
-                    }
-
-                    // 2. Borde exterior continuo estilo ventana
-                    ShapePath {
-                        strokeWidth: 2
-                        strokeColor: Root.Theme.primary
-                        fillColor: "transparent"
-                        capStyle: ShapePath.FlatCap
-                        joinStyle: ShapePath.RoundJoin
-
-                        startX: 0
-                        startY: 0
-
-                        // Curva cóncava hombro izquierdo
-                        PathArc {
-                            x: 28; y: 28
-                            radiusX: 28; radiusY: 28
-                            direction: PathArc.Clockwise
-                        }
-                        // Lateral izquierdo
-                        PathLine { x: 28; y: Math.max(28, panelShape.height - 28) }
-                        // Esquina inferior izquierda redondeada
-                        PathArc {
-                            x: 56; y: panelShape.height
-                            radiusX: 28; radiusY: 28
-                            direction: PathArc.Counterclockwise
-                        }
-                        // Base horizontal
-                        PathLine { x: Math.max(56, panelShape.width - 28); y: panelShape.height }
-                        // Esquina inferior derecha redondeada
-                        PathArc {
-                            x: panelShape.width; y: Math.max(28, panelShape.height - 28)
-                            radiusX: 28; radiusY: 28
-                            direction: PathArc.Counterclockwise
-                        }
-                        // Lateral derecho
-                        PathLine { x: panelShape.width; y: 0 }
-                        // Abierto hacia Waybar arriba
-                    }
+            Root.EdgePanel {
+                id: edgePanelWrapper
+                edge: "top-right"
+                panelWidth: Root.Theme.panelWidth + 28
+                panelHeight: pageContainer.height + 2
+                shoulderRadius: 28
+                Component.onCompleted: controlCenter._edgePanelRef = edgePanelWrapper
+                onCloseRequested: {
+                    if (controlCenter.currentPage !== "main")
+                        controlCenter.currentPage = "main"
+                    else
+                        controlCenter.close()
+                }
+                onClosed: {
+                    controlCenter._edgePanelRef = null
+                    controlCenter.panelVisible = false
+                    controlCenter._showing = false
+                    controlCenter._panelOpen = false
+                    controlCenter.currentPage = "main"
+                    controlCenter.notificationsExpanded = false
                 }
 
-                Rectangle {
+                Item {
                     id: panel
-
                     width: Root.Theme.panelWidth
                     height: pageContainer.height + 2
                     anchors.right: parent.right
                     anchors.rightMargin: 0
-                    y: 0
-
-                    color: "transparent"
-                    border.width: 0
                     clip: true
 
                     // block click-through to overlay close area
@@ -1311,8 +1242,8 @@ Scope {
                         }
                     }
                 }
-            }  // end Rectangle (panel)
-            }  // end Item (panelClip)
+            }
         }
     }
+}
 }

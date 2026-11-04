@@ -4,7 +4,7 @@ import QtQuick.Shapes
 import "." as Root
 
 // EdgePanel — Universal parent component for edge-anchored panels
-// Fluid cinematic drawer physics (slide + micro-depth) with concave shoulder silhouette
+// Apple Dynamic Island fluid spring physics and seamless concave shoulder silhouette
 Item {
     id: edgePanel
 
@@ -12,7 +12,7 @@ Item {
     property string edge: "right" // "right" | "top" | "bottom" | "left" | "top-right"
     property real panelWidth: 310
     property real panelHeight: 450
-    property int shoulderRadius: 26
+    property int shoulderRadius: 28
 
     property real topMargin: (edge === "top" || edge === "top-right") ? Root.Theme.shelfHeight : 0
     property real bottomMargin: 0
@@ -22,7 +22,7 @@ Item {
     property color accentColor: Root.Theme.primary
     property color panelFillColor: Qt.rgba(Root.Theme.surfaceContainer.r,
                                            Root.Theme.surfaceContainer.g,
-                                           Root.Theme.surfaceContainer.b, 0.92)
+                                           Root.Theme.surfaceContainer.b, 0.94)
 
     property bool showDim: true
     property real dimMaxOpacity: 0.45
@@ -36,62 +36,108 @@ Item {
 
     anchors.fill: parent
 
-    // ── Animation States (Fluid Cinematic Drawer Physics) ─────────
-    readonly property real _maxSlide: (edge === "right" || edge === "left") ? (panelWidth + 30) : (panelHeight + 30)
+    // ── Dynamic Island Physics States ─────────────────────────────
+    readonly property real _maxSlide: (edge === "right" || edge === "left") ? Math.min(90, panelWidth * 0.32) : Math.min(90, panelHeight * 0.32)
 
     property real _slideOffset: _maxSlide
-    property real _microScale: 0.97
+    property real _scalePrimary: 0.74
+    property real _scaleSecondary: 0.86
     property real _opacity: 0.0
+    property real _contentScale: 0.90
     property real _contentOpacity: 0.0
     property real _dimOpacity: 0.0
 
-    // Fluid deceleration on appear (OutCubic — no distortion, 100% crisp vector fidelity)
+    // Dynamic Island Expansion (Apple fluid spring expansion & blooming)
     ParallelAnimation {
         id: appearAnim
+
+        // Edge displacement glide
         NumberAnimation {
             target: edgePanel; property: "_slideOffset"
-            from: edgePanel._maxSlide; to: 0.0; duration: 250
-            easing.type: Easing.OutCubic
+            from: edgePanel._maxSlide; to: 0.0; duration: 280
+            easing.type: Easing.OutBack
+            easing.overshoot: 1.06
         }
+
+        // Primary extrusion axis (pill-to-card liquid spring)
         NumberAnimation {
-            target: edgePanel; property: "_microScale"
-            from: 0.97; to: 1.0; duration: 240
+            target: edgePanel; property: "_scalePrimary"
+            from: 0.74; to: 1.0; duration: 280
+            easing.type: Easing.OutBack
+            easing.overshoot: 1.06
+        }
+
+        // Orthogonal axis expansion
+        NumberAnimation {
+            target: edgePanel; property: "_scaleSecondary"
+            from: 0.86; to: 1.0; duration: 250
             easing.type: Easing.OutCubic
         }
+
+        // Outer surface opacity
         NumberAnimation {
             target: edgePanel; property: "_opacity"
-            from: 0.0; to: 1.0; duration: 180
+            from: 0.0; to: 1.0; duration: 160
             easing.type: Easing.OutQuad
         }
-        NumberAnimation {
-            target: edgePanel; property: "_contentOpacity"
-            from: 0.0; to: 1.0; duration: 210
-            easing.type: Easing.OutCubic
-        }
+
+        // Dim backdrop fade
         NumberAnimation {
             target: edgePanel; property: "_dimOpacity"
-            from: 0.0; to: edgePanel.dimMaxOpacity; duration: 230
+            from: 0.0; to: edgePanel.dimMaxOpacity; duration: 220
             easing.type: Easing.OutQuad
+        }
+
+        // Content blooming (staggered organic reveal)
+        SequentialAnimation {
+            PauseAnimation { duration: 35 }
+            ParallelAnimation {
+                NumberAnimation {
+                    target: edgePanel; property: "_contentScale"
+                    from: 0.90; to: 1.0; duration: 220
+                    easing.type: Easing.OutBack
+                    easing.overshoot: 1.05
+                }
+                NumberAnimation {
+                    target: edgePanel; property: "_contentOpacity"
+                    from: 0.0; to: 1.0; duration: 180
+                    easing.type: Easing.OutQuad
+                }
+            }
         }
     }
 
-    // Natural acceleration on dismiss (InCubic — sleek, seamless glide back into the edge)
+    // Dynamic Island Retraction (Apple liquid snap back into edge)
     SequentialAnimation {
         id: dismissAnim
+
         ParallelAnimation {
+            // Content contracts inward and dissolves cleanly
+            NumberAnimation {
+                target: edgePanel; property: "_contentScale"
+                to: 0.92; duration: 110
+                easing.type: Easing.InQuad
+            }
+            NumberAnimation {
+                target: edgePanel; property: "_contentOpacity"
+                to: 0.0; duration: 110
+                easing.type: Easing.InQuad
+            }
+
+            // Shell accelerates and sucks back into the screen edge
             NumberAnimation {
                 target: edgePanel; property: "_slideOffset"
                 to: edgePanel._maxSlide; duration: 200
                 easing.type: Easing.InCubic
             }
             NumberAnimation {
-                target: edgePanel; property: "_microScale"
-                to: 0.97; duration: 190
+                target: edgePanel; property: "_scalePrimary"
+                to: 0.74; duration: 200
                 easing.type: Easing.InCubic
             }
             NumberAnimation {
-                target: edgePanel; property: "_contentOpacity"
-                to: 0.0; duration: 130
+                target: edgePanel; property: "_scaleSecondary"
+                to: 0.86; duration: 190
                 easing.type: Easing.InQuad
             }
             NumberAnimation {
@@ -105,6 +151,7 @@ Item {
                 easing.type: Easing.InQuad
             }
         }
+
         ScriptAction {
             script: edgePanel.closed()
         }
@@ -114,8 +161,10 @@ Item {
         dismissAnim.stop();
         appearAnim.stop();
         _slideOffset = _maxSlide;
-        _microScale = 0.97;
+        _scalePrimary = 0.74;
+        _scaleSecondary = 0.86;
         _opacity = 0.0;
+        _contentScale = 0.90;
         _contentOpacity = 0.0;
         _dimOpacity = 0.0;
         appearAnim.start();
@@ -186,8 +235,8 @@ Item {
                 origin.y: (edgePanel.edge === "top" || edgePanel.edge === "top-right") ? 0
                         : (edgePanel.edge === "bottom") ? panelCard.height
                         : panelCard.height / 2
-                xScale: edgePanel._microScale
-                yScale: edgePanel._microScale
+                xScale: (edgePanel.edge === "right" || edgePanel.edge === "left") ? edgePanel._scalePrimary : edgePanel._scaleSecondary
+                yScale: (edgePanel.edge === "right" || edgePanel.edge === "left") ? edgePanel._scaleSecondary : edgePanel._scalePrimary
             }
         ]
 
@@ -534,11 +583,13 @@ Item {
             anchors.fill: parent
         }
 
-        // Staggered Content Container
+        // Staggered Content Blooming Container (Dynamic Island style)
         Item {
             id: contentContainer
             anchors.fill: parent
             opacity: edgePanel._contentOpacity
+            scale: edgePanel._contentScale
+            transformOrigin: Item.Center
         }
     }
 }
