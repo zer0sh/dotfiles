@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
+import "../settings" as Settings
 import "../.." as Root
 
 Scope {
@@ -10,6 +11,7 @@ Scope {
 
     property string temp: "--°"
     property string city: "Weather"
+    property string displayCity: "Weather"
     property string condition: "Loading..."
     property string icon: "partly_cloudy_day"
     property string humidity: "--%"
@@ -28,6 +30,16 @@ Scope {
             var pos = Root.GadgetsManager.getPosition("weather", 1420, 520);
             weatherGadget.posX = pos.x;
             weatherGadget.posY = pos.y;
+        }
+    }
+
+    Connections {
+        target: Settings.WeatherService
+        function onWeatherUpdated() {
+            if (!weatherProc.running) {
+                weatherGadget.refreshing = true;
+                weatherProc.running = true;
+            }
         }
     }
 
@@ -53,6 +65,8 @@ Scope {
                 try {
                     var data = JSON.parse(text.trim());
                     if (data.temp) weatherGadget.temp = data.temp;
+                    if (data.display_city) weatherGadget.displayCity = data.display_city;
+                    else if (data.city) weatherGadget.displayCity = data.city;
                     if (data.city) weatherGadget.city = data.city;
                     if (data.condition) weatherGadget.condition = data.condition;
                     if (data.icon) weatherGadget.icon = data.icon;
@@ -181,7 +195,7 @@ Scope {
                     Layout.fillWidth: true
 
                     Text {
-                        text: weatherGadget.city.toUpperCase()
+                        text: weatherGadget.displayCity.toUpperCase()
                         font.family: Root.Theme.fontFamily
                         font.pixelSize: 12
                         font.weight: Font.DemiBold

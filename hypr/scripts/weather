@@ -4,6 +4,7 @@ import os
 import sys
 
 CACHE_FILE = os.path.expanduser("~/.cache/weather.json")
+LABEL_FILE = os.path.expanduser("~/.config/weather/label")
 
 ICONS = {
     "wb_sunny": "󰖙",
@@ -23,8 +24,18 @@ def get_weather():
             data = json.load(f)
             icon = ICONS.get(data.get("icon", ""), "󰖐")
             temp = data.get("temp", "")
-            city = data.get("city", "")
             condition = data.get("condition", "")
+
+            # Respect custom label or fallback to original city
+            custom_label = data.get("custom_label", "")
+            if not custom_label and os.path.exists(LABEL_FILE):
+                try:
+                    with open(LABEL_FILE, "r") as lf:
+                        custom_label = lf.read().strip()
+                except Exception:
+                    pass
+
+            city = custom_label if custom_label else (data.get("display_city") or data.get("city", ""))
             if not temp:
                 return ""
             

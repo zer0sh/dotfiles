@@ -7,13 +7,36 @@ import "../.." as Root
 
 Scope {
     id: root
+
     property bool menuOpen: false
     property int selectedIndex: 0
+    property int hoveredIndex: -1
     readonly property int buttonCount: 5
 
-    // Reset selection every time the menu opens
+    property var menuWindowRef: null
+
+    readonly property int activeIndex: hoveredIndex >= 0 ? hoveredIndex : selectedIndex
+
+    readonly property var buttonLabels: [
+        "Shutdown",
+        "Reboot",
+        "Logout",
+        "Lock",
+        "Reload"
+    ]
+
+    readonly property string activeLabel: (activeIndex >= 0 && activeIndex < buttonLabels.length)
+        ? buttonLabels[activeIndex]
+        : ""
+
+    readonly property bool activeIsError: activeIndex === 0
+
+    // Reset selection whenever the menu opens
     onMenuOpenChanged: {
-        if (menuOpen) selectedIndex = 0;
+        if (menuOpen) {
+            selectedIndex = 0
+            hoveredIndex = -1
+        }
     }
 
     Loader {
@@ -37,120 +60,261 @@ Scope {
 
             color: "transparent"
 
-            // Dim overlay — lighter than before so blur on contentBox is visible
-            Rectangle {
-                anchors.fill: parent
-                color: Qt.rgba(0, 0, 0, 0.35)
+            Component.onCompleted: {
+                root.menuWindowRef = menuWindow
+                appearAnim.start()
+            }
 
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: root.menuOpen = false
+            function closeMenu(): void {
+                if (!dismissAnim.running) {
+                    appearAnim.stop()
+                    dismissAnim.start()
                 }
             }
 
-            // Centered content box — semi-transparent so hyprland blur shines through
+            // Dim overlay — dismisses on click-outside
             Rectangle {
-                id: contentBox
-                anchors.centerIn: parent
-                width: contentRow.implicitWidth + 34 * 2
-                height: contentRow.implicitHeight + 30 * 2
-                radius: 24
-                // Semi-transparent panel background — follows active theme
-                color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.82)
-                border.color: Root.Theme.primary
-                border.width: 2
-
+                id: dimOverlay
+                anchors.fill: parent
+                color: Qt.rgba(0, 0, 0, 0.35)
                 opacity: 0
-                scale: 0.93
-
-                Component.onCompleted: appearAnim.start()
 
                 ParallelAnimation {
                     id: appearAnim
                     NumberAnimation {
-                        target: contentBox; property: "opacity"
-                        to: 1; duration: 200; easing.type: Easing.OutCubic
+                        target: dimOverlay; property: "opacity"
+                        from: 0.0; to: 1.0; duration: 200; easing.type: Easing.OutQuad
                     }
                     NumberAnimation {
-                        target: contentBox; property: "scale"
-                        to: 1; duration: 200; easing.type: Easing.OutCubic
+                        target: sidePanel; property: "_slideX"
+                        from: sidePanel.width + 40; to: 0; duration: 260
+                        easing.type: Easing.OutCubic
+                    }
+                    NumberAnimation {
+                        target: sidePanel; property: "opacity"
+                        from: 0.0; to: 1.0; duration: 200; easing.type: Easing.OutQuad
                     }
                 }
 
-                // Block clicks from reaching the background dismiss area
-                MouseArea { anchors.fill: parent }
+                SequentialAnimation {
+                    id: dismissAnim
+                    ParallelAnimation {
+                        NumberAnimation {
+                            target: dimOverlay; property: "opacity"
+                            to: 0.0; duration: 180; easing.type: Easing.InQuad
+                        }
+                        NumberAnimation {
+                            target: sidePanel; property: "_slideX"
+                            to: sidePanel.width + 40; duration: 220
+                            easing.type: Easing.InCubic
+                        }
+                        NumberAnimation {
+                            target: sidePanel; property: "opacity"
+                            to: 0.0; duration: 180; easing.type: Easing.InQuad
+                        }
+                    }
+                    ScriptAction {
+                        script: {
+                            root.menuOpen = false
+                            root.menuWindowRef = null
+                        }
+                    }
+                }
 
-                RowLayout {
-                    id: contentRow
-                    anchors.centerIn: parent
-                    spacing: 16
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: menuWindow.closeMenu()
+                }
+            }
 
-                    PowerButton {
-                        icon: "󰐥"
-                        label: "Shutdown"
-                        selected: root.selectedIndex === 0
-                        onClicked: { shutdownProc.startDetached(); root.menuOpen = false; }
+            // Vertical power menu container exiting/entering from the right edge
+            Item {
+                id: sidePanel
+                property real _slideX: width + 40
+
+                anchors.right: parent.right
+                anchors.rightMargin: 16
+                anchors.verticalCenter: parent.verticalCenter
+                width: 72
+                height: cardContent.implicitHeight + 20
+
+                transform: Translate {
+                    x: sidePanel._slideX
+                }
+
+                // Interactive action label pill floating to the left of the active button
+                Rectangle {
+                    id: labelPill
+                    anchors.right: parent.left
+                    anchors.rightMargin: 12
+                    y: cardContent.y + (root.activeIndex * (52 + cardContent.spacing)) + (52 - height) / 2
+                    width: pillText.implicitWidth + 24
+                    height: 28
+                    radius: 14
+                    color: Qt.rgba(Root.Theme.surfaceContainerHigh.r,
+                                   Root.Theme.surfaceContainerHigh.g,
+                                   Root.Theme.surfaceContainerHigh.b, 0.95)
+                    border.color: root.activeIsError ? Root.Theme.error : Root.Theme.panelBorder
+                    border.width: 1
+                    opacity: (root.activeLabel !== "" && sidePanel.opacity > 0.4) ? 1.0 : 0.0
+
+                    Behavior on opacity { NumberAnimation { duration: 150 } }
+                    Behavior on y { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+                    Behavior on width { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+                    Behavior on border.color { ColorAnimation { duration: 150 } }
+
+                    Text {
+                        id: pillText
+                        anchors.centerIn: parent
+                        text: root.activeLabel
+                        font.family: Root.Theme.fontFamily
+                        font.pixelSize: 12
+                        font.weight: Font.Medium
+                        color: root.activeIsError ? Root.Theme.error : Root.Theme.textPrimary
+                    }
+                }
+
+                // Main vertical card
+                Rectangle {
+                    id: panelCard
+                    anchors.fill: parent
+                    radius: 24
+                    color: Qt.rgba(Root.Theme.panelBg.r,
+                                   Root.Theme.panelBg.g,
+                                   Root.Theme.panelBg.b, 0.85)
+                    border.color: Root.Theme.primary
+                    border.width: 2
+
+                    // Prevent click-through to dismiss overlay
+                    MouseArea {
+                        anchors.fill: parent
                     }
 
-                    PowerButton {
-                        icon: "󰜉"
-                        label: "Reboot"
-                        selected: root.selectedIndex === 1
-                        onClicked: { rebootProc.startDetached(); root.menuOpen = false; }
-                    }
+                    // Vertical button list
+                    ColumnLayout {
+                        id: cardContent
+                        anchors.fill: parent
+                        anchors.margins: 10
+                        spacing: 8
 
-                    PowerButton {
-                        icon: "󰍃"
-                        label: "Logout"
-                        selected: root.selectedIndex === 2
-                        onClicked: { logoutProc.startDetached(); root.menuOpen = false; }
-                    }
+                        PowerButton {
+                            icon: "󰐥"
+                            label: "Shutdown"
+                            isError: true
+                            selected: root.selectedIndex === 0
+                            onHovered: root.hoveredIndex = 0
+                            onUnhovered: if (root.hoveredIndex === 0) root.hoveredIndex = -1
+                            onClicked: {
+                                shutdownProc.startDetached()
+                                menuWindow.closeMenu()
+                            }
+                        }
 
-                    PowerButton {
-                        icon: "󰌾"
-                        label: "Lock"
-                        selected: root.selectedIndex === 3
-                        onClicked: { lockProc.startDetached(); root.menuOpen = false; }
-                    }
+                        PowerButton {
+                            icon: "󰜉"
+                            label: "Reboot"
+                            selected: root.selectedIndex === 1
+                            onHovered: root.hoveredIndex = 1
+                            onUnhovered: if (root.hoveredIndex === 1) root.hoveredIndex = -1
+                            onClicked: {
+                                rebootProc.startDetached()
+                                menuWindow.closeMenu()
+                            }
+                        }
 
-                    PowerButton {
-                        icon: "󰜈"
-                        label: "Reload"
-                        selected: root.selectedIndex === 4
-                        onClicked: { reloadProc.startDetached(); root.menuOpen = false; }
+                        PowerButton {
+                            icon: "󰍃"
+                            label: "Logout"
+                            selected: root.selectedIndex === 2
+                            onHovered: root.hoveredIndex = 2
+                            onUnhovered: if (root.hoveredIndex === 2) root.hoveredIndex = -1
+                            onClicked: {
+                                logoutProc.startDetached()
+                                menuWindow.closeMenu()
+                            }
+                        }
+
+                        PowerButton {
+                            icon: "󰌾"
+                            label: "Lock"
+                            selected: root.selectedIndex === 3
+                            onHovered: root.hoveredIndex = 3
+                            onUnhovered: if (root.hoveredIndex === 3) root.hoveredIndex = -1
+                            onClicked: {
+                                lockProc.startDetached()
+                                menuWindow.closeMenu()
+                            }
+                        }
+
+                        PowerButton {
+                            icon: "󰜈"
+                            label: "Reload"
+                            selected: root.selectedIndex === 4
+                            onHovered: root.hoveredIndex = 4
+                            onUnhovered: if (root.hoveredIndex === 4) root.hoveredIndex = -1
+                            onClicked: {
+                                reloadProc.startDetached()
+                                menuWindow.closeMenu()
+                            }
+                        }
                     }
                 }
             }
 
             // Keyboard navigation handler
             Item {
+                id: keyHandler
                 focus: true
+                Component.onCompleted: forceActiveFocus()
 
                 Keys.onPressed: (event) => {
                     if (event.key === Qt.Key_Escape) {
-                        root.menuOpen = false;
-                        event.accepted = true;
-
-                    } else if (event.key === Qt.Key_Left ||
+                        menuWindow.closeMenu()
+                        event.accepted = true
+                    } else if (event.key === Qt.Key_Up ||
                                (event.key === Qt.Key_Tab && (event.modifiers & Qt.ShiftModifier))) {
-                        root.selectedIndex = (root.selectedIndex - 1 + root.buttonCount) % root.buttonCount;
-                        event.accepted = true;
-
-                    } else if (event.key === Qt.Key_Right || event.key === Qt.Key_Tab) {
-                        root.selectedIndex = (root.selectedIndex + 1) % root.buttonCount;
-                        event.accepted = true;
-
+                        root.selectedIndex = (root.selectedIndex - 1 + root.buttonCount) % root.buttonCount
+                        root.hoveredIndex = -1
+                        event.accepted = true
+                    } else if (event.key === Qt.Key_Down || event.key === Qt.Key_Tab) {
+                        root.selectedIndex = (root.selectedIndex + 1) % root.buttonCount
+                        root.hoveredIndex = -1
+                        event.accepted = true
+                    } else if (event.key === Qt.Key_Left) {
+                        root.selectedIndex = (root.selectedIndex - 1 + root.buttonCount) % root.buttonCount
+                        root.hoveredIndex = -1
+                        event.accepted = true
+                    } else if (event.key === Qt.Key_Right) {
+                        root.selectedIndex = (root.selectedIndex + 1) % root.buttonCount
+                        root.hoveredIndex = -1
+                        event.accepted = true
                     } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter ||
                                event.key === Qt.Key_Space) {
                         switch (root.selectedIndex) {
-                            case 0: shutdownProc.startDetached(); break;
-                            case 1: rebootProc.startDetached(); break;
-                            case 2: logoutProc.startDetached(); break;
-                            case 3: lockProc.startDetached(); break;
-                            case 4: reloadProc.startDetached(); break;
+                            case 0: shutdownProc.startDetached(); break
+                            case 1: rebootProc.startDetached(); break
+                            case 2: logoutProc.startDetached(); break
+                            case 3: lockProc.startDetached(); break
+                            case 4: reloadProc.startDetached(); break
                         }
-                        root.menuOpen = false;
-                        event.accepted = true;
+                        menuWindow.closeMenu()
+                        event.accepted = true
+                    } else if (event.key === Qt.Key_S) {
+                        shutdownProc.startDetached()
+                        menuWindow.closeMenu()
+                        event.accepted = true
+                    } else if (event.key === Qt.Key_R) {
+                        rebootProc.startDetached()
+                        menuWindow.closeMenu()
+                        event.accepted = true
+                    } else if (event.key === Qt.Key_L) {
+                        lockProc.startDetached()
+                        menuWindow.closeMenu()
+                        event.accepted = true
+                    } else if (event.key === Qt.Key_E) {
+                        logoutProc.startDetached()
+                        menuWindow.closeMenu()
+                        event.accepted = true
                     }
                 }
             }
@@ -162,12 +326,28 @@ Scope {
     Process { id: rebootProc;   command: ["systemctl", "reboot"] }
     Process { id: logoutProc;   command: ["hyprctl", "dispatch", "exit"] }
     Process { id: lockProc;     command: ["hyprlock"] }
-    Process { id: reloadProc;  command: ["hyprctl", "reload"] }
+    Process { id: reloadProc;   command: ["hyprctl", "reload"] }
 
     IpcHandler {
         target: "powermenu"
-        function toggle(): void { root.menuOpen = !root.menuOpen; }
+        function toggle(): void {
+            if (root.menuOpen) {
+                if (root.menuWindowRef) {
+                    root.menuWindowRef.closeMenu()
+                } else {
+                    root.menuOpen = false
+                }
+            } else {
+                root.menuOpen = true
+            }
+        }
         function open(): void   { root.menuOpen = true; }
-        function close(): void  { root.menuOpen = false; }
+        function close(): void  {
+            if (root.menuWindowRef) {
+                root.menuWindowRef.closeMenu()
+            } else {
+                root.menuOpen = false
+            }
+        }
     }
 }

@@ -17,6 +17,7 @@ Scope {
     readonly property var sections: [
         { id: "profile", label: "Profile", icon: "person", desc: "Account and avatar" },
         { id: "theme", label: "Theme & Style", icon: "palette", desc: "Colors, Matugen and presets" },
+        { id: "weather", label: "Weather & Location", icon: "cloud", desc: "Forecast location and custom label" },
         { id: "about", label: "About", icon: "info", desc: "System specifications" }
     ]
 
@@ -1115,7 +1116,7 @@ Scope {
                                                         }
 
                                                         Text {
-                                                            text: "Choose a signature color dot or enter your own custom hex value"
+                                                            text: "Choose a signature accent color from the curated palette"
                                                             font.family: Root.Theme.fontFamily
                                                             font.pixelSize: 12
                                                             color: Root.Theme.textSecondary
@@ -1226,112 +1227,557 @@ Scope {
                                                         Item { Layout.fillWidth: true }
                                                     }
                                                 }
+                                            }
+                                        }
+                                    }
 
-                                                // Custom Hex Color Input Row
+                                    // ════════════════════════════════════════════════
+                                    // WEATHER & LOCATION SECTION
+                                    // ════════════════════════════════════════════════
+                                    ColumnLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 20
+                                        visible: settingsRoot.currentSection === "weather"
+
+                                        // Section Header
+                                        ColumnLayout {
+                                            Layout.fillWidth: true
+                                            spacing: 4
+
+                                            Text {
+                                                text: "Weather & Location"
+                                                font.family: Root.Theme.fontFamily
+                                                font.pixelSize: 22
+                                                font.weight: Font.Bold
+                                                color: Root.Theme.textPrimary
+                                            }
+
+                                            Text {
+                                                text: "Configure the real location queried by weather gadgets and set an optional custom display label"
+                                                font.family: Root.Theme.fontFamily
+                                                font.pixelSize: 13
+                                                color: Root.Theme.textSecondary
+                                            }
+                                        }
+
+                                        // ── Live Preview Card ──
+                                        Rectangle {
+                                            Layout.fillWidth: true
+                                            Layout.preferredHeight: 90
+                                            radius: 20
+                                            color: Root.Theme.surfaceContainer
+                                            border.width: 1
+                                            border.color: Qt.rgba(255, 255, 255, 0.08)
+
+                                            RowLayout {
+                                                anchors.fill: parent
+                                                anchors.margins: 18
+                                                spacing: 16
+
+                                                Rectangle {
+                                                    Layout.preferredWidth: 48
+                                                    Layout.preferredHeight: 48
+                                                    radius: 24
+                                                    color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.2)
+
+                                                    Text {
+                                                        anchors.centerIn: parent
+                                                        text: "wb_sunny"
+                                                        font.family: Root.Theme.iconFont
+                                                        font.pixelSize: 26
+                                                        color: Root.Theme.primary
+                                                    }
+                                                }
+
+                                                ColumnLayout {
+                                                    Layout.fillWidth: true
+                                                    spacing: 4
+
+                                                    RowLayout {
+                                                        spacing: 8
+
+                                                        Text {
+                                                            text: {
+                                                                var lbl = weatherLabelInput.text.trim();
+                                                                if (lbl !== "") return lbl.toUpperCase();
+                                                                var city = weatherCityInput.text.trim();
+                                                                if (city.indexOf(",") !== -1) return city.split(",")[0].trim().toUpperCase();
+                                                                return (city || "LOCATION").toUpperCase();
+                                                            }
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 17
+                                                            font.weight: Font.Bold
+                                                            color: Root.Theme.textPrimary
+                                                        }
+
+                                                        Rectangle {
+                                                            Layout.preferredHeight: 18
+                                                            Layout.preferredWidth: weatherLabelInput.text.trim() !== "" ? 92 : 88
+                                                            radius: 9
+                                                            color: weatherLabelInput.text.trim() !== ""
+                                                                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.2)
+                                                                : Root.Theme.surfaceContainerHigh
+
+                                                            Text {
+                                                                anchors.centerIn: parent
+                                                                text: weatherLabelInput.text.trim() !== "" ? "CUSTOM LABEL" : "DEFAULT NAME"
+                                                                font.family: Root.Theme.fontFamily
+                                                                font.pixelSize: 9
+                                                                font.weight: Font.Bold
+                                                                color: weatherLabelInput.text.trim() !== "" ? Root.Theme.primary : Root.Theme.textSecondary
+                                                            }
+                                                        }
+                                                    }
+
+                                                    Text {
+                                                        text: "Queried query: " + (weatherCityInput.text.trim() || "Cali,Colombia")
+                                                        font.family: Root.Theme.fontFamily
+                                                        font.pixelSize: 12
+                                                        color: Root.Theme.textSecondary
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // ── Real Queried Location Card ──
+                                        Rectangle {
+                                            Layout.fillWidth: true
+                                            Layout.preferredHeight: realLocCol.height + 36
+                                            radius: 20
+                                            color: Root.Theme.surfaceContainer
+                                            border.width: 1
+                                            border.color: Qt.rgba(255, 255, 255, 0.06)
+
+                                            ColumnLayout {
+                                                id: realLocCol
+                                                anchors.top: parent.top
+                                                anchors.left: parent.left
+                                                anchors.right: parent.right
+                                                anchors.margins: 18
+                                                spacing: 14
+
                                                 RowLayout {
                                                     Layout.fillWidth: true
                                                     spacing: 12
 
-                                                    // Current color indicator
                                                     Rectangle {
                                                         Layout.preferredWidth: 38
                                                         Layout.preferredHeight: 38
                                                         radius: 19
-                                                        color: {
-                                                            var c = customHexInput.text.trim();
-                                                            return (c.charAt(0) === "#" && (c.length === 7 || c.length === 4)) ? c : Settings.ThemeService.customAccent;
+                                                        color: Root.Theme.surfaceContainerHigh
+
+                                                        Text {
+                                                            anchors.centerIn: parent
+                                                            text: "location_on"
+                                                            font.family: Root.Theme.iconFont
+                                                            font.pixelSize: 20
+                                                            color: Root.Theme.primary
                                                         }
-                                                        border.width: 2
-                                                        border.color: Qt.rgba(255, 255, 255, 0.3)
                                                     }
 
-                                                    Rectangle {
+                                                    ColumnLayout {
                                                         Layout.fillWidth: true
-                                                        Layout.preferredHeight: 44
-                                                        radius: 14
-                                                        color: Root.Theme.surfaceContainerHigh
-                                                        border.width: customHexInput.activeFocus ? 2 : 1
-                                                        border.color: customHexInput.activeFocus ? Root.Theme.primary : Qt.rgba(255, 255, 255, 0.08)
+                                                        spacing: 2
 
-                                                        RowLayout {
-                                                            anchors.fill: parent
-                                                            anchors.leftMargin: 14
-                                                            anchors.rightMargin: 14
-                                                            spacing: 10
+                                                        Text {
+                                                            text: "Queried Location (Real City)"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 15
+                                                            font.weight: Font.DemiBold
+                                                            color: Root.Theme.textPrimary
+                                                        }
 
-                                                            Text {
-                                                                text: "tag"
-                                                                font.family: Root.Theme.iconFont
-                                                                font.pixelSize: 18
-                                                                color: Root.Theme.textSecondary
-                                                            }
+                                                        Text {
+                                                            text: "Physical city or region queried against meteorological servers"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 12
+                                                            color: Root.Theme.textSecondary
+                                                        }
+                                                    }
+                                                }
 
-                                                            TextInput {
-                                                                id: customHexInput
-                                                                Layout.fillWidth: true
-                                                                text: Settings.ThemeService.customAccent
-                                                                color: Root.Theme.textPrimary
-                                                                font.family: Root.Theme.fontFamily
-                                                                font.pixelSize: 14
-                                                                verticalAlignment: TextInput.AlignVCenter
-                                                                selectByMouse: true
-                                                                maximumLength: 7
-                                                                onAccepted: {
-                                                                    var val = text.trim();
-                                                                    if (val.charAt(0) !== "#") val = "#" + val;
-                                                                    if (/^#[0-9a-fA-F]{6}$/.test(val)) {
-                                                                        Settings.ThemeService.enableCustom(val);
-                                                                    }
+                                                // City Input Row
+                                                Rectangle {
+                                                    Layout.fillWidth: true
+                                                    Layout.preferredHeight: 46
+                                                    radius: 14
+                                                    color: Root.Theme.surfaceContainerHigh
+                                                    border.width: (weatherCityInput.activeFocus || Settings.WeatherService.isError) ? 2 : 1
+                                                    border.color: Settings.WeatherService.isError
+                                                        ? Root.Theme.error
+                                                        : (weatherCityInput.activeFocus ? Root.Theme.primary : Qt.rgba(255, 255, 255, 0.08))
+
+                                                    RowLayout {
+                                                        anchors.fill: parent
+                                                        anchors.leftMargin: 14
+                                                        anchors.rightMargin: 14
+                                                        spacing: 10
+
+                                                        Text {
+                                                            text: "travel_explore"
+                                                            font.family: Root.Theme.iconFont
+                                                            font.pixelSize: 18
+                                                            color: Settings.WeatherService.isError ? Root.Theme.error : Root.Theme.textSecondary
+                                                        }
+
+                                                        TextInput {
+                                                            id: weatherCityInput
+                                                            Layout.fillWidth: true
+                                                            text: Settings.WeatherService.realLocation
+                                                            color: Root.Theme.textPrimary
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 14
+                                                            verticalAlignment: TextInput.AlignVCenter
+                                                            selectByMouse: true
+                                                            onTextChanged: {
+                                                                if (Settings.WeatherService.isError) {
+                                                                    Settings.WeatherService.isError = false;
+                                                                    Settings.WeatherService.errorMessage = "";
                                                                 }
                                                             }
                                                         }
                                                     }
+                                                }
 
-                                                    // Apply Button
-                                                    Rectangle {
-                                                        Layout.preferredWidth: 100
-                                                        Layout.preferredHeight: 44
-                                                        radius: 22
-                                                        color: applyHexMouse.containsMouse
-                                                            ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.85)
-                                                            : Root.Theme.primary
+                                                // Error alert banner if location not found
+                                                RowLayout {
+                                                    visible: Settings.WeatherService.isError
+                                                    spacing: 8
+                                                    Layout.fillWidth: true
 
-                                                        RowLayout {
-                                                            anchors.centerIn: parent
-                                                            spacing: 6
+                                                    Text {
+                                                        text: "error"
+                                                        font.family: Root.Theme.iconFont
+                                                        font.pixelSize: 16
+                                                        color: Root.Theme.error
+                                                    }
 
-                                                            Text {
-                                                                text: "check"
-                                                                font.family: Root.Theme.iconFont
-                                                                font.pixelSize: 18
-                                                                color: Root.Theme.onPrimary
-                                                            }
+                                                    Text {
+                                                        text: Settings.WeatherService.errorMessage
+                                                        font.family: Root.Theme.fontFamily
+                                                        font.pixelSize: 12
+                                                        font.weight: Font.Medium
+                                                        color: Root.Theme.error
+                                                        Layout.fillWidth: true
+                                                        wrapMode: Text.Wrap
+                                                    }
+                                                }
 
-                                                            Text {
-                                                                text: "Apply"
-                                                                font.family: Root.Theme.fontFamily
-                                                                font.pixelSize: 13
-                                                                font.weight: Font.DemiBold
-                                                                color: Root.Theme.onPrimary
-                                                            }
-                                                        }
+                                                // Popular Quick-Pick Chips
+                                                ColumnLayout {
+                                                    Layout.fillWidth: true
+                                                    spacing: 8
 
-                                                        MouseArea {
-                                                            id: applyHexMouse
-                                                            anchors.fill: parent
-                                                            hoverEnabled: true
-                                                            cursorShape: Qt.PointingHandCursor
-                                                            onClicked: {
-                                                                var val = customHexInput.text.trim();
-                                                                if (val.charAt(0) !== "#") val = "#" + val;
-                                                                if (/^#[0-9a-fA-F]{6}$/.test(val)) {
-                                                                    Settings.ThemeService.enableCustom(val);
+                                                    Text {
+                                                        text: "POPULAR LOCATIONS"
+                                                        font.family: Root.Theme.fontFamily
+                                                        font.pixelSize: 11
+                                                        font.weight: Font.Bold
+                                                        color: Root.Theme.textSecondary
+                                                    }
+
+                                                    Flow {
+                                                        Layout.fillWidth: true
+                                                        spacing: 8
+
+                                                        Repeater {
+                                                            model: Settings.WeatherService.popularLocations
+
+                                                            delegate: Rectangle {
+                                                                id: locChip
+                                                                height: 32
+                                                                width: chipText.implicitWidth + 24
+                                                                radius: 16
+
+                                                                readonly property bool isCurrent: weatherCityInput.text.trim().toLowerCase() === modelData.query.toLowerCase()
+                                                                readonly property bool isHovered: chipMouseArea.containsMouse
+
+                                                                color: isCurrent
+                                                                    ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.18)
+                                                                    : (isHovered ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.04))
+                                                                border.width: isCurrent ? 1.5 : 1
+                                                                border.color: isCurrent ? Root.Theme.primary : Qt.rgba(255, 255, 255, 0.08)
+
+                                                                Text {
+                                                                    id: chipText
+                                                                    anchors.centerIn: parent
+                                                                    text: modelData.name
+                                                                    font.family: Root.Theme.fontFamily
+                                                                    font.pixelSize: 12
+                                                                    font.weight: locChip.isCurrent ? Font.DemiBold : Font.Normal
+                                                                    color: locChip.isCurrent ? Root.Theme.primary : Root.Theme.textPrimary
+                                                                }
+
+                                                                MouseArea {
+                                                                    id: chipMouseArea
+                                                                    anchors.fill: parent
+                                                                    hoverEnabled: true
+                                                                    cursorShape: Qt.PointingHandCursor
+                                                                    onClicked: {
+                                                                        weatherCityInput.text = modelData.query;
+                                                                    }
                                                                 }
                                                             }
                                                         }
                                                     }
                                                 }
                                             }
+                                        }
+
+                                        // ── Custom Display Label Card ──
+                                        Rectangle {
+                                            Layout.fillWidth: true
+                                            Layout.preferredHeight: customLabelCol.height + 36
+                                            radius: 20
+                                            color: Root.Theme.surfaceContainer
+                                            border.width: 1
+                                            border.color: Qt.rgba(255, 255, 255, 0.06)
+
+                                            ColumnLayout {
+                                                id: customLabelCol
+                                                anchors.top: parent.top
+                                                anchors.left: parent.left
+                                                anchors.right: parent.right
+                                                anchors.margins: 18
+                                                spacing: 14
+
+                                                RowLayout {
+                                                    Layout.fillWidth: true
+                                                    spacing: 12
+
+                                                    Rectangle {
+                                                        Layout.preferredWidth: 38
+                                                        Layout.preferredHeight: 38
+                                                        radius: 19
+                                                        color: Root.Theme.surfaceContainerHigh
+
+                                                        Text {
+                                                            anchors.centerIn: parent
+                                                            text: "edit_note"
+                                                            font.family: Root.Theme.iconFont
+                                                            font.pixelSize: 20
+                                                            color: Root.Theme.primary
+                                                        }
+                                                    }
+
+                                                    ColumnLayout {
+                                                        Layout.fillWidth: true
+                                                        spacing: 2
+
+                                                        Text {
+                                                            text: "Custom Display Label (Optional)"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 15
+                                                            font.weight: Font.DemiBold
+                                                            color: Root.Theme.textPrimary
+                                                        }
+
+                                                        Text {
+                                                            text: "If left empty, the original queried city name will be displayed"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 12
+                                                            color: Root.Theme.textSecondary
+                                                        }
+                                                    }
+                                                }
+
+                                                // Custom Label Input Row
+                                                Rectangle {
+                                                    Layout.fillWidth: true
+                                                    Layout.preferredHeight: 46
+                                                    radius: 14
+                                                    color: Root.Theme.surfaceContainerHigh
+                                                    border.width: weatherLabelInput.activeFocus ? 2 : 1
+                                                    border.color: weatherLabelInput.activeFocus ? Root.Theme.primary : Qt.rgba(255, 255, 255, 0.08)
+
+                                                    RowLayout {
+                                                        anchors.fill: parent
+                                                        anchors.leftMargin: 14
+                                                        anchors.rightMargin: 14
+                                                        spacing: 10
+
+                                                        Text {
+                                                            text: "label"
+                                                            font.family: Root.Theme.iconFont
+                                                            font.pixelSize: 18
+                                                            color: Root.Theme.textSecondary
+                                                        }
+
+                                                        TextInput {
+                                                            id: weatherLabelInput
+                                                            Layout.fillWidth: true
+                                                            text: Settings.WeatherService.customLabel
+                                                            color: Root.Theme.textPrimary
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 14
+                                                            verticalAlignment: TextInput.AlignVCenter
+                                                            selectByMouse: true
+                                                        }
+
+                                                        // Clear label button if text present
+                                                        Rectangle {
+                                                            visible: weatherLabelInput.text.length > 0
+                                                            Layout.preferredWidth: 26
+                                                            Layout.preferredHeight: 26
+                                                            radius: 13
+                                                            color: clearMouse.containsMouse ? Root.Theme.surfaceContainerHighest : "transparent"
+
+                                                            Text {
+                                                                anchors.centerIn: parent
+                                                                text: "close"
+                                                                font.family: Root.Theme.iconFont
+                                                                font.pixelSize: 16
+                                                                color: Root.Theme.textSecondary
+                                                            }
+
+                                                            MouseArea {
+                                                                id: clearMouse
+                                                                anchors.fill: parent
+                                                                hoverEnabled: true
+                                                                cursorShape: Qt.PointingHandCursor
+                                                                onClicked: weatherLabelInput.text = ""
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                // Dynamic Explanation Text
+                                                RowLayout {
+                                                    spacing: 6
+
+                                                    Text {
+                                                        text: weatherLabelInput.text.trim() === "" ? "info" : "check_circle"
+                                                        font.family: Root.Theme.iconFont
+                                                        font.pixelSize: 16
+                                                        color: weatherLabelInput.text.trim() === "" ? Root.Theme.textSecondary : Root.Theme.primary
+                                                    }
+
+                                                    Text {
+                                                        text: {
+                                                            var lbl = weatherLabelInput.text.trim();
+                                                            if (lbl === "") {
+                                                                var defaultName = weatherCityInput.text.trim().split(",")[0] || "City";
+                                                                return "Empty label: Will display original city name (\"" + defaultName + "\")";
+                                                            }
+                                                            return "Custom label active: Will display \"" + lbl + "\" on gadgets and control center";
+                                                        }
+                                                        font.family: Root.Theme.fontFamily
+                                                        font.pixelSize: 12
+                                                        color: weatherLabelInput.text.trim() === "" ? Root.Theme.textSecondary : Root.Theme.primary
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // ── Action Buttons Row ──
+                                        RowLayout {
+                                            Layout.fillWidth: true
+                                            spacing: 12
+
+                                            // Save Changes Button
+                                            Rectangle {
+                                                Layout.preferredHeight: 46
+                                                Layout.preferredWidth: 160
+                                                radius: 23
+                                                color: saveLocMouse.containsMouse
+                                                    ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.85)
+                                                    : Root.Theme.primary
+
+                                                RowLayout {
+                                                    anchors.centerIn: parent
+                                                    spacing: 8
+
+                                                    Text {
+                                                        text: Settings.WeatherService.isSaving ? "hourglass_top" : "check"
+                                                        font.family: Root.Theme.iconFont
+                                                        font.pixelSize: 18
+                                                        color: Root.Theme.onPrimary
+                                                    }
+
+                                                    Text {
+                                                        text: Settings.WeatherService.isSaving ? "Saving..." : "Save Changes"
+                                                        font.family: Root.Theme.fontFamily
+                                                        font.pixelSize: 14
+                                                        font.weight: Font.DemiBold
+                                                        color: Root.Theme.onPrimary
+                                                    }
+                                                }
+
+                                                MouseArea {
+                                                    id: saveLocMouse
+                                                    anchors.fill: parent
+                                                    hoverEnabled: true
+                                                    cursorShape: Qt.PointingHandCursor
+                                                    enabled: !Settings.WeatherService.isSaving
+                                                    onClicked: {
+                                                        Settings.WeatherService.saveLocation(weatherCityInput.text, weatherLabelInput.text);
+                                                    }
+                                                }
+                                            }
+
+                                            // Refresh Now Button
+                                            Rectangle {
+                                                Layout.preferredHeight: 46
+                                                Layout.preferredWidth: 140
+                                                radius: 23
+                                                color: refreshLocMouse.containsMouse ? Root.Theme.surfaceContainerHighest : Root.Theme.surfaceContainerHigh
+                                                border.width: 1
+                                                border.color: Qt.rgba(255, 255, 255, 0.08)
+
+                                                RowLayout {
+                                                    anchors.centerIn: parent
+                                                    spacing: 8
+
+                                                    Text {
+                                                        text: "refresh"
+                                                        font.family: Root.Theme.iconFont
+                                                        font.pixelSize: 18
+                                                        color: Root.Theme.textPrimary
+                                                    }
+
+                                                    Text {
+                                                        text: "Refresh Now"
+                                                        font.family: Root.Theme.fontFamily
+                                                        font.pixelSize: 14
+                                                        font.weight: Font.Medium
+                                                        color: Root.Theme.textPrimary
+                                                    }
+                                                }
+
+                                                MouseArea {
+                                                    id: refreshLocMouse
+                                                    anchors.fill: parent
+                                                    hoverEnabled: true
+                                                    cursorShape: Qt.PointingHandCursor
+                                                    enabled: !Settings.WeatherService.isSaving
+                                                    onClicked: {
+                                                        Settings.WeatherService.refreshNow();
+                                                    }
+                                                }
+                                            }
+
+                                            // Status or error text indicator
+                                            RowLayout {
+                                                visible: Settings.WeatherService.statusMessage !== "" || Settings.WeatherService.isError
+                                                spacing: 6
+                                                Layout.leftMargin: 8
+
+                                                Text {
+                                                    text: Settings.WeatherService.isError ? "error" : "check_circle"
+                                                    font.family: Root.Theme.iconFont
+                                                    font.pixelSize: 16
+                                                    color: Settings.WeatherService.isError ? Root.Theme.error : Root.Theme.primary
+                                                }
+
+                                                Text {
+                                                    text: Settings.WeatherService.isError ? Settings.WeatherService.errorMessage : Settings.WeatherService.statusMessage
+                                                    font.family: Root.Theme.fontFamily
+                                                    font.pixelSize: 13
+                                                    color: Settings.WeatherService.isError ? Root.Theme.error : Root.Theme.primary
+                                                }
+                                            }
+
+                                            Item { Layout.fillWidth: true }
                                         }
                                     }
 

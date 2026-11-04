@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
+import "../settings" as Settings
 import "../.." as Root
 
 Rectangle {
@@ -8,6 +9,7 @@ Rectangle {
 
     property string temp: "--°"
     property string city: "Weather"
+    property string displayCity: "Weather"
     property string condition: "Loading..."
     property string icon: "partly_cloudy_day"
     property string humidity: "--%"
@@ -23,6 +25,16 @@ Rectangle {
     border.color: Qt.rgba(255, 255, 255, 0.14)
     clip: true
 
+    Connections {
+        target: Settings.WeatherService
+        function onWeatherUpdated() {
+            if (!weatherProc.running) {
+                weatherRoot.refreshing = true;
+                weatherProc.running = true;
+            }
+        }
+    }
+
     Process {
         id: weatherProc
         command: ["/home/zero/.config/quickshell/scripts/weather.py"]
@@ -32,6 +44,8 @@ Rectangle {
                 try {
                     var data = JSON.parse(text.trim());
                     if (data.temp) weatherRoot.temp = data.temp;
+                    if (data.display_city) weatherRoot.displayCity = data.display_city;
+                    else if (data.city) weatherRoot.displayCity = data.city;
                     if (data.city) weatherRoot.city = data.city;
                     if (data.condition) weatherRoot.condition = data.condition;
                     if (data.icon) weatherRoot.icon = data.icon;
@@ -120,7 +134,7 @@ Rectangle {
                 }
 
                 Text {
-                    text: weatherRoot.city
+                    text: weatherRoot.displayCity
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: 12
                     color: Root.Theme.textSecondary

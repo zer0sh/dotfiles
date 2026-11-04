@@ -16,10 +16,14 @@ CACHE_FILE = os.path.expanduser("~/.cache/weather.json")
 CONFIG_DIR = os.path.expanduser("~/.config/weather")
 KEY_FILE = os.path.join(CONFIG_DIR, "api_key")
 CITY_FILE = os.path.join(CONFIG_DIR, "city")
+LABEL_FILE = os.path.join(CONFIG_DIR, "label")
 
 DEFAULT_WEATHER = {
     "temp": "25°",
     "city": "Cali",
+    "real_location": "Cali,Colombia",
+    "custom_label": "",
+    "display_city": "Cali",
     "condition": "Partly cloudy",
     "icon": "partly_cloudy_day",
     "humidity": "75%",
@@ -72,9 +76,17 @@ def read_config():
         except Exception:
             pass
 
-    return api_key, city
+    label = ""
+    if os.path.exists(LABEL_FILE):
+        try:
+            with open(LABEL_FILE, "r") as f:
+                label = f.read().strip()
+        except Exception:
+            pass
 
-def fetch_wttr(city):
+    return api_key, city, label
+
+def fetch_wttr(city, label=""):
     encoded_city = urllib.parse.quote(city)
     url = f"https://wttr.in/{encoded_city}?format=j1"
     req = urllib.request.Request(url, headers={"User-Agent": "curl/7.68.0"})
@@ -94,10 +106,10 @@ def fetch_wttr(city):
 
     for i in range(1, min(3, len(days))):
         d = days[i]
-        label = day_labels[i - 1]
+        label_day = day_labels[i - 1]
         try:
             date_obj = datetime.date.fromisoformat(d["date"])
-            label = date_obj.strftime("%a") # e.g. Mon, Tue
+            label_day = date_obj.strftime("%a") # e.g. Mon, Tue
         except Exception:
             pass
         
@@ -108,15 +120,20 @@ def fetch_wttr(city):
         max_t = d.get("maxtempC", "20")
 
         forecast.append({
-            "day": label,
+            "day": label_day,
             "temp": f"{max_t}°",
             "condition": desc,
             "icon": icon
         })
 
+    display_city = label.strip() if label.strip() else city.split(",")[0].strip()
+
     return {
         "temp": curr_temp,
-        "city": city.split(",")[0],
+        "city": city.split(",")[0].strip(),
+        "real_location": city.strip(),
+        "custom_label": label.strip(),
+        "display_city": display_city,
         "condition": curr_desc,
         "icon": curr_icon,
         "humidity": humidity,
@@ -128,25 +145,84 @@ def main():
     os.makedirs(CONFIG_DIR, exist_ok=True)
     os.makedirs(os.path.dirname(CACHE_FILE), exist_ok=True)
 
-    api_key, city = read_config()
+    # CLI parameter overrides:
+    # --set-city <city>
+    # --set-label <label>
+    args = sys.argv[1:]
+    new_city = None
+    new_label = None
+
+    i = 0
+    while i < len(args):
+        if args[i] == "--set-city" and i + 1 < len(args):
+            new_city = args[i + 1].strip()
+            i += 2
+        elif args[i] == "--set-label" and i + 1 < len(args):
+            new_label = args[i + 1].strip()
+            i += 2
+        else:
+            i += 1
+
+    api_key, current_city, current_label = read_config()
+
+    target_city = new_city if new_city is not None else current_city
+    target_label = new_label if new_label is not None else current_label
+
     result = None
+    location_error = None
 
-    try:
-        result = fetch_wttr(city)
-        with open(CACHE_FILE, "w") as f:
-            json.dump(result, f, indent=2)
-    except Exception:
-        pass
+    # If setting a new city, validate it first by querying
+    if target_city:
+        try:
+            result = fetch_wttr(target_city, target_label)
+            # Fetch succeeded: persist configuration
+            with open(CITY_FILE, "w") as f:
+                f.write(target_city)
+            if new_label is not None:
+                with open(LABEL_FILE, "w") as f:
+                    f.write(target_label)
 
+            with open(CACHE_FILE, "w") as f:
+                json.dump(result, f, indent=2)
+        except urllib.error.HTTPError as he:
+            location_error = f"Location not found ({he.code})"
+        except Exception as e:
+            location_error = f"Fetch failed: {str(e)}"
+
+    if location_error:
+        # If city was specifically set but failed to be found, return error
+        if new_city is not None:
+            # Still update label if provided
+            if new_label is not None:
+                with open(LABEL_FILE, "w") as f:
+                    f.write(target_label)
+
+            err_payload = {
+                "success": False,
+                "error": "Location not found. Please check the spelling or format (e.g. City,Country).",
+                "attempted_city": new_city,
+                "detail": location_error
+            }
+            print(json.dumps(err_payload), file=sys.stderr)
+            sys.exit(2)
+
+    # Fallback to existing cache if available
     if not result and os.path.exists(CACHE_FILE):
         try:
             with open(CACHE_FILE, "r") as f:
                 result = json.load(f)
+                if result:
+                    result["real_location"] = current_city.strip()
+                    result["custom_label"] = target_label.strip()
+                    result["display_city"] = target_label.strip() if target_label.strip() else result.get("city", current_city.split(",")[0].strip())
         except Exception:
             pass
 
     if not result:
-        result = DEFAULT_WEATHER
+        result = dict(DEFAULT_WEATHER)
+        result["real_location"] = target_city.strip()
+        result["custom_label"] = target_label.strip()
+        result["display_city"] = target_label.strip() if target_label.strip() else target_city.split(",")[0].strip()
         try:
             with open(CACHE_FILE, "w") as f:
                 json.dump(result, f, indent=2)
