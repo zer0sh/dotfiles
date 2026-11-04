@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
+import QtQuick.Shapes
 import Qt5Compat.GraphicalEffects
 import Quickshell
 import Quickshell.Io
@@ -12,11 +13,14 @@ Scope {
     id: settingsRoot
 
     property bool visible: false
+    property bool _showing: false
+    property bool _panelOpen: false
     property string currentSection: "profile"
 
     readonly property var sections: [
         { id: "profile", label: "Profile", icon: "person", desc: "Account and avatar" },
         { id: "theme", label: "Theme & Style", icon: "palette", desc: "Colors, Matugen and presets" },
+        { id: "lockscreen", label: "Lock Screen", icon: "lock", desc: "Screen lock timeout and hypridle" },
         { id: "weather", label: "Weather & Location", icon: "cloud", desc: "Forecast location and custom label" },
         { id: "about", label: "About", icon: "info", desc: "System specifications" }
     ]
@@ -24,6 +28,10 @@ Scope {
     onVisibleChanged: {
         if (visible) {
             Settings.SystemService.refresh();
+            Settings.LockService.refresh();
+            _showing = true;
+        } else {
+            _panelOpen = false;
         }
     }
 
@@ -32,7 +40,7 @@ Scope {
     }
 
     Loader {
-        active: settingsRoot.visible
+        active: settingsRoot._showing
 
         sourceComponent: PanelWindow {
             id: settingsWindow
@@ -54,68 +62,65 @@ Scope {
             Shortcut {
                 sequence: "Escape"
                 enabled: !Settings.ProfileService.isUpdatingAvatar
-                onActivated: settingsRoot.visible = false
+                onActivated: edgePanelWrapper.close()
             }
 
-            // Fondo oscuro / Backdrop clickeable para cerrar
-            Rectangle {
-                anchors.fill: parent
-                color: Qt.rgba(0, 0, 0, 0.5)
-                visible: !Settings.ProfileService.isUpdatingAvatar
-
-                MouseArea {
-                    anchors.fill: parent
-                    enabled: !Settings.ProfileService.isUpdatingAvatar
-                    onClicked: settingsRoot.visible = false
-                }
-            }
-
-            // Ventana Principal estilo Pixel / Material You
-            Rectangle {
-                id: dialogBox
-                anchors.centerIn: parent
-                width: Math.min(880, settingsWindow.width - 48)
-                height: Math.min(560, settingsWindow.height - 48)
-                radius: 28
-
-                color: Root.Theme.surface
-                border.width: 1
-                border.color: Qt.rgba(255, 255, 255, 0.12)
-                clip: true
-
-                // Prevenir cierre accidental al interactuar dentro
-                MouseArea {
-                    anchors.fill: parent
+            Root.EdgePanel {
+                id: edgePanelWrapper
+                edge: "top"
+                panelWidth: Math.min(940, settingsWindow.width - 80)
+                panelHeight: Math.min(640, settingsWindow.height - Root.Theme.shelfHeight - 40)
+                shoulderRadius: 28
+                showDim: !Settings.ProfileService.isUpdatingAvatar
+                closeOnClickOutside: !Settings.ProfileService.isUpdatingAvatar
+                onCloseRequested: edgePanelWrapper.close()
+                onClosed: {
+                    settingsRoot.visible = false;
+                    settingsRoot._panelOpen = false;
+                    settingsRoot._showing = false;
                 }
 
-                // Botón de Cerrar estilo Material You (Flotante)
-                Rectangle {
-                    anchors.top: parent.top
-                    anchors.right: parent.right
-                    anchors.margins: 18
-                    z: 10
-                    width: 36
-                    height: 36
-                    radius: 18
-                    color: closeArea.containsMouse ? Root.Theme.surfaceContainerHigh : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.6)
-                    Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+                // Contenedor principal de contenidos
+                Item {
+                    id: dialogBox
+                    anchors.fill: parent
+                    anchors.leftMargin: 28
+                    anchors.rightMargin: 28
+                    clip: true
 
-                    Text {
-                        anchors.centerIn: parent
-                        text: "close"
-                        font.family: Root.Theme.iconFont
-                        font.pixelSize: 18
-                        color: closeArea.containsMouse ? Root.Theme.textPrimary : Root.Theme.textSecondary
-                    }
-
+                    // Prevenir cierre accidental al interactuar dentro
                     MouseArea {
-                        id: closeArea
                         anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: settingsRoot.visible = false
                     }
-                }
+
+                    // Botón de Cerrar estilo Material You (Flotante)
+                    Rectangle {
+                        anchors.top: parent.top
+                        anchors.right: parent.right
+                        anchors.margins: 18
+                        z: 10
+                        width: 36
+                        height: 36
+                        radius: 18
+                        color: closeArea.containsMouse ? Root.Theme.surfaceContainerHigh : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.6)
+                        Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+
+                        Text {
+                            anchors.centerIn: parent
+                            text: "close"
+                            font.family: Root.Theme.iconFont
+                            font.pixelSize: 18
+                            color: closeArea.containsMouse ? Root.Theme.textPrimary : Root.Theme.textSecondary
+                        }
+
+                        MouseArea {
+                            id: closeArea
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: edgePanelWrapper.close()
+                        }
+                    }
 
                 // ── Layout Principal (Sidebar + Content) ───────────
                 RowLayout {
@@ -1232,6 +1237,605 @@ Scope {
                                     }
 
                                     // ════════════════════════════════════════════════
+                                    // LOCK SCREEN & SECURITY SECTION
+                                    // ════════════════════════════════════════════════
+                                    ColumnLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 20
+                                        visible: settingsRoot.currentSection === "lockscreen"
+
+                                        // Section Header
+                                        ColumnLayout {
+                                            Layout.fillWidth: true
+                                            spacing: 4
+
+                                            Text {
+                                                text: "Lock Screen & Security"
+                                                font.family: Root.Theme.fontFamily
+                                                font.pixelSize: 22
+                                                font.weight: Font.Bold
+                                                color: Root.Theme.textPrimary
+                                            }
+
+                                            Text {
+                                                text: "Manage session idle inactivity timeout and screen lock daemon behavior"
+                                                font.family: Root.Theme.fontFamily
+                                                font.pixelSize: 13
+                                                color: Root.Theme.textSecondary
+                                            }
+                                        }
+
+                                        // ── Live Status Banner ──
+                                        Rectangle {
+                                            Layout.fillWidth: true
+                                            Layout.preferredHeight: 90
+                                            radius: 20
+                                            color: Root.Theme.surfaceContainer
+                                            border.width: 1
+                                            border.color: Qt.rgba(255, 255, 255, 0.08)
+
+                                            RowLayout {
+                                                anchors.fill: parent
+                                                anchors.margins: 18
+                                                spacing: 16
+
+                                                Rectangle {
+                                                    Layout.preferredWidth: 48
+                                                    Layout.preferredHeight: 48
+                                                    radius: 24
+                                                    color: Settings.LockService.enabled
+                                                        ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.2)
+                                                        : Root.Theme.surfaceContainerHigh
+
+                                                    Text {
+                                                        anchors.centerIn: parent
+                                                        text: Settings.LockService.enabled ? "lock" : "lock_open"
+                                                        font.family: Root.Theme.iconFont
+                                                        font.pixelSize: 24
+                                                        color: Settings.LockService.enabled ? Root.Theme.primary : Root.Theme.textSecondary
+                                                    }
+                                                }
+
+                                                ColumnLayout {
+                                                    Layout.fillWidth: true
+                                                    spacing: 4
+
+                                                    RowLayout {
+                                                        spacing: 8
+                                                        Text {
+                                                            text: Settings.LockService.enabled
+                                                                ? ("Locks after " + Settings.LockService.formattedTime)
+                                                                : "Automatic Lock Disabled"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 16
+                                                            font.weight: Font.Bold
+                                                            color: Root.Theme.textPrimary
+                                                        }
+
+                                                        Rectangle {
+                                                            Layout.preferredHeight: 20
+                                                            Layout.preferredWidth: statusText.implicitWidth + 14
+                                                            radius: 10
+                                                            color: Settings.LockService.enabled
+                                                                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.2)
+                                                                : Qt.rgba(255, 255, 255, 0.08)
+
+                                                            Text {
+                                                                id: statusText
+                                                                anchors.centerIn: parent
+                                                                text: Settings.LockService.enabled ? "ACTIVE" : "INACTIVE"
+                                                                font.family: Root.Theme.fontFamily
+                                                                font.pixelSize: 10
+                                                                font.weight: Font.Bold
+                                                                color: Settings.LockService.enabled ? Root.Theme.primary : Root.Theme.textSecondary
+                                                            }
+                                                        }
+                                                    }
+
+                                                    Text {
+                                                        text: Settings.LockService.enabled
+                                                            ? "Hypridle will automatically activate Hyprlock when user is idle"
+                                                            : "Your session will remain unlocked indefinitely while idle"
+                                                        font.family: Root.Theme.fontFamily
+                                                        font.pixelSize: 12
+                                                        color: Root.Theme.textSecondary
+                                                    }
+                                                }
+
+                                                // Test / Lock Now Button
+                                                Rectangle {
+                                                    Layout.preferredHeight: 40
+                                                    Layout.preferredWidth: lockNowRow.implicitWidth + 24
+                                                    radius: 20
+                                                    color: lockNowMouse.containsMouse ? Qt.darker(Root.Theme.primary, 1.1) : Root.Theme.primary
+
+                                                    Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+
+                                                    RowLayout {
+                                                        id: lockNowRow
+                                                        anchors.centerIn: parent
+                                                        spacing: 8
+
+                                                        Text {
+                                                            text: "lock"
+                                                            font.family: Root.Theme.iconFont
+                                                            font.pixelSize: 18
+                                                            color: Root.Theme.tileActiveText
+                                                        }
+
+                                                        Text {
+                                                            text: "Lock Now"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 13
+                                                            font.weight: Font.DemiBold
+                                                            color: Root.Theme.tileActiveText
+                                                        }
+                                                    }
+
+                                                    MouseArea {
+                                                        id: lockNowMouse
+                                                        anchors.fill: parent
+                                                        hoverEnabled: true
+                                                        cursorShape: Qt.PointingHandCursor
+                                                        onClicked: Settings.LockService.lockNow()
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // ── Card 1: Master Enable / Disable Toggle ──
+                                        Rectangle {
+                                            Layout.fillWidth: true
+                                            Layout.preferredHeight: 76
+                                            radius: 20
+                                            color: Root.Theme.surfaceContainer
+                                            border.width: 1
+                                            border.color: Qt.rgba(255, 255, 255, 0.06)
+
+                                            RowLayout {
+                                                anchors.fill: parent
+                                                anchors.margins: 18
+                                                spacing: 14
+
+                                                Rectangle {
+                                                    Layout.preferredWidth: 42
+                                                    Layout.preferredHeight: 42
+                                                    radius: 21
+                                                    color: Settings.LockService.enabled
+                                                        ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.2)
+                                                        : Root.Theme.surfaceContainerHigh
+
+                                                    Text {
+                                                        anchors.centerIn: parent
+                                                        text: "schedule"
+                                                        font.family: Root.Theme.iconFont
+                                                        font.pixelSize: 22
+                                                        color: Settings.LockService.enabled ? Root.Theme.primary : Root.Theme.textSecondary
+                                                    }
+                                                }
+
+                                                ColumnLayout {
+                                                    Layout.fillWidth: true
+                                                    spacing: 2
+
+                                                    Text {
+                                                        text: "Automatic Screen Lock"
+                                                        font.family: Root.Theme.fontFamily
+                                                        font.pixelSize: 15
+                                                        font.weight: Font.DemiBold
+                                                        color: Root.Theme.textPrimary
+                                                    }
+
+                                                    Text {
+                                                        text: "Automatically engage lock screen when inactive for the specified time"
+                                                        font.family: Root.Theme.fontFamily
+                                                        font.pixelSize: 12
+                                                        color: Root.Theme.textSecondary
+                                                    }
+                                                }
+
+                                                // Material 3 Switch Toggle
+                                                Rectangle {
+                                                    id: lockToggleSwitch
+                                                    Layout.preferredWidth: 48
+                                                    Layout.preferredHeight: 28
+                                                    radius: 14
+                                                    color: Settings.LockService.enabled
+                                                        ? Root.Theme.primary
+                                                        : Root.Theme.surfaceContainerHigh
+                                                    border.width: 1
+                                                    border.color: Settings.LockService.enabled
+                                                        ? Root.Theme.primary
+                                                        : Qt.rgba(255, 255, 255, 0.12)
+
+                                                    Behavior on color { ColorAnimation { duration: 180 } }
+
+                                                    Rectangle {
+                                                        width: 20
+                                                        height: 20
+                                                        radius: 10
+                                                        y: 4
+                                                        x: Settings.LockService.enabled ? 24 : 4
+                                                        color: Settings.LockService.enabled
+                                                            ? Root.Theme.tileActiveText
+                                                            : Root.Theme.textSecondary
+
+                                                        Behavior on x { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+                                                        Behavior on color { ColorAnimation { duration: 180 } }
+                                                    }
+
+                                                    MouseArea {
+                                                        anchors.fill: parent
+                                                        cursorShape: Qt.PointingHandCursor
+                                                        onClicked: Settings.LockService.toggleEnabled(!Settings.LockService.enabled)
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // ── Card 2: Inactivity Timeout Duration ──
+                                        Rectangle {
+                                            Layout.fillWidth: true
+                                            Layout.preferredHeight: timeoutCol.height + 36
+                                            radius: 20
+                                            color: Root.Theme.surfaceContainer
+                                            border.width: 1
+                                            border.color: Qt.rgba(255, 255, 255, 0.06)
+                                            opacity: Settings.LockService.enabled ? 1.0 : 0.45
+
+                                            Behavior on opacity { NumberAnimation { duration: 200 } }
+
+                                            ColumnLayout {
+                                                id: timeoutCol
+                                                anchors.top: parent.top
+                                                anchors.left: parent.left
+                                                anchors.right: parent.right
+                                                anchors.margins: 18
+                                                spacing: 16
+
+                                                RowLayout {
+                                                    Layout.fillWidth: true
+                                                    spacing: 12
+
+                                                    Rectangle {
+                                                        Layout.preferredWidth: 38
+                                                        Layout.preferredHeight: 38
+                                                        radius: 19
+                                                        color: Root.Theme.surfaceContainerHigh
+
+                                                        Text {
+                                                            anchors.centerIn: parent
+                                                            text: "timer"
+                                                            font.family: Root.Theme.iconFont
+                                                            font.pixelSize: 20
+                                                            color: Root.Theme.primary
+                                                        }
+                                                    }
+
+                                                    ColumnLayout {
+                                                        Layout.fillWidth: true
+                                                        spacing: 2
+
+                                                        Text {
+                                                            text: "Inactivity Timeout"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 15
+                                                            font.weight: Font.DemiBold
+                                                            color: Root.Theme.textPrimary
+                                                        }
+
+                                                        Text {
+                                                            text: "Choose or slide how long the system must be idle before locking"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 12
+                                                            color: Root.Theme.textSecondary
+                                                        }
+                                                    }
+
+                                                    // Current selected value badge
+                                                    Rectangle {
+                                                        Layout.preferredHeight: 30
+                                                        Layout.preferredWidth: timeoutBadgeText.implicitWidth + 20
+                                                        radius: 15
+                                                        color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.15)
+                                                        border.width: 1
+                                                        border.color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.3)
+
+                                                        Text {
+                                                            id: timeoutBadgeText
+                                                            anchors.centerIn: parent
+                                                            text: Settings.LockService.formattedTime
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 12
+                                                            font.weight: Font.Bold
+                                                            color: Root.Theme.primary
+                                                        }
+                                                    }
+                                                }
+
+                                                // Quick Preset Chips
+                                                ColumnLayout {
+                                                    Layout.fillWidth: true
+                                                    spacing: 8
+
+                                                    Text {
+                                                        text: "QUICK PRESETS"
+                                                        font.family: Root.Theme.fontFamily
+                                                        font.pixelSize: 11
+                                                        font.weight: Font.Bold
+                                                        color: Root.Theme.textSecondary
+                                                    }
+
+                                                    Flow {
+                                                        Layout.fillWidth: true
+                                                        spacing: 8
+
+                                                        Repeater {
+                                                            model: Settings.LockService.presetOptions
+
+                                                            delegate: Rectangle {
+                                                                id: presetChip
+                                                                height: 34
+                                                                width: chipLabel.implicitWidth + 28
+                                                                radius: 17
+
+                                                                readonly property bool isCurrent: Settings.LockService.enabled && Settings.LockService.timeoutSeconds === modelData.seconds
+                                                                readonly property bool isHovered: chipMouseArea.containsMouse
+
+                                                                color: isCurrent
+                                                                    ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.2)
+                                                                    : (isHovered ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.04))
+                                                                border.width: isCurrent ? 1.5 : 1
+                                                                border.color: isCurrent ? Root.Theme.primary : Qt.rgba(255, 255, 255, 0.08)
+
+                                                                Behavior on color { ColorAnimation { duration: 150 } }
+
+                                                                RowLayout {
+                                                                    anchors.centerIn: parent
+                                                                    spacing: 6
+
+                                                                    Text {
+                                                                        visible: presetChip.isCurrent
+                                                                        text: "check"
+                                                                        font.family: Root.Theme.iconFont
+                                                                        font.pixelSize: 14
+                                                                        font.weight: Font.Bold
+                                                                        color: Root.Theme.primary
+                                                                    }
+
+                                                                    Text {
+                                                                        id: chipLabel
+                                                                        text: modelData.label
+                                                                        font.family: Root.Theme.fontFamily
+                                                                        font.pixelSize: 12
+                                                                        font.weight: presetChip.isCurrent ? Font.DemiBold : Font.Normal
+                                                                        color: presetChip.isCurrent ? Root.Theme.primary : Root.Theme.textPrimary
+                                                                    }
+                                                                }
+
+                                                                MouseArea {
+                                                                    id: chipMouseArea
+                                                                    anchors.fill: parent
+                                                                    enabled: Settings.LockService.enabled
+                                                                    hoverEnabled: true
+                                                                    cursorShape: Qt.PointingHandCursor
+                                                                    onClicked: Settings.LockService.setTimeout(modelData.seconds)
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                // Custom Slider Row
+                                                ColumnLayout {
+                                                    Layout.fillWidth: true
+                                                    spacing: 8
+
+                                                    RowLayout {
+                                                        Layout.fillWidth: true
+                                                        Text {
+                                                            text: "CUSTOM SLIDER"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 11
+                                                            font.weight: Font.Bold
+                                                            color: Root.Theme.textSecondary
+                                                        }
+
+                                                        Item { Layout.fillWidth: true }
+
+                                                        Text {
+                                                            text: Math.round(lockSlider.currentMinutes) + " min"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 12
+                                                            font.weight: Font.Bold
+                                                            color: Root.Theme.primary
+                                                        }
+                                                    }
+
+                                                    // Interactive Horizontal Slider
+                                                    Item {
+                                                        id: lockSlider
+                                                        Layout.fillWidth: true
+                                                        height: 36
+                                                        enabled: Settings.LockService.enabled
+
+                                                        // Range: 1 min to 60 min
+                                                        readonly property real minMinutes: 1
+                                                        readonly property real maxMinutes: 60
+                                                        property real currentMinutes: Math.max(minMinutes, Math.min(maxMinutes, Settings.LockService.timeoutSeconds / 60))
+
+                                                        Timer {
+                                                            id: sliderDebounceTimer
+                                                            interval: 350
+                                                            repeat: false
+                                                            onTriggered: {
+                                                                var sec = Math.round(lockSlider.currentMinutes) * 60;
+                                                                Settings.LockService.setTimeout(sec);
+                                                            }
+                                                        }
+
+                                                        Rectangle {
+                                                            id: sliderTrack
+                                                            anchors.left: parent.left
+                                                            anchors.right: parent.right
+                                                            anchors.verticalCenter: parent.verticalCenter
+                                                            height: 8
+                                                            radius: 4
+                                                            color: Root.Theme.sliderTrack
+
+                                                            Rectangle {
+                                                                id: sliderFill
+                                                                height: parent.height
+                                                                radius: 4
+                                                                color: Root.Theme.primary
+                                                                width: Math.max(0, Math.min(parent.width, parent.width * ((lockSlider.currentMinutes - lockSlider.minMinutes) / (lockSlider.maxMinutes - lockSlider.minMinutes))))
+                                                            }
+
+                                                            // Handle knob
+                                                            Rectangle {
+                                                                id: sliderThumb
+                                                                width: 20
+                                                                height: 20
+                                                                radius: 10
+                                                                anchors.verticalCenter: parent.verticalCenter
+                                                                x: Math.max(0, Math.min(parent.width - width, sliderFill.width - (width / 2)))
+                                                                color: Root.Theme.sliderThumb
+                                                                border.width: 3
+                                                                border.color: Root.Theme.primary
+
+                                                                Rectangle {
+                                                                    anchors.fill: parent
+                                                                    radius: 10
+                                                                    color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.2)
+                                                                    scale: sliderMouseArea.drag.active ? 1.6 : (sliderMouseArea.containsMouse ? 1.3 : 1.0)
+                                                                    Behavior on scale { NumberAnimation { duration: 150 } }
+                                                                }
+                                                            }
+                                                        }
+
+                                                        MouseArea {
+                                                            id: sliderMouseArea
+                                                            anchors.fill: parent
+                                                            hoverEnabled: true
+                                                            cursorShape: Qt.PointingHandCursor
+
+                                                            function updateFromMouse(mouseX) {
+                                                                var norm = Math.max(0.0, Math.min(1.0, mouseX / width));
+                                                                var mins = Math.round(lockSlider.minMinutes + norm * (lockSlider.maxMinutes - lockSlider.minMinutes));
+                                                                lockSlider.currentMinutes = mins;
+                                                                sliderDebounceTimer.restart();
+                                                            }
+
+                                                            onPressed: (mouse) => updateFromMouse(mouse.x)
+                                                            onPositionChanged: (mouse) => {
+                                                                if (pressed) updateFromMouse(mouse.x);
+                                                            }
+                                                        }
+                                                    }
+
+                                                    RowLayout {
+                                                        Layout.fillWidth: true
+                                                        Text {
+                                                            text: "1 min"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 11
+                                                            color: Root.Theme.textSecondary
+                                                        }
+                                                        Item { Layout.fillWidth: true }
+                                                        Text {
+                                                            text: "30 min"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 11
+                                                            color: Root.Theme.textSecondary
+                                                        }
+                                                        Item { Layout.fillWidth: true }
+                                                        Text {
+                                                            text: "60 min"
+                                                            font.family: Root.Theme.fontFamily
+                                                            font.pixelSize: 11
+                                                            color: Root.Theme.textSecondary
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // ── Info & Hints Card ──
+                                        Rectangle {
+                                            Layout.fillWidth: true
+                                            Layout.preferredHeight: 74
+                                            radius: 20
+                                            color: Root.Theme.surfaceContainer
+                                            border.width: 1
+                                            border.color: Qt.rgba(255, 255, 255, 0.06)
+
+                                            RowLayout {
+                                                anchors.fill: parent
+                                                anchors.margins: 18
+                                                spacing: 14
+
+                                                Rectangle {
+                                                    Layout.preferredWidth: 38
+                                                    Layout.preferredHeight: 38
+                                                    radius: 19
+                                                    color: Root.Theme.surfaceContainerHigh
+
+                                                    Text {
+                                                        anchors.centerIn: parent
+                                                        text: "info"
+                                                        font.family: Root.Theme.iconFont
+                                                        font.pixelSize: 20
+                                                        color: Root.Theme.primary
+                                                    }
+                                                }
+
+                                                ColumnLayout {
+                                                    Layout.fillWidth: true
+                                                    spacing: 2
+
+                                                    Text {
+                                                        text: "Keyboard Shortcut & Configuration"
+                                                        font.family: Root.Theme.fontFamily
+                                                        font.pixelSize: 13
+                                                        font.weight: Font.DemiBold
+                                                        color: Root.Theme.textPrimary
+                                                    }
+
+                                                    Text {
+                                                        text: "Press Super + L anytime to lock instantly. Configuration synced with ~/.config/hypr/hypridle.conf"
+                                                        font.family: Root.Theme.fontFamily
+                                                        font.pixelSize: 11
+                                                        color: Root.Theme.textSecondary
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        // Status or saving message toast
+                                        RowLayout {
+                                            visible: Settings.LockService.isSaving || Settings.LockService.statusMessage !== ""
+                                            spacing: 8
+                                            Layout.fillWidth: true
+
+                                            Text {
+                                                text: Settings.LockService.isSaving ? "hourglass_top" : "check_circle"
+                                                font.family: Root.Theme.iconFont
+                                                font.pixelSize: 16
+                                                color: Root.Theme.primary
+                                            }
+
+                                            Text {
+                                                text: Settings.LockService.isSaving ? "Updating hypridle daemon..." : Settings.LockService.statusMessage
+                                                font.family: Root.Theme.fontFamily
+                                                font.pixelSize: 12
+                                                font.weight: Font.Medium
+                                                color: Root.Theme.primary
+                                                Layout.fillWidth: true
+                                            }
+                                        }
+                                    }
+
+                                    // ════════════════════════════════════════════════
                                     // WEATHER & LOCATION SECTION
                                     // ════════════════════════════════════════════════
                                     ColumnLayout {
@@ -1253,7 +1857,7 @@ Scope {
                                             }
 
                                             Text {
-                                                text: "Configure the real location queried by weather gadgets and set an optional custom display label"
+                                                text: "Set your city and how you want it to appear"
                                                 font.family: Root.Theme.fontFamily
                                                 font.pixelSize: 13
                                                 color: Root.Theme.textSecondary
@@ -1312,7 +1916,7 @@ Scope {
 
                                                         Rectangle {
                                                             Layout.preferredHeight: 18
-                                                            Layout.preferredWidth: weatherLabelInput.text.trim() !== "" ? 92 : 88
+                                                            Layout.preferredWidth: weatherLabelInput.text.trim() !== "" ? 64 : 64
                                                             radius: 9
                                                             color: weatherLabelInput.text.trim() !== ""
                                                                 ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.2)
@@ -1320,7 +1924,7 @@ Scope {
 
                                                             Text {
                                                                 anchors.centerIn: parent
-                                                                text: weatherLabelInput.text.trim() !== "" ? "CUSTOM LABEL" : "DEFAULT NAME"
+                                                                text: weatherLabelInput.text.trim() !== "" ? "CUSTOM" : "DEFAULT"
                                                                 font.family: Root.Theme.fontFamily
                                                                 font.pixelSize: 9
                                                                 font.weight: Font.Bold
@@ -1330,7 +1934,7 @@ Scope {
                                                     }
 
                                                     Text {
-                                                        text: "Queried query: " + (weatherCityInput.text.trim() || "Cali,Colombia")
+                                                        text: "Source: " + (weatherCityInput.text.trim() || "Cali, Colombia")
                                                         font.family: Root.Theme.fontFamily
                                                         font.pixelSize: 12
                                                         color: Root.Theme.textSecondary
@@ -1380,7 +1984,7 @@ Scope {
                                                         spacing: 2
 
                                                         Text {
-                                                            text: "Queried Location (Real City)"
+                                                            text: "Location"
                                                             font.family: Root.Theme.fontFamily
                                                             font.pixelSize: 15
                                                             font.weight: Font.DemiBold
@@ -1388,7 +1992,7 @@ Scope {
                                                         }
 
                                                         Text {
-                                                            text: "Physical city or region queried against meteorological servers"
+                                                            text: "City used for weather forecasts"
                                                             font.family: Root.Theme.fontFamily
                                                             font.pixelSize: 12
                                                             color: Root.Theme.textSecondary
@@ -1407,6 +2011,17 @@ Scope {
                                                         ? Root.Theme.error
                                                         : (weatherCityInput.activeFocus ? Root.Theme.primary : Qt.rgba(255, 255, 255, 0.08))
 
+                                                    Timer {
+                                                        id: searchDebounceTimer
+                                                        interval: 350
+                                                        repeat: false
+                                                        onTriggered: {
+                                                            if (!weatherCityInput.suppressSearch) {
+                                                                Settings.WeatherService.search(weatherCityInput.text);
+                                                            }
+                                                        }
+                                                    }
+
                                                     RowLayout {
                                                         anchors.fill: parent
                                                         anchors.leftMargin: 14
@@ -1414,14 +2029,23 @@ Scope {
                                                         spacing: 10
 
                                                         Text {
-                                                            text: "travel_explore"
+                                                            text: Settings.WeatherService.isSearching ? "sync" : "travel_explore"
                                                             font.family: Root.Theme.iconFont
                                                             font.pixelSize: 18
-                                                            color: Settings.WeatherService.isError ? Root.Theme.error : Root.Theme.textSecondary
+                                                            color: Settings.WeatherService.isError ? Root.Theme.error : (Settings.WeatherService.isSearching ? Root.Theme.primary : Root.Theme.textSecondary)
+
+                                                            RotationAnimation on rotation {
+                                                                running: Settings.WeatherService.isSearching
+                                                                loops: Animation.Infinite
+                                                                from: 0
+                                                                to: 360
+                                                                duration: 900
+                                                            }
                                                         }
 
                                                         TextInput {
                                                             id: weatherCityInput
+                                                            property bool suppressSearch: false
                                                             Layout.fillWidth: true
                                                             text: Settings.WeatherService.realLocation
                                                             color: Root.Theme.textPrimary
@@ -1433,6 +2057,119 @@ Scope {
                                                                 if (Settings.WeatherService.isError) {
                                                                     Settings.WeatherService.isError = false;
                                                                     Settings.WeatherService.errorMessage = "";
+                                                                }
+                                                                if (!suppressSearch && activeFocus) {
+                                                                    searchDebounceTimer.restart();
+                                                                }
+                                                            }
+                                                        }
+
+                                                        // Clear or close search button
+                                                        Rectangle {
+                                                            visible: weatherCityInput.text.length > 0 || Settings.WeatherService.searchResults.length > 0
+                                                            Layout.preferredWidth: 26
+                                                            Layout.preferredHeight: 26
+                                                            radius: 13
+                                                            color: clearCityMouse.containsMouse ? Root.Theme.surfaceContainerHighest : "transparent"
+
+                                                            Text {
+                                                                anchors.centerIn: parent
+                                                                text: "close"
+                                                                font.family: Root.Theme.iconFont
+                                                                font.pixelSize: 16
+                                                                color: Root.Theme.textSecondary
+                                                            }
+
+                                                            MouseArea {
+                                                                id: clearCityMouse
+                                                                anchors.fill: parent
+                                                                hoverEnabled: true
+                                                                cursorShape: Qt.PointingHandCursor
+                                                                onClicked: {
+                                                                    Settings.WeatherService.clearSearch();
+                                                                    weatherCityInput.text = "";
+                                                                    weatherCityInput.forceActiveFocus();
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+
+                                                // Search Results Dropdown / Picker List
+                                                ColumnLayout {
+                                                    visible: Settings.WeatherService.searchResults.length > 0
+                                                    Layout.fillWidth: true
+                                                    spacing: 4
+
+                                                    Repeater {
+                                                        model: Settings.WeatherService.searchResults
+
+                                                        delegate: Rectangle {
+                                                            id: searchResItem
+                                                            Layout.fillWidth: true
+                                                            Layout.preferredHeight: 48
+                                                            radius: 12
+                                                            color: searchResMouse.containsMouse ? Root.Theme.surfaceContainerHighest : Qt.rgba(255, 255, 255, 0.03)
+                                                            border.width: 1
+                                                            border.color: searchResMouse.containsMouse ? Root.Theme.primary : Qt.rgba(255, 255, 255, 0.06)
+
+                                                            Behavior on color { ColorAnimation { duration: 120 } }
+                                                            Behavior on border.color { ColorAnimation { duration: 120 } }
+
+                                                            RowLayout {
+                                                                anchors.fill: parent
+                                                                anchors.leftMargin: 12
+                                                                anchors.rightMargin: 12
+                                                                spacing: 12
+
+                                                                Text {
+                                                                    text: "location_on"
+                                                                    font.family: Root.Theme.iconFont
+                                                                    font.pixelSize: 18
+                                                                    color: searchResMouse.containsMouse ? Root.Theme.primary : Root.Theme.textSecondary
+                                                                }
+
+                                                                ColumnLayout {
+                                                                    Layout.fillWidth: true
+                                                                    spacing: 1
+
+                                                                    Text {
+                                                                        text: modelData.name
+                                                                        font.family: Root.Theme.fontFamily
+                                                                        font.pixelSize: 13
+                                                                        font.weight: Font.DemiBold
+                                                                        color: Root.Theme.textPrimary
+                                                                    }
+
+                                                                    Text {
+                                                                        text: modelData.display
+                                                                        font.family: Root.Theme.fontFamily
+                                                                        font.pixelSize: 11
+                                                                        color: Root.Theme.textSecondary
+                                                                        elide: Text.ElideRight
+                                                                        Layout.fillWidth: true
+                                                                    }
+                                                                }
+
+                                                                Text {
+                                                                    text: "check"
+                                                                    font.family: Root.Theme.iconFont
+                                                                    font.pixelSize: 16
+                                                                    color: Root.Theme.primary
+                                                                    visible: searchResMouse.containsMouse
+                                                                }
+                                                            }
+
+                                                            MouseArea {
+                                                                id: searchResMouse
+                                                                anchors.fill: parent
+                                                                hoverEnabled: true
+                                                                cursorShape: Qt.PointingHandCursor
+                                                                onClicked: {
+                                                                    weatherCityInput.suppressSearch = true;
+                                                                    weatherCityInput.text = modelData.query;
+                                                                    weatherCityInput.suppressSearch = false;
+                                                                    Settings.WeatherService.clearSearch();
                                                                 }
                                                             }
                                                         }
@@ -1460,65 +2197,6 @@ Scope {
                                                         color: Root.Theme.error
                                                         Layout.fillWidth: true
                                                         wrapMode: Text.Wrap
-                                                    }
-                                                }
-
-                                                // Popular Quick-Pick Chips
-                                                ColumnLayout {
-                                                    Layout.fillWidth: true
-                                                    spacing: 8
-
-                                                    Text {
-                                                        text: "POPULAR LOCATIONS"
-                                                        font.family: Root.Theme.fontFamily
-                                                        font.pixelSize: 11
-                                                        font.weight: Font.Bold
-                                                        color: Root.Theme.textSecondary
-                                                    }
-
-                                                    Flow {
-                                                        Layout.fillWidth: true
-                                                        spacing: 8
-
-                                                        Repeater {
-                                                            model: Settings.WeatherService.popularLocations
-
-                                                            delegate: Rectangle {
-                                                                id: locChip
-                                                                height: 32
-                                                                width: chipText.implicitWidth + 24
-                                                                radius: 16
-
-                                                                readonly property bool isCurrent: weatherCityInput.text.trim().toLowerCase() === modelData.query.toLowerCase()
-                                                                readonly property bool isHovered: chipMouseArea.containsMouse
-
-                                                                color: isCurrent
-                                                                    ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.18)
-                                                                    : (isHovered ? Root.Theme.surfaceContainerHigh : Qt.rgba(255, 255, 255, 0.04))
-                                                                border.width: isCurrent ? 1.5 : 1
-                                                                border.color: isCurrent ? Root.Theme.primary : Qt.rgba(255, 255, 255, 0.08)
-
-                                                                Text {
-                                                                    id: chipText
-                                                                    anchors.centerIn: parent
-                                                                    text: modelData.name
-                                                                    font.family: Root.Theme.fontFamily
-                                                                    font.pixelSize: 12
-                                                                    font.weight: locChip.isCurrent ? Font.DemiBold : Font.Normal
-                                                                    color: locChip.isCurrent ? Root.Theme.primary : Root.Theme.textPrimary
-                                                                }
-
-                                                                MouseArea {
-                                                                    id: chipMouseArea
-                                                                    anchors.fill: parent
-                                                                    hoverEnabled: true
-                                                                    cursorShape: Qt.PointingHandCursor
-                                                                    onClicked: {
-                                                                        weatherCityInput.text = modelData.query;
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
                                                     }
                                                 }
                                             }
@@ -1565,7 +2243,7 @@ Scope {
                                                         spacing: 2
 
                                                         Text {
-                                                            text: "Custom Display Label (Optional)"
+                                                            text: "Display Name"
                                                             font.family: Root.Theme.fontFamily
                                                             font.pixelSize: 15
                                                             font.weight: Font.DemiBold
@@ -1573,7 +2251,7 @@ Scope {
                                                         }
 
                                                         Text {
-                                                            text: "If left empty, the original queried city name will be displayed"
+                                                            text: "Optional name shown on your desktop"
                                                             font.family: Root.Theme.fontFamily
                                                             font.pixelSize: 12
                                                             color: Root.Theme.textSecondary
@@ -1646,24 +2324,21 @@ Scope {
                                                     spacing: 6
 
                                                     Text {
-                                                        text: weatherLabelInput.text.trim() === "" ? "info" : "check_circle"
+                                                        text: "visibility"
                                                         font.family: Root.Theme.iconFont
                                                         font.pixelSize: 16
-                                                        color: weatherLabelInput.text.trim() === "" ? Root.Theme.textSecondary : Root.Theme.primary
+                                                        color: Root.Theme.textSecondary
                                                     }
 
                                                     Text {
                                                         text: {
                                                             var lbl = weatherLabelInput.text.trim();
-                                                            if (lbl === "") {
-                                                                var defaultName = weatherCityInput.text.trim().split(",")[0] || "City";
-                                                                return "Empty label: Will display original city name (\"" + defaultName + "\")";
-                                                            }
-                                                            return "Custom label active: Will display \"" + lbl + "\" on gadgets and control center";
+                                                            var name = lbl !== "" ? lbl : (weatherCityInput.text.trim().split(",")[0] || "City");
+                                                            return "Appears as: " + name;
                                                         }
                                                         font.family: Root.Theme.fontFamily
                                                         font.pixelSize: 12
-                                                        color: weatherLabelInput.text.trim() === "" ? Root.Theme.textSecondary : Root.Theme.primary
+                                                        color: Root.Theme.textSecondary
                                                     }
                                                 }
                                             }
@@ -1677,7 +2352,7 @@ Scope {
                                             // Save Changes Button
                                             Rectangle {
                                                 Layout.preferredHeight: 46
-                                                Layout.preferredWidth: 160
+                                                Layout.preferredWidth: 120
                                                 radius: 23
                                                 color: saveLocMouse.containsMouse
                                                     ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.85)
@@ -1695,7 +2370,7 @@ Scope {
                                                     }
 
                                                     Text {
-                                                        text: Settings.WeatherService.isSaving ? "Saving..." : "Save Changes"
+                                                        text: Settings.WeatherService.isSaving ? "Saving..." : "Save"
                                                         font.family: Root.Theme.fontFamily
                                                         font.pixelSize: 14
                                                         font.weight: Font.DemiBold
@@ -1718,7 +2393,7 @@ Scope {
                                             // Refresh Now Button
                                             Rectangle {
                                                 Layout.preferredHeight: 46
-                                                Layout.preferredWidth: 140
+                                                Layout.preferredWidth: 120
                                                 radius: 23
                                                 color: refreshLocMouse.containsMouse ? Root.Theme.surfaceContainerHighest : Root.Theme.surfaceContainerHigh
                                                 border.width: 1
@@ -1736,7 +2411,7 @@ Scope {
                                                     }
 
                                                     Text {
-                                                        text: "Refresh Now"
+                                                        text: "Refresh"
                                                         font.family: Root.Theme.fontFamily
                                                         font.pixelSize: 14
                                                         font.weight: Font.Medium
@@ -1962,3 +2637,4 @@ Scope {
             }
         }
     }
+}

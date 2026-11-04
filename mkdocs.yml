@@ -67,6 +67,7 @@ nav:
           - Desktop Gadgets: quickshell/gadgets.md
           - Clipboard Manager: quickshell/clipboard.md
           - Keyboard Shortcuts: quickshell/shortcuts-overlay.md
+          - System Settings & Weather: quickshell/settings.md
       - Bar & Menus:
           - Waybar: apps/waybar.md
           - Wofi: apps/wofi.md

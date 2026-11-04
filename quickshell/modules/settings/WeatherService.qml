@@ -17,22 +17,10 @@ QtObject {
     property string statusMessage: ""
     property string errorMessage: ""
 
-    signal weatherUpdated()
+    property var searchResults: []
+    property bool isSearching: false
 
-    // Popular preset locations for 1-click selection
-    readonly property var popularLocations: [
-        { name: "Cali", country: "Colombia", query: "Cali,Colombia" },
-        { name: "Bogota", country: "Colombia", query: "Bogota,Colombia" },
-        { name: "Medellin", country: "Colombia", query: "Medellin,Colombia" },
-        { name: "Madrid", country: "Spain", query: "Madrid,Spain" },
-        { name: "London", country: "United Kingdom", query: "London,UK" },
-        { name: "New York", country: "United States", query: "New York,US" },
-        { name: "Tokyo", country: "Japan", query: "Tokyo,Japan" },
-        { name: "Paris", country: "France", query: "Paris,France" },
-        { name: "Berlin", country: "Germany", query: "Berlin,Germany" },
-        { name: "Buenos Aires", country: "Argentina", query: "Buenos Aires,Argentina" },
-        { name: "Mexico City", country: "Mexico", query: "Mexico City,Mexico" }
-    ]
+    signal weatherUpdated()
 
     // Fast zero-delay file reading
     property FileView cityFile: FileView {
@@ -62,21 +50,21 @@ QtObject {
             if (code === 0) {
                 weatherService.isError = false;
                 weatherService.errorMessage = "";
-                weatherService.statusMessage = "Location updated successfully";
+                weatherService.statusMessage = "Location updated";
                 weatherService.weatherUpdated();
             } else if (code === 2) {
                 weatherService.isError = true;
                 weatherService.statusMessage = "";
                 try {
                     var parsed = JSON.parse(errCollector.text.trim());
-                    weatherService.errorMessage = parsed.error || "Location not found. Please check spelling.";
+                    weatherService.errorMessage = parsed.error || "Location not found";
                 } catch (e) {
-                    weatherService.errorMessage = "Location not found. Please check spelling or use 'City,Country'.";
+                    weatherService.errorMessage = "Location not found";
                 }
             } else {
                 weatherService.isError = true;
                 weatherService.statusMessage = "";
-                weatherService.errorMessage = "Network or service connection error. Please try again.";
+                weatherService.errorMessage = "Connection error";
             }
         }
     }
@@ -85,7 +73,7 @@ QtObject {
         weatherService.isSaving = true;
         weatherService.isError = false;
         weatherService.errorMessage = "";
-        weatherService.statusMessage = "Validating location...";
+        weatherService.statusMessage = "Saving...";
 
         var cleanReal = (newRealLoc !== undefined && newRealLoc !== null) ? newRealLoc.trim() : "";
         if (cleanReal === "") cleanReal = "Cali,Colombia";
@@ -107,9 +95,47 @@ QtObject {
             weatherService.isSaving = true;
             weatherService.isError = false;
             weatherService.errorMessage = "";
-            weatherService.statusMessage = "Refreshing forecast...";
+            weatherService.statusMessage = "Updating...";
             saveProc.command = ["/home/zero/.config/quickshell/scripts/weather.py"];
             saveProc.running = true;
         }
+    }
+
+    property Process searchProc: Process {
+        id: searchProc
+        stdout: StdioCollector {
+            onStreamFinished: {
+                weatherService.isSearching = false;
+                try {
+                    weatherService.searchResults = JSON.parse(text.trim());
+                } catch (e) {
+                    weatherService.searchResults = [];
+                }
+            }
+        }
+        onExited: (code) => {
+            weatherService.isSearching = false;
+            if (code !== 0) weatherService.searchResults = [];
+        }
+    }
+
+    function search(query) {
+        var q = (query || "").trim();
+        if (q.length < 2) {
+            weatherService.searchResults = [];
+            weatherService.isSearching = false;
+            return;
+        }
+        weatherService.isSearching = true;
+        searchProc.command = [
+            "/home/zero/.config/quickshell/scripts/weather.py",
+            "--search", q
+        ];
+        searchProc.running = true;
+    }
+
+    function clearSearch() {
+        weatherService.searchResults = [];
+        weatherService.isSearching = false;
     }
 }

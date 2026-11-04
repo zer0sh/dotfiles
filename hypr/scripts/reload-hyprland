@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# reload-hyprland: Hard restart of Hyprland environment and core services
+# ==============================================================================
+set -euo pipefail
+
+# 1. Reload Hyprland configuration and force renderer redraw
+hyprctl reload 2>/dev/null || true
+hyprctl dispatch forcerendererreload 2>/dev/null || true
+
+# 2. Re-apply active cursor theme
+CURSOR_THEME="$([ -f "$HOME/.config/themes/current/cursor-theme" ] && cat "$HOME/.config/themes/current/cursor-theme" || echo "Bibata-Material-Classic")"
+hyprctl setcursor "$CURSOR_THEME" 24 2>/dev/null || true
+
+# 3. Restart Waybar cleanly
+pkill -x waybar 2>/dev/null || true
+pkill -f "waybar/scripts/mediaplayer" 2>/dev/null || true
+for _ in {1..20}; do
+    pgrep -x waybar >/dev/null 2>&1 || break
+    sleep 0.05
+done
+setsid nohup waybar >/dev/null 2>&1 < /dev/null & disown
+
+# 4. Restart Quickshell cleanly
+pkill -x quickshell 2>/dev/null || true
+pkill -f "qs.*shell.qml" 2>/dev/null || true
+for _ in {1..20}; do
+    (pgrep -x quickshell >/dev/null 2>&1 || pgrep -f "qs.*shell.qml" >/dev/null 2>&1) || break
+    sleep 0.05
+done
+sleep 0.2
+if command -v qs >/dev/null 2>&1; then
+    setsid nohup qs -d -p "$HOME/.config/quickshell/shell.qml" >/dev/null 2>&1 < /dev/null & disown
+elif command -v quickshell >/dev/null 2>&1; then
+    setsid nohup quickshell >/dev/null 2>&1 < /dev/null & disown
+fi
+
+# 5. Re-apply active wallpaper
+if [[ -x "$HOME/.config/hypr/scripts/restore-wallpaper" ]]; then
+    (
+        sleep 0.5
+        "$HOME/.config/hypr/scripts/restore-wallpaper" >/dev/null 2>&1 || true
+    ) & disown
+fi
+
+# 6. Ensure hypridle daemon is running
+if ! pgrep -x hypridle >/dev/null 2>&1; then
+    setsid nohup hypridle >/dev/null 2>&1 < /dev/null & disown
+fi
+
+# 7. Ensure battery-notify daemon is running
+if ! pgrep -f "hypr/scripts/battery-notify" >/dev/null 2>&1; then
+    setsid nohup "$HOME/.config/hypr/scripts/battery-notify" >/dev/null 2>&1 < /dev/null & disown
+fi
+
+# 8. Ensure clipboard watcher daemons (cliphist)
+if ! pgrep -f "wl-paste --type text" >/dev/null 2>&1; then
+    nohup wl-paste --type text --watch cliphist store >/dev/null 2>&1 & disown
+fi
+if ! pgrep -f "wl-paste --type image" >/dev/null 2>&1; then
+    nohup wl-paste --type image --watch cliphist store >/dev/null 2>&1 & disown
+fi
+
+# 9. Confirmation OSD notification
+hyprctl notify 5 2500 0 "Hyprland: full reload complete" 2>/dev/null || true

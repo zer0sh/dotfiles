@@ -11,19 +11,18 @@ Scope {
     property bool isAnimating: false
 
     signal requestChange(string cleanPath)
+    signal requestPreview(string cleanPath)
     signal requestWallpaperPicker()
 
     // ── Leer el fondo configurado al inicio ──────────────────────
     Process {
         id: readWallProc
-        command: ["/bin/sh", "-c", "cat ~/.config/themes/current/wallpaper 2>/dev/null || echo '/home/zero/Pictures/walls/wa1.png'"]
+        command: ["/bin/sh", "-c", "cat ~/.config/themes/current/wallpaper 2>/dev/null || find /home/zero/Pictures/walls -maxdepth 1 -type f 2>/dev/null | head -n 1"]
         stdout: StdioCollector {
             onStreamFinished: {
                 var w = text.trim();
                 if (w !== "") {
                     backgroundScope.currentWallpaper = w;
-                } else {
-                    backgroundScope.currentWallpaper = "/home/zero/Pictures/walls/wa1.png";
                 }
             }
         }
@@ -50,10 +49,15 @@ Scope {
         }
     }
 
+    function previewWallpaper(path) {
+        if (!path || path === "") return;
+        var cleanPath = path.replace(/^file:\/\//, "");
+        requestPreview(cleanPath);
+    }
+
     function changeWallpaper(path) {
         if (!path || path === "") return;
         var cleanPath = path.replace(/^file:\/\//, "");
-        if (cleanPath === currentWallpaper && !isAnimating) return;
 
         isAnimating = true;
         safetyTimer.restart();
@@ -82,6 +86,9 @@ Scope {
         target: "wallpaper"
         function set(path: string): void {
             backgroundScope.changeWallpaper(path);
+        }
+        function preview(path: string): void {
+            backgroundScope.previewWallpaper(path);
         }
         function toggle(): void {
             backgroundScope.requestWallpaperPicker();
@@ -119,6 +126,9 @@ Scope {
                 // activeLayer === 1 -> layerB visible
                 property int activeLayer: 0
                 property string pendingWall: ""
+                property int animDuration: 750
+                property real inScaleFrom: 0.88
+                property real outScaleTo: 1.15
 
                 Image {
                     id: layerA
@@ -170,8 +180,8 @@ Scope {
                         target: layerA
                         property: "scale"
                         from: 1.0
-                        to: 1.15
-                        duration: 750
+                        to: container.outScaleTo
+                        duration: container.animDuration
                         easing.type: Easing.OutCubic
                     }
                     NumberAnimation {
@@ -179,7 +189,7 @@ Scope {
                         property: "opacity"
                         from: 1.0
                         to: 0.0
-                        duration: 750
+                        duration: container.animDuration
                         easing.type: Easing.InOutQuad
                     }
 
@@ -187,9 +197,9 @@ Scope {
                     NumberAnimation {
                         target: layerB
                         property: "scale"
-                        from: 0.88
+                        from: container.inScaleFrom
                         to: 1.0
-                        duration: 750
+                        duration: container.animDuration
                         easing.type: Easing.OutCubic
                     }
                     NumberAnimation {
@@ -197,7 +207,7 @@ Scope {
                         property: "opacity"
                         from: 0.0
                         to: 1.0
-                        duration: 750
+                        duration: container.animDuration
                         easing.type: Easing.InOutQuad
                     }
 
@@ -222,8 +232,8 @@ Scope {
                         target: layerB
                         property: "scale"
                         from: 1.0
-                        to: 1.15
-                        duration: 750
+                        to: container.outScaleTo
+                        duration: container.animDuration
                         easing.type: Easing.OutCubic
                     }
                     NumberAnimation {
@@ -231,7 +241,7 @@ Scope {
                         property: "opacity"
                         from: 1.0
                         to: 0.0
-                        duration: 750
+                        duration: container.animDuration
                         easing.type: Easing.InOutQuad
                     }
 
@@ -239,9 +249,9 @@ Scope {
                     NumberAnimation {
                         target: layerA
                         property: "scale"
-                        from: 0.88
+                        from: container.inScaleFrom
                         to: 1.0
-                        duration: 750
+                        duration: container.animDuration
                         easing.type: Easing.OutCubic
                     }
                     NumberAnimation {
@@ -249,7 +259,7 @@ Scope {
                         property: "opacity"
                         from: 0.0
                         to: 1.0
-                        duration: 750
+                        duration: container.animDuration
                         easing.type: Easing.InOutQuad
                     }
 
@@ -280,9 +290,16 @@ Scope {
                     }
                 }
 
-                function transitionTo(newPath) {
+                function transitionTo(newPath, fast) {
+                    if (newPath === "" || newPath === undefined) return;
+                    if (newPath === container.pendingWall && !animToA.running && !animToB.running) return;
+
                     container.pendingWall = newPath;
                     var fileUri = "file://" + newPath;
+
+                    container.animDuration = fast ? 200 : 750;
+                    container.inScaleFrom = fast ? 0.98 : 0.88;
+                    container.outScaleTo = fast ? 1.02 : 1.15;
 
                     // Detener cualquier animación en curso para evitar parpadeos
                     if (animToA.running) animToA.stop();
@@ -290,7 +307,7 @@ Scope {
 
                     if (container.activeLayer === 0) {
                         // A es el actual, B es el nuevo
-                        layerB.scale = 0.88;
+                        layerB.scale = container.inScaleFrom;
                         layerB.opacity = 0.0;
                         layerB.z = 2;
                         layerA.z = 1;
@@ -308,7 +325,7 @@ Scope {
                         }
                     } else {
                         // B es el actual, A es el nuevo
-                        layerA.scale = 0.88;
+                        layerA.scale = container.inScaleFrom;
                         layerA.opacity = 0.0;
                         layerA.z = 2;
                         layerB.z = 1;
@@ -330,7 +347,10 @@ Scope {
                 Connections {
                     target: backgroundScope
                     function onRequestChange(path) {
-                        container.transitionTo(path);
+                        container.transitionTo(path, false);
+                    }
+                    function onRequestPreview(path) {
+                        container.transitionTo(path, true);
                     }
                 }
             }

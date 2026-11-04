@@ -11,6 +11,7 @@ import json
 import datetime
 import urllib.request
 import urllib.parse
+import unicodedata
 
 CACHE_FILE = os.path.expanduser("~/.cache/weather.json")
 CONFIG_DIR = os.path.expanduser("~/.config/weather")
@@ -141,11 +142,51 @@ def fetch_wttr(city, label=""):
         "forecast": forecast
     }
 
+def clean_ascii(s):
+    return ''.join(c for c in unicodedata.normalize('NFKD', s) if not unicodedata.combining(c))
+
+def search_cities(q):
+    if not q or len(q.strip()) < 2:
+        return []
+    url = f"https://geocoding-api.open-meteo.com/v1/search?name={urllib.parse.quote(q.strip())}&count=6&format=json"
+    req = urllib.request.Request(url, headers={"User-Agent": "curl/7.68.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=5) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            results = []
+            seen = set()
+            for r in data.get("results", []):
+                name = r.get("name", "")
+                admin1 = r.get("admin1", "")
+                country = r.get("country", "")
+                query = f"{clean_ascii(name)},{clean_ascii(country)}" if country else clean_ascii(name)
+                dedup = (name.lower(), admin1.lower(), country.lower())
+                if dedup in seen:
+                    continue
+                seen.add(dedup)
+                desc_parts = []
+                if admin1 and admin1.lower() != name.lower():
+                    desc_parts.append(admin1)
+                if country:
+                    desc_parts.append(country)
+                display_ctx = ", ".join(desc_parts)
+                results.append({
+                    "name": name,
+                    "country": country,
+                    "admin1": admin1,
+                    "query": query,
+                    "display": display_ctx if display_ctx else name
+                })
+            return results
+    except Exception:
+        return []
+
 def main():
     os.makedirs(CONFIG_DIR, exist_ok=True)
     os.makedirs(os.path.dirname(CACHE_FILE), exist_ok=True)
 
     # CLI parameter overrides:
+    # --search <query>
     # --set-city <city>
     # --set-label <label>
     args = sys.argv[1:]
@@ -154,7 +195,11 @@ def main():
 
     i = 0
     while i < len(args):
-        if args[i] == "--set-city" and i + 1 < len(args):
+        if args[i] == "--search" and i + 1 < len(args):
+            results = search_cities(args[i + 1])
+            print(json.dumps(results))
+            sys.exit(0)
+        elif args[i] == "--set-city" and i + 1 < len(args):
             new_city = args[i + 1].strip()
             i += 2
         elif args[i] == "--set-label" and i + 1 < len(args):

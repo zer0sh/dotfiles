@@ -20,7 +20,22 @@ A full overview of the Hyprland tiling workspace featuring Alacritty, Fastfetch 
 
 ---
 
-## 2. GNOME & GTK Applications Suite
+## 2. Dynamic Lock Screen (Hyprlock)
+
+Frosted glass lockscreen engineered in Material Design 3 dual-panel layout, featuring a stacked monumental clock, dynamic wallpaper blur, and biometric-styled authentication profile.
+
+![Hyprlock Screen](assets/images/hyprland/hyprlock.png)
+
+### Key Features:
+* **Google Sans Flex Rounded:** Native Google Pixel typography applied to the massive 172 pt stacked hours and minutes.
+* **Monumental Clock Overlap:** Hours in accent color subtly layered over the minutes for depth.
+* **Adaptive Weather & Custom Location:** Integrates live temperature and custom display labels ("La Ciudad del Condor").
+* **Material Transitions:** 500ms `fadeIn` and `fadeOut` animations backed by `md3_decel` and `md3_accel` cubic beziers.
+* **Heavy Asterisk Feedback:** Password input rendered with stylized `✱` glyphs.
+
+---
+
+## 3. GNOME & GTK Applications Suite
 
 Dynamic Material You theming applied universally to modern (GTK 4 / Libadwaita) and classic (GTK 3) applications.
 

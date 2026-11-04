@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell.Io
 import "../.." as Root
+import "../settings" as Settings
 
 // Battery Sub-Page — Material You Pixel Glassmorphism Battery Dashboard
 Item {
@@ -116,6 +117,7 @@ Item {
     function refresh() {
         if (!batteryProc.running) batteryProc.running = true;
         if (!getProfileProc.running) getProfileProc.running = true;
+        Settings.LockService.refresh();
     }
 
     function batteryStateColor() {
@@ -380,191 +382,406 @@ Item {
                 }
             }
 
-            // Power Profile Card
-            Rectangle {
-                Layout.preferredWidth: 320
+            // Right Column: Power Profile + Screen Lock Timeout (Split in Half)
+            ColumnLayout {
+                Layout.preferredWidth: 330
                 Layout.fillHeight: true
-                radius: 24
-                color: Qt.rgba(255, 255, 255, 0.08)
-                border.width: 1
-                border.color: Qt.rgba(255, 255, 255, 0.14)
-                clip: true
+                spacing: 12
 
-                ColumnLayout {
-                    anchors.fill: parent
-                    anchors.margins: 18
-                    spacing: 12
+                // Power Profile Card
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    radius: 20
+                    color: Qt.rgba(255, 255, 255, 0.08)
+                    border.width: 1
+                    border.color: Qt.rgba(255, 255, 255, 0.14)
+                    clip: true
 
-                    RowLayout {
-                        Layout.fillWidth: true
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 14
                         spacing: 8
 
-                        Text {
-                            text: "speed"
-                            font.family: Root.Theme.iconFont
-                            font.pixelSize: 18
-                            color: Root.Theme.primary
+                        RowLayout {
+                            Layout.fillWidth: true
+                            spacing: 8
+
+                            Text {
+                                text: "speed"
+                                font.family: Root.Theme.iconFont
+                                font.pixelSize: 18
+                                color: Root.Theme.primary
+                            }
+
+                            Text {
+                                text: "Power Profile"
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: 13
+                                font.weight: Font.DemiBold
+                                color: Root.Theme.textPrimary
+                            }
                         }
 
-                        Text {
-                            text: "Power Profile"
-                            font.family: Root.Theme.fontFamily
-                            font.pixelSize: 14
-                            font.weight: Font.DemiBold
-                            color: Root.Theme.textPrimary
+                        // 3-Segmented Pill Selector
+                        RowLayout {
+                            Layout.fillWidth: true
+                            Layout.fillHeight: true
+                            spacing: 8
+
+                            // Power Saver
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                radius: 14
+                                color: batteryPanel.currentProfile === "power-saver"
+                                    ? Root.Theme.primary
+                                    : (saverMA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
+                                border.width: 1
+                                border.color: batteryPanel.currentProfile === "power-saver"
+                                    ? Root.Theme.primary
+                                    : Qt.rgba(255, 255, 255, 0.12)
+                                Behavior on color { ColorAnimation { duration: 120 } }
+
+                                ColumnLayout {
+                                    anchors.centerIn: parent
+                                    spacing: 3
+
+                                    Text {
+                                        text: "energy_savings_leaf"
+                                        font.family: Root.Theme.iconFont
+                                        font.pixelSize: 20
+                                        color: (batteryPanel.currentProfile === "power-saver")
+                                            ? Root.Theme.tileActiveText
+                                            : Root.Theme.textSecondary
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+
+                                    Text {
+                                        text: "Saver"
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: 11
+                                        font.weight: Font.Medium
+                                        color: (batteryPanel.currentProfile === "power-saver")
+                                            ? Root.Theme.tileActiveText
+                                            : Root.Theme.textPrimary
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: saverMA
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: batteryPanel.setProfile("power-saver")
+                                }
+                            }
+
+                            // Balanced
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                radius: 14
+                                color: batteryPanel.currentProfile === "balanced"
+                                    ? Root.Theme.primary
+                                    : (balMA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
+                                border.width: 1
+                                border.color: batteryPanel.currentProfile === "balanced"
+                                    ? Root.Theme.primary
+                                    : Qt.rgba(255, 255, 255, 0.12)
+                                Behavior on color { ColorAnimation { duration: 120 } }
+
+                                ColumnLayout {
+                                    anchors.centerIn: parent
+                                    spacing: 3
+
+                                    Text {
+                                        text: "tune"
+                                        font.family: Root.Theme.iconFont
+                                        font.pixelSize: 20
+                                        color: (batteryPanel.currentProfile === "balanced")
+                                            ? Root.Theme.tileActiveText
+                                            : Root.Theme.textSecondary
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+
+                                    Text {
+                                        text: "Balanced"
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: 11
+                                        font.weight: Font.Medium
+                                        color: (batteryPanel.currentProfile === "balanced")
+                                            ? Root.Theme.tileActiveText
+                                            : Root.Theme.textPrimary
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: balMA
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: batteryPanel.setProfile("balanced")
+                                }
+                            }
+
+                            // Performance
+                            Rectangle {
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                radius: 14
+                                color: batteryPanel.currentProfile === "performance"
+                                    ? Root.Theme.primary
+                                    : (perfMA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
+                                border.width: 1
+                                border.color: batteryPanel.currentProfile === "performance"
+                                    ? Root.Theme.primary
+                                    : Qt.rgba(255, 255, 255, 0.12)
+                                Behavior on color { ColorAnimation { duration: 120 } }
+
+                                ColumnLayout {
+                                    anchors.centerIn: parent
+                                    spacing: 3
+
+                                    Text {
+                                        text: "speed"
+                                        font.family: Root.Theme.iconFont
+                                        font.pixelSize: 20
+                                        color: (batteryPanel.currentProfile === "performance")
+                                            ? Root.Theme.tileActiveText
+                                            : Root.Theme.textSecondary
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+
+                                    Text {
+                                        text: "Performance"
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: 11
+                                        font.weight: Font.Medium
+                                        color: (batteryPanel.currentProfile === "performance")
+                                            ? Root.Theme.tileActiveText
+                                            : Root.Theme.textPrimary
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: perfMA
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: batteryPanel.setProfile("performance")
+                                }
+                            }
                         }
                     }
+                }
 
-                    // 3-Segmented Pill Selector
-                    RowLayout {
-                        Layout.fillWidth: true
-                        Layout.fillHeight: true
+                // Screen Lock Timeout Card (5m, 25m, 1h)
+                Rectangle {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    radius: 20
+                    color: Qt.rgba(255, 255, 255, 0.08)
+                    border.width: 1
+                    border.color: Qt.rgba(255, 255, 255, 0.14)
+                    clip: true
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 14
                         spacing: 8
 
-                        // Power Saver
-                        Rectangle {
+                        RowLayout {
                             Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            radius: 16
-                            color: batteryPanel.currentProfile === "power-saver"
-                                ? Root.Theme.primary
-                                : (saverMA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
-                            border.width: 1
-                            border.color: batteryPanel.currentProfile === "power-saver"
-                                ? Root.Theme.primary
-                                : Qt.rgba(255, 255, 255, 0.12)
-                            Behavior on color { ColorAnimation { duration: 120 } }
+                            spacing: 8
 
-                            ColumnLayout {
-                                anchors.centerIn: parent
-                                spacing: 4
-
-                                Text {
-                                    text: "energy_savings_leaf"
-                                    font.family: Root.Theme.iconFont
-                                    font.pixelSize: 22
-                                    color: (batteryPanel.currentProfile === "power-saver")
-                                        ? Root.Theme.tileActiveText
-                                        : Root.Theme.textSecondary
-                                    Layout.alignment: Qt.AlignHCenter
-                                }
-
-                                Text {
-                                    text: "Power Saver"
-                                    font.family: Root.Theme.fontFamily
-                                    font.pixelSize: 11
-                                    font.weight: Font.Medium
-                                    color: (batteryPanel.currentProfile === "power-saver")
-                                        ? Root.Theme.tileActiveText
-                                        : Root.Theme.textPrimary
-                                    Layout.alignment: Qt.AlignHCenter
-                                }
+                            Text {
+                                text: "lock"
+                                font.family: Root.Theme.iconFont
+                                font.pixelSize: 18
+                                color: Root.Theme.primary
                             }
 
-                            MouseArea {
-                                id: saverMA
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: batteryPanel.setProfile("power-saver")
+                            Text {
+                                text: "Screen Lock"
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: 13
+                                font.weight: Font.DemiBold
+                                color: Root.Theme.textPrimary
+                            }
+
+                            Item { Layout.fillWidth: true }
+
+                            Text {
+                                visible: Settings.LockService.enabled
+                                text: Settings.LockService.formattedTime
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: 11
+                                font.weight: Font.Bold
+                                color: Root.Theme.primary
                             }
                         }
 
-                        // Balanced
-                        Rectangle {
+                        // 3 Options: 5 min, 25 min, 1 hour
+                        RowLayout {
                             Layout.fillWidth: true
                             Layout.fillHeight: true
-                            radius: 16
-                            color: batteryPanel.currentProfile === "balanced"
-                                ? Root.Theme.primary
-                                : (balMA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
-                            border.width: 1
-                            border.color: batteryPanel.currentProfile === "balanced"
-                                ? Root.Theme.primary
-                                : Qt.rgba(255, 255, 255, 0.12)
-                            Behavior on color { ColorAnimation { duration: 120 } }
+                            spacing: 8
 
-                            ColumnLayout {
-                                anchors.centerIn: parent
-                                spacing: 4
+                            // 5 min (300s)
+                            Rectangle {
+                                id: lock5Pill
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                radius: 14
+                                readonly property bool isActive: Settings.LockService.enabled && Settings.LockService.timeoutSeconds === 300
+                                color: isActive
+                                    ? Root.Theme.primary
+                                    : (lock5MA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
+                                border.width: 1
+                                border.color: isActive
+                                    ? Root.Theme.primary
+                                    : Qt.rgba(255, 255, 255, 0.12)
+                                Behavior on color { ColorAnimation { duration: 120 } }
 
-                                Text {
-                                    text: "tune"
-                                    font.family: Root.Theme.iconFont
-                                    font.pixelSize: 22
-                                    color: (batteryPanel.currentProfile === "balanced")
-                                        ? Root.Theme.tileActiveText
-                                        : Root.Theme.textSecondary
-                                    Layout.alignment: Qt.AlignHCenter
+                                ColumnLayout {
+                                    anchors.centerIn: parent
+                                    spacing: 3
+
+                                    Text {
+                                        text: "timer"
+                                        font.family: Root.Theme.iconFont
+                                        font.pixelSize: 20
+                                        color: lock5Pill.isActive
+                                            ? Root.Theme.tileActiveText
+                                            : Root.Theme.textSecondary
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+
+                                    Text {
+                                        text: "5 min"
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: 11
+                                        font.weight: Font.Medium
+                                        color: lock5Pill.isActive
+                                            ? Root.Theme.tileActiveText
+                                            : Root.Theme.textPrimary
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
                                 }
 
-                                Text {
-                                    text: "Balanced"
-                                    font.family: Root.Theme.fontFamily
-                                    font.pixelSize: 11
-                                    font.weight: Font.Medium
-                                    color: (batteryPanel.currentProfile === "balanced")
-                                        ? Root.Theme.tileActiveText
-                                        : Root.Theme.textPrimary
-                                    Layout.alignment: Qt.AlignHCenter
-                                }
-                            }
-
-                            MouseArea {
-                                id: balMA
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: batteryPanel.setProfile("balanced")
-                            }
-                        }
-
-                        // Performance
-                        Rectangle {
-                            Layout.fillWidth: true
-                            Layout.fillHeight: true
-                            radius: 16
-                            color: batteryPanel.currentProfile === "performance"
-                                ? Root.Theme.primary
-                                : (perfMA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
-                            border.width: 1
-                            border.color: batteryPanel.currentProfile === "performance"
-                                ? Root.Theme.primary
-                                : Qt.rgba(255, 255, 255, 0.12)
-                            Behavior on color { ColorAnimation { duration: 120 } }
-
-                            ColumnLayout {
-                                anchors.centerIn: parent
-                                spacing: 4
-
-                                Text {
-                                    text: "speed"
-                                    font.family: Root.Theme.iconFont
-                                    font.pixelSize: 22
-                                    color: (batteryPanel.currentProfile === "performance")
-                                        ? Root.Theme.tileActiveText
-                                        : Root.Theme.textSecondary
-                                    Layout.alignment: Qt.AlignHCenter
-                                }
-
-                                Text {
-                                    text: "Performance"
-                                    font.family: Root.Theme.fontFamily
-                                    font.pixelSize: 11
-                                    font.weight: Font.Medium
-                                    color: (batteryPanel.currentProfile === "performance")
-                                        ? Root.Theme.tileActiveText
-                                        : Root.Theme.textPrimary
-                                    Layout.alignment: Qt.AlignHCenter
+                                MouseArea {
+                                    id: lock5MA
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: Settings.LockService.setTimeout(300)
                                 }
                             }
 
-                            MouseArea {
-                                id: perfMA
-                                anchors.fill: parent
-                                hoverEnabled: true
-                                cursorShape: Qt.PointingHandCursor
-                                onClicked: batteryPanel.setProfile("performance")
+                            // 25 min (1500s)
+                            Rectangle {
+                                id: lock25Pill
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                radius: 14
+                                readonly property bool isActive: Settings.LockService.enabled && Settings.LockService.timeoutSeconds === 1500
+                                color: isActive
+                                    ? Root.Theme.primary
+                                    : (lock25MA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
+                                border.width: 1
+                                border.color: isActive
+                                    ? Root.Theme.primary
+                                    : Qt.rgba(255, 255, 255, 0.12)
+                                Behavior on color { ColorAnimation { duration: 120 } }
+
+                                ColumnLayout {
+                                    anchors.centerIn: parent
+                                    spacing: 3
+
+                                    Text {
+                                        text: "timer"
+                                        font.family: Root.Theme.iconFont
+                                        font.pixelSize: 20
+                                        color: lock25Pill.isActive
+                                            ? Root.Theme.tileActiveText
+                                            : Root.Theme.textSecondary
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+
+                                    Text {
+                                        text: "25 min"
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: 11
+                                        font.weight: Font.Medium
+                                        color: lock25Pill.isActive
+                                            ? Root.Theme.tileActiveText
+                                            : Root.Theme.textPrimary
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: lock25MA
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: Settings.LockService.setTimeout(1500)
+                                }
+                            }
+
+                            // 1 hour (3600s)
+                            Rectangle {
+                                id: lock1hPill
+                                Layout.fillWidth: true
+                                Layout.fillHeight: true
+                                radius: 14
+                                readonly property bool isActive: Settings.LockService.enabled && Settings.LockService.timeoutSeconds === 3600
+                                color: isActive
+                                    ? Root.Theme.primary
+                                    : (lock1hMA.containsMouse ? Qt.rgba(255, 255, 255, 0.12) : Qt.rgba(255, 255, 255, 0.08))
+                                border.width: 1
+                                border.color: isActive
+                                    ? Root.Theme.primary
+                                    : Qt.rgba(255, 255, 255, 0.12)
+                                Behavior on color { ColorAnimation { duration: 120 } }
+
+                                ColumnLayout {
+                                    anchors.centerIn: parent
+                                    spacing: 3
+
+                                    Text {
+                                        text: "hourglass_top"
+                                        font.family: Root.Theme.iconFont
+                                        font.pixelSize: 20
+                                        color: lock1hPill.isActive
+                                            ? Root.Theme.tileActiveText
+                                            : Root.Theme.textSecondary
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+
+                                    Text {
+                                        text: "1 hour"
+                                        font.family: Root.Theme.fontFamily
+                                        font.pixelSize: 11
+                                        font.weight: Font.Medium
+                                        color: lock1hPill.isActive
+                                            ? Root.Theme.tileActiveText
+                                            : Root.Theme.textPrimary
+                                        Layout.alignment: Qt.AlignHCenter
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: lock1hMA
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onClicked: Settings.LockService.setTimeout(3600)
+                                }
                             }
                         }
                     }

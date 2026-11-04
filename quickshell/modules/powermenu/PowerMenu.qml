@@ -11,31 +11,60 @@ Scope {
     property bool menuOpen: false
     property int selectedIndex: 0
     property int hoveredIndex: -1
-    readonly property int buttonCount: 5
+    readonly property int buttonCount: menuItems.length
 
     property var menuWindowRef: null
 
     readonly property int activeIndex: hoveredIndex >= 0 ? hoveredIndex : selectedIndex
 
-    readonly property var buttonLabels: [
-        "Shutdown",
-        "Reboot",
-        "Logout",
-        "Lock",
-        "Reload"
+    // Material 3 Menu Actions
+    readonly property var menuItems: [
+        {
+            icon: "power_settings_new",
+            label: "Shut Down",
+            desc: "Turn off computer safely",
+            key: "S",
+            isDanger: true,
+            action: function() { shutdownProc.startDetached(); }
+        },
+        {
+            icon: "restart_alt",
+            label: "Restart",
+            desc: "Reboot desktop system",
+            key: "R",
+            isDanger: false,
+            action: function() { rebootProc.startDetached(); }
+        },
+        {
+            icon: "logout",
+            label: "Log Out",
+            desc: "End current session",
+            key: "E",
+            isDanger: false,
+            action: function() { logoutProc.startDetached(); }
+        },
+        {
+            icon: "lock",
+            label: "Lock Screen",
+            desc: "Secure workstation",
+            key: "L",
+            isDanger: false,
+            action: function() { lockProc.startDetached(); }
+        },
+        {
+            icon: "refresh",
+            label: "Reload Desktop",
+            desc: "Restart Hyprland environment",
+            key: "O",
+            isDanger: false,
+            action: function() { reloadProc.startDetached(); }
+        }
     ]
 
-    readonly property string activeLabel: (activeIndex >= 0 && activeIndex < buttonLabels.length)
-        ? buttonLabels[activeIndex]
-        : ""
-
-    readonly property bool activeIsError: activeIndex === 0
-
-    // Reset selection whenever the menu opens
     onMenuOpenChanged: {
         if (menuOpen) {
-            selectedIndex = 0
-            hoveredIndex = -1
+            selectedIndex = 0;
+            hoveredIndex = -1;
         }
     }
 
@@ -61,201 +90,233 @@ Scope {
             color: "transparent"
 
             Component.onCompleted: {
-                root.menuWindowRef = menuWindow
-                appearAnim.start()
+                root.menuWindowRef = menuWindow;
             }
 
             function closeMenu(): void {
-                if (!dismissAnim.running) {
-                    appearAnim.stop()
-                    dismissAnim.start()
-                }
+                edgePanelWrapper.close();
             }
 
-            // Dim overlay — dismisses on click-outside
-            Rectangle {
-                id: dimOverlay
-                anchors.fill: parent
-                color: Qt.rgba(0, 0, 0, 0.35)
-                opacity: 0
-
-                ParallelAnimation {
-                    id: appearAnim
-                    NumberAnimation {
-                        target: dimOverlay; property: "opacity"
-                        from: 0.0; to: 1.0; duration: 200; easing.type: Easing.OutQuad
-                    }
-                    NumberAnimation {
-                        target: sidePanel; property: "_slideX"
-                        from: sidePanel.width + 40; to: 0; duration: 260
-                        easing.type: Easing.OutCubic
-                    }
-                    NumberAnimation {
-                        target: sidePanel; property: "opacity"
-                        from: 0.0; to: 1.0; duration: 200; easing.type: Easing.OutQuad
-                    }
-                }
-
-                SequentialAnimation {
-                    id: dismissAnim
-                    ParallelAnimation {
-                        NumberAnimation {
-                            target: dimOverlay; property: "opacity"
-                            to: 0.0; duration: 180; easing.type: Easing.InQuad
-                        }
-                        NumberAnimation {
-                            target: sidePanel; property: "_slideX"
-                            to: sidePanel.width + 40; duration: 220
-                            easing.type: Easing.InCubic
-                        }
-                        NumberAnimation {
-                            target: sidePanel; property: "opacity"
-                            to: 0.0; duration: 180; easing.type: Easing.InQuad
-                        }
-                    }
-                    ScriptAction {
-                        script: {
-                            root.menuOpen = false
-                            root.menuWindowRef = null
-                        }
-                    }
-                }
-
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: menuWindow.closeMenu()
-                }
+            Shortcut {
+                sequence: "Escape"
+                onActivated: menuWindow.closeMenu()
             }
 
-            // Vertical power menu container exiting/entering from the right edge
-            Item {
-                id: sidePanel
-                property real _slideX: width + 40
-
-                anchors.right: parent.right
-                anchors.rightMargin: 16
-                anchors.verticalCenter: parent.verticalCenter
-                width: 72
-                height: cardContent.implicitHeight + 20
-
-                transform: Translate {
-                    x: sidePanel._slideX
+            // Centralized EdgePanel parent component (VolumeOSD physics)
+            Root.EdgePanel {
+                id: edgePanelWrapper
+                edge: "right"
+                panelWidth: 310
+                panelHeight: contentCol.implicitHeight + 100
+                shoulderRadius: 32
+                onCloseRequested: menuWindow.closeMenu()
+                onClosed: {
+                    root.menuOpen = false;
+                    root.menuWindowRef = null;
                 }
 
-                // Interactive action label pill floating to the left of the active button
-                Rectangle {
-                    id: labelPill
-                    anchors.right: parent.left
-                    anchors.rightMargin: 12
-                    y: cardContent.y + (root.activeIndex * (52 + cardContent.spacing)) + (52 - height) / 2
-                    width: pillText.implicitWidth + 24
-                    height: 28
-                    radius: 14
-                    color: Qt.rgba(Root.Theme.surfaceContainerHigh.r,
-                                   Root.Theme.surfaceContainerHigh.g,
-                                   Root.Theme.surfaceContainerHigh.b, 0.95)
-                    border.color: root.activeIsError ? Root.Theme.error : Root.Theme.panelBorder
-                    border.width: 1
-                    opacity: (root.activeLabel !== "" && sidePanel.opacity > 0.4) ? 1.0 : 0.0
+                // Internal Content Column with comfortable padding
+                ColumnLayout {
+                    id: contentCol
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.leftMargin: 22
+                    anchors.rightMargin: 18
+                    spacing: 16
 
-                    Behavior on opacity { NumberAnimation { duration: 150 } }
-                    Behavior on y { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
-                    Behavior on width { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
-                    Behavior on border.color { ColorAnimation { duration: 150 } }
+                    // ── Material 3 Header ──
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 14
 
-                    Text {
-                        id: pillText
-                        anchors.centerIn: parent
-                        text: root.activeLabel
-                        font.family: Root.Theme.fontFamily
-                        font.pixelSize: 12
-                        font.weight: Font.Medium
-                        color: root.activeIsError ? Root.Theme.error : Root.Theme.textPrimary
+                        Rectangle {
+                            Layout.preferredWidth: 44
+                            Layout.preferredHeight: 44
+                            radius: 22
+                            color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.18)
+
+                            Text {
+                                anchors.centerIn: parent
+                                text: "power_settings_new"
+                                font.family: Root.Theme.iconFont
+                                font.pixelSize: 24
+                                color: Root.Theme.primary
+                            }
+                        }
+
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 2
+
+                            Text {
+                                text: "Power & Session"
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: 18
+                                font.weight: Font.Bold
+                                color: Root.Theme.textPrimary
+                            }
+
+                            Text {
+                                text: "Choose a system action"
+                                font.family: Root.Theme.fontFamily
+                                font.pixelSize: 12
+                                color: Root.Theme.textSecondary
+                            }
+                        }
                     }
-                }
 
-                // Main vertical card
-                Rectangle {
-                    id: panelCard
-                    anchors.fill: parent
-                    radius: 24
-                    color: Qt.rgba(Root.Theme.panelBg.r,
-                                   Root.Theme.panelBg.g,
-                                   Root.Theme.panelBg.b, 0.85)
-                    border.color: Root.Theme.primary
-                    border.width: 2
-
-                    // Prevent click-through to dismiss overlay
-                    MouseArea {
-                        anchors.fill: parent
+                    // Divider line
+                    Rectangle {
+                        Layout.fillWidth: true
+                        height: 1
+                        color: Qt.rgba(255, 255, 255, 0.08)
                     }
 
-                    // Vertical button list
+                    // ── Action Buttons List ──
                     ColumnLayout {
-                        id: cardContent
-                        anchors.fill: parent
-                        anchors.margins: 10
-                        spacing: 8
+                        Layout.fillWidth: true
+                        spacing: 10
 
-                        PowerButton {
-                            icon: "󰐥"
-                            label: "Shutdown"
-                            isError: true
-                            selected: root.selectedIndex === 0
-                            onHovered: root.hoveredIndex = 0
-                            onUnhovered: if (root.hoveredIndex === 0) root.hoveredIndex = -1
-                            onClicked: {
-                                shutdownProc.startDetached()
-                                menuWindow.closeMenu()
+                        Repeater {
+                            model: root.menuItems
+
+                            delegate: Rectangle {
+                                id: actionTile
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: 60
+                                radius: 18
+
+                                readonly property bool isSelected: root.activeIndex === index
+                                readonly property bool isHovered: tileMouse.containsMouse
+                                readonly property bool isDanger: modelData.isDanger
+
+                                color: isSelected
+                                    ? (isDanger ? Root.Theme.error : Root.Theme.primary)
+                                    : (isHovered
+                                        ? Qt.rgba(255, 255, 255, 0.12)
+                                        : Qt.rgba(255, 255, 255, 0.05))
+
+                                border.width: 1
+                                border.color: isSelected
+                                    ? (isDanger ? Root.Theme.error : Root.Theme.primary)
+                                    : (isHovered ? Qt.rgba(255, 255, 255, 0.18) : Qt.rgba(255, 255, 255, 0.08))
+
+                                scale: tileMouse.pressed ? 0.98 : (isHovered || isSelected ? 1.02 : 1.0)
+                                Behavior on scale { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+                                Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+                                Behavior on border.color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.leftMargin: 14
+                                    anchors.rightMargin: 14
+                                    spacing: 14
+
+                                    // Leading icon badge
+                                    Rectangle {
+                                        Layout.preferredWidth: 40
+                                        Layout.preferredHeight: 40
+                                        radius: 20
+                                        color: actionTile.isSelected
+                                            ? Qt.rgba(0, 0, 0, 0.18)
+                                            : (actionTile.isDanger
+                                                ? Qt.rgba(Root.Theme.error.r, Root.Theme.error.g, Root.Theme.error.b, 0.18)
+                                                : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.15))
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: modelData.icon
+                                            font.family: Root.Theme.iconFont
+                                            font.pixelSize: 22
+                                            color: actionTile.isSelected
+                                                ? (actionTile.isDanger ? "#FFFFFF" : Root.Theme.tileActiveText)
+                                                : (actionTile.isDanger ? Root.Theme.error : Root.Theme.primary)
+                                        }
+                                    }
+
+                                    // Title + Subtitle
+                                    ColumnLayout {
+                                        Layout.fillWidth: true
+                                        spacing: 2
+
+                                        Text {
+                                            text: modelData.label
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 15
+                                            font.weight: Font.DemiBold
+                                            color: actionTile.isSelected
+                                                ? (actionTile.isDanger ? "#FFFFFF" : Root.Theme.tileActiveText)
+                                                : Root.Theme.textPrimary
+                                        }
+
+                                        Text {
+                                            text: modelData.desc
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 12
+                                            color: actionTile.isSelected
+                                                ? (actionTile.isDanger ? Qt.rgba(1, 1, 1, 0.85) : Qt.rgba(Root.Theme.tileActiveText.r, Root.Theme.tileActiveText.g, Root.Theme.tileActiveText.b, 0.80))
+                                                : Root.Theme.textSecondary
+                                        }
+                                    }
+
+                                    // Trailing keyboard hint
+                                    Rectangle {
+                                        Layout.preferredWidth: 26
+                                        Layout.preferredHeight: 26
+                                        radius: 8
+                                        color: actionTile.isSelected
+                                            ? Qt.rgba(0, 0, 0, 0.20)
+                                            : Qt.rgba(255, 255, 255, 0.08)
+
+                                        Text {
+                                            anchors.centerIn: parent
+                                            text: modelData.key
+                                            font.family: Root.Theme.fontFamily
+                                            font.pixelSize: 12
+                                            font.weight: Font.Bold
+                                            color: actionTile.isSelected
+                                                ? (actionTile.isDanger ? "#FFFFFF" : Root.Theme.tileActiveText)
+                                                : Root.Theme.textSecondary
+                                        }
+                                    }
+                                }
+
+                                MouseArea {
+                                    id: tileMouse
+                                    anchors.fill: parent
+                                    hoverEnabled: true
+                                    cursorShape: Qt.PointingHandCursor
+                                    onEntered: root.hoveredIndex = index
+                                    onExited: if (root.hoveredIndex === index) root.hoveredIndex = -1
+                                    onClicked: {
+                                        modelData.action();
+                                        menuWindow.closeMenu();
+                                    }
+                                }
                             }
                         }
+                    }
 
-                        PowerButton {
-                            icon: "󰜉"
-                            label: "Reboot"
-                            selected: root.selectedIndex === 1
-                            onHovered: root.hoveredIndex = 1
-                            onUnhovered: if (root.hoveredIndex === 1) root.hoveredIndex = -1
-                            onClicked: {
-                                rebootProc.startDetached()
-                                menuWindow.closeMenu()
-                            }
+                    // ── Subtle Footer Hint ──
+                    RowLayout {
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignHCenter
+                        Layout.topMargin: 4
+                        spacing: 6
+
+                        Text {
+                            text: "keyboard"
+                            font.family: Root.Theme.iconFont
+                            font.pixelSize: 14
+                            color: Root.Theme.textSecondary
                         }
 
-                        PowerButton {
-                            icon: "󰍃"
-                            label: "Logout"
-                            selected: root.selectedIndex === 2
-                            onHovered: root.hoveredIndex = 2
-                            onUnhovered: if (root.hoveredIndex === 2) root.hoveredIndex = -1
-                            onClicked: {
-                                logoutProc.startDetached()
-                                menuWindow.closeMenu()
-                            }
-                        }
-
-                        PowerButton {
-                            icon: "󰌾"
-                            label: "Lock"
-                            selected: root.selectedIndex === 3
-                            onHovered: root.hoveredIndex = 3
-                            onUnhovered: if (root.hoveredIndex === 3) root.hoveredIndex = -1
-                            onClicked: {
-                                lockProc.startDetached()
-                                menuWindow.closeMenu()
-                            }
-                        }
-
-                        PowerButton {
-                            icon: "󰜈"
-                            label: "Reload"
-                            selected: root.selectedIndex === 4
-                            onHovered: root.hoveredIndex = 4
-                            onUnhovered: if (root.hoveredIndex === 4) root.hoveredIndex = -1
-                            onClicked: {
-                                reloadProc.startDetached()
-                                menuWindow.closeMenu()
-                            }
+                        Text {
+                            text: "Press Esc to dismiss"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 12
+                            color: Root.Theme.textSecondary
                         }
                     }
                 }
@@ -269,52 +330,44 @@ Scope {
 
                 Keys.onPressed: (event) => {
                     if (event.key === Qt.Key_Escape) {
-                        menuWindow.closeMenu()
-                        event.accepted = true
+                        menuWindow.closeMenu();
+                        event.accepted = true;
                     } else if (event.key === Qt.Key_Up ||
                                (event.key === Qt.Key_Tab && (event.modifiers & Qt.ShiftModifier))) {
-                        root.selectedIndex = (root.selectedIndex - 1 + root.buttonCount) % root.buttonCount
-                        root.hoveredIndex = -1
-                        event.accepted = true
+                        root.selectedIndex = (root.selectedIndex - 1 + root.buttonCount) % root.buttonCount;
+                        root.hoveredIndex = -1;
+                        event.accepted = true;
                     } else if (event.key === Qt.Key_Down || event.key === Qt.Key_Tab) {
-                        root.selectedIndex = (root.selectedIndex + 1) % root.buttonCount
-                        root.hoveredIndex = -1
-                        event.accepted = true
-                    } else if (event.key === Qt.Key_Left) {
-                        root.selectedIndex = (root.selectedIndex - 1 + root.buttonCount) % root.buttonCount
-                        root.hoveredIndex = -1
-                        event.accepted = true
-                    } else if (event.key === Qt.Key_Right) {
-                        root.selectedIndex = (root.selectedIndex + 1) % root.buttonCount
-                        root.hoveredIndex = -1
-                        event.accepted = true
+                        root.selectedIndex = (root.selectedIndex + 1) % root.buttonCount;
+                        root.hoveredIndex = -1;
+                        event.accepted = true;
                     } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter ||
                                event.key === Qt.Key_Space) {
-                        switch (root.selectedIndex) {
-                            case 0: shutdownProc.startDetached(); break
-                            case 1: rebootProc.startDetached(); break
-                            case 2: logoutProc.startDetached(); break
-                            case 3: lockProc.startDetached(); break
-                            case 4: reloadProc.startDetached(); break
+                        if (root.selectedIndex >= 0 && root.selectedIndex < root.menuItems.length) {
+                            root.menuItems[root.selectedIndex].action();
                         }
-                        menuWindow.closeMenu()
-                        event.accepted = true
+                        menuWindow.closeMenu();
+                        event.accepted = true;
                     } else if (event.key === Qt.Key_S) {
-                        shutdownProc.startDetached()
-                        menuWindow.closeMenu()
-                        event.accepted = true
+                        shutdownProc.startDetached();
+                        menuWindow.closeMenu();
+                        event.accepted = true;
                     } else if (event.key === Qt.Key_R) {
-                        rebootProc.startDetached()
-                        menuWindow.closeMenu()
-                        event.accepted = true
+                        rebootProc.startDetached();
+                        menuWindow.closeMenu();
+                        event.accepted = true;
                     } else if (event.key === Qt.Key_L) {
-                        lockProc.startDetached()
-                        menuWindow.closeMenu()
-                        event.accepted = true
+                        lockProc.startDetached();
+                        menuWindow.closeMenu();
+                        event.accepted = true;
                     } else if (event.key === Qt.Key_E) {
-                        logoutProc.startDetached()
-                        menuWindow.closeMenu()
-                        event.accepted = true
+                        logoutProc.startDetached();
+                        menuWindow.closeMenu();
+                        event.accepted = true;
+                    } else if (event.key === Qt.Key_O) {
+                        reloadProc.startDetached();
+                        menuWindow.closeMenu();
+                        event.accepted = true;
                     }
                 }
             }
@@ -326,27 +379,27 @@ Scope {
     Process { id: rebootProc;   command: ["systemctl", "reboot"] }
     Process { id: logoutProc;   command: ["hyprctl", "dispatch", "exit"] }
     Process { id: lockProc;     command: ["hyprlock"] }
-    Process { id: reloadProc;   command: ["hyprctl", "reload"] }
+    Process { id: reloadProc;   command: ["/bin/bash", "-c", "$HOME/.config/hypr/scripts/reload-hyprland"] }
 
     IpcHandler {
         target: "powermenu"
         function toggle(): void {
             if (root.menuOpen) {
                 if (root.menuWindowRef) {
-                    root.menuWindowRef.closeMenu()
+                    root.menuWindowRef.closeMenu();
                 } else {
-                    root.menuOpen = false
+                    root.menuOpen = false;
                 }
             } else {
-                root.menuOpen = true
+                root.menuOpen = true;
             }
         }
         function open(): void   { root.menuOpen = true; }
         function close(): void  {
             if (root.menuWindowRef) {
-                root.menuWindowRef.closeMenu()
+                root.menuWindowRef.closeMenu();
             } else {
-                root.menuOpen = false
+                root.menuOpen = false;
             }
         }
     }

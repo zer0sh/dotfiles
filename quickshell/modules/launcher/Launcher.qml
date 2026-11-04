@@ -54,10 +54,51 @@ Scope {
     property string cacheDir: "/home/zero/.cache/wallpapers/"
     property string currentWallpaper: ""
     property var wallpapers: []
+    property string previewInitialWallpaper: ""
+    property bool isWallpaperCommitted: false
+
+    Process {
+        id: wallPreviewIpcProc
+    }
+
+    Timer {
+        id: wallPreviewTimer
+        interval: 80
+        repeat: false
+        onTriggered: {
+            if (!launcher.panelVisible || launcher.currentMode !== "wallpaper") return;
+            if (launcher.selectedIndex >= 0 && launcher.selectedIndex < launcher.filteredWallpapers.length) {
+                var selectedWall = launcher.filteredWallpapers[launcher.selectedIndex];
+                if (selectedWall && selectedWall.path) {
+                    launcher.doPreviewWallpaper(selectedWall.path);
+                }
+            } else if (launcher.selectedIndex === launcher.filteredWallpapers.length) {
+                if (launcher.previewInitialWallpaper !== "") {
+                    launcher.doPreviewWallpaper(launcher.previewInitialWallpaper);
+                }
+            }
+        }
+    }
+
+    function doPreviewWallpaper(path) {
+        if (!path || path === "") return;
+        if (launcher.backgroundRef && launcher.backgroundRef.previewWallpaper) {
+            launcher.backgroundRef.previewWallpaper(path);
+        } else {
+            wallPreviewIpcProc.command = ["quickshell", "ipc", "call", "wallpaper", "preview", path];
+            wallPreviewIpcProc.running = true;
+        }
+    }
+
+    function cancelWallpaperPreview() {
+        if (launcher.previewInitialWallpaper !== "") {
+            launcher.doPreviewWallpaper(launcher.previewInitialWallpaper);
+        }
+    }
 
     Process {
         id: readCurrentWallProc
-        command: ["/bin/sh", "-c", "cat ~/.config/themes/current/wallpaper 2>/dev/null || echo '/home/zero/Pictures/walls/wa1.png'"]
+        command: ["/bin/sh", "-c", "cat ~/.config/themes/current/wallpaper 2>/dev/null || find /home/zero/Pictures/walls -maxdepth 1 -type f 2>/dev/null | head -n 1"]
         stdout: StdioCollector {
             onStreamFinished: {
                 var w = text.trim();
@@ -116,6 +157,7 @@ Scope {
 
     function applyWallpaper(path) {
         if (!path || path === "") return;
+        launcher.isWallpaperCommitted = true;
         if (launcher.backgroundRef && launcher.backgroundRef.changeWallpaper) {
             launcher.backgroundRef.changeWallpaper(path);
         } else {
@@ -123,6 +165,7 @@ Scope {
             wallSetIpcProc.running = true;
         }
         launcher.currentWallpaper = path;
+        launcher.previewInitialWallpaper = path;
         launcher.panelVisible = false;
     }
 
@@ -482,6 +525,18 @@ Scope {
         }
     }
 
+    onCurrentModeChanged: {
+        if (currentMode === "wallpaper") {
+            if (previewInitialWallpaper === "") {
+                previewInitialWallpaper = currentWallpaper;
+            }
+            isWallpaperCommitted = false;
+        } else if (previewInitialWallpaper !== "" && !isWallpaperCommitted) {
+            cancelWallpaperPreview();
+            previewInitialWallpaper = "";
+        }
+    }
+
     // ── Filtrado de Wallpapers en Modo Carrusel ──────────────────
     property var filteredWallpapers: {
         if (currentMode !== "wallpaper") return [];
@@ -669,6 +724,8 @@ Scope {
     function openWallpapers() {
         searchText = "/wallpaper ";
         panelVisible = true;
+        isWallpaperCommitted = false;
+        previewInitialWallpaper = currentWallpaper;
         var curIdx = 0;
         for (var i = 0; i < wallpapers.length; i++) {
             if (wallpapers[i].path === currentWallpaper) {
@@ -713,6 +770,11 @@ Scope {
             if (currentMode === "music") _refreshMpris();
         } else {
             searchText = "";
+            if (!launcher.isWallpaperCommitted && launcher.previewInitialWallpaper !== "") {
+                launcher.cancelWallpaperPreview();
+            }
+            launcher.previewInitialWallpaper = "";
+            launcher.isWallpaperCommitted = false;
         }
     }
 
@@ -925,12 +987,17 @@ Scope {
             Rectangle {
                 anchors.fill: parent
                 visible: launcher.currentMode !== "music"
-                color: Qt.rgba(0, 0, 0, panelWindow._dimOpacity)
+                color: Qt.rgba(0, 0, 0, launcher.currentMode === "wallpaper" ? 0.08 : panelWindow._dimOpacity)
 
                 MouseArea {
                     anchors.fill: parent
                     enabled: launcher.currentMode !== "music"
-                    onClicked: panelWindow.requestClose()
+                    onClicked: {
+                        if (!launcher.isWallpaperCommitted && launcher.previewInitialWallpaper !== "") {
+                            launcher.cancelWallpaperPreview();
+                        }
+                        panelWindow.requestClose();
+                    }
                 }
             }
 
@@ -1063,7 +1130,8 @@ Scope {
                     }
 
                     height: {
-                        if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "gadgets") return 340;
+                        if (launcher.currentMode === "wallpaper") return 356;
+                        if (launcher.currentMode === "shader" || launcher.currentMode === "gadgets") return 340;
                         if (launcher.currentMode === "theme") return (launcher.isMatugenSelected || launcher.isCustomSelected) ? 392 : 340;
                         if (launcher.currentMode === "music") return 250;
                         if (launcher.currentMode === "actions") {
@@ -1103,25 +1171,11 @@ Scope {
                         clip: true
 
                         function scrollToCard(index, immediate) {
-                            var itemWidth = 236 + 16;
-                            var targetX = index * itemWidth + 118 - (wallCarousel.width / 2);
-                            var maxX = Math.max(0, wallCarousel.contentWidth - wallCarousel.width);
-                            targetX = Math.max(0, Math.min(maxX, targetX));
+                            if (index < 0 || !wallCarousel) return;
                             if (immediate) {
-                                scrollAnim.stop();
-                                wallCarousel.contentX = targetX;
-                            } else {
-                                scrollAnim.to = targetX;
-                                scrollAnim.restart();
+                                wallCarousel.positionViewAtIndex(index, ListView.Center);
                             }
-                        }
-
-                        NumberAnimation {
-                            id: scrollAnim
-                            target: wallCarousel
-                            property: "contentX"
-                            duration: 160
-                            easing.type: Easing.OutCubic
+                            wallCarousel.currentIndex = index;
                         }
 
                         ListView {
@@ -1133,18 +1187,28 @@ Scope {
                             spacing: 16
                             clip: true
 
+                            preferredHighlightBegin: (width - 236) / 2
+                            preferredHighlightEnd: (width - 236) / 2
+                            highlightRangeMode: ListView.StrictlyEnforceRange
+                            highlightMoveDuration: 240
+
                             flickDeceleration: 1800
                             maximumFlickVelocity: 3000
                             boundsBehavior: Flickable.StopAtBounds
-                            highlightRangeMode: ListView.NoHighlightRange
 
                             model: launcher.filteredWallpapers.length + 1
                             currentIndex: launcher.selectedIndex
 
+                            onWidthChanged: {
+                                if (launcher.currentMode === "wallpaper") {
+                                    wallCarousel.positionViewAtIndex(launcher.selectedIndex, ListView.Center);
+                                }
+                            }
+
                             delegate: Item {
                                 width: 236
                                 height: 226
-                                z: (cardItem && cardItem.isHovered) ? 100 : (launcher.selectedIndex === index ? 20 : 1)
+                                z: (cardItem && cardItem.isHovered) ? 100 : (launcher.selectedIndex === index ? 40 : 1)
 
                                 readonly property bool isAdd: index === launcher.filteredWallpapers.length
                                 readonly property var wallData: !isAdd ? launcher.filteredWallpapers[index] : null
@@ -1162,31 +1226,45 @@ Scope {
                                     isSelected: launcher.selectedIndex === index
 
                                     onActivated: {
-                                        launcher.selectedIndex = index;
                                         if (isAdd) {
+                                            launcher.selectedIndex = index;
                                             browseWallProc.running = true;
                                         } else if (wallData) {
-                                            launcher.applyWallpaper(wallData.path);
+                                            if (launcher.selectedIndex === index) {
+                                                launcher.applyWallpaper(wallData.path);
+                                            } else {
+                                                launcher.selectedIndex = index;
+                                                launcher.doPreviewWallpaper(wallData.path);
+                                            }
                                         }
                                     }
                                 }
                             }
 
-                            // Desplazamiento horizontal fluido y directo sin saltos de índice
+                            // Desplazamiento por pasos de selección para mantener centrado el activo
                             WheelHandler {
                                 acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                                property real accumulatedDelta: 0
                                 onWheel: function(event) {
                                     var delta = event.angleDelta.y !== 0 ? event.angleDelta.y : event.angleDelta.x;
-                                    var step = delta * 1.8;
-                                    var targetX = wallCarousel.contentX - step;
-                                    var maxX = Math.max(0, wallCarousel.contentWidth - wallCarousel.width);
-                                    wallCarousel.contentX = Math.max(0, Math.min(maxX, targetX));
+                                    accumulatedDelta += delta;
+                                    if (accumulatedDelta <= -50) {
+                                        accumulatedDelta = 0;
+                                        if (launcher.selectedIndex < launcher.filteredWallpapers.length) {
+                                            launcher.selectedIndex++;
+                                        }
+                                    } else if (accumulatedDelta >= 50) {
+                                        accumulatedDelta = 0;
+                                        if (launcher.selectedIndex > 0) {
+                                            launcher.selectedIndex--;
+                                        }
+                                    }
                                 }
                             }
 
                             Component.onCompleted: {
                                 if (launcher.currentMode === "wallpaper") {
-                                    wallpaperView.scrollToCard(launcher.selectedIndex, true);
+                                    wallCarousel.positionViewAtIndex(launcher.selectedIndex, ListView.Center);
                                 }
                             }
                         }
@@ -1197,10 +1275,10 @@ Scope {
                             anchors.left: parent.left
                             anchors.top: parent.top
                             anchors.bottom: parent.bottom
-                            width: 32
+                            width: 48
                             z: 50
                             enabled: false
-                            visible: wallCarousel.contentX > 6
+                            visible: wallCarousel.currentIndex > 0
                             opacity: visible ? 1.0 : 0.0
                             Behavior on opacity { NumberAnimation { duration: 150 } }
                             gradient: Gradient {
@@ -1216,10 +1294,10 @@ Scope {
                             anchors.right: parent.right
                             anchors.top: parent.top
                             anchors.bottom: parent.bottom
-                            width: 32
+                            width: 48
                             z: 50
                             enabled: false
-                            visible: wallCarousel.contentX < (wallCarousel.contentWidth - wallCarousel.width - 6)
+                            visible: wallCarousel.currentIndex < launcher.filteredWallpapers.length
                             opacity: visible ? 1.0 : 0.0
                             Behavior on opacity { NumberAnimation { duration: 150 } }
                             gradient: Gradient {
@@ -1233,7 +1311,8 @@ Scope {
                             target: launcher
                             function onSelectedIndexChanged() {
                                 if (launcher.currentMode === "wallpaper" && wallCarousel) {
-                                    wallpaperView.scrollToCard(launcher.selectedIndex, false);
+                                    wallCarousel.currentIndex = launcher.selectedIndex;
+                                    wallPreviewTimer.restart();
                                 }
                             }
                         }
@@ -2510,7 +2589,7 @@ Scope {
                             Text {
                                 anchors.verticalCenter: parent.verticalCenter
                                 text: {
-                                    if (launcher.currentMode === "wallpaper") return "Filter wallpapers or press Enter...";
+                                    if (launcher.currentMode === "wallpaper") return "Browse to preview, Enter to apply, Esc to cancel...";
                                     if (launcher.currentMode === "shader") return "Filter shaders or press Enter...";
                                     if (launcher.currentMode === "theme") return "Filter themes or press Enter...";
                                     if (launcher.currentMode === "gadgets") return "Toggle desktop gadgets with Enter or click...";
@@ -2526,6 +2605,9 @@ Scope {
 
                             // ── Atajos de Teclado y Navegación ──────────
                             Keys.onEscapePressed: function(event) {
+                                if (!launcher.isWallpaperCommitted && launcher.previewInitialWallpaper !== "") {
+                                    launcher.cancelWallpaperPreview();
+                                }
                                 panelWindow.requestClose();
                                 event.accepted = true;
                             }

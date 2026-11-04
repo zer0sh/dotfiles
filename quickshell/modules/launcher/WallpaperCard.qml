@@ -19,16 +19,20 @@ Item {
     width: 224
     height: 214
 
-    // Escala dinámica y elevación: sutil y pulida estilo Caelestia
-    scale: mouseArea.containsMouse ? 1.05 : (isSelected ? 1.03 : 1.0)
-    y: mouseArea.containsMouse ? -5 : (isSelected ? -2 : 0)
-    z: mouseArea.containsMouse ? 100 : (isSelected ? 20 : 1)
+    // Escala, opacidad y perspectiva para el efecto carrusel enfocado al centro
+    scale: isSelected ? (mouseArea.containsMouse ? 1.12 : 1.10) : (mouseArea.containsMouse ? 0.95 : 0.88)
+    opacity: isSelected ? 1.0 : (mouseArea.containsMouse ? 0.85 : 0.55)
+    y: isSelected ? -6 : (mouseArea.containsMouse ? -2 : 0)
+    z: isSelected ? 40 : (mouseArea.containsMouse ? 20 : 1)
 
     Behavior on scale {
-        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: 240; easing.type: Easing.OutCubic }
+    }
+    Behavior on opacity {
+        NumberAnimation { duration: 240; easing.type: Easing.OutCubic }
     }
     Behavior on y {
-        NumberAnimation { duration: 200; easing.type: Easing.OutCubic }
+        NumberAnimation { duration: 240; easing.type: Easing.OutCubic }
     }
 
     Rectangle {
@@ -41,27 +45,16 @@ Item {
                 ? Qt.rgba(Root.Theme.surfaceBright.r, Root.Theme.surfaceBright.g, Root.Theme.surfaceBright.b, 0.95)
                 : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.65))
 
-        border.width: 2
-        border.color: Root.Theme.primary
+        border.width: cardRoot.isSelected ? 2 : (mouseArea.containsMouse ? 1.5 : 1)
+        border.color: cardRoot.isSelected
+            ? Root.Theme.primary
+            : (mouseArea.containsMouse
+                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.5)
+                : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.25))
 
         Behavior on color { ColorAnimation { duration: 180 } }
         Behavior on border.color { ColorAnimation { duration: 180 } }
-
-        // Halo de resplandor exterior dinámico
-        Rectangle {
-            anchors.fill: parent
-            anchors.margins: mouseArea.containsMouse ? -8 : -5
-            radius: 24
-            color: "transparent"
-            border.width: mouseArea.containsMouse ? 2 : 1
-            border.color: (mouseArea.containsMouse || cardRoot.isSelected)
-                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, mouseArea.containsMouse ? 0.6 : 0.35)
-                : "transparent"
-            visible: mouseArea.containsMouse || cardRoot.isSelected
-
-            Behavior on anchors.margins { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
-            Behavior on border.color { ColorAnimation { duration: 200 } }
-        }
+        Behavior on border.width { NumberAnimation { duration: 180 } }
 
         // --- Contenido según tipo de tarjeta ---
         Loader {
@@ -207,6 +200,40 @@ Item {
                         }
                     }
                 }
+
+                // Insignia si está siendo previsualizado
+                Rectangle {
+                    visible: cardRoot.isSelected && !cardRoot.isCurrentWall
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.margins: 6
+                    width: 76
+                    height: 22
+                    radius: 11
+                    color: Qt.rgba(Root.Theme.surfaceBright.r, Root.Theme.surfaceBright.g, Root.Theme.surfaceBright.b, 0.92)
+                    border.width: 1
+                    border.color: Root.Theme.primary
+
+                    Row {
+                        anchors.centerIn: parent
+                        spacing: 4
+
+                        Text {
+                            text: "󰄬"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 11
+                            color: Root.Theme.primary
+                        }
+
+                        Text {
+                            text: "Preview"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 11
+                            font.weight: Font.DemiBold
+                            color: Root.Theme.textPrimary
+                        }
+                    }
+                }
             }
 
             // Título / nombre del archivo
@@ -222,6 +249,18 @@ Item {
                 color: (mouseArea.containsMouse || cardRoot.isSelected) ? Root.Theme.primary : Root.Theme.textPrimary
                 elide: Text.ElideMiddle
                 horizontalAlignment: Text.AlignHCenter
+            }
+
+            // Indicador de acción al estar seleccionada
+            Text {
+                visible: cardRoot.isSelected && !cardRoot.isCurrentWall
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 6
+                anchors.horizontalCenter: parent.horizontalCenter
+                text: "Enter to apply"
+                font.family: Root.Theme.fontFamily
+                font.pixelSize: 11
+                color: Root.Theme.textSecondary
             }
         }
     }

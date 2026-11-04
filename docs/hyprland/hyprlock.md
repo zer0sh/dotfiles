@@ -4,6 +4,12 @@ Session security and power conservation are handled natively within the Hyprland
 
 ---
 
+## Visual Showcase
+
+![Hyprlock Screen](../assets/images/hyprland/hyprlock.png)
+
+---
+
 ## File Locations & Symlinks
 
 * **Hyprlock configuration:** `~/dotfiles/hypr/hyprlock.conf` -> `~/.config/hypr/hyprlock.conf`
@@ -29,163 +35,113 @@ source = /home/zero/.config/themes/current/hyprlock.conf
 ```
 
 Available color roles include:
-* `$accentColorPurple`: Primary accent used for borders and validation states.
-* `$bgColorSecondary`: Inner background container for the input field.
-* `$textColor`: High-contrast font color for clock and labels.
+* `$accentColorPurple`: Primary accent used for borders, active hour numbers, and validation states.
+* `$bgColorSecondary`: Inner background container for the input field and pill chips.
+* `$textColor`: High-contrast font color for minutes, date, and auxiliary labels.
 * `$textColorDanger`: Error state indicator for incorrect password attempts.
-* `$accentColorAttention`: Warning color indicating Caps Lock activation.
+* `$accentColorAttention`: Warning color indicating Caps Lock activation and outer avatar ring.
 
-### 2. Visual Elements & 4-Corner Architecture
+### 2. Dual-Panel Pixel Architecture
 
-Hyprlock uses **Google Sans** typography with automatic Nerd Font fallback for status icons, laid out in an ultra-clean 4-corner aesthetic:
+Hyprlock utilizes **Google Sans Flex Rounded** typography with Nerd Font fallback icons, arranged in an asymmetric dual-panel composition:
 
 ```
-[ 󰀉 Avatar ]                                              [ 󰤨   󰂯   󰂄 37% ]
-(Top-Left)                                                    (Top-Right)
+[ Top Right: System Status (󰤨  󰂯  󰂄 57%) ]
 
-                               [ 21:54 ]
-                         Wednesday, 21 October
+       LEFT PANEL                                   RIGHT PANEL
+   (Clock & Telemetry)                           (Profile & Auth)
 
-                           [  Password  ]
-
-
-[ 󰖑  9°  •  Bogota ]                                       [ 󰎆  Now Playing ]
-(Bottom-Left)                                                 (Bottom-Right)
+          20 (Accent)                            [  Avatar  ]
+          02 (Text)                              (Circular Halo)
+    Tuesday, November 03
+ 󰖗 17° • La Ciudad del Condor                     [  󰀉 zero  ]
+  󰎆 Song - Artist Name                           [ ✱✱✱✱✱✱✱✱ ]
+                                              [ 󰌾 Protected Session ]
 ```
+
+### 3. Smooth Transitions & Animations
+
+Locking and unlocking sequences are governed by a customized Material Design 3 easing curve:
 
 ```ini
-source = /home/zero/.config/themes/current/hyprlock.conf
-$font = Google Sans
+animations {
+  enabled = true
+  bezier = md3_decel, 0.05, 0.7, 0.1, 1.0
+  bezier = md3_accel, 0.3, 0.0, 0.8, 0.15
+  bezier = linear, 1, 1, 0, 0
 
-general {
-  hide_cursor = true
-  fail_timeout = 1000
-}
-
-# USER AVATAR (Top Left - Circular Badge)
-image {
-  monitor =
-  path = /home/zero/.config/hypr/avatar.png
-  size = 32
-  rounding = -1
-  border_size = 2
-  border_color = $accentColorPurple
-  position = 30, -26
-  halign = left
-  valign = top
-}
-
-# SYSTEM STATUS (Network, Bluetooth, Battery - Top Right)
-label {
-  monitor =
-  text = cmd[update:3000] ~/.config/hypr/scripts/status
-  color = $textColor
-  font_size = 16
-  font_family = $font
-  position = -30, -30
-  halign = right
-  valign = top
-}
-
-# TIME (Pixel Material You Clock - Hour in Accent, Minutes in Text Color)
-label {
-  monitor =
-  text = cmd[update:1000] echo "<span font_weight='bold' foreground='##$accentColorPurpleHex'>$(date +%H)</span><span font_weight='bold' foreground='##$textColorHex'>:$(date +%M)</span>"
-  color = $textColor
-  font_size = 135
-  font_family = $font
-  position = 0, 130
-  halign = center
-  valign = center
-}
-
-# DATE (Localized date header)
-label {
-  monitor =
-  text = cmd[update:43200000] date +"%A, %d %B"
-  color = $textColor
-  font_size = 22
-  font_family = $font
-  position = 0, 40
-  halign = center
-  valign = center
-}
-
-# WEATHER (Bottom Left)
-label {
-  monitor =
-  text = cmd[update:900000] ~/.config/hypr/scripts/weather
-  color = $textColor
-  font_size = 15
-  font_family = $font
-  position = 30, 30
-  halign = left
-  valign = bottom
-}
-
-# NOW PLAYING (Bottom Right)
-label {
-  monitor =
-  text = cmd[update:1000] ~/.config/hypr/scripts/media
-  color = $textColor
-  font_size = 14
-  font_family = $font
-  position = -30, 30
-  halign = right
-  valign = bottom
+  # Smooth fade-in on lock and fade-out on unlock
+  animation = fadeIn, 1, 5, md3_decel
+  animation = fadeOut, 1, 5, md3_accel
+  animation = inputFieldDots, 1, 3, md3_decel
 }
 ```
 
-### 3. Password Input Field
+* **`fadeIn` (500ms):** Smoothly transitions from the active workspace to the blurred lockscreen without harsh screen tearing or black flickers.
+* **`fadeOut` (500ms):** Gently dissipates lockscreen widgets and ambient blur back into the running session upon successful authentication.
+* **`inputFieldDots` (300ms):** Interpolates input glyphs smoothly while typing.
 
-The password holder is centered below the time and date, configured with real-time feedback:
+### 4. Monumental Stacked Clock & Widgets
+
+* **Stacked Hours & Minutes:** Sized at unified **172 pt** (`font_size = 172`) with the hours rendered on top, creating a subtle overlapping silhouette characteristic of Google Pixel / Material You lock screens.
+* **Localized Weather & Custom Label:** Calls `~/.config/hypr/scripts/weather` which displays live temperature, weather icon, and the user's custom location label (`display_city`) configured via Quickshell Settings.
+* **Media Telemetry:** Calls `~/.config/hypr/scripts/media` to reflect ongoing MPRIS audio playback.
+
+### 5. Profile & Input Pill
 
 ```ini
 input-field {
   monitor =
-  size = 300, 60
-  outline_thickness = 4
-  dots_size = 0.2
-  dots_spacing = 0.2
+  size = 280, 52
+  outline_thickness = 3
+  dots_size = 0.22
+  dots_spacing = 0.25
   dots_center = true
+  dots_text_format = ✱
+  font_family = $font
   outer_color = $accentColorPurple
   inner_color = $bgColorSecondary
   font_color = $textColor
   fade_on_empty = false
-  placeholder_text = <span foreground="##$textColorHex"><i>󰌾 Logged in as </i><span foreground="##$accentColorPurpleHex">$USER</span></span>
+  placeholder_text = <span foreground="##$textColorHex"><i>󰌾 Password...</i></span>
   hide_input = false
+  rounding = -1
   check_color = $accentColorPurple
   fail_color = $textColorDanger
   fail_text = <i>$FAIL <b>($ATTEMPTS)</b></i>
   capslock_color = $accentColorAttention
-  position = 0, -50
+  position = 420, -165
   halign = center
   valign = center
 }
 ```
 
-### 4. Background Rendering
+* **Heavy Asterisk Glyph:** Utilizes `dots_text_format = ✱` for crisp, stylized password feedback.
+* **Dynamic Indicators:** Outline turns red on authentication failure (`$textColorDanger`) and warning color on Caps Lock (`$accentColorAttention`).
+
+### 6. Background Rendering
 
 ```ini
 background {
+  monitor =
   path = screenshot
-  blur_passes = 2
-  brightness = 0.56
+  blur_passes = 3
+  brightness = 0.55
 }
 ```
 
 * **Screenshot Capture:** `path = screenshot` grabs the active Wayland framebuffer upon invocation.
-* **Frosted Glass Blur:** Evaluates 2 blur passes and dims brightness to `0.56` to obscure sensitive content while preserving ambient desktop aesthetics.
+* **Frosted Glass Blur:** Evaluates 3 blur passes and dims brightness to `0.55` to obscure sensitive content while preserving ambient desktop aesthetics.
 
 ---
 
-### 5. Auxiliary Scripts (`~/dotfiles/hypr/scripts/`)
+### 7. Auxiliary Scripts (`~/dotfiles/hypr/scripts/`)
 
 All lockscreen scripts are optimized for zero-latency execution (< 2ms) without synchronous network blocking:
 
-* **`weather` (`~/.config/hypr/scripts/weather`):** Reads cached weather data (`~/.cache/weather.json`) generated by Quickshell, mapping WWO condition codes to Nerd Font glyphs (`󰖙`, `󰖕`, `󰖐`, `󰖗`, `󰼲`, `󰙾`, `󰖑`) and rendering `󰖑 9° • Bogota`.
+* **`weather` (`~/.config/hypr/scripts/weather`):** Reads cached weather data (`~/.cache/weather.json`) generated by Quickshell, mapping WWO condition codes to Nerd Font glyphs (`󰖙`, `󰖕`, `󰖐`, `󰖗`, `󰼲`, `󰙾`, `󰖑`) and rendering the active temperature alongside either the custom label or the queried city (`17° • La Ciudad del Condor`).
 * **`media` (`~/.config/hypr/scripts/media`):** Communicates with active MPRIS players via `playerctl`. When music is playing or paused, displays `󰎆 Song - Artist` (or `󰏤`). When stopped or absent, displays fallback `󰎆 Playing now: The Void`.
-* **`status` (`~/.config/hypr/scripts/status`):** Merges `network`, `bluetooth`, and `battery` into a single spaced string (`󰤨 󰂯 󰂄 37%`) to ensure pixel-perfect alignment.
+* **`status` (`~/.config/hypr/scripts/status`):** Merges `network`, `bluetooth`, and `battery` into a single spaced string (`󰤨 󰂯 󰂄 57%`) to ensure pixel-perfect alignment.
 * **`network` (`~/.config/hypr/scripts/network`):** Non-blocking interface status check (`/sys/class/net/*/operstate`) displaying `󰈀` (Ethernet), `󰤨` (Wi-Fi), or `󰤭` (Disconnected).
 * **`bluetooth` (`~/.config/hypr/scripts/bluetooth`):** Instant radio status check via `rfkill` displaying `󰂯` (Active) or `󰂲` (Disabled).
 * **`battery` (`~/.config/hypr/scripts/battery`):** Fast capacity and AC status check via `/sys/class/power_supply/`.

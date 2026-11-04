@@ -45,9 +45,9 @@ Quickshell is the Wayland-native QML widget framework driving this desktop envir
   * Triggered globally with `SUPER + Tab` / `SUPER + SHIFT + Tab`. Detailed in the [Workspace Overview Guide](overview.md).
 * **Keyboard Shortcuts Overlay (`modules/shortcuts/`):**
   * Wayland-native cheat sheet modal triggered via `F1` featuring live search, category pills, two-column card grid, and glassmorphic styling aligned with the Control Center. Detailed in the [Keyboard Shortcuts Guide](shortcuts-overlay.md).
-* **System Settings & Profile (`modules/settings/`):**
+* **System Settings & Weather (`modules/settings/`):**
   * Material Design 3 modal dialog accessible via the Control Center header settings action.
-  * Features profile customization (display name and avatar synchronized with `~/.face`) alongside device hardware specifications (RAM, CPU, kernel, OS, and package telemetry).
+  * Features profile customization (display name and avatar synchronized with `~/.face`), real-time weather geolocation search with geocoding autocompletion, automated idle screen locking (`hypridle`), and device hardware specifications. Detailed in the [System Settings & Weather Guide](settings.md).
 
 ---
 
@@ -82,6 +82,7 @@ To validate QML syntax or restart Quickshell without crashing your Wayland sessi
 * [Desktop Notifications](notifications.md): Animation curves, screen positioning, and source maps for toasts and history.
 * [On-Screen Displays (OSD)](osd.md): Volume, brightness, and MPRIS track change popups.
 * [Application Launcher](launcher.md): Dynamic Island runner, mode router, and bottom-docked command drawer.
+* [System Settings & Weather](settings.md): Configuration modal, real-time geocoding search, user profile, and screen lock timers.
 * [Wallpaper Engine](wallpapers.md): Ping-pong background switching and horizontal carousel.
 * [Waybar Status Bar](../apps/waybar.md): Top status bar shell integrating with Quickshell notification signals and launcher.
 * [Hyprland Architecture](../hyprland/index.md): Compositor startup hooks, autostart services, and display arrangements.

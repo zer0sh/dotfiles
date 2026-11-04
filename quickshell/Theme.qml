@@ -214,7 +214,7 @@ QtObject {
     readonly property color outlineVariant: toggleOff
 
     // ── Font properties ────────────────────────────────────────────
-    readonly property string fontFamily: "Google Sans"
+    readonly property string fontFamily: "Google Sans Flex Rounded"
     readonly property string iconFont: "Material Symbols Rounded"
     readonly property int fontSizeNormal: 15
     readonly property int fontSizeLarge: 19
