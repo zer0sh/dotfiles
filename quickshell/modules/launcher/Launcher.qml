@@ -1136,10 +1136,12 @@ Scope {
                         if (launcher.currentMode === "music") return 250;
                         if (launcher.currentMode === "actions") {
                             var actCount = launcher.filteredActions.length;
-                            return Math.min(460, Math.max(140, actCount * 50 + 76));
+                            if (actCount === 0) return 130;
+                            return Math.min(460, actCount * 58 + 92);
                         }
                         var appCount = launcher.filteredApps.length;
-                        return Math.min(480, Math.max(140, appCount * 52 + 76));
+                        if (appCount === 0) return 130;
+                        return Math.min(480, appCount * 60 + 92);
                     }
 
                     Behavior on width { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }

@@ -37,7 +37,8 @@ QtObject {
                 sum === "do not disturb" || sum === "airplane mode" ||
                 sum === "night light" || sum === "screen filter" || sum === "media source" ||
                 sum === "clipboard" || sum.indexOf("charger") !== -1 ||
-                app === "volume" || app === "brightness" || app === "battery") {
+                app === "volume" || app === "brightness" || app === "battery" ||
+                app === "spotify" || app === "spotify-client") {
                 notif.dismiss()
                 return
             }

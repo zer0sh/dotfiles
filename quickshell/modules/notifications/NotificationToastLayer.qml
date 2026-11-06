@@ -50,7 +50,8 @@ Scope {
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
             anchors.top:   true
-            implicitWidth: 440
+            anchors.left:  true
+            anchors.right: true
             implicitHeight: Math.min(700, Root.Theme.shelfHeight + toastCol.implicitHeight + 40)
 
             mask: Region {
@@ -62,7 +63,7 @@ Scope {
                 width: 436
                 height: toastCol.implicitHeight
                 anchors.top: parent.top
-                anchors.topMargin: Root.Theme.shelfHeight
+                anchors.topMargin: Root.Theme.shelfHeight - 4
                 anchors.horizontalCenter: parent.horizontalCenter
 
                 // Clipping container for emergence animation directly out of Waybar

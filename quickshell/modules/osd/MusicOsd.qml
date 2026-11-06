@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Shapes
 import Quickshell
+import Quickshell.Io
 import Quickshell.Wayland
 import Quickshell.Services.Mpris
 import "../.." as Root
@@ -19,10 +20,19 @@ Scope {
         if (osdWin) osdWin.showOsd()
     }
 
-    // MPRIS notifies track changes through postTrackChanged. This slow
-    // discovery poll only detects players appearing/disappearing.
+    IpcHandler {
+        target: "musicosd"
+        function show(): void { musicOsd.show(); }
+        function dismiss(): void { if (osdWin) osdWin.dismiss(); }
+        function toggle(): void {
+            if (osdWin && osdWin.visible) osdWin.dismiss();
+            else musicOsd.show();
+        }
+    }
+
+    // Fast discovery poll to catch media players starting/closing
     Timer {
-        interval: 10000
+        interval: 1500
         running: true
         repeat: true
         onTriggered: musicOsd._refreshPlayer()
@@ -31,13 +41,13 @@ Scope {
     Connections {
         target: musicOsd._player
 
-        function onPostTrackChanged() {
-            musicOsd._refreshPlayer()
-        }
-
-        function onPlaybackStateChanged() {
-            musicOsd._refreshPlayer()
-        }
+        function onPostTrackChanged() { musicOsd._refreshPlayer() }
+        function onTrackTitleChanged() { musicOsd._refreshPlayer() }
+        function onTrackArtistChanged() { musicOsd._refreshPlayer() }
+        function onTrackAlbumChanged() { musicOsd._refreshPlayer() }
+        function onTrackArtUrlChanged() { musicOsd._refreshPlayer() }
+        function onPlaybackStateChanged() { musicOsd._refreshPlayer() }
+        function onIsPlayingChanged() { musicOsd._refreshPlayer() }
     }
 
     Component.onCompleted: {
@@ -94,9 +104,10 @@ Scope {
         WlrLayershell.namespace: "quickshell:music-osd"
         WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
 
-        anchors.top: true
-        implicitWidth: 440
-        implicitHeight: Math.max(120, Root.Theme.shelfHeight + osdCard.implicitHeight + 20)
+        anchors.top:   true
+        anchors.left:  true
+        anchors.right: true
+        implicitHeight: Root.Theme.shelfHeight + 120
 
         mask: Region {
             item: osdWrapper
@@ -107,8 +118,10 @@ Scope {
             dismissAnim.stop()
             if (!visible || wasDismissing) {
                 appearAnim.stop()
-                osdCard._slideY = -Math.max(60, osdCard.implicitHeight)
+                osdCard._scaleY = 0.0
+                osdCard._scaleX = 0.82
                 osdCard._opacity = 0
+                cardContent.opacity = 0
                 visible = true
                 appearAnim.start()
             }
@@ -130,255 +143,285 @@ Scope {
             onTriggered: osdWin.dismiss()
         }
 
+        // Appear: organic dynamic island extrusion downwards + expansion
         ParallelAnimation {
             id: appearAnim
             NumberAnimation {
-                target: osdCard; property: "_slideY"
-                from: -Math.max(60, osdCard.implicitHeight)
-                to: 0; duration: 280; easing.type: Easing.OutCubic
+                target: osdCard; property: "_scaleY"
+                from: 0.0; to: 1.0; duration: 280
+                easing.type: Easing.OutBack
+                easing.overshoot: 1.18
+            }
+            NumberAnimation {
+                target: osdCard; property: "_scaleX"
+                from: 0.82; to: 1.0; duration: 260
+                easing.type: Easing.OutCubic
             }
             NumberAnimation {
                 target: osdCard; property: "_opacity"
-                from: 0
-                to: 1; duration: 200; easing.type: Easing.OutQuad
+                from: 0.0; to: 1.0; duration: 160
+                easing.type: Easing.OutQuad
+            }
+            SequentialAnimation {
+                PauseAnimation { duration: 50 }
+                NumberAnimation {
+                    target: cardContent; property: "opacity"
+                    from: 0.0; to: 1.0; duration: 180
+                    easing.type: Easing.OutQuad
+                }
             }
         }
 
+        // Dismiss: retract back into Waybar
         SequentialAnimation {
             id: dismissAnim
             ParallelAnimation {
                 NumberAnimation {
-                    target: osdCard; property: "_slideY"
-                    to: -Math.max(60, osdCard.implicitHeight); duration: 200; easing.type: Easing.InQuad
+                    target: cardContent; property: "opacity"
+                    to: 0.0; duration: 100; easing.type: Easing.InQuad
+                }
+                NumberAnimation {
+                    target: osdCard; property: "_scaleY"
+                    to: 0.0; duration: 190; easing.type: Easing.InBack
+                    easing.overshoot: 1.1
+                }
+                NumberAnimation {
+                    target: osdCard; property: "_scaleX"
+                    to: 0.85; duration: 170; easing.type: Easing.InQuad
                 }
                 NumberAnimation {
                     target: osdCard; property: "_opacity"
-                    to: 0; duration: 160; easing.type: Easing.InQuad
+                    to: 0.0; duration: 170; easing.type: Easing.InQuad
                 }
             }
             ScriptAction { script: osdWin.visible = false }
         }
 
+        // ── Card container anchored directly to Waybar shelf ─────────
         Item {
             id: osdWrapper
             width: 436
             height: osdCard.implicitHeight
             anchors.top: parent.top
-            anchors.topMargin: Root.Theme.shelfHeight
+            anchors.topMargin: Root.Theme.shelfHeight - 4
             anchors.horizontalCenter: parent.horizontalCenter
 
-            // Clipping container so the card slides out smoothly from behind Waybar
             Item {
-                id: osdClip
-                anchors.fill: parent
-                clip: true
+                id: osdCard
+                property real _opacity: 0
+                property real _scaleX: 1.0
+                property real _scaleY: 1.0
 
-                Item {
-                    id: osdCard
-                    property real _slideY: -height
-                    property real _opacity: 0
+                width: 380
+                height: implicitHeight
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                opacity: _opacity
+                implicitHeight: cardContent.implicitHeight + 24
 
-                    width: 380
-                    height: implicitHeight
+                transformOrigin: Item.Top
+                transform: Scale {
+                    origin.x: osdCard.width / 2
+                    origin.y: 0
+                    xScale: osdCard._scaleX
+                    yScale: osdCard._scaleY
+                }
+
+                // Unified Dynamic Island Shape with G1 continuous Bezier fillets
+                Shape {
+                    id: osdShape
+                    anchors.top: parent.top
+                    anchors.bottom: parent.bottom
                     anchors.horizontalCenter: parent.horizontalCenter
-                    y: _slideY
-                    opacity: _opacity
-                    implicitHeight: cardContent.implicitHeight + 24
+                    width: parent.width + 56
+                    layer.enabled: true
+                    layer.samples: 8
+                    layer.smooth: true
 
-                    // Silueta continua con hombros cóncavos y borde de ventana
-                    Shape {
-                        id: osdShape
-                        anchors.top: parent.top
-                        anchors.bottom: parent.bottom
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        width: parent.width + 56
-                        layer.enabled: true
-                        layer.samples: 4
+                    // 1. Unified glass surface fill — covers from y=0 to fully obscure Waybar's 2px border
+                    ShapePath {
+                        strokeWidth: 0
+                        strokeColor: "transparent"
+                        fillColor: Qt.rgba(Root.Theme.panelBg.r,
+                                           Root.Theme.panelBg.g,
+                                           Root.Theme.panelBg.b, 0.98)
 
-                        // 1. Relleno unificado
-                        ShapePath {
-                            strokeWidth: 0
-                            strokeColor: "transparent"
-                            fillColor: Qt.rgba(Root.Theme._shelfBgColor.r,
-                                               Root.Theme._shelfBgColor.g,
-                                               Root.Theme._shelfBgColor.b, 0.85)
+                        startX: 0
+                        startY: 0
 
-                            startX: 0
-                            startY: 0
+                        PathLine { x: 0; y: 3 }
 
-                            PathArc {
-                                x: 28; y: 28
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Clockwise
-                            }
-                            PathLine { x: 28; y: Math.max(28, osdShape.height - 28) }
-                            PathArc {
-                                x: 56; y: osdShape.height
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Counterclockwise
-                            }
-                            PathLine { x: Math.max(56, osdShape.width - 56); y: osdShape.height }
-                            PathArc {
-                                x: osdShape.width - 28; y: Math.max(28, osdShape.height - 28)
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Counterclockwise
-                            }
-                            PathLine { x: osdShape.width - 28; y: 28 }
-                            PathArc {
-                                x: osdShape.width; y: 0
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Clockwise
-                            }
-                            PathLine { x: 0; y: 0 }
+                        // Left concave shoulder fillet with zero horizontal tangent at y=3
+                        PathCubic {
+                            control1X: 14; control1Y: 3
+                            control2X: 28; control2Y: 17
+                            x: 28; y: 31
+                        }
+                        // Left flank
+                        PathLine { x: 28; y: Math.max(31, osdShape.height - 28) }
+                        // Bottom-left rounded corner
+                        PathCubic {
+                            control1X: 28; control1Y: osdShape.height - 14
+                            control2X: 42; control2Y: osdShape.height
+                            x: 56; y: osdShape.height
+                        }
+                        // Bottom horizontal base
+                        PathLine { x: Math.max(56, osdShape.width - 56); y: osdShape.height }
+                        // Bottom-right rounded corner
+                        PathCubic {
+                            control1X: osdShape.width - 42; control1Y: osdShape.height
+                            control2X: osdShape.width - 28; control2Y: osdShape.height - 14
+                            x: osdShape.width - 28; y: Math.max(31, osdShape.height - 28)
+                        }
+                        // Right flank
+                        PathLine { x: osdShape.width - 28; y: 31 }
+                        // Right concave shoulder fillet with zero horizontal exit tangent at y=3
+                        PathCubic {
+                            control1X: osdShape.width - 28; control1Y: 17
+                            control2X: osdShape.width - 14; control2Y: 3
+                            x: osdShape.width; y: 3
+                        }
+                        // Top bridge over Waybar border
+                        PathLine { x: osdShape.width; y: 0 }
+                        PathLine { x: 0; y: 0 }
+                    }
+
+                    // 2. Continuous accent border (perfect 2px match with Waybar's border)
+                    ShapePath {
+                        strokeWidth: 2
+                        strokeColor: Root.Theme.primary
+                        fillColor: "transparent"
+                        capStyle: ShapePath.FlatCap
+                        joinStyle: ShapePath.RoundJoin
+
+                        Behavior on strokeColor { ColorAnimation { duration: 180 } }
+
+                        startX: 0
+                        startY: 3
+
+                        PathCubic {
+                            control1X: 14; control1Y: 3
+                            control2X: 28; control2Y: 17
+                            x: 28; y: 31
+                        }
+                        PathLine { x: 28; y: Math.max(31, osdShape.height - 28) }
+                        PathCubic {
+                            control1X: 28; control1Y: osdShape.height - 14
+                            control2X: 42; control2Y: osdShape.height
+                            x: 56; y: osdShape.height
+                        }
+                        PathLine { x: Math.max(56, osdShape.width - 56); y: osdShape.height }
+                        PathCubic {
+                            control1X: osdShape.width - 42; control1Y: osdShape.height
+                            control2X: osdShape.width - 28; control2Y: osdShape.height - 14
+                            x: osdShape.width - 28; y: Math.max(31, osdShape.height - 28)
+                        }
+                        PathLine { x: osdShape.width - 28; y: 31 }
+                        PathCubic {
+                            control1X: osdShape.width - 28; control1Y: 17
+                            control2X: osdShape.width - 14; control2Y: 3
+                            x: osdShape.width; y: 3
+                        }
+                    }
+                }
+
+                RowLayout {
+                    id: cardContent
+                    anchors.fill: parent
+                    anchors.leftMargin: 16
+                    anchors.rightMargin: 16
+                    anchors.topMargin: 10
+                    anchors.bottomMargin: 14
+                    spacing: 12
+                    opacity: 0
+
+                    // Album art thumbnail or music fallback icon
+                    Rectangle {
+                        Layout.preferredWidth: 46
+                        Layout.preferredHeight: 46
+                        Layout.alignment: Qt.AlignVCenter
+                        radius: 12
+                        color: Root.Theme.surfaceContainerHigh
+                        clip: true
+
+                        Image {
+                            anchors.fill: parent
+                            source: _player ? _player.trackArtUrl : ""
+                            fillMode: Image.PreserveAspectCrop
+                            visible: _player && _player.trackArtUrl !== ""
                         }
 
-                        // 2. Borde exterior continuo estilo ventana
-                        ShapePath {
-                            strokeWidth: 2
-                            strokeColor: Root.Theme.primary
-                            fillColor: "transparent"
-                            capStyle: ShapePath.FlatCap
-                            joinStyle: ShapePath.RoundJoin
-
-                            startX: 0
-                            startY: 0
-
-                            PathArc {
-                                x: 28; y: 28
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Clockwise
-                            }
-                            PathLine { x: 28; y: Math.max(28, osdShape.height - 28) }
-                            PathArc {
-                                x: 56; y: osdShape.height
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Counterclockwise
-                            }
-                            PathLine { x: Math.max(56, osdShape.width - 56); y: osdShape.height }
-                            PathArc {
-                                x: osdShape.width - 28; y: Math.max(28, osdShape.height - 28)
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Counterclockwise
-                            }
-                            PathLine { x: osdShape.width - 28; y: 28 }
-                            PathArc {
-                                x: osdShape.width; y: 0
-                                radiusX: 28; radiusY: 28
-                                direction: PathArc.Clockwise
-                            }
+                        Text {
+                            anchors.centerIn: parent
+                            text: "󰎆"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 22
+                            color: Root.Theme.primary
+                            visible: !_player || _player.trackArtUrl === ""
                         }
                     }
 
-                    RowLayout {
-                        id: cardContent
-                        anchors.fill: parent
-                        anchors.leftMargin: 16
-                        anchors.rightMargin: 16
-                        anchors.topMargin: 10
-                        anchors.bottomMargin: 14
-                        spacing: 12
+                    // Track info (Notification style)
+                    ColumnLayout {
+                        Layout.fillWidth: true
+                        Layout.alignment: Qt.AlignVCenter
+                        spacing: 2
 
-                        // Album art thumbnail or music fallback icon
-                        Rectangle {
-                            Layout.preferredWidth: 46
-                            Layout.preferredHeight: 46
-                            Layout.alignment: Qt.AlignVCenter
-                            radius: 12
-                            color: Root.Theme.surfaceContainerHigh
-                            clip: true
-
-                            Image {
-                                anchors.fill: parent
-                                source: _player ? _player.trackArtUrl : ""
-                                fillMode: Image.PreserveAspectCrop
-                                visible: _player && _player.trackArtUrl !== ""
-                            }
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "󰎆"
-                                font.family: Root.Theme.fontFamily
-                                font.pixelSize: 22
-                                color: Root.Theme.primary
-                                visible: !_player || _player.trackArtUrl === ""
-                            }
-                        }
-
-                        // Track info (Notification style)
-                        ColumnLayout {
+                        RowLayout {
                             Layout.fillWidth: true
-                            Layout.alignment: Qt.AlignVCenter
-                            spacing: 2
-
-                            RowLayout {
-                                Layout.fillWidth: true
-                                spacing: 6
-
-                                Text {
-                                    text: {
-                                        var app = (_player && _player.identity) ? _player.identity.toUpperCase() : "MUSIC"
-                                        return app + " • NOW PLAYING"
-                                    }
-                                    color: Root.Theme.primary
-                                    font.family: Root.Theme.fontFamily
-                                    font.pixelSize: Root.Theme.fontSizeXS
-                                    font.weight: Font.DemiBold
-                                    elide: Text.ElideRight
-                                    Layout.fillWidth: true
-                                }
-                            }
+                            spacing: 6
 
                             Text {
-                                text: (_player && _player.trackTitle !== "") ? _player.trackTitle : "Unknown Title"
-                                color: Root.Theme.textPrimary
+                                text: {
+                                    var app = (_player && _player.identity) ? _player.identity.toUpperCase() : "MUSIC"
+                                    return app + " • NOW PLAYING"
+                                }
+                                color: Root.Theme.primary
                                 font.family: Root.Theme.fontFamily
-                                font.pixelSize: Root.Theme.fontSizeNormal
+                                font.pixelSize: Root.Theme.fontSizeXS
                                 font.weight: Font.DemiBold
                                 elide: Text.ElideRight
                                 Layout.fillWidth: true
                             }
+                        }
 
-                            Text {
-                                text: {
-                                    if (!_player) return ""
-                                    var artist = _player.trackArtist || ""
-                                    var album = _player.trackAlbum || ""
-                                    if (artist !== "" && album !== "") return artist + " — " + album
-                                    if (artist !== "") return artist
-                                    if (album !== "") return album
-                                    return _player.identity || ""
-                                }
-                                color: Root.Theme.textSecondary
-                                font.family: Root.Theme.fontFamily
-                                font.pixelSize: Root.Theme.fontSizeSmall
-                                elide: Text.ElideRight
-                                Layout.fillWidth: true
-                                visible: text !== ""
+                        Text {
+                            text: (_player && _player.trackTitle !== "") ? _player.trackTitle : "Unknown Title"
+                            color: Root.Theme.textPrimary
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: Root.Theme.fontSizeNormal
+                            font.weight: Font.DemiBold
+                            elide: Text.ElideRight
+                            Layout.fillWidth: true
+                        }
+
+                        Text {
+                            text: {
+                                if (!_player) return ""
+                                var artist = _player.trackArtist || ""
+                                var album = _player.trackAlbum || ""
+                                if (artist !== "" && album !== "") return artist + " — " + album
+                                if (artist !== "") return artist
+                                if (album !== "") return album
+                                return _player.identity || ""
                             }
+                            color: Root.Theme.textSecondary
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: Root.Theme.fontSizeSmall
+                            elide: Text.ElideRight
+                            Layout.fillWidth: true
+                            visible: text !== ""
                         }
                     }
+                }
 
-                    // Hover overlay
-                    Rectangle {
-                        anchors.fill: parent
-                        color: Root.Theme.textPrimary
-                        opacity: cardHover.containsMouse ? 0.04 : 0
-                        radius: parent.radius
-                        topLeftRadius: parent.topLeftRadius
-                        topRightRadius: parent.topRightRadius
-                        bottomLeftRadius: parent.bottomLeftRadius
-                        bottomRightRadius: parent.bottomRightRadius
-                        Behavior on opacity { NumberAnimation { duration: 120 } }
-                    }
-
-                    MouseArea {
-                        id: cardHover
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        acceptedButtons: Qt.LeftButton
-                        onClicked: osdWin.dismiss()
-                    }
+                MouseArea {
+                    id: cardHover
+                    anchors.fill: parent
+                    hoverEnabled: true
+                    cursorShape: Qt.PointingHandCursor
+                    acceptedButtons: Qt.LeftButton
+                    onClicked: osdWin.dismiss()
                 }
             }
         }

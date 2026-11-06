@@ -63,7 +63,7 @@ Item {
 
     readonly property color cardBgColor: Qt.rgba(Root.Theme.panelBg.r,
                                                  Root.Theme.panelBg.g,
-                                                 Root.Theme.panelBg.b, 0.85)
+                                                 Root.Theme.panelBg.b, 0.98)
 
     Item {
         id: card
@@ -94,37 +94,40 @@ Item {
                 startX: 0
                 startY: 0
 
-                // Curva cóncava hombro izquierdo
-                PathArc {
-                    x: 28; y: 28
-                    radiusX: 28; radiusY: 28
-                    direction: PathArc.Clockwise
+                PathLine { x: 0; y: 3 }
+
+                // Curva cóncava hombro izquierdo con tangente horizontal en y=3
+                PathCubic {
+                    control1X: 14; control1Y: 3
+                    control2X: 28; control2Y: 17
+                    x: 28; y: 31
                 }
                 // Lateral izquierdo
-                PathLine { x: 28; y: Math.max(28, topIslandShape.height - 28) }
+                PathLine { x: 28; y: Math.max(31, topIslandShape.height - 28) }
                 // Esquina inferior izquierda
-                PathArc {
+                PathCubic {
+                    control1X: 28; control1Y: topIslandShape.height - 14
+                    control2X: 42; control2Y: topIslandShape.height
                     x: 56; y: topIslandShape.height
-                    radiusX: 28; radiusY: 28
-                    direction: PathArc.Counterclockwise
                 }
                 // Base horizontal
                 PathLine { x: Math.max(56, topIslandShape.width - 56); y: topIslandShape.height }
                 // Esquina inferior derecha
-                PathArc {
-                    x: topIslandShape.width - 28; y: Math.max(28, topIslandShape.height - 28)
-                    radiusX: 28; radiusY: 28
-                    direction: PathArc.Counterclockwise
+                PathCubic {
+                    control1X: topIslandShape.width - 42; control1Y: topIslandShape.height
+                    control2X: topIslandShape.width - 28; control2Y: topIslandShape.height - 14
+                    x: topIslandShape.width - 28; y: Math.max(31, topIslandShape.height - 28)
                 }
                 // Lateral derecho
-                PathLine { x: topIslandShape.width - 28; y: 28 }
-                // Curva cóncava hombro derecho
-                PathArc {
-                    x: topIslandShape.width; y: 0
-                    radiusX: 28; radiusY: 28
-                    direction: PathArc.Clockwise
+                PathLine { x: topIslandShape.width - 28; y: 31 }
+                // Curva cóncava hombro derecho con salida tangencial en y=3
+                PathCubic {
+                    control1X: topIslandShape.width - 28; control1Y: 17
+                    control2X: topIslandShape.width - 14; control2Y: 3
+                    x: topIslandShape.width; y: 3
                 }
                 // Cierre superior contra Waybar
+                PathLine { x: topIslandShape.width; y: 0 }
                 PathLine { x: 0; y: 0 }
             }
 
@@ -139,37 +142,30 @@ Item {
                 Behavior on strokeColor { ColorAnimation { duration: 150 } }
 
                 startX: 0
-                startY: 0
+                startY: 3
 
-                // Curva cóncava hombro izquierdo
-                PathArc {
-                    x: 28; y: 28
-                    radiusX: 28; radiusY: 28
-                    direction: PathArc.Clockwise
+                PathCubic {
+                    control1X: 14; control1Y: 3
+                    control2X: 28; control2Y: 17
+                    x: 28; y: 31
                 }
-                // Lateral izquierdo
-                PathLine { x: 28; y: Math.max(28, topIslandShape.height - 28) }
-                // Esquina inferior izquierda
-                PathArc {
+                PathLine { x: 28; y: Math.max(31, topIslandShape.height - 28) }
+                PathCubic {
+                    control1X: 28; control1Y: topIslandShape.height - 14
+                    control2X: 42; control2Y: topIslandShape.height
                     x: 56; y: topIslandShape.height
-                    radiusX: 28; radiusY: 28
-                    direction: PathArc.Counterclockwise
                 }
-                // Base horizontal
                 PathLine { x: Math.max(56, topIslandShape.width - 56); y: topIslandShape.height }
-                // Esquina inferior derecha
-                PathArc {
-                    x: topIslandShape.width - 28; y: Math.max(28, topIslandShape.height - 28)
-                    radiusX: 28; radiusY: 28
-                    direction: PathArc.Counterclockwise
+                PathCubic {
+                    control1X: topIslandShape.width - 42; control1Y: topIslandShape.height
+                    control2X: topIslandShape.width - 28; control2Y: topIslandShape.height - 14
+                    x: topIslandShape.width - 28; y: Math.max(31, topIslandShape.height - 28)
                 }
-                // Lateral derecho
-                PathLine { x: topIslandShape.width - 28; y: 28 }
-                // Curva cóncava hombro derecho
-                PathArc {
-                    x: topIslandShape.width; y: 0
-                    radiusX: 28; radiusY: 28
-                    direction: PathArc.Clockwise
+                PathLine { x: topIslandShape.width - 28; y: 31 }
+                PathCubic {
+                    control1X: topIslandShape.width - 28; control1Y: 17
+                    control2X: topIslandShape.width - 14; control2Y: 3
+                    x: topIslandShape.width; y: 3
                 }
             }
         }
