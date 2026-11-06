@@ -93,11 +93,6 @@ if [ -f "$REPO_DIR/scripts/setup-papirus-matugen.sh" ]; then
     "$REPO_DIR/scripts/setup-papirus-matugen.sh"
 fi
 
-# Material Bibata Cursor Matugen integration (dynamic cursor theming by Sakib Shahariar)
-if [ -f "$REPO_DIR/scripts/setup-bibata-matugen.sh" ]; then
-    "$REPO_DIR/scripts/setup-bibata-matugen.sh"
-fi
-
 # Steam (Adwaita-for-Steam) Matugen theme - native install.py route, no Flatpak
 if command -v steam >/dev/null 2>&1 || [ -d "$HOME/.steam/steam" ]; then
     echo "[INFO] Setting up Steam Matugen integration..."
