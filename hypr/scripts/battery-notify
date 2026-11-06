@@ -83,7 +83,7 @@ while true; do
         prev_plugged=true
         notified_20=false
         notified_10=false
-        sleep 1
+        sleep 15
         continue
 
     # State transition: Charger disconnected
@@ -92,7 +92,7 @@ while true; do
             "󰂃 Charger Disconnected" \
             "Running on battery power (${capacity}%)."
         prev_plugged=false
-        sleep 1
+        sleep 15
         continue
     fi
 
@@ -121,5 +121,5 @@ while true; do
         fi
     fi
 
-    sleep 1
+    sleep 15
 done

@@ -100,10 +100,18 @@ Item {
         }
     }
 
+    readonly property bool isActuallyVisible: (controlCenterRef ? (controlCenterRef.panelVisible && controlCenterRef.currentPage === "battery") : visible)
+
+    onIsActuallyVisibleChanged: {
+        if (isActuallyVisible) {
+            refresh();
+        }
+    }
+
     Timer {
         interval: 10000
         repeat: true
-        running: true
+        running: batteryPanel.isActuallyVisible
         onTriggered: {
             if (!batteryProc.running) batteryProc.running = true;
         }

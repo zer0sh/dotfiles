@@ -21,9 +21,9 @@ Scope {
     Process {
         id: statusProc
         command: ["sh", "-c",
-            "if [ -f /tmp/hypr-wf-recorder.pid ] && " +
-            "kill -0 $(cat /tmp/hypr-wf-recorder.pid) 2>/dev/null && " +
-            "[ -f /tmp/hypr-wf-recorder.started ]; then " +
+            "if [ -f /tmp/hypr-wf-recorder.started ] && " +
+            "[ -f /tmp/hypr-wf-recorder.pid ] && " +
+            "kill -0 $(cat /tmp/hypr-wf-recorder.pid 2>/dev/null) 2>/dev/null; then " +
             "cat /tmp/hypr-wf-recorder.started; fi"]
 
         stdout: StdioCollector {
@@ -43,12 +43,13 @@ Scope {
     }
 
     Timer {
-        interval: 500
+        interval: indicator.recording ? 1000 : 2500
         running: true
         repeat: true
         triggeredOnStart: true
         onTriggered: {
-            statusProc.running = true
+            if (!statusProc.running)
+                statusProc.running = true
             if (indicator.recording && indicator.startedAt > 0)
                 indicator.elapsedSeconds = Math.max(0, Math.floor(Date.now() / 1000) - indicator.startedAt)
         }

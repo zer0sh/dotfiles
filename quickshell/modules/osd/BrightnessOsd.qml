@@ -40,8 +40,18 @@ Scope {
         }
     }
 
+    IpcHandler {
+        target: "brightness"
+
+        function check(): void {
+            if (!readProc.running) {
+                readProc.running = true;
+            }
+        }
+    }
+
     Timer {
-        interval: 60
+        interval: 3500
         running: true
         repeat: true
         triggeredOnStart: true

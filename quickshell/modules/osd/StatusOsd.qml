@@ -71,12 +71,12 @@ Scope {
 
     Process {
         id: capsProc
-        command: ["sh", "-c", "cat /sys/class/leds/*::capslock/brightness 2>/dev/null | head -1"]
+        command: ["sh", "-c", "cat /sys/class/leds/*::capslock/brightness 2>/dev/null"]
         stdout: StdioCollector {
             onStreamFinished: {
                 var val = text.trim()
                 if (val !== "") {
-                    var active = (val === "1")
+                    var active = (val === "1" || val.startsWith("1"))
                     if (statusOsd._capsReady) {
                         if (active !== statusOsd.capsLock) {
                             statusOsd.capsLock = active
@@ -97,7 +97,7 @@ Scope {
     }
 
     Timer {
-        interval: 120
+        interval: 400
         running: true
         repeat: true
         triggeredOnStart: true

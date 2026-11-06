@@ -62,9 +62,9 @@ Scope {
     }
 
     Timer {
-        interval: 3000
+        interval: 6000
         repeat: true
-        running: true
+        running: hardwarePulse.panelVisible
         onTriggered: {
             if (!hwProc.running) hwProc.running = true;
         }

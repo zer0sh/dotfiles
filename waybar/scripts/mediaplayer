@@ -67,7 +67,7 @@ while true; do
             '{$text, $tooltip, $class}'
         offset=0
         last_track=""
-        sleep 2
+        sleep 8
         continue
     fi
 
@@ -135,5 +135,9 @@ while true; do
         --arg class "$css_class" \
         '{$text, $tooltip, $class}'
 
-    sleep "$TICK_INTERVAL"
+    if [ "$status" = "Playing" ]; then
+        sleep "$TICK_INTERVAL"
+    else
+        sleep 3
+    fi
 done

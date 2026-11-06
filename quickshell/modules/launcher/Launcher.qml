@@ -1131,7 +1131,7 @@ Scope {
                     }
 
                     height: {
-                        if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader") return 400;
+                        if (launcher.currentMode === "wallpaper" || launcher.currentMode === "shader" || launcher.currentMode === "gadgets") return 400;
                         if (launcher.currentMode === "theme") return (launcher.isMatugenSelected || launcher.isCustomSelected) ? 440 : 400;
                         if (launcher.currentMode === "music") return 250;
                         if (launcher.currentMode === "actions") {
