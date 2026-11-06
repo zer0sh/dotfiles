@@ -2,6 +2,8 @@
 
 The Clipboard Manager (`quickshell:clipboard`) is a Wayland-native history drawer built directly into Quickshell. Docked smoothly below the [Waybar Status Bar](../apps/waybar.md) and integrated with `cliphist`, it provides an instantaneous, visual clipboard buffer for text and image previews.
 
+![Clipboard Drawer](../assets/images/quickshell/clipboard.png)
+
 ---
 
 ## Architecture & Visual Design

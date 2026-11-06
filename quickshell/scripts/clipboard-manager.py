@@ -100,7 +100,6 @@ def copy_item(cid: str):
         wl = subprocess.Popen(["wl-copy"], stdin=dec.stdout, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         dec.stdout.close()
         wl.communicate(timeout=2)
-        subprocess.run(["/usr/bin/notify-send", "Clipboard", "Copied to clipboard"], check=False)
         print(json.dumps({"success": True}))
     except Exception as e:
         print(json.dumps({"success": False, "error": str(e)}))

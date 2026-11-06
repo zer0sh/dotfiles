@@ -354,12 +354,12 @@ Scope {
             // apagar
             nightLightStopProc.running = true
             controlCenter.nightLightEnabled = false
-            nightLightNotifyProc.command = ["/usr/bin/notify-send", "Night light", "Light color filter disabled"]
+            nightLightNotifyProc.command = ["qs", "ipc", "call", "osd", "notify", "󰖔|NIGHT LIGHT|OFF|secondary"]
         } else {
             // encender
             nightLightProc.running = true
             controlCenter.nightLightEnabled = true
-            nightLightNotifyProc.command = ["/usr/bin/notify-send", "Night light", "Light color filter enabled (4000K)"]
+            nightLightNotifyProc.command = ["qs", "ipc", "call", "osd", "notify", "󰖔|NIGHT LIGHT|ON (4000K)|primary"]
         }
         nightLightNotifyProc.running = true
         updateWaybar(9)

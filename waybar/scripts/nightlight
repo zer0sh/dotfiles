@@ -3,10 +3,10 @@
 if [ "$1" = "toggle" ]; then
     if pgrep -x hyprsunset >/dev/null 2>&1; then
         pkill -x hyprsunset
-        notify-send "Night light" "Light color filter disabled"
+        qs ipc call osd notify "󰖔|NIGHT LIGHT|OFF|secondary" 2>/dev/null || true
     else
         setsid nohup hyprsunset -t 4000 >/dev/null 2>&1 < /dev/null &
-        notify-send "Night light" "Light color filter enabled (4000K)"
+        qs ipc call osd notify "󰖔|NIGHT LIGHT|ON (4000K)|primary" 2>/dev/null || true
     fi
     pkill -RTMIN+9 waybar 2>/dev/null || true
     exit 0

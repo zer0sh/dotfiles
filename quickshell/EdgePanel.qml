@@ -14,17 +14,17 @@ Item {
     property real panelHeight: 450
     property int shoulderRadius: 28
 
-    property real topMargin: (edge === "top" || edge === "top-right") ? Root.Theme.shelfHeight : 0
+    property real topMargin: (edge === "top" || edge === "top-right") ? Root.Theme.shelfHeight - 4 : 0
     property real bottomMargin: 0
     property real rightMargin: 0
     property real leftMargin: 0
 
     property color accentColor: Root.Theme.primary
-    property color panelFillColor: Qt.rgba(Root.Theme.surfaceContainer.r,
-                                           Root.Theme.surfaceContainer.g,
-                                           Root.Theme.surfaceContainer.b, 0.94)
+    property color panelFillColor: Qt.rgba(Root.Theme.panelBg.r,
+                                           Root.Theme.panelBg.g,
+                                           Root.Theme.panelBg.b, 0.98)
 
-    property bool showDim: true
+    property bool showDim: false
     property real dimMaxOpacity: 0.45
     property bool closeOnClickOutside: true
 
@@ -37,11 +37,16 @@ Item {
     anchors.fill: parent
 
     // ── Dynamic Island Physics States ─────────────────────────────
-    readonly property real _maxSlide: (edge === "right" || edge === "left") ? Math.min(90, panelWidth * 0.32) : Math.min(90, panelHeight * 0.32)
+    readonly property real _maxSlide: (edge === "top" || edge === "top-right") ? 0
+                                    : (edge === "right" || edge === "left") ? Math.min(90, panelWidth * 0.32)
+                                    : Math.min(90, panelHeight * 0.32)
+
+    readonly property real _initialScalePrimary: (edge === "top" || edge === "top-right") ? 0.0 : 0.74
+    readonly property real _initialScaleSecondary: (edge === "top" || edge === "top-right") ? 1.0 : 0.86
 
     property real _slideOffset: _maxSlide
-    property real _scalePrimary: 0.74
-    property real _scaleSecondary: 0.86
+    property real _scalePrimary: _initialScalePrimary
+    property real _scaleSecondary: _initialScaleSecondary
     property real _opacity: 0.0
     property real _contentScale: 0.90
     property real _contentOpacity: 0.0
@@ -62,45 +67,50 @@ Item {
         // Primary extrusion axis (pill-to-card liquid spring)
         NumberAnimation {
             target: edgePanel; property: "_scalePrimary"
-            from: 0.74; to: 1.0; duration: 280
-            easing.type: Easing.OutBack
-            easing.overshoot: 1.06
+            from: edgePanel._initialScalePrimary; to: 1.0
+            duration: (edge === "top" || edge === "top-right") ? 190 : 260
+            easing.type: (edge === "top" || edge === "top-right") ? Easing.OutCubic : Easing.OutBack
+            easing.overshoot: 1.04
         }
 
         // Orthogonal axis expansion
         NumberAnimation {
             target: edgePanel; property: "_scaleSecondary"
-            from: 0.86; to: 1.0; duration: 250
+            from: edgePanel._initialScaleSecondary; to: 1.0
+            duration: (edge === "top" || edge === "top-right") ? 180 : 250
             easing.type: Easing.OutCubic
         }
 
         // Outer surface opacity
         NumberAnimation {
             target: edgePanel; property: "_opacity"
-            from: 0.0; to: 1.0; duration: 160
+            from: 0.0; to: 1.0
+            duration: (edge === "top" || edge === "top-right") ? 140 : 160
             easing.type: Easing.OutQuad
         }
 
         // Dim backdrop fade
         NumberAnimation {
             target: edgePanel; property: "_dimOpacity"
-            from: 0.0; to: edgePanel.dimMaxOpacity; duration: 220
+            from: 0.0; to: edgePanel.dimMaxOpacity
+            duration: 180
             easing.type: Easing.OutQuad
         }
 
         // Content blooming (staggered organic reveal)
         SequentialAnimation {
-            PauseAnimation { duration: 35 }
+            PauseAnimation { duration: (edge === "top" || edge === "top-right") ? 0 : 35 }
             ParallelAnimation {
                 NumberAnimation {
                     target: edgePanel; property: "_contentScale"
-                    from: 0.90; to: 1.0; duration: 220
-                    easing.type: Easing.OutBack
-                    easing.overshoot: 1.05
+                    from: 0.95; to: 1.0
+                    duration: (edge === "top" || edge === "top-right") ? 160 : 200
+                    easing.type: Easing.OutCubic
                 }
                 NumberAnimation {
                     target: edgePanel; property: "_contentOpacity"
-                    from: 0.0; to: 1.0; duration: 180
+                    from: 0.0; to: 1.0
+                    duration: (edge === "top" || edge === "top-right") ? 140 : 180
                     easing.type: Easing.OutQuad
                 }
             }
@@ -132,22 +142,24 @@ Item {
             }
             NumberAnimation {
                 target: edgePanel; property: "_scalePrimary"
-                to: 0.74; duration: 200
-                easing.type: Easing.InCubic
+                to: edgePanel._initialScalePrimary
+                duration: (edge === "top" || edge === "top-right") ? 140 : 190
+                easing.type: (edge === "top" || edge === "top-right") ? Easing.InQuad : Easing.InBack
+                easing.overshoot: 1.1
             }
             NumberAnimation {
                 target: edgePanel; property: "_scaleSecondary"
-                to: 0.86; duration: 190
+                to: edgePanel._initialScaleSecondary; duration: 150
                 easing.type: Easing.InQuad
             }
             NumberAnimation {
                 target: edgePanel; property: "_opacity"
-                to: 0.0; duration: 180
+                to: 0.0; duration: 140
                 easing.type: Easing.InQuad
             }
             NumberAnimation {
                 target: edgePanel; property: "_dimOpacity"
-                to: 0.0; duration: 190
+                to: 0.0; duration: 150
                 easing.type: Easing.InQuad
             }
         }
@@ -161,8 +173,8 @@ Item {
         dismissAnim.stop();
         appearAnim.stop();
         _slideOffset = _maxSlide;
-        _scalePrimary = 0.74;
-        _scaleSecondary = 0.86;
+        _scalePrimary = _initialScalePrimary;
+        _scaleSecondary = _initialScaleSecondary;
         _opacity = 0.0;
         _contentScale = 0.90;
         _contentOpacity = 0.0;
@@ -185,12 +197,14 @@ Item {
         anchors.fill: parent
         visible: edgePanel.showDim
         color: Qt.rgba(0, 0, 0, edgePanel._dimOpacity)
+    }
 
-        MouseArea {
-            anchors.fill: parent
-            enabled: edgePanel.closeOnClickOutside
-            onClicked: edgePanel.closeRequested()
-        }
+    // ── Click outside handler ─────────────────────────────────────
+    MouseArea {
+        id: outsideDismissArea
+        anchors.fill: parent
+        enabled: edgePanel.closeOnClickOutside
+        onClicked: edgePanel.closeRequested()
     }
 
     // ── Panel Container ───────────────────────────────────────────
@@ -215,8 +229,7 @@ Item {
 
         transformOrigin: (edgePanel.edge === "right") ? Item.Right
                        : (edgePanel.edge === "left") ? Item.Left
-                       : (edgePanel.edge === "top") ? Item.Top
-                       : (edgePanel.edge === "top-right") ? Item.TopRight
+                       : (edgePanel.edge === "top" || edgePanel.edge === "top-right") ? Item.Top
                        : Item.Bottom
 
         transform: [
@@ -229,7 +242,7 @@ Item {
                  : 0
             },
             Scale {
-                origin.x: (edgePanel.edge === "right" || edgePanel.edge === "top-right") ? panelCard.width
+                origin.x: (edgePanel.edge === "right") ? panelCard.width
                         : (edgePanel.edge === "left") ? 0
                         : panelCard.width / 2
                 origin.y: (edgePanel.edge === "top" || edgePanel.edge === "top-right") ? 0
@@ -246,6 +259,7 @@ Item {
             anchors.fill: parent
             layer.enabled: true
             layer.samples: 4
+            layer.smooth: true
 
             // ── Edge: RIGHT ──
             ShapePath {
@@ -333,7 +347,7 @@ Item {
                 }
             }
 
-            // ── Edge: TOP ──
+            // ── Edge: TOP (MediaSelector, centered dynamic island) ──
             ShapePath {
                 strokeWidth: 0
                 strokeColor: "transparent"
@@ -342,80 +356,76 @@ Item {
                 startX: 0
                 startY: 0
 
-                PathArc {
-                    x: edgePanel.shoulderRadius
-                    y: edgePanel.shoulderRadius
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Clockwise
+                PathLine { x: 0; y: 3 }
+
+                // Left concave shoulder fillet with zero horizontal tangent at y=3
+                PathCubic {
+                    control1X: 14; control1Y: 3
+                    control2X: 28; control2Y: 17
+                    x: 28; y: 31
                 }
-                PathLine { x: edgePanel.shoulderRadius; y: Math.max(edgePanel.shoulderRadius, panelShape.height - edgePanel.shoulderRadius) }
-                PathArc {
-                    x: edgePanel.shoulderRadius * 2
-                    y: panelShape.height
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Counterclockwise
+                // Left flank
+                PathLine { x: 28; y: Math.max(31, panelShape.height - 28) }
+                // Bottom-left rounded corner
+                PathCubic {
+                    control1X: 28; control1Y: panelShape.height - 14
+                    control2X: 42; control2Y: panelShape.height
+                    x: 56; y: panelShape.height
                 }
-                PathLine { x: Math.max(edgePanel.shoulderRadius * 2, panelShape.width - edgePanel.shoulderRadius * 2); y: panelShape.height }
-                PathArc {
-                    x: panelShape.width - edgePanel.shoulderRadius
-                    y: Math.max(edgePanel.shoulderRadius, panelShape.height - edgePanel.shoulderRadius)
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Counterclockwise
+                // Bottom horizontal base
+                PathLine { x: Math.max(56, panelShape.width - 56); y: panelShape.height }
+                // Bottom-right rounded corner
+                PathCubic {
+                    control1X: panelShape.width - 42; control1Y: panelShape.height
+                    control2X: panelShape.width - 28; control2Y: panelShape.height - 14
+                    x: panelShape.width - 28; y: Math.max(31, panelShape.height - 28)
                 }
-                PathLine { x: panelShape.width - edgePanel.shoulderRadius; y: edgePanel.shoulderRadius }
-                PathArc {
-                    x: panelShape.width
-                    y: 0
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Clockwise
+                // Right flank
+                PathLine { x: panelShape.width - 28; y: 31 }
+                // Right concave shoulder fillet with zero horizontal exit tangent at y=3
+                PathCubic {
+                    control1X: panelShape.width - 28; control1Y: 17
+                    control2X: panelShape.width - 14; control2Y: 3
+                    x: panelShape.width; y: 3
                 }
+                // Top bridge over Waybar border for seamless fusion
+                PathLine { x: panelShape.width; y: 0 }
                 PathLine { x: 0; y: 0 }
             }
 
             ShapePath {
-                strokeWidth: 1.5
+                strokeWidth: 2
                 strokeColor: edgePanel.edge === "top" ? edgePanel.accentColor : "transparent"
                 fillColor: "transparent"
-                capStyle: ShapePath.RoundCap
+                capStyle: ShapePath.FlatCap
                 joinStyle: ShapePath.RoundJoin
 
                 startX: 0
-                startY: 0
+                startY: 3
 
-                PathArc {
-                    x: edgePanel.shoulderRadius
-                    y: edgePanel.shoulderRadius
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Clockwise
+                // Left concave shoulder
+                PathCubic {
+                    control1X: 14; control1Y: 3
+                    control2X: 28; control2Y: 17
+                    x: 28; y: 31
                 }
-                PathLine { x: edgePanel.shoulderRadius; y: Math.max(edgePanel.shoulderRadius, panelShape.height - edgePanel.shoulderRadius) }
-                PathArc {
-                    x: edgePanel.shoulderRadius * 2
-                    y: panelShape.height
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Counterclockwise
+                PathLine { x: 28; y: Math.max(31, panelShape.height - 28) }
+                PathCubic {
+                    control1X: 28; control1Y: panelShape.height - 14
+                    control2X: 42; control2Y: panelShape.height
+                    x: 56; y: panelShape.height
                 }
-                PathLine { x: Math.max(edgePanel.shoulderRadius * 2, panelShape.width - edgePanel.shoulderRadius * 2); y: panelShape.height }
-                PathArc {
-                    x: panelShape.width - edgePanel.shoulderRadius
-                    y: Math.max(edgePanel.shoulderRadius, panelShape.height - edgePanel.shoulderRadius)
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Counterclockwise
+                PathLine { x: Math.max(56, panelShape.width - 56); y: panelShape.height }
+                PathCubic {
+                    control1X: panelShape.width - 42; control1Y: panelShape.height
+                    control2X: panelShape.width - 28; control2Y: panelShape.height - 14
+                    x: panelShape.width - 28; y: Math.max(31, panelShape.height - 28)
                 }
-                PathLine { x: panelShape.width - edgePanel.shoulderRadius; y: edgePanel.shoulderRadius }
-                PathArc {
-                    x: panelShape.width
-                    y: 0
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Clockwise
+                PathLine { x: panelShape.width - 28; y: 31 }
+                PathCubic {
+                    control1X: panelShape.width - 28; control1Y: 17
+                    control2X: panelShape.width - 14; control2Y: 3
+                    x: panelShape.width; y: 3
                 }
             }
 
@@ -514,65 +524,63 @@ Item {
                 startX: 0
                 startY: 0
 
-                PathArc {
-                    x: edgePanel.shoulderRadius
-                    y: edgePanel.shoulderRadius
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Clockwise
+                PathLine { x: 0; y: 3 }
+
+                // Left concave shoulder fillet with zero horizontal tangent at y=3
+                PathCubic {
+                    control1X: 14; control1Y: 3
+                    control2X: 28; control2Y: 17
+                    x: 28; y: 31
                 }
-                PathLine { x: edgePanel.shoulderRadius; y: Math.max(edgePanel.shoulderRadius, panelShape.height - edgePanel.shoulderRadius) }
-                PathArc {
-                    x: edgePanel.shoulderRadius * 2
-                    y: panelShape.height
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Counterclockwise
+                // Left flank
+                PathLine { x: 28; y: Math.max(31, panelShape.height - 28) }
+                // Bottom-left rounded corner
+                PathCubic {
+                    control1X: 28; control1Y: panelShape.height - 14
+                    control2X: 42; control2Y: panelShape.height
+                    x: 56; y: panelShape.height
                 }
-                PathLine { x: Math.max(edgePanel.shoulderRadius * 2, panelShape.width - edgePanel.shoulderRadius); y: panelShape.height }
-                PathArc {
-                    x: panelShape.width
-                    y: Math.max(edgePanel.shoulderRadius, panelShape.height - edgePanel.shoulderRadius)
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Counterclockwise
+                // Bottom horizontal base
+                PathLine { x: Math.max(56, panelShape.width - 28); y: panelShape.height }
+                // Bottom-right rounded corner
+                PathCubic {
+                    control1X: panelShape.width - 14; control1Y: panelShape.height
+                    control2X: panelShape.width; control2Y: panelShape.height - 14
+                    x: panelShape.width; y: Math.max(28, panelShape.height - 28)
                 }
+                // Right flank
                 PathLine { x: panelShape.width; y: 0 }
+                // Top bridge over Waybar border for seamless fusion
                 PathLine { x: 0; y: 0 }
             }
 
             ShapePath {
-                strokeWidth: 1.5
+                strokeWidth: 2
                 strokeColor: edgePanel.edge === "top-right" ? edgePanel.accentColor : "transparent"
                 fillColor: "transparent"
-                capStyle: ShapePath.RoundCap
+                capStyle: ShapePath.FlatCap
                 joinStyle: ShapePath.RoundJoin
 
                 startX: 0
-                startY: 0
+                startY: 3
 
-                PathArc {
-                    x: edgePanel.shoulderRadius
-                    y: edgePanel.shoulderRadius
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Clockwise
+                // Left concave shoulder
+                PathCubic {
+                    control1X: 14; control1Y: 3
+                    control2X: 28; control2Y: 17
+                    x: 28; y: 31
                 }
-                PathLine { x: edgePanel.shoulderRadius; y: Math.max(edgePanel.shoulderRadius, panelShape.height - edgePanel.shoulderRadius) }
-                PathArc {
-                    x: edgePanel.shoulderRadius * 2
-                    y: panelShape.height
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Counterclockwise
+                PathLine { x: 28; y: Math.max(31, panelShape.height - 28) }
+                PathCubic {
+                    control1X: 28; control1Y: panelShape.height - 14
+                    control2X: 42; control2Y: panelShape.height
+                    x: 56; y: panelShape.height
                 }
-                PathLine { x: Math.max(edgePanel.shoulderRadius * 2, panelShape.width - edgePanel.shoulderRadius); y: panelShape.height }
-                PathArc {
-                    x: panelShape.width
-                    y: Math.max(edgePanel.shoulderRadius, panelShape.height - edgePanel.shoulderRadius)
-                    radiusX: edgePanel.shoulderRadius
-                    radiusY: edgePanel.shoulderRadius
-                    direction: PathArc.Counterclockwise
+                PathLine { x: Math.max(56, panelShape.width - 28); y: panelShape.height }
+                PathCubic {
+                    control1X: panelShape.width - 14; control1Y: panelShape.height
+                    control2X: panelShape.width; control2Y: panelShape.height - 14
+                    x: panelShape.width; y: Math.max(28, panelShape.height - 28)
                 }
                 PathLine { x: panelShape.width; y: 0 }
             }
@@ -587,9 +595,10 @@ Item {
         Item {
             id: contentContainer
             anchors.fill: parent
+            clip: true
             opacity: edgePanel._contentOpacity
-            scale: edgePanel._contentScale
-            transformOrigin: Item.Center
+            scale: (edgePanel.edge === "top" || edgePanel.edge === "top-right") ? 1.0 : edgePanel._contentScale
+            transformOrigin: (edgePanel.edge === "top" || edgePanel.edge === "top-right") ? Item.Top : Item.Center
         }
     }
 }

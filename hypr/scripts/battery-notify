@@ -65,6 +65,19 @@ fi
 notified_20=false
 notified_10=false
 
+notify_native() {
+    local icon="$1"
+    local title="$2"
+    local status="$3"
+    local variant="$4"
+
+    if command -v qs >/dev/null 2>&1; then
+        qs ipc call osd notify "${icon}|${title}|${status}|${variant}" 2>/dev/null || true
+    elif command -v quickshell >/dev/null 2>&1; then
+        quickshell ipc call osd notify "${icon}|${title}|${status}|${variant}" 2>/dev/null || true
+    fi
+}
+
 while true; do
     capacity=$(cat "$bat_dir/capacity" 2>/dev/null)
     status=$(cat "$bat_dir/status" 2>/dev/null)
@@ -77,22 +90,18 @@ while true; do
 
     # State transition: Charger plugged in
     if [ "$prev_plugged" = false ] && [ "$curr_plugged" = true ]; then
-        notify-send -u normal -a "Battery" -i "battery-charging" \
-            "󰂄 Charger Connected" \
-            "Battery is charging (${capacity}%)."
+        notify_native "󰂄" "CHARGER" "CONNECTED (${capacity}%)" "connected"
         prev_plugged=true
         notified_20=false
         notified_10=false
-        sleep 15
+        sleep 3
         continue
 
     # State transition: Charger disconnected
     elif [ "$prev_plugged" = true ] && [ "$curr_plugged" = false ]; then
-        notify-send -u normal -a "Battery" -i "battery-low" \
-            "󰂃 Charger Disconnected" \
-            "Running on battery power (${capacity}%)."
+        notify_native "󰂃" "CHARGER" "DISCONNECTED (${capacity}%)" "secondary"
         prev_plugged=false
-        sleep 15
+        sleep 3
         continue
     fi
 
@@ -101,6 +110,7 @@ while true; do
         # Critical level (<= 10%)
         if [ "$capacity" -le 10 ]; then
             if [ "$notified_10" = false ]; then
+                notify_native "󰂎" "BATTERY CRITICAL" "${capacity}% • PLUG IN" "error"
                 notify-send -u critical -a "Battery" -i "battery-empty" \
                     "󰂎 Critical Battery (${capacity}%)!" \
                     "Battery level is critically low. Connect the charger immediately."
@@ -110,9 +120,7 @@ while true; do
         # Low level (<= 20% and > 10%)
         elif [ "$capacity" -le 20 ]; then
             if [ "$notified_20" = false ]; then
-                notify-send -u normal -a "Battery" -i "battery-caution" \
-                    "󰁺 Low Battery (${capacity}%)" \
-                    "Battery is running low. Please connect the charger."
+                notify_native "󰁺" "BATTERY LOW" "${capacity}% REMAINING" "error"
                 notified_20=true
             fi
         else
@@ -121,5 +129,5 @@ while true; do
         fi
     fi
 
-    sleep 15
+    sleep 3
 done

@@ -16,6 +16,7 @@ Scope {
     property bool panelVisible: false
     property bool _showing: false
     property bool _panelOpen: false
+    property var _edgePanelRef: null
 
     property var history: []
     property bool loading: false
@@ -27,7 +28,12 @@ Scope {
             searchQuery = ""
             refresh()
         } else {
-            _panelOpen = false
+            if (_edgePanelRef) {
+                _edgePanelRef.close()
+            } else {
+                _showing = false
+                _panelOpen = false
+            }
         }
     }
 
@@ -119,177 +125,33 @@ Scope {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
-            Component.onCompleted: openDelayTimer.start()
-
-            Timer {
-                id: openDelayTimer
-                interval: 16
-                repeat: false
-                onTriggered: if (clipPanel.panelVisible) clipPanel._panelOpen = true
-            }
-
             Shortcut {
                 sequence: "Escape"
-                onActivated: clipPanel.panelVisible = false
+                onActivated: if (_edgePanelRef) _edgePanelRef.close(); else clipPanel.panelVisible = false
             }
 
-            // Click-outside close
-            MouseArea {
-                anchors.fill: parent
-                onClicked: clipPanel.panelVisible = false
-            }
+            Root.EdgePanel {
+                id: edgePanelWrapper
+                edge: "top-right"
+                panelWidth: Math.round(Root.Theme.panelWidth * 0.7) + 28
+                panelHeight: Math.min(panelContent.implicitHeight + 16, panelWindow.height - Root.Theme.shelfHeight - 40)
+                shoulderRadius: 28
+                showDim: false
 
-            // Clip region: top edge below the shelf
-            Item {
-                id: panelClip
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.top: parent.top
-                anchors.bottom: parent.bottom
-                anchors.topMargin: Root.Theme.shelfHeight
-
-                Shape {
-                    id: panelShape
-                    anchors.top: panel.top
-                    anchors.bottom: panel.bottom
-                    anchors.left: panel.left
-                    anchors.right: panel.right
-                    anchors.leftMargin: -28
-                    layer.enabled: true
-                    layer.samples: 4
-
-                    // 1. Relleno unificado (hombro cóncavo izquierdo + cuerpo del panel)
-                    ShapePath {
-                        strokeWidth: 0
-                        strokeColor: "transparent"
-                        fillColor: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.85)
-
-                        startX: 0
-                        startY: 0
-
-                        // Curva cóncava hombro izquierdo
-                        PathArc {
-                            x: 28; y: 28
-                            radiusX: 28; radiusY: 28
-                            direction: PathArc.Clockwise
-                        }
-                        // Lateral izquierdo
-                        PathLine { x: 28; y: Math.max(28, panelShape.height - 28) }
-                        // Esquina inferior izquierda redondeada
-                        PathArc {
-                            x: 56; y: panelShape.height
-                            radiusX: 28; radiusY: 28
-                            direction: PathArc.Counterclockwise
-                        }
-                        // Base horizontal
-                        PathLine { x: Math.max(56, panelShape.width - 28); y: panelShape.height }
-                        // Esquina inferior derecha redondeada
-                        PathArc {
-                            x: panelShape.width; y: Math.max(28, panelShape.height - 28)
-                            radiusX: 28; radiusY: 28
-                            direction: PathArc.Counterclockwise
-                        }
-                        // Lateral derecho
-                        PathLine { x: panelShape.width; y: 0 }
-                        // Cierre superior contra Waybar
-                        PathLine { x: 0; y: 0 }
-                    }
-
-                    // 2. Borde exterior continuo estilo ventana
-                    ShapePath {
-                        strokeWidth: 2
-                        strokeColor: Root.Theme.primary
-                        fillColor: "transparent"
-                        capStyle: ShapePath.FlatCap
-                        joinStyle: ShapePath.RoundJoin
-
-                        startX: 0
-                        startY: 0
-
-                        // Curva cóncava hombro izquierdo
-                        PathArc {
-                            x: 28; y: 28
-                            radiusX: 28; radiusY: 28
-                            direction: PathArc.Clockwise
-                        }
-                        // Lateral izquierdo
-                        PathLine { x: 28; y: Math.max(28, panelShape.height - 28) }
-                        // Esquina inferior izquierda redondeada
-                        PathArc {
-                            x: 56; y: panelShape.height
-                            radiusX: 28; radiusY: 28
-                            direction: PathArc.Counterclockwise
-                        }
-                        // Base horizontal
-                        PathLine { x: Math.max(56, panelShape.width - 28); y: panelShape.height }
-                        // Esquina inferior derecha redondeada
-                        PathArc {
-                            x: panelShape.width; y: Math.max(28, panelShape.height - 28)
-                            radiusX: 28; radiusY: 28
-                            direction: PathArc.Counterclockwise
-                        }
-                        // Lateral derecho
-                        PathLine { x: panelShape.width; y: 0 }
-                    }
+                Component.onCompleted: clipPanel._edgePanelRef = edgePanelWrapper
+                onCloseRequested: edgePanelWrapper.close()
+                onClosed: {
+                    clipPanel._edgePanelRef = null
+                    clipPanel.panelVisible = false
+                    clipPanel._showing = false
+                    clipPanel._panelOpen = false
                 }
 
-                Rectangle {
+                Item {
                     id: panel
-
                     width: Math.round(Root.Theme.panelWidth * 0.7)
+                    height: parent.height
                     anchors.right: parent.right
-                    anchors.rightMargin: 0
-
-                    height: Math.min(panelContent.implicitHeight, panelClip.height - Root.Theme.spacingSmall * 2)
-
-                    states: [
-                        State {
-                            name: "visible"
-                            when: clipPanel._panelOpen
-                            PropertyChanges {
-                                target: panel
-                                y: 0
-                            }
-                        },
-                        State {
-                            name: "hidden"
-                            when: !clipPanel._panelOpen
-                            PropertyChanges {
-                                target: panel
-                                y: -panel.height - 28
-                            }
-                        }
-                    ]
-
-                    transitions: [
-                        Transition {
-                            from: "hidden"
-                            to: "visible"
-                            NumberAnimation {
-                                property: "y"
-                                duration: Root.Theme.animDuration
-                                easing.type: Easing.OutCubic
-                            }
-                        },
-                        Transition {
-                            from: "visible"
-                            to: "hidden"
-                            SequentialAnimation {
-                                NumberAnimation {
-                                    property: "y"
-                                    duration: Root.Theme.animDuration
-                                    easing.type: Easing.OutCubic
-                                }
-                                ScriptAction {
-                                    script: clipPanel._showing = false
-                                }
-                            }
-                        }
-                    ]
-
-                    color: "transparent"
-                    border.width: 0
-                    clip: true
 
                     // Block click-through
                     MouseArea {
@@ -298,7 +160,7 @@ Scope {
 
                     ColumnLayout {
                         id: panelContent
-                        width: panel.width
+                        anchors.fill: parent
                         spacing: 0
 
                         // ── Header ────────────────────────────────
@@ -557,8 +419,8 @@ Scope {
                             }
                         }
                     }
-                }  // end Rectangle (panel)
-            }  // end Item (panelClip)
+                }
+            }
         }
     }
 }

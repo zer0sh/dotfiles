@@ -51,17 +51,21 @@ Scope {
 
     property bool visible: false
 
-    // ── IPC Handler: `qs ipc call osd show "󰀝|AIRPLANE|ON|error"` ──
+    // ── IPC Handler: `qs ipc call osd notify "󰀝|AIRPLANE|ON|error"` ──
     IpcHandler {
         target: "osd"
 
-        function show(payload: string): void {
+        function notify(payload: string): void {
             var parts = payload.split("|")
             if (parts.length >= 3) {
                 statusOsd.show(parts[0], parts[1], parts[2], parts[3] || "primary")
             } else {
                 statusOsd.show("󰋽", payload, "", "primary")
             }
+        }
+
+        function show(payload: string): void {
+            notify(payload);
         }
     }
 

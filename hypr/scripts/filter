@@ -10,7 +10,7 @@ apply_shader() {
 
     echo "$name" > "$STATE_FILE"
     hyprctl keyword decoration:screen_shader "$shader"
-    notify-send "Screen Filter" "Filter: $name"
+    qs ipc call osd notify "󰔎|SCREEN FILTER|${name^^}|primary" 2>/dev/null || true
 }
 
 case "$1" in
@@ -41,7 +41,7 @@ case "$1" in
     off|reset|none)
         rm -f "$STATE_FILE"
         hyprctl keyword decoration:screen_shader "$SHADER_DIR/off.glsl"
-        notify-send "Screen Filter" "Disabled"
+        qs ipc call osd notify "󰔎|SCREEN FILTER|DISABLED|secondary" 2>/dev/null || true
         ;;
     toggle)
         if [ -f "$STATE_FILE" ]; then

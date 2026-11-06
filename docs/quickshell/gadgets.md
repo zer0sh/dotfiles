@@ -4,6 +4,8 @@ The Quickshell Desktop Gadgets system provides a lightweight, borderless, and co
 
 The suite features 6 ambient desktop gadgets powered by Qt Quick, Wayland Layer Shell input masking, and reactive Python telemetry backends, with real-time drag-and-drop repositioning, bidirectional JSON persistence, and full IPC automation.
 
+![Desktop Gadgets Selector](../assets/images/quickshell/launcher-gadgets.png)
+
 ---
 
 ## Architecture & Visual Overview

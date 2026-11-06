@@ -2,6 +2,8 @@
 
 The Workspace Overview (`quickshell:overview`) is a Wayland-native, hardware-accelerated full-screen desktop exposé and window management modal built directly into Quickshell. Triggered globally via `SUPER + Tab`, it displays a 2×5 responsive grid representing all 10 Hyprland workspaces, accurately rendering window placements, and enabling drag-and-drop window relocation across workspaces.
 
+![Workspace Overview](../assets/images/quickshell/overview.png)
+
 ---
 
 ## Architecture & Visual Overview

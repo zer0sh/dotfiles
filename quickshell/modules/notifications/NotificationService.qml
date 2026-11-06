@@ -35,7 +35,9 @@ QtObject {
             // Filter out system hardware/toggle notifications that are handled by Dynamic Island OSD
             if (sum === "volume" || sum === "brightness" || sum === "caffeine" ||
                 sum === "do not disturb" || sum === "airplane mode" ||
-                app === "volume" || app === "brightness") {
+                sum === "night light" || sum === "screen filter" || sum === "media source" ||
+                sum === "clipboard" || sum.indexOf("charger") !== -1 ||
+                app === "volume" || app === "brightness" || app === "battery") {
                 notif.dismiss()
                 return
             }

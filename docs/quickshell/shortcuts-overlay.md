@@ -2,6 +2,8 @@
 
 The Shortcuts Overlay (`quickshell:shortcuts`) is a Wayland-native cheat sheet modal built into Quickshell. Triggered globally via `F1`, it provides an interactive, searchable reference of all active [Hyprland keybindings](../hyprland/keybinds.md) and system actions.
 
+![Shortcuts Overlay](../assets/images/quickshell/shortcuts-overlay.png)
+
 ---
 
 ## Architecture & Visual Design

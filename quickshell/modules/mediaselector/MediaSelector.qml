@@ -16,13 +16,19 @@ Scope {
     property bool _showing: false
     property bool _panelOpen: false
     property string currentSelectedPlayer: "auto"
+    property var _edgePanelRef: null
 
     onPanelVisibleChanged: {
         if (panelVisible) {
             readPlayerProc.running = true;
             _showing = true;
         } else {
-            _panelOpen = false;
+            if (_edgePanelRef) {
+                _edgePanelRef.close();
+            } else {
+                _showing = false;
+                _panelOpen = false;
+            }
         }
     }
 
@@ -93,8 +99,11 @@ Scope {
                 panelWidth: 360 + 56
                 panelHeight: Math.min(panelContent.implicitHeight + 20, 460)
                 shoulderRadius: 28
+                showDim: false
+                Component.onCompleted: mediaSelector._edgePanelRef = edgePanelWrapper
                 onCloseRequested: edgePanelWrapper.close()
                 onClosed: {
+                    mediaSelector._edgePanelRef = null;
                     mediaSelector.panelVisible = false;
                     mediaSelector._panelOpen = false;
                     mediaSelector._showing = false;

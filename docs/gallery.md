@@ -76,13 +76,73 @@ Dynamic Material Design 3 application launcher featuring centralized fuzzy searc
 
 ---
 
-## 5. Quickshell Desktop Layer
+## 5. Quickshell Desktop Layer & Selectors Suite
+
+### Desktop Gadgets Selector
+
+The Material Design 3 interactive selector opened via `gadgetpicker` (`/gadgets` or `SUPER + G`), displaying a horizontal carousel of available desktop widgets (Desk Clock, Calendar, Weather Forecast, Hardware Pulse, Ambient Scratchpad, and Daily Spark) with real-time toggle feedback.
+
+![Quickshell Desktop Gadgets Selector](assets/images/quickshell/launcher-gadgets.png)
 
 ### Floating Launcher & Wallpaper Carousel
 
 The Material Design 3 launcher opened in wallpaper mode (`/wallpaper` or `SUPER + W`), rendering a horizontal carousel of 16:9 previews with the active wallpaper highlighted by an accent glow.
 
 ![Quickshell Wallpaper Carousel](assets/images/quickshell/launcher-wallpapers.png)
+
+### Screen Shaders & CRT Effects Carousel
+
+The shader selector (`/shader` or `SUPER + B`), providing live switching between CRT Trinitron, Retro CRT, Sepia, Black & White, Film Noir, Vintage, and Vivid filters.
+
+![Quickshell Screen Shaders Selector](assets/images/quickshell/launcher-shaders.png)
+
+### Dynamic Material You Theme Carousel
+
+Interactive theme palette selector (`/theme`), allowing instant switching between generated Matugen wallpaper palettes and curated presets.
+
+![Quickshell Themes Carousel](assets/images/quickshell/launcher-themes.png)
+
+### Floating Music Player (Dynamic Island)
+
+Integrated non-modal media controller (`/music` or `SUPER + M`), providing active track telemetry, cover display, scrub progress bar, and MPRIS playback controls.
+
+![Quickshell Music Player](assets/images/quickshell/launcher-music.png)
+
+### Dynamic Command Drawer & Actions
+
+The command mode launcher (`/`), presenting instant system actions, hibernation, restart, power controls, and navigation shortcuts with fuzzy search.
+
+![Quickshell Actions Launcher](assets/images/quickshell/launcher-actions.png)
+
+### Workspace Overview (2x5 Grid Exposé)
+
+Full-screen hardware-accelerated overview modal (`SUPER + Tab`), mapping all 10 Hyprland workspaces in a responsive 2×5 layout with live window thumbnails and spatial navigation.
+
+![Quickshell Workspace Overview](assets/images/quickshell/overview.png)
+
+### Clipboard History Drawer
+
+Wayland-native clipboard manager (`SUPER + V`) anchored smoothly below the status bar, supporting fuzzy search, text and image buffer previews powered by `cliphist`.
+
+![Quickshell Clipboard Drawer](assets/images/quickshell/clipboard.png)
+
+### Keyboard Shortcuts Cheatsheet
+
+Modal shortcuts reference (`F1`) displaying all active Hyprland keybindings dynamically parsed from `binds.conf` with Material chip keycaps.
+
+![Quickshell Shortcuts Overlay](assets/images/quickshell/shortcuts-overlay.png)
+
+### Control Center & Quick Toggles
+
+Sliding system control center featuring brightness and volume sliders, power profiles, Wi-Fi, Bluetooth, Do Not Disturb, and hardware monitors.
+
+![Quickshell Control Center](assets/images/quickshell/control-center.png)
+
+### Session Power Menu
+
+Full-screen frosted power menu (`CTRL + ALT + Delete`) providing lock, suspend, reboot, and power-off actions.
+
+![Quickshell Power Menu](assets/images/quickshell/powermenu.png)
 
 ### Notification Toasts & OSD Cards
 
