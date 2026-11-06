@@ -69,7 +69,7 @@ for ver in gtk-3.0 gtk-4.0; do
 [Settings]
 gtk-theme-name=$TARGET_GTK_THEME
 gtk-icon-theme-name=$TARGET_ICON_THEME
-gtk-cursor-theme-name=Bibata-Material-Classic
+gtk-cursor-theme-name=Bibata-Material-Slate-Light
 gtk-cursor-theme-size=24
 gtk-application-prefer-dark-theme=$([[ "$MODE" == "light" ]] && echo "0" || echo "1")
 gtk-decoration-layout=:

@@ -73,7 +73,7 @@ for ver in gtk-3.0 gtk-4.0; do
 [Settings]
 gtk-theme-name=custom-dark
 gtk-icon-theme-name=Papirus-Matugen-Dark
-gtk-cursor-theme-name=Bibata-Material-Classic
+gtk-cursor-theme-name=Bibata-Material-Slate-Light
 gtk-cursor-theme-size=24
 gtk-application-prefer-dark-theme=1
 gtk-decoration-layout=:
@@ -84,7 +84,7 @@ if command -v gsettings >/dev/null 2>&1; then
     gsettings set org.gnome.desktop.wm.preferences button-layout ":" 2>/dev/null || true
     gsettings set org.gnome.desktop.interface gtk-theme "custom-dark" 2>/dev/null || true
     gsettings set org.gnome.desktop.interface icon-theme "Papirus-Matugen-Dark" 2>/dev/null || true
-    gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Material-Classic" 2>/dev/null || true
+    gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Material-Slate-Light" 2>/dev/null || true
     gsettings set org.gnome.desktop.interface cursor-size 24 2>/dev/null || true
 fi
 

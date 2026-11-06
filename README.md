@@ -120,4 +120,3 @@ This repository adheres to strict conventions defined in `AGENTS.md` for AI pair
 
 * [**Mitsugen**](https://github.com/DimitrisMilonopoulos/mitsugen): Clean Material You theming foundations for GTK 3 & GTK 4 by Dimitris Milonopoulos.
 * [**Papirus Folders**](https://github.com/PapirusDevelopmentTeam/papirus-folders): Folder icon color switcher by the Papirus Development Team.
-* [**Bibata Cursor**](https://github.com/ful1e5/Bibata_Cursor): Original cursor set and design by Abdulkaiz Khatri.

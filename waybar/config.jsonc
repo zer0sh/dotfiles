@@ -123,22 +123,22 @@
   },
   "network": {
     "format-icons": [
+      "󰤯",
       "󰤟",
       "󰤢",
-      "󰤥",
       "󰤨"
     ],
     "format-wifi": "{icon}",
-    "format-ethernet": "",
+    "format-ethernet": "󰈀",
     "format-linked": "󰄡",
-    "format-disconnected": "",
+    "format-disconnected": "󰤭",
     "on-click": "qs ipc call controlcenter toggle",
     "tooltip": false
   },
   "bluetooth": {
     "format": "󰂯",
-    "format-disabled": "",
-    "format-off": "",
+    "format-disabled": "󰂲",
+    "format-off": "󰂲",
     "format-connected": "󰂱 {num_connections}",
     "on-click": "qs ipc call controlcenter toggle",
     "tooltip": false
@@ -183,16 +183,17 @@
     "on-scroll-down": "wpctl set-volume @DEFAULT_SINK@ 5%-",
     "scroll-step": 5,
     "format-icons": {
-      "headphone": "󱡏",
-      "hands-free": "󱡏",
-      "headset": "󱡏",
+      "headphone": "󰋋",
+      "hands-free": "󰋋",
+      "headset": "󰋋",
       "default": [
-        "",
-        ""
-       ]
-     },
-     "tooltip": false
-   },
+        "󰕿",
+        "󰖀",
+        "󰕾"
+      ]
+    },
+    "tooltip": false
+  },
    "clock": {
      "format": "{:%H:%M}",
      "tooltip": false

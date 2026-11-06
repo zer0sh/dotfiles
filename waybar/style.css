@@ -177,6 +177,25 @@ window#waybar {
     font-weight: 700;
 }
 
+/* Icon group spacing and colors within status pill */
+#pulseaudio {
+    padding-left: 6px;
+    padding-right: 4px;
+    color: #81c784;
+}
+
+#network {
+    padding-left: 5px;
+    padding-right: 6px;
+    color: #64b5f6;
+}
+
+#bluetooth {
+    padding-left: 6px;
+    padding-right: 6px;
+    color: #ba68c8;
+}
+
 /* Last in group — right rounded (battery on laptop, custom-power on desktop — mutually exclusive) */
 #battery,
 #custom-power {

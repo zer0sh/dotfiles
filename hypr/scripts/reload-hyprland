@@ -9,7 +9,7 @@ hyprctl reload 2>/dev/null || true
 hyprctl dispatch forcerendererreload 2>/dev/null || true
 
 # 2. Re-apply active cursor theme
-hyprctl setcursor Bibata-Material-Classic 24 2>/dev/null || true
+hyprctl setcursor Bibata-Material-Slate-Light 24 2>/dev/null || true
 
 # 3. Restart Waybar cleanly
 pkill -x waybar 2>/dev/null || true
