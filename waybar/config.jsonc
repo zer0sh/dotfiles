@@ -14,13 +14,7 @@
   "modules-right": [
     "tray",
     "group/quick_actions",
-    "custom/date",
-    "clock",
-    "pulseaudio",
-    "network",
-    "bluetooth",
-    "battery",
-    "custom/power"
+    "group/control_actions"
   ],
   "group/quick_actions": {
     "orientation": "inherit",
@@ -33,6 +27,18 @@
       "custom/notifications",
       "custom/camera",
       "custom/clipboard"
+    ]
+  },
+  "group/control_actions": {
+    "orientation": "inherit",
+    "modules": [
+      "custom/date",
+      "clock",
+      "pulseaudio",
+      "network",
+      "bluetooth",
+      "battery",
+      "custom/power"
     ]
   },
   "custom/mic": {
@@ -101,6 +107,7 @@
     "format": "{}",
     "exec": "date +'%b %d'",
     "interval": 60,
+    "on-click": "qs ipc call controlcenter toggle",
     "tooltip": false
   },
   "custom/media": {
@@ -196,6 +203,7 @@
   },
    "clock": {
      "format": "{:%H:%M}",
+     "on-click": "qs ipc call controlcenter toggle",
      "tooltip": false
    }
  }

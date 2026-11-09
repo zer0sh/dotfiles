@@ -140,7 +140,20 @@ window#waybar {
 /* ----- Quick Actions Pill (Imported from centralized parent stylesheet) ----- */
 @import url("/home/zero/.config/themes/quick-actions.css");
 
-/* ----- System status pill group: date | clock | audio | net | bt | battery/power ----- */
+/* ----- Control Actions Pill group ----- */
+#control_actions,
+#group-control_actions {
+    padding: 0 4px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 4px;
+    margin-right: 8px;
+    border-radius: 13px;
+    background: alpha(@text, 0.08);
+    transition: all 0.2s ease;
+}
+
+/* Elements inside control_actions */
 #custom-date,
 #clock,
 #pulseaudio,
@@ -148,60 +161,65 @@ window#waybar {
 #bluetooth,
 #battery,
 #custom-power {
-    padding: 0 10px 0;
-    margin-top: 4px;
-    margin-bottom: 4px;
-    background: alpha(@text, 0.08);
+    padding: 0 8px;
+    margin: 0 2px;
+    border-radius: 13px;
+    background: transparent;
     color: @text;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 #custom-date:hover,
 #clock:hover,
-#pulseaudio:hover,
-#network:hover,
-#bluetooth:hover,
 #battery:hover,
 #custom-power:hover {
     background: alpha(@text, 0.12);
+    border-radius: 13px;
 }
 
-/* First in group — left rounded */
 #custom-date {
-    border-radius: 18px 0 0 18px;
-    padding-left: 14px;
-    margin-left: 4px;
+    padding-left: 10px;
 }
 
 #clock {
-    font-weight: 700;
+    font-weight: 900;
 }
 
-/* Icon group spacing and colors within status pill */
+/* Icon group - Active / Connected style */
+#pulseaudio,
+#network,
+#bluetooth {
+    color: @text;
+    text-shadow: 0 0 1px currentColor;
+    transition: all 0.2s ease;
+}
+
 #pulseaudio {
-    padding-left: 6px;
-    padding-right: 4px;
-    color: #81c784;
+    padding-left: 8px;
+    padding-right: 10px;
 }
 
 #network {
-    padding-left: 5px;
-    padding-right: 6px;
-    color: #64b5f6;
+    padding-left: 8px;
+    padding-right: 12px;
 }
 
 #bluetooth {
-    padding-left: 6px;
-    padding-right: 6px;
-    color: #ba68c8;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
-/* Last in group — right rounded (battery on laptop, custom-power on desktop — mutually exclusive) */
+#pulseaudio:hover,
+#network:hover,
+#bluetooth:hover {
+    background: alpha(@accent, 0.18);
+    border-radius: 13px;
+    color: @accent;
+}
+
 #battery,
 #custom-power {
-    border-radius: 0 18px 18px 0;
-    padding-right: 14px;
-    margin-right: 6px;
+    padding-right: 10px;
 }
 
 /* ========== STATE VARIANTS ========== */
@@ -219,13 +237,17 @@ window#waybar {
 }
 
 #network.disconnected {
-    color: alpha(@text, 0.40);
+    color: alpha(@text, 0.30);
 }
 
 #bluetooth.disabled {
     color: alpha(@text, 0.30);
 }
 
+#bluetooth.connected {
+    color: @accent;
+}
+
 #pulseaudio.muted {
-    color: alpha(@text, 0.40);
+    color: alpha(@text, 0.30);
 }
