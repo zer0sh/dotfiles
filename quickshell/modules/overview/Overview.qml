@@ -196,16 +196,74 @@ Scope {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
+            property real _scale: 0.92
+            property real _opacity: 0.0
+            property real _dimOpacity: 0.0
+
+            Component.onCompleted: appearAnim.start()
+
+            // dots-hyprland Expressive Default Spatial spring bounce
+            ParallelAnimation {
+                id: appearAnim
+                NumberAnimation {
+                    target: windowOverlay; property: "_scale"
+                    from: 0.92; to: 1.0; duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelOpen
+                }
+                NumberAnimation {
+                    target: windowOverlay; property: "_opacity"
+                    from: 0.0; to: 1.0; duration: 200
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                }
+                NumberAnimation {
+                    target: windowOverlay; property: "_dimOpacity"
+                    from: 0.0; to: 0.75; duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                }
+            }
+
+            SequentialAnimation {
+                id: dismissAnim
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: windowOverlay; property: "_scale"
+                        to: 0.92; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: windowOverlay; property: "_opacity"
+                        to: 0.0; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: windowOverlay; property: "_dimOpacity"
+                        to: 0.0; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                }
+                ScriptAction { script: overviewScope.visible = false }
+            }
+
+            function requestClose() {
+                if (!dismissAnim.running) dismissAnim.start()
+            }
+
             // ── Backdrop Dimmer & Click-to-Close ─────────────────────
             Rectangle {
                 anchors.fill: parent
-                color: Qt.rgba(0.04, 0.05, 0.08, 0.75)
+                color: Qt.rgba(0.04, 0.05, 0.08, windowOverlay._dimOpacity)
 
                 MouseArea {
                     anchors.fill: parent
                     onClicked: {
                         if (!overviewScope.draggingWindow) {
-                            overviewScope.visible = false;
+                            windowOverlay.requestClose();
                         }
                     }
                 }
@@ -216,6 +274,8 @@ Scope {
                 anchors.fill: parent
                 anchors.margins: 24
                 spacing: 16
+                scale: windowOverlay._scale
+                opacity: windowOverlay._opacity
 
                 // ── Top Header Bar ───────────────────────────────────
                 RowLayout {

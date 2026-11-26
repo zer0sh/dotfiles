@@ -9,13 +9,20 @@
     "hyprland/workspaces"
   ],
   "modules-center": [
-    "custom/media"
+    "group/center_info"
   ],
   "modules-right": [
     "tray",
     "group/quick_actions",
-    "group/control_actions"
+    "group/hardware_status"
   ],
+  "group/center_info": {
+    "orientation": "inherit",
+    "modules": [
+      "clock",
+      "custom/media"
+    ]
+  },
   "group/quick_actions": {
     "orientation": "inherit",
     "modules": [
@@ -29,11 +36,9 @@
       "custom/clipboard"
     ]
   },
-  "group/control_actions": {
+  "group/hardware_status": {
     "orientation": "inherit",
     "modules": [
-      "custom/date",
-      "clock",
       "pulseaudio",
       "network",
       "bluetooth",
@@ -101,13 +106,6 @@
   "custom/clipboard": {
     "format": "󰅌",
     "on-click": "qs ipc call clipboard toggle",
-    "tooltip": false
-  },
-  "custom/date": {
-    "format": "{}",
-    "exec": "date +'%b %d'",
-    "interval": 60,
-    "on-click": "qs ipc call controlcenter toggle",
     "tooltip": false
   },
   "custom/media": {

@@ -9,6 +9,7 @@ All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr
 | Shortcut | Action | Target / Command |
 | :--- | :--- | :--- |
 | `SUPER + Enter` | Open terminal | [`$terminal` (kitty)](../terminals/kitty.md) |
+| `SUPER + SHIFT + Enter` | Open floating terminal | `[float] $terminal` |
 | `SUPER + E` | Open file manager | `nautilus` |
 | `SUPER + Space` | Application launcher | `scripts/toggle-menu` ([Wofi Launcher](../apps/wofi.md)) |
 | `SUPER + Q` | Close active window | `killactive` |
@@ -16,6 +17,8 @@ All keybindings are centralized in [`binds.conf`](file:///home/zero/.config/hypr
 | `SUPER + L` | Lock screen | [`hyprlock`](hyprlock.md) |
 | `SUPER + P` | Display layout editor | `nwg-displays` |
 | `SUPER + X` | Launch app as root | `scripts/sudo-launcher` |
+| `SUPER + SHIFT + =` | Increase window gaps | `scripts/gaps up` |
+| `SUPER + SHIFT + -` | Decrease window gaps | `scripts/gaps down` |
 
 ---
 

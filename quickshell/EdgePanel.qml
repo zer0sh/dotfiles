@@ -9,7 +9,7 @@ Item {
     id: edgePanel
 
     // ── Configuration ─────────────────────────────────────────────
-    property string edge: "right" // "right" | "top" | "bottom" | "left" | "top-right"
+    property string edge: "right" // "right" | "top" | "bottom" | "left" | "top-right" | "center"
     property real panelWidth: 310
     property real panelHeight: 450
     property int shoulderRadius: 28
@@ -19,10 +19,8 @@ Item {
     property real rightMargin: 0
     property real leftMargin: 0
 
-    property color accentColor: Root.Theme.primary
-    property color panelFillColor: Qt.rgba(Root.Theme.panelBg.r,
-                                           Root.Theme.panelBg.g,
-                                           Root.Theme.panelBg.b, 0.98)
+    property color accentColor: Root.Theme.panelBorder
+    property color panelFillColor: Root.Theme.panelBg
 
     property bool showDim: false
     property real dimMaxOpacity: 0.45
@@ -37,130 +35,145 @@ Item {
     anchors.fill: parent
 
     // ── Dynamic Island Physics States ─────────────────────────────
-    readonly property real _maxSlide: (edge === "top" || edge === "top-right") ? 0
-                                    : (edge === "right" || edge === "left") ? Math.min(90, panelWidth * 0.32)
-                                    : Math.min(90, panelHeight * 0.32)
+    readonly property real _maxSlide: (edge === "right" || edge === "left") ? Math.min(90, panelWidth * 0.32)
+                                    : (edge === "bottom") ? Math.min(90, panelHeight * 0.32)
+                                    : (edge === "top" || edge === "top-right") ? Math.min(100, panelHeight * 0.28)
+                                    : 0
 
-    readonly property real _initialScalePrimary: (edge === "top" || edge === "top-right") ? 0.0 : 0.74
-    readonly property real _initialScaleSecondary: (edge === "top" || edge === "top-right") ? 1.0 : 0.86
+    readonly property real _initialScalePrimary: (edge === "top" || edge === "top-right") ? 0.76
+                                                : (edge === "center") ? 0.88
+                                                : 0.74
+    readonly property real _initialScaleSecondary: (edge === "top" || edge === "top-right") ? 0.86
+                                                  : (edge === "center") ? 0.88
+                                                  : 0.86
 
     property real _slideOffset: _maxSlide
     property real _scalePrimary: _initialScalePrimary
     property real _scaleSecondary: _initialScaleSecondary
     property real _opacity: 0.0
-    property real _contentScale: 0.90
+    property real _contentScale: 0.92
     property real _contentOpacity: 0.0
     property real _dimOpacity: 0.0
 
-    // Dynamic Island Expansion (Apple fluid spring expansion & blooming)
+    // dots-hyprland Expressive Spatial Open Animation
     ParallelAnimation {
         id: appearAnim
 
-        // Edge displacement glide
+        // Edge displacement glide (top drops down with elastic bounce)
         NumberAnimation {
             target: edgePanel; property: "_slideOffset"
-            from: edgePanel._maxSlide; to: 0.0; duration: 280
-            easing.type: Easing.OutBack
-            easing.overshoot: 1.06
+            from: edgePanel._maxSlide; to: 0.0
+            duration: Root.Theme.animDuration
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Root.Theme.curvePanelOpen
         }
 
-        // Primary extrusion axis (pill-to-card liquid spring)
+        // Primary extrusion axis
         NumberAnimation {
             target: edgePanel; property: "_scalePrimary"
             from: edgePanel._initialScalePrimary; to: 1.0
-            duration: (edge === "top" || edge === "top-right") ? 190 : 260
-            easing.type: (edge === "top" || edge === "top-right") ? Easing.OutCubic : Easing.OutBack
-            easing.overshoot: 1.04
+            duration: Root.Theme.animDuration
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Root.Theme.curvePanelOpen
         }
 
         // Orthogonal axis expansion
         NumberAnimation {
             target: edgePanel; property: "_scaleSecondary"
             from: edgePanel._initialScaleSecondary; to: 1.0
-            duration: (edge === "top" || edge === "top-right") ? 180 : 250
-            easing.type: Easing.OutCubic
+            duration: Root.Theme.animDuration
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Root.Theme.curvePanelOpen
         }
 
         // Outer surface opacity
         NumberAnimation {
             target: edgePanel; property: "_opacity"
             from: 0.0; to: 1.0
-            duration: (edge === "top" || edge === "top-right") ? 140 : 160
-            easing.type: Easing.OutQuad
+            duration: 220
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Root.Theme.curveEmphasizedDecel
         }
 
         // Dim backdrop fade
         NumberAnimation {
             target: edgePanel; property: "_dimOpacity"
             from: 0.0; to: edgePanel.dimMaxOpacity
-            duration: 180
-            easing.type: Easing.OutQuad
+            duration: Root.Theme.animDuration
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Root.Theme.curveEmphasizedDecel
         }
 
-        // Content blooming (staggered organic reveal)
-        SequentialAnimation {
-            PauseAnimation { duration: (edge === "top" || edge === "top-right") ? 0 : 35 }
-            ParallelAnimation {
-                NumberAnimation {
-                    target: edgePanel; property: "_contentScale"
-                    from: 0.95; to: 1.0
-                    duration: (edge === "top" || edge === "top-right") ? 160 : 200
-                    easing.type: Easing.OutCubic
-                }
-                NumberAnimation {
-                    target: edgePanel; property: "_contentOpacity"
-                    from: 0.0; to: 1.0
-                    duration: (edge === "top" || edge === "top-right") ? 140 : 180
-                    easing.type: Easing.OutQuad
-                }
+        // Content blooming
+        ParallelAnimation {
+            NumberAnimation {
+                target: edgePanel; property: "_contentScale"
+                from: 0.92; to: 1.0
+                duration: Root.Theme.animDuration
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curvePanelOpen
+            }
+            NumberAnimation {
+                target: edgePanel; property: "_contentOpacity"
+                from: 0.0; to: 1.0
+                duration: 220
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curveEmphasizedDecel
             }
         }
     }
 
-    // Dynamic Island Retraction (Apple liquid snap back into edge)
+    // dots-hyprland Emphasized Accel Close Animation
     SequentialAnimation {
         id: dismissAnim
 
         ParallelAnimation {
-            // Content contracts inward and dissolves cleanly
+            // Content contracts symmetrically
             NumberAnimation {
                 target: edgePanel; property: "_contentScale"
-                to: 0.92; duration: 110
-                easing.type: Easing.InQuad
+                to: 0.92; duration: Root.Theme.animDurationFast
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curvePanelClose
             }
             NumberAnimation {
                 target: edgePanel; property: "_contentOpacity"
-                to: 0.0; duration: 110
-                easing.type: Easing.InQuad
+                to: 0.0; duration: 140
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curvePanelClose
             }
 
-            // Shell accelerates and sucks back into the screen edge
+            // Shell contracts back into initial state (mirrored inverse)
             NumberAnimation {
                 target: edgePanel; property: "_slideOffset"
-                to: edgePanel._maxSlide; duration: 200
-                easing.type: Easing.InCubic
+                to: edgePanel._maxSlide; duration: Root.Theme.animDurationFast
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curvePanelClose
             }
             NumberAnimation {
                 target: edgePanel; property: "_scalePrimary"
                 to: edgePanel._initialScalePrimary
-                duration: (edge === "top" || edge === "top-right") ? 140 : 190
-                easing.type: (edge === "top" || edge === "top-right") ? Easing.InQuad : Easing.InBack
-                easing.overshoot: 1.1
+                duration: Root.Theme.animDurationFast
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curvePanelClose
             }
             NumberAnimation {
                 target: edgePanel; property: "_scaleSecondary"
-                to: edgePanel._initialScaleSecondary; duration: 150
-                easing.type: Easing.InQuad
+                to: edgePanel._initialScaleSecondary
+                duration: Root.Theme.animDurationFast
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curvePanelClose
             }
             NumberAnimation {
                 target: edgePanel; property: "_opacity"
-                to: 0.0; duration: 140
-                easing.type: Easing.InQuad
+                to: 0.0; duration: Root.Theme.animDurationFast
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curvePanelClose
             }
             NumberAnimation {
                 target: edgePanel; property: "_dimOpacity"
-                to: 0.0; duration: 150
-                easing.type: Easing.InQuad
+                to: 0.0; duration: Root.Theme.animDurationFast
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curvePanelClose
             }
         }
 
@@ -224,13 +237,14 @@ Item {
         anchors.bottom: (edgePanel.edge === "bottom") ? parent.bottom : undefined
         anchors.bottomMargin: (edgePanel.edge === "bottom") ? edgePanel.bottomMargin : 0
 
-        anchors.verticalCenter: (edgePanel.edge === "right" || edgePanel.edge === "left") ? parent.verticalCenter : undefined
-        anchors.horizontalCenter: (edgePanel.edge === "top" || edgePanel.edge === "bottom") ? parent.horizontalCenter : undefined
+        anchors.verticalCenter: (edgePanel.edge === "right" || edgePanel.edge === "left" || edgePanel.edge === "center") ? parent.verticalCenter : undefined
+        anchors.horizontalCenter: (edgePanel.edge === "top" || edgePanel.edge === "bottom" || edgePanel.edge === "center") ? parent.horizontalCenter : undefined
 
         transformOrigin: (edgePanel.edge === "right") ? Item.Right
                        : (edgePanel.edge === "left") ? Item.Left
                        : (edgePanel.edge === "top" || edgePanel.edge === "top-right") ? Item.Top
-                       : Item.Bottom
+                       : (edgePanel.edge === "bottom") ? Item.Bottom
+                       : Item.Center
 
         transform: [
             Translate {
@@ -248,18 +262,27 @@ Item {
                 origin.y: (edgePanel.edge === "top" || edgePanel.edge === "top-right") ? 0
                         : (edgePanel.edge === "bottom") ? panelCard.height
                         : panelCard.height / 2
-                xScale: (edgePanel.edge === "right" || edgePanel.edge === "left") ? edgePanel._scalePrimary : edgePanel._scaleSecondary
-                yScale: (edgePanel.edge === "right" || edgePanel.edge === "left") ? edgePanel._scaleSecondary : edgePanel._scalePrimary
+                xScale: edgePanel.edge === "center" ? edgePanel._scalePrimary : ((edgePanel.edge === "right" || edgePanel.edge === "left") ? edgePanel._scalePrimary : edgePanel._scaleSecondary)
+                yScale: edgePanel.edge === "center" ? edgePanel._scalePrimary : ((edgePanel.edge === "right" || edgePanel.edge === "left") ? edgePanel._scaleSecondary : edgePanel._scalePrimary)
             }
         ]
+
+        // Center Floating Rounded Card (GNOME modal / Dashboard style)
+        Rectangle {
+            id: centerPanelBg
+            anchors.fill: parent
+            visible: edgePanel.edge === "center"
+            radius: edgePanel.shoulderRadius
+            color: edgePanel.panelFillColor
+            border.width: 1
+            border.color: edgePanel.accentColor
+        }
 
         // Unified Shape with Concave Shoulders
         Shape {
             id: panelShape
             anchors.fill: parent
-            layer.enabled: true
-            layer.samples: 4
-            layer.smooth: true
+            visible: edgePanel.edge !== "center"
 
             // ── Edge: RIGHT ──
             ShapePath {
@@ -394,7 +417,7 @@ Item {
             }
 
             ShapePath {
-                strokeWidth: 2
+                strokeWidth: 1
                 strokeColor: edgePanel.edge === "top" ? edgePanel.accentColor : "transparent"
                 fillColor: "transparent"
                 capStyle: ShapePath.FlatCap
@@ -555,7 +578,7 @@ Item {
             }
 
             ShapePath {
-                strokeWidth: 2
+                strokeWidth: 1
                 strokeColor: edgePanel.edge === "top-right" ? edgePanel.accentColor : "transparent"
                 fillColor: "transparent"
                 capStyle: ShapePath.FlatCap

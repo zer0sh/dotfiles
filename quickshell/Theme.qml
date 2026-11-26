@@ -1,8 +1,11 @@
 pragma Singleton
 import QtQuick
+import Quickshell.Io
 import "." as Local
 
 QtObject {
+    id: themeSingleton
+
     // Generated palette is available for the next migration step. Manual
     // palettes remain the visual source until this flag is intentionally used.
     readonly property bool matugenPaletteAvailable: Local.MatugenPalette.available
@@ -10,6 +13,54 @@ QtObject {
     // ── Active theme name ──────────────────────────────────────────
     property string currentTheme: "matugen"
     property string customAccent: "#FF2B44"
+
+    property IpcHandler ipcHandler: IpcHandler {
+        target: "theme"
+        function reload(): void {
+            themeReadProc.running = true
+            accentReadProc.running = true
+            Local.MatugenPalette.readPalette()
+        }
+        function setTheme(name: string): void {
+            if (name && name !== "") {
+                console.log("[Theme.qml] IPC setTheme:", name)
+                themeSingleton.currentTheme = name
+                Local.MatugenPalette.readPalette()
+            }
+        }
+    }
+
+    property Process themeReadProc: Process {
+        id: themeReadProc
+        command: ["/bin/sh", "-c", "cat ~/.config/quickshell/current-theme 2>/dev/null || true"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var theme = text.trim()
+                if (theme !== "") {
+                    console.log("[Theme.qml] Loaded saved theme on startup:", theme)
+                    themeSingleton.currentTheme = theme
+                }
+            }
+        }
+    }
+
+    property Process accentReadProc: Process {
+        id: accentReadProc
+        command: ["/bin/sh", "-c", "cat ~/.config/quickshell/custom-accent 2>/dev/null || true"]
+        stdout: StdioCollector {
+            onStreamFinished: {
+                var acc = text.trim()
+                if (acc !== "" && acc.charAt(0) === "#") {
+                    customAccent = acc
+                }
+            }
+        }
+    }
+
+    Component.onCompleted: {
+        themeReadProc.running = true
+        accentReadProc.running = true
+    }
 
     // ── Theme definitions ──────────────────────────────────────────
     readonly property var _themes: ({
@@ -80,7 +131,7 @@ QtObject {
         },
         "matugen": {
             name: "Wallpaper (Matugen)",
-            panelBg: "#141318", panelBorder: "#47464F", surface: "#141318",
+            panelBg: Local.MatugenPalette.background, panelBorder: "#47464F", surface: Local.MatugenPalette.surface,
             surfaceContainer: "#201F25", surfaceContainerHigh: "#2A292F", surfaceBright: "#3A383E",
             primary: "#C7BFFF", primaryContainer: "#463F77", onPrimaryContainer: "#E5DEFF",
             tileActive: "#C7BFFF", tileActiveText: "#2F295F",
@@ -158,7 +209,9 @@ QtObject {
 
     // ── Themed color properties ────────────────────────────────────
     // Surface colors
-    readonly property color panelBg: _t.panelBg
+    readonly property color panelBg: (currentTheme === "matugen" && Local.MatugenPalette.available)
+        ? Local.MatugenPalette.background
+        : _t.panelBg
     readonly property color panelBorder: _t.panelBorder
     readonly property color surface: _t.surface
     readonly property color surfaceContainer: _t.surfaceContainer
@@ -246,9 +299,22 @@ QtObject {
     readonly property int spacingMedium: 14
     readonly property int spacingLarge: 18
 
+     // ── dots-hyprland (illogical-impulse) Expressive Animation Curves ──
+    readonly property var curveExpressiveFastSpatial: [0.42, 1.67, 0.21, 0.90, 1.0, 1.0]      // 350ms, spring bounce
+    readonly property var curveExpressiveDefaultSpatial: [0.38, 1.21, 0.22, 1.00, 1.0, 1.0]   // 400ms, smooth elastic overshoot
+    readonly property var curveExpressiveSlowSpatial: [0.39, 1.29, 0.35, 0.98, 1.0, 1.0]      // 550ms, flowing material
+    readonly property var curveExpressiveEffects: [0.34, 0.80, 0.34, 1.00, 1.0, 1.0]          // 200ms, snappy
+    readonly property var curveEmphasized: [0.05, 0, 0.133, 0.06, 0.166, 0.4, 0.208, 0.82, 0.25, 1, 1, 1]
+    readonly property var curveEmphasizedDecel: [0.05, 0.7, 0.1, 1.0, 1.0, 1.0]
+    readonly property var curveEmphasizedAccel: [0.3, 0.0, 0.8, 0.15, 1.0, 1.0]
+    readonly property var curveMenuDecel: [0.1, 1.0, 0.0, 1.0, 1.0, 1.0]
+    readonly property var curveMenuAccel: [0.52, 0.03, 0.72, 0.08, 1.0, 1.0]
+    readonly property var curvePanelOpen: curveExpressiveDefaultSpatial
+    readonly property var curvePanelClose: curveEmphasizedAccel
+
      // ── Animation durations (ms) ───────────────────────────────────
-    readonly property int animDuration: 0
-    readonly property int animDurationFast: 0
+    readonly property int animDuration: 350
+    readonly property int animDurationFast: 180
 
     // ── Theme metadata access ──────────────────────────────────────
     readonly property string themeName: _t.name

@@ -26,6 +26,7 @@ Scope {
 
     readonly property var translations: ({
         "open terminal": "Open terminal",
+        "open floating terminal": "Open floating terminal",
         "open file manager": "Open file manager",
         "close active window": "Close active window",
         "reload hyprland config": "Reload Hyprland config",
@@ -60,6 +61,8 @@ Scope {
         "toggle caffeine (keep awake)": "Toggle Caffeine (keep awake)",
         "caffeine toggle (keep display awake)": "Toggle Caffeine (keep awake)",
         "toggle floating mode": "Toggle floating mode",
+        "increase window gaps": "Increase window gaps",
+        "decrease window gaps": "Decrease window gaps",
         "toggle fullscreen": "Toggle fullscreen",
         "launch application as root": "Launch application as root",
         "launch an app as root (requires the sudo-launcher script)": "Launch application as root",
@@ -289,6 +292,8 @@ Scope {
                         else if (cleanKey === "XF86AudioMicMute") cleanKey = "Mic Mute"
                         else if (cleanKey === "XF86MonBrightnessUp") cleanKey = "Brightness +"
                         else if (cleanKey === "XF86MonBrightnessDown") cleanKey = "Brightness -"
+                        else if (cleanKey === "equal") cleanKey = "="
+                        else if (cleanKey === "minus") cleanKey = "-"
                         displayKeys.push(cleanKey)
                     }
 
@@ -373,24 +378,82 @@ Scope {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
+            property real _scale: 0.88
+            property real _opacity: 0.0
+            property real _dimOpacity: 0.0
+
+            Component.onCompleted: appearAnim.start()
+
+            // dots-hyprland Expressive Default Spatial spring bounce
+            ParallelAnimation {
+                id: appearAnim
+                NumberAnimation {
+                    target: overlay; property: "_scale"
+                    from: 0.88; to: 1.0; duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelOpen
+                }
+                NumberAnimation {
+                    target: overlay; property: "_opacity"
+                    from: 0.0; to: 1.0; duration: 200
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                }
+                NumberAnimation {
+                    target: overlay; property: "_dimOpacity"
+                    from: 0.0; to: 0.45; duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                }
+            }
+
+            SequentialAnimation {
+                id: dismissAnim
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: overlay; property: "_scale"
+                        to: 0.88; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: overlay; property: "_opacity"
+                        to: 0.0; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: overlay; property: "_dimOpacity"
+                        to: 0.0; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                }
+                ScriptAction { script: shortcuts.visible = false }
+            }
+
+            function requestClose() {
+                if (!dismissAnim.running) dismissAnim.start()
+            }
+
             Shortcut {
                 sequence: "Escape"
-                onActivated: shortcuts.visible = false
+                onActivated: overlay.requestClose()
             }
 
             Shortcut {
                 sequence: "F1"
-                onActivated: shortcuts.visible = false
+                onActivated: overlay.requestClose()
             }
 
             // Fondo translúcido con desenfoque de Hyprland y cierre al hacer clic fuera
             Rectangle {
                 anchors.fill: parent
-                color: Qt.rgba(0, 0, 0, 0.45)
+                color: Qt.rgba(0, 0, 0, overlay._dimOpacity)
 
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: shortcuts.visible = false
+                    onClicked: overlay.requestClose()
                 }
             }
 
@@ -401,6 +464,8 @@ Scope {
                 width: Math.min(920, overlay.width - 40)
                 height: Math.min(660, overlay.height - 60)
                 radius: 28
+                scale: overlay._scale
+                opacity: overlay._opacity
 
                 color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.78)
                 border.width: 1.5

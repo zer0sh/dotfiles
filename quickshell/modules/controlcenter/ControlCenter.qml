@@ -396,30 +396,7 @@ Scope {
 
 
 
-    // ── Theme persistence ────────────────────────────────────────
-    Process {
-        id: themeSaveProc
-        command: ["/bin/sh", "-c", "echo '" + Root.Theme.currentTheme + "' > ~/.config/quickshell/current-theme"]
-    }
-
-    Process {
-        id: themeApplyProc
-        command: ["/home/zero/.config/quickshell/scripts/apply-theme.sh", Root.Theme.currentTheme]
-    }
-
-    Connections {
-        target: Root.Theme
-        function onCurrentThemeChanged() {
-            themeSaveProc.running = true;
-            if (Root.Theme.currentTheme === "matugen") {
-                themeApplyProc.command = ["/home/zero/.config/themes/apply-matugen.sh"];
-            } else {
-                themeApplyProc.command = ["/home/zero/.config/quickshell/scripts/apply-theme.sh", Root.Theme.currentTheme];
-            }
-            themeApplyProc.running = true;
-        }
-    }
-
+    // ── Polling & background tasks ────────────────────────────────
     // Poll status every 8s while panel is visible
     Timer {
         interval: 8000
@@ -571,10 +548,13 @@ Scope {
 
             Root.EdgePanel {
                 id: edgePanelWrapper
-                edge: "top-right"
-                panelWidth: Root.Theme.panelWidth + 28
-                panelHeight: pageContainer.height + 2
+                edge: "top"
+                panelWidth: Root.Theme.panelWidth + 56
+                panelHeight: pageContainer.height + 6
                 shoulderRadius: 28
+                showDim: true
+                dimMaxOpacity: 0.35
+                closeOnClickOutside: true
                 Component.onCompleted: controlCenter._edgePanelRef = edgePanelWrapper
                 onCloseRequested: {
                     if (controlCenter.currentPage !== "main")
@@ -593,10 +573,11 @@ Scope {
 
                 Item {
                     id: panel
-                    width: Root.Theme.panelWidth
-                    height: pageContainer.height + 2
-                    anchors.right: parent.right
-                    anchors.rightMargin: 0
+                    anchors.fill: parent
+                    anchors.leftMargin: 28
+                    anchors.rightMargin: 28
+                    anchors.topMargin: 4
+                    anchors.bottomMargin: 4
                     clip: true
 
                     // block click-through to overlay close area
@@ -608,7 +589,7 @@ Scope {
                         id: pageContainer
                         width: panel.width
                         height: mainPage.height
-                        y: 2
+                        anchors.top: parent.top
 
                     // MAIN PAGE
                     Item {
@@ -616,11 +597,21 @@ Scope {
                         width: pageContainer.width
                         height: mainContent.implicitHeight + Root.Theme.spacingLarge * 2
                         x: controlCenter.currentPage === "main" ? 0 : -pageContainer.width
+                        opacity: controlCenter.currentPage === "main" ? 1.0 : 0.0
+                        visible: opacity > 0.001
 
                         Behavior on x {
                             NumberAnimation {
                                 duration: Root.Theme.animDuration
-                                easing.type: Easing.OutCubic
+                                easing.type: Easing.BezierSpline
+                                easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                            }
+                        }
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Root.Theme.animDuration
+                                easing.type: Easing.BezierSpline
+                                easing.bezierCurve: Root.Theme.curveEmphasizedDecel
                             }
                         }
 
@@ -1170,11 +1161,21 @@ Scope {
                         width: pageContainer.width
                         height: pageContainer.height
                         x: controlCenter.currentPage === "wifi" ? 0 : pageContainer.width
+                        opacity: controlCenter.currentPage === "wifi" ? 1.0 : 0.0
+                        visible: opacity > 0.001
 
                         Behavior on x {
                             NumberAnimation {
                                 duration: Root.Theme.animDuration
-                                easing.type: Easing.OutCubic
+                                easing.type: Easing.BezierSpline
+                                easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                            }
+                        }
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Root.Theme.animDuration
+                                easing.type: Easing.BezierSpline
+                                easing.bezierCurve: Root.Theme.curveEmphasizedDecel
                             }
                         }
 
@@ -1189,11 +1190,21 @@ Scope {
                         width: pageContainer.width
                         height: pageContainer.height
                         x: controlCenter.currentPage === "bluetooth" ? 0 : pageContainer.width
+                        opacity: controlCenter.currentPage === "bluetooth" ? 1.0 : 0.0
+                        visible: opacity > 0.001
 
                         Behavior on x {
                             NumberAnimation {
                                 duration: Root.Theme.animDuration
-                                easing.type: Easing.OutCubic
+                                easing.type: Easing.BezierSpline
+                                easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                            }
+                        }
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Root.Theme.animDuration
+                                easing.type: Easing.BezierSpline
+                                easing.bezierCurve: Root.Theme.curveEmphasizedDecel
                             }
                         }
 
@@ -1210,11 +1221,21 @@ Scope {
                         width: pageContainer.width
                         height: pageContainer.height
                         x: controlCenter.currentPage === "audio" ? 0 : pageContainer.width
+                        opacity: controlCenter.currentPage === "audio" ? 1.0 : 0.0
+                        visible: opacity > 0.001
 
                         Behavior on x {
                             NumberAnimation {
                                 duration: Root.Theme.animDuration
-                                easing.type: Easing.OutCubic
+                                easing.type: Easing.BezierSpline
+                                easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                            }
+                        }
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Root.Theme.animDuration
+                                easing.type: Easing.BezierSpline
+                                easing.bezierCurve: Root.Theme.curveEmphasizedDecel
                             }
                         }
 
@@ -1232,11 +1253,21 @@ Scope {
                         height: pageContainer.height
                         controlCenterRef: controlCenter
                         x: controlCenter.currentPage === "battery" ? 0 : pageContainer.width
+                        opacity: controlCenter.currentPage === "battery" ? 1.0 : 0.0
+                        visible: opacity > 0.001
 
                         Behavior on x {
                             NumberAnimation {
                                 duration: Root.Theme.animDuration
-                                easing.type: Easing.OutCubic
+                                easing.type: Easing.BezierSpline
+                                easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                            }
+                        }
+                        Behavior on opacity {
+                            NumberAnimation {
+                                duration: Root.Theme.animDuration
+                                easing.type: Easing.BezierSpline
+                                easing.bezierCurve: Root.Theme.curveEmphasizedDecel
                             }
                         }
 

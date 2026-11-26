@@ -81,8 +81,9 @@ Scope {
                         move: Transition {
                             NumberAnimation {
                                 properties: "y"
-                                duration: 250
-                                easing.type: Easing.OutCubic
+                                duration: Root.Theme.animDuration
+                                easing.type: Easing.BezierSpline
+                                easing.bezierCurve: Root.Theme.curvePanelOpen
                             }
                         }
 

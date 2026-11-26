@@ -110,8 +110,9 @@ Scope {
             }
 
             if (!visible) {
-                osdCard._scaleY = 0.0
-                osdCard._scaleX = 0.82
+                osdCard._translateY = -35
+                osdCard._scaleY = 0.50
+                osdCard._scaleX = 0.85
                 osdCard._opacity = 0
                 cardContent.opacity = 0
                 visible = true
@@ -127,46 +128,60 @@ Scope {
             }
         }
 
+        // Appear: dots-hyprland Expressive Default Spatial spring bounce
         ParallelAnimation {
             id: appearAnim
             NumberAnimation {
                 target: osdCard
+                property: "_translateY"
+                from: -35
+                to: 0.0
+                duration: Root.Theme.animDuration
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curvePanelOpen
+            }
+            NumberAnimation {
+                target: osdCard
                 property: "_scaleY"
-                from: 0.0
+                from: 0.50
                 to: 1.0
-                duration: 280
-                easing.type: Easing.OutBack
-                easing.overshoot: 1.18
+                duration: Root.Theme.animDuration
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curvePanelOpen
             }
             NumberAnimation {
                 target: osdCard
                 property: "_scaleX"
-                from: 0.82
+                from: 0.85
                 to: 1.0
-                duration: 260
-                easing.type: Easing.OutCubic
+                duration: Root.Theme.animDuration
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curvePanelOpen
             }
             NumberAnimation {
                 target: osdCard
                 property: "_opacity"
                 from: 0.0
                 to: 1.0
-                duration: 160
-                easing.type: Easing.OutQuad
+                duration: 200
+                easing.type: Easing.BezierSpline
+                easing.bezierCurve: Root.Theme.curveEmphasizedDecel
             }
             SequentialAnimation {
-                PauseAnimation { duration: 50 }
+                PauseAnimation { duration: 25 }
                 NumberAnimation {
                     target: cardContent
                     property: "opacity"
                     from: 0.0
                     to: 1.0
-                    duration: 180
-                    easing.type: Easing.OutQuad
+                    duration: 200
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curveEmphasizedDecel
                 }
             }
         }
 
+        // Dismiss: dots-hyprland Emphasized Accel close
         SequentialAnimation {
             id: dismissAnim
             ParallelAnimation {
@@ -174,30 +189,41 @@ Scope {
                     target: cardContent
                     property: "opacity"
                     to: 0.0
-                    duration: 100
-                    easing.type: Easing.InQuad
+                    duration: 120
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelClose
+                }
+                NumberAnimation {
+                    target: osdCard
+                    property: "_translateY"
+                    to: -35
+                    duration: Root.Theme.animDurationFast
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelClose
                 }
                 NumberAnimation {
                     target: osdCard
                     property: "_scaleY"
-                    to: 0.0
-                    duration: 190
-                    easing.type: Easing.InBack
-                    easing.overshoot: 1.1
+                    to: 0.50
+                    duration: Root.Theme.animDurationFast
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelClose
                 }
                 NumberAnimation {
                     target: osdCard
                     property: "_scaleX"
                     to: 0.85
-                    duration: 170
-                    easing.type: Easing.InQuad
+                    duration: Root.Theme.animDurationFast
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelClose
                 }
                 NumberAnimation {
                     target: osdCard
                     property: "_opacity"
                     to: 0.0
-                    duration: 170
-                    easing.type: Easing.InQuad
+                    duration: Root.Theme.animDurationFast
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelClose
                 }
             }
             ScriptAction {
@@ -225,6 +251,7 @@ Scope {
                 property real _opacity: 0
                 property real _scaleX: 1.0
                 property real _scaleY: 1.0
+                property real _translateY: 0.0
 
                 width: 380
                 implicitHeight: cardContent.implicitHeight + 28
@@ -233,12 +260,17 @@ Scope {
                 opacity: _opacity
 
                 transformOrigin: Item.Top
-                transform: Scale {
-                    origin.x: osdCard.width / 2
-                    origin.y: 0
-                    xScale: osdCard._scaleX
-                    yScale: osdCard._scaleY
-                }
+                transform: [
+                    Translate {
+                        y: osdCard._translateY
+                    },
+                    Scale {
+                        origin.x: osdCard.width / 2
+                        origin.y: 0
+                        xScale: osdCard._scaleX
+                        yScale: osdCard._scaleY
+                    }
+                ]
 
                 Shape {
                     id: osdShape
@@ -246,16 +278,11 @@ Scope {
                     anchors.bottom: parent.bottom
                     anchors.horizontalCenter: parent.horizontalCenter
                     width: parent.width + 56
-                    layer.enabled: true
-                    layer.samples: 8
-                    layer.smooth: true
 
                     ShapePath {
                         strokeWidth: 0
                         strokeColor: "transparent"
-                        fillColor: Qt.rgba(Root.Theme.panelBg.r,
-                                           Root.Theme.panelBg.g,
-                                           Root.Theme.panelBg.b, 0.98)
+                        fillColor: Root.Theme.panelBg
 
                         startX: 0
                         startY: 0
@@ -290,8 +317,8 @@ Scope {
                     }
 
                     ShapePath {
-                        strokeWidth: 2
-                        strokeColor: Root.Theme.primary
+                        strokeWidth: 1
+                        strokeColor: Root.Theme.panelBorder
                         fillColor: "transparent"
                         capStyle: ShapePath.FlatCap
                         joinStyle: ShapePath.RoundJoin

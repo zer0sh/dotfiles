@@ -15,6 +15,7 @@ Scope {
     property string searchText: ""
     property int selectedIndex: 0
     property var backgroundRef: null
+    property var launcherWindowRef: null
 
     // ── Icon Cache ───────────────────────────────────────────────
     property var iconCache: ({})
@@ -769,6 +770,11 @@ Scope {
             shaderCurrentProc.running = true;
             if (currentMode === "music") _refreshMpris();
         } else {
+            if (launcherWindowRef) {
+                launcherWindowRef.requestClose();
+            } else {
+                _showing = false;
+            }
             searchText = "";
             if (!launcher.isWallpaperCommitted && launcher.previewInitialWallpaper !== "") {
                 launcher.cancelWallpaperPreview();
@@ -899,7 +905,7 @@ Scope {
 
     // ── Ventana Flotante Caelestia ───────────────────────────────
     Loader {
-        active: launcher.panelVisible
+        active: launcher._showing
 
         sourceComponent: PanelWindow {
             id: panelWindow
@@ -919,60 +925,142 @@ Scope {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: launcher.currentMode === "music" ? WlrKeyboardFocus.None : WlrKeyboardFocus.Exclusive
 
-            property real _scaleY: 0.0
-            property real _scaleX: 0.90
+            readonly property real _maxSlide: Math.min(100, (floatingCard.height || 400) * 0.28)
+            readonly property real _initialScalePrimary: 0.76
+            readonly property real _initialScaleSecondary: 0.86
+
+            property real _slideY: _maxSlide
+            property real _scaleY: _initialScalePrimary
+            property real _scaleX: _initialScaleSecondary
             property real _opacity: 0.0
             property real _dimOpacity: 0.0
+            property real _contentScale: 0.92
+            property real _contentOpacity: 0.0
 
-            Component.onCompleted: appearAnim.start()
+            Component.onCompleted: {
+                launcher.launcherWindowRef = panelWindow;
+                appearAnim.start();
+            }
 
+            // dots-hyprland Expressive Spatial spring bounce (identical to ControlCenter)
             ParallelAnimation {
                 id: appearAnim
+
+                // Edge displacement glide (slides up from bottom edge with elastic bounce)
+                NumberAnimation {
+                    target: panelWindow; property: "_slideY"
+                    from: panelWindow._maxSlide; to: 0.0
+                    duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelOpen
+                }
+
+                // Primary extrusion axis (Y axis, origin Bottom)
                 NumberAnimation {
                     target: panelWindow; property: "_scaleY"
-                    from: 0.0; to: 1.0; duration: 280
-                    easing.type: Easing.OutBack
-                    easing.overshoot: 1.14
+                    from: panelWindow._initialScalePrimary; to: 1.0
+                    duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelOpen
                 }
+
+                // Orthogonal axis expansion (X axis)
                 NumberAnimation {
                     target: panelWindow; property: "_scaleX"
-                    from: 0.90; to: 1.0; duration: 260
-                    easing.type: Easing.OutCubic
+                    from: panelWindow._initialScaleSecondary; to: 1.0
+                    duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelOpen
                 }
+
+                // Outer surface opacity
                 NumberAnimation {
                     target: panelWindow; property: "_opacity"
-                    from: 0.0; to: 1.0; duration: 160
-                    easing.type: Easing.OutQuad
+                    from: 0.0; to: 1.0; duration: 220
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curveEmphasizedDecel
                 }
+
+                // Dim backdrop fade
                 NumberAnimation {
                     target: panelWindow; property: "_dimOpacity"
-                    from: 0.0; to: 0.40; duration: 220
-                    easing.type: Easing.OutQuad
+                    from: 0.0; to: 0.40; duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                }
+
+                // Content blooming
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: panelWindow; property: "_contentScale"
+                        from: 0.92; to: 1.0
+                        duration: Root.Theme.animDuration
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelOpen
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_contentOpacity"
+                        from: 0.0; to: 1.0; duration: 220
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                    }
                 }
             }
 
+            // dots-hyprland Emphasized Accel close (identical to ControlCenter)
             SequentialAnimation {
                 id: dismissAnim
                 ParallelAnimation {
                     NumberAnimation {
+                        target: panelWindow; property: "_contentScale"
+                        to: 0.92; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_contentOpacity"
+                        to: 0.0; duration: 140
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_slideY"
+                        to: panelWindow._maxSlide; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
                         target: panelWindow; property: "_scaleY"
-                        to: 0.0; duration: 190; easing.type: Easing.InBack
-                        easing.overshoot: 1.1
+                        to: panelWindow._initialScalePrimary; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
                     }
                     NumberAnimation {
                         target: panelWindow; property: "_scaleX"
-                        to: 0.92; duration: 170; easing.type: Easing.InQuad
+                        to: panelWindow._initialScaleSecondary; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
                     }
                     NumberAnimation {
                         target: panelWindow; property: "_opacity"
-                        to: 0.0; duration: 170; easing.type: Easing.InQuad
+                        to: 0.0; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
                     }
                     NumberAnimation {
                         target: panelWindow; property: "_dimOpacity"
-                        to: 0.0; duration: 170; easing.type: Easing.InQuad
+                        to: 0.0; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
                     }
                 }
-                ScriptAction { script: launcher.panelVisible = false }
+                ScriptAction {
+                    script: {
+                        launcher.launcherWindowRef = null;
+                        launcher._showing = false;
+                        launcher.panelVisible = false;
+                    }
+                }
             }
 
             function requestClose() {
@@ -1019,12 +1107,17 @@ Scope {
                 opacity: panelWindow._opacity
 
                 transformOrigin: Item.Bottom
-                transform: Scale {
-                    origin.x: launcherIslandWrapper.width / 2
-                    origin.y: launcherIslandWrapper.height
-                    xScale: panelWindow._scaleX
-                    yScale: panelWindow._scaleY
-                }
+                transform: [
+                    Translate {
+                        y: panelWindow._slideY
+                    },
+                    Scale {
+                        origin.x: launcherIslandWrapper.width / 2
+                        origin.y: launcherIslandWrapper.height
+                        xScale: panelWindow._scaleX
+                        yScale: panelWindow._scaleY
+                    }
+                ]
 
                 // Silueta continua inferior: hombros cóncavos + cuerpo con borde de 2px de color acento
                 Shape {
@@ -1147,11 +1240,14 @@ Scope {
                     Behavior on width { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
                     Behavior on height { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
 
-                color: "transparent"
-                border.width: 0
-                clip: true
+                    color: "transparent"
+                    border.width: 0
+                    clip: true
 
-                focus: true
+                    scale: panelWindow._contentScale
+                    opacity: panelWindow._contentOpacity
+
+                    focus: true
                 Keys.forwardTo: [searchInput]
 
                 // ── Área de Contenido Superior ─────────────────────────

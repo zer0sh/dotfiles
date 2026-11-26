@@ -10,7 +10,7 @@
 
 /* ---------- Bar ---------- */
 window#waybar {
-    background-color: alpha(@bg, 0.95);
+    background-color: @bg;
     color: @text;
     border-radius: 0;
     border-bottom: 2px solid @accent;
@@ -26,7 +26,7 @@ window#waybar {
 /* Launcher button — ChromeOS circle */
 #custom-launcher {
     padding: 0px 14px 0 9px;
-    margin: 4px 2px 4px 6px;
+    margin: 4px 2px 6px 6px;
     border-radius: 50%;
     background: alpha(@text, 0.10);
     color: @text;
@@ -39,18 +39,18 @@ window#waybar {
 
 /* Workspaces — pill indicators */
 #workspaces {
-    margin: 6px 4px;
+    margin: 5px 4px 7px 4px;
     padding: 0 6px;
-    border-radius: 16px;
+    border-radius: 12px;
     background: alpha(@text, 0.06);
 }
 
 #workspaces button {
     all: unset;
-    min-width: 28px;
-    min-height: 12px;
-    margin: 6px 4px;
-    border-radius: 6px;
+    min-width: 24px;
+    min-height: 10px;
+    margin: 7px 4px;
+    border-radius: 5px;
     background: alpha(@text, 0.25);
     transition: all 0.3s ease;
 }
@@ -68,28 +68,50 @@ window#waybar {
 
 #workspaces button.active,
 #workspaces button.active:hover {
-    min-width: 12px;
-    min-height: 12px;
+    min-width: 10px;
+    min-height: 10px;
+    margin: 7px 4px;
     border-radius: 50%;
     background: @accent;
 }
 
-/* ========== CENTER MODULE (Media Pill) ========== */
-
-#custom-media {
-    padding: 0 16px;
-    margin: 4px 0;
-    min-width: 260px;
-    border-radius: 18px;
+/* ========== CENTER MODULE (Clock + Media Dynamic Pill) ========== */
+#center_info,
+#group-center_info {
+    padding: 0 4px;
+    margin-top: 5px;
+    margin-bottom: 7px;
+    margin-left: 0;
+    margin-right: 0;
+    border-radius: 12px;
     background: alpha(@text, 0.08);
-    border: 1px solid alpha(@text, 0.10);
+    transition: all 0.3s ease;
+}
+
+#clock,
+#custom-media {
+    padding: 0 8px;
+    margin: 0 2px;
+    border-radius: 13px;
+    background: transparent;
     color: @text;
     transition: all 0.2s ease;
 }
 
+#clock:hover,
 #custom-media:hover {
-    background: alpha(@text, 0.14);
-    border-color: alpha(@text, 0.18);
+    background: alpha(@text, 0.12);
+    border-radius: 13px;
+}
+
+#clock {
+    padding-left: 10px;
+    padding-right: 10px;
+    font-weight: 900;
+}
+
+#custom-media {
+    padding: 0 10px 0 4px;
 }
 
 #custom-media.playing {
@@ -105,6 +127,7 @@ window#waybar {
     margin: 0;
     min-width: 0;
     background: transparent;
+    border: none;
 }
 
 /* ========== RIGHT MODULES ========== */
@@ -119,8 +142,8 @@ window#waybar {
 
 #tray > * {
     padding: 0 8px;
-    margin: 4px 2px;
-    border-radius: 14px;
+    margin: 4px 2px 6px 2px;
+    border-radius: 12px;
     background: alpha(@text, 0.08);
     transition: all 0.2s ease;
 }
@@ -140,22 +163,20 @@ window#waybar {
 /* ----- Quick Actions Pill (Imported from centralized parent stylesheet) ----- */
 @import url("/home/zero/.config/themes/quick-actions.css");
 
-/* ----- Control Actions Pill group ----- */
-#control_actions,
-#group-control_actions {
+/* ----- Hardware Status Pill group (Right) ----- */
+#hardware_status,
+#group-hardware_status {
     padding: 0 4px;
     margin-top: 5px;
-    margin-bottom: 5px;
+    margin-bottom: 7px;
     margin-left: 4px;
     margin-right: 8px;
-    border-radius: 13px;
+    border-radius: 12px;
     background: alpha(@text, 0.08);
     transition: all 0.2s ease;
 }
 
-/* Elements inside control_actions */
-#custom-date,
-#clock,
+/* Elements inside hardware_status */
 #pulseaudio,
 #network,
 #bluetooth,
@@ -169,20 +190,15 @@ window#waybar {
     transition: all 0.2s ease;
 }
 
-#custom-date:hover,
-#clock:hover,
 #battery:hover,
 #custom-power:hover {
     background: alpha(@text, 0.12);
     border-radius: 13px;
 }
 
-#custom-date {
+#pulseaudio {
     padding-left: 10px;
-}
-
-#clock {
-    font-weight: 900;
+    padding-right: 10px;
 }
 
 /* Icon group - Active / Connected style */

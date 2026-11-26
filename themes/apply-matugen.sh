@@ -50,6 +50,8 @@ pkill -SIGUSR2 waybar 2>/dev/null || true
 
 # Keep the generated outputs in sync with the palette consumed by Quickshell.
 printf '%s\n' "matugen" > "$HOME/.config/quickshell/current-theme"
+qs ipc call theme setTheme "matugen" 2>/dev/null || true
+qs ipc call theme reload 2>/dev/null || true
 
 # Sync GTK color-scheme and force reload of gtk.css
 if [[ "$MODE" == "light" ]]; then

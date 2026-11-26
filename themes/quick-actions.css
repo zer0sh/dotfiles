@@ -15,8 +15,11 @@
 #quick_actions,
 #group-quick_actions {
     padding: 0 4px;
-    margin: 5px 4px;
-    border-radius: 13px;
+    margin-top: 5px;
+    margin-bottom: 7px;
+    margin-left: 4px;
+    margin-right: 4px;
+    border-radius: 12px;
     background: alpha(@text, 0.08);
     transition: all 0.2s ease;
 }

@@ -23,36 +23,7 @@ import "modules/settings" as Settings
 ShellRoot {
     id: root
 
-    // ── Theme persistence — read saved theme on startup ──────────
-    Process {
-        id: themeReadProc
-        command: ["/bin/sh", "-c", "cat ~/.config/quickshell/current-theme 2>/dev/null || true"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                var theme = text.trim();
-                if (theme !== "" && Theme._themes[theme] !== undefined) {
-                    Theme.currentTheme = theme;
-                }
-            }
-        }
-    }
-
-    Process {
-        id: customAccentReadProc
-        command: ["/bin/sh", "-c", "cat ~/.config/quickshell/custom-accent 2>/dev/null || true"]
-        stdout: StdioCollector {
-            onStreamFinished: {
-                var acc = text.trim();
-                if (acc !== "" && acc.charAt(0) === "#") {
-                    Theme.customAccent = acc;
-                }
-            }
-        }
-    }
-
     Component.onCompleted: {
-        themeReadProc.running = true
-        customAccentReadProc.running = true
         var _ = Notifications.NotificationService.count
         var _gm = GadgetsManager.availableGadgets
     }

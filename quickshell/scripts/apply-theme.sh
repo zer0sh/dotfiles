@@ -236,6 +236,10 @@ esac
 
 # Persist active theme for Quickshell
 printf '%s\n' "$THEME" > "$HOME/.config/quickshell/current-theme"
+qs ipc call theme setTheme "$THEME" 2>/dev/null || true
+if [[ "$THEME" == "custom" ]]; then
+  qs ipc call theme reload 2>/dev/null || true
+fi
 
 # Helper: convert #RRGGBB to "R, G, B"
 hex_to_rgb() {

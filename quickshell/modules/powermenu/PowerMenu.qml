@@ -9,7 +9,7 @@ Scope {
     id: root
 
     property bool menuOpen: false
-    property int selectedIndex: 0
+    property int selectedIndex: -1
     property int hoveredIndex: -1
     readonly property int buttonCount: menuItems.length
 
@@ -63,7 +63,7 @@ Scope {
 
     onMenuOpenChanged: {
         if (menuOpen) {
-            selectedIndex = 0;
+            selectedIndex = -1;
             hoveredIndex = -1;
         }
     }
@@ -91,10 +91,14 @@ Scope {
 
             Component.onCompleted: {
                 root.menuWindowRef = menuWindow;
+                appearAnim.start();
             }
 
             function closeMenu(): void {
-                edgePanelWrapper.close();
+                if (!dismissAnim.running) {
+                    appearAnim.stop();
+                    dismissAnim.start();
+                }
             }
 
             Shortcut {
@@ -102,221 +106,300 @@ Scope {
                 onActivated: menuWindow.closeMenu()
             }
 
-            // Centralized EdgePanel parent component (VolumeOSD physics)
-            Root.EdgePanel {
-                id: edgePanelWrapper
-                edge: "right"
-                panelWidth: 310
-                panelHeight: contentCol.implicitHeight + 100
-                shoulderRadius: 32
-                onCloseRequested: menuWindow.closeMenu()
-                onClosed: {
-                    root.menuOpen = false;
-                    root.menuWindowRef = null;
+            // Dim overlay — dismisses on click-outside
+            Rectangle {
+                id: dimOverlay
+                anchors.fill: parent
+                color: Qt.rgba(0, 0, 0, 0.40)
+                opacity: 0.0
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: menuWindow.closeMenu()
+                }
+            }
+
+            // dots-hyprland Expressive Spatial spring slide and bounce (identical to ControlCenter)
+            ParallelAnimation {
+                id: appearAnim
+                NumberAnimation {
+                    target: dimOverlay; property: "opacity"
+                    from: 0.0; to: 1.0; duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                }
+                NumberAnimation {
+                    target: sidePanel; property: "_slideX"
+                    from: sidePanel.width + 60; to: 0; duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelOpen
+                }
+                NumberAnimation {
+                    target: sidePanel; property: "_scalePrimary"
+                    from: 0.74; to: 1.0; duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelOpen
+                }
+                NumberAnimation {
+                    target: sidePanel; property: "_scaleSecondary"
+                    from: 0.86; to: 1.0; duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelOpen
+                }
+                NumberAnimation {
+                    target: sidePanel; property: "opacity"
+                    from: 0.0; to: 1.0; duration: 200
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                }
+                NumberAnimation {
+                    target: sidePanel; property: "_contentScale"
+                    from: 0.92; to: 1.0; duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelOpen
+                }
+            }
+
+            // dots-hyprland Emphasized Accel close
+            SequentialAnimation {
+                id: dismissAnim
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: dimOverlay; property: "opacity"
+                        to: 0.0; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: sidePanel; property: "_slideX"
+                        to: sidePanel.width + 60; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: sidePanel; property: "_scalePrimary"
+                        to: 0.74; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: sidePanel; property: "_scaleSecondary"
+                        to: 0.86; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: sidePanel; property: "_contentScale"
+                        to: 0.92; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: sidePanel; property: "opacity"
+                        to: 0.0; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                }
+                ScriptAction {
+                    script: {
+                        root.menuOpen = false;
+                        root.menuWindowRef = null;
+                    }
+                }
+            }
+
+            // Floating power menu container with concentric geometry
+            Item {
+                id: sidePanel
+                property real _slideX: width + 50
+                property real _scalePrimary: 0.74
+                property real _scaleSecondary: 0.86
+                property real _contentScale: 0.92
+
+                anchors.right: parent.right
+                anchors.rightMargin: 20
+                anchors.verticalCenter: parent.verticalCenter
+                width: 72
+                height: contentCol.implicitHeight + 20
+                opacity: 0.0
+
+                transformOrigin: Item.Right
+                transform: [
+                    Translate {
+                        x: sidePanel._slideX
+                    },
+                    Scale {
+                        origin.x: sidePanel.width
+                        origin.y: sidePanel.height / 2
+                        xScale: sidePanel._scalePrimary
+                        yScale: sidePanel._scaleSecondary
+                    }
+                ]
+
+                // Interactive action label pill floating to the left of the active button
+                Rectangle {
+                    id: actionPill
+                    visible: root.activeIndex >= 0
+                    opacity: root.activeIndex >= 0 ? 1 : 0
+                    y: (root.activeIndex >= 0) ? (14 + root.activeIndex * 62) : 0
+                    anchors.right: panelCard.left
+                    anchors.rightMargin: 12
+                    height: 44
+                    width: pillText.implicitWidth + 24
+                    radius: 22
+                    color: Qt.rgba(Root.Theme.panelBg.r,
+                                   Root.Theme.panelBg.g,
+                                   Root.Theme.panelBg.b, 0.90)
+                    border.color: (root.activeIndex >= 0 && root.menuItems[root.activeIndex].isDanger)
+                                  ? Root.Theme.error
+                                  : Qt.rgba(Root.Theme.primary.r,
+                                            Root.Theme.primary.g,
+                                            Root.Theme.primary.b, 0.60)
+                    border.width: 1.5
+
+                    Behavior on opacity { NumberAnimation { duration: 150 } }
+                    Behavior on y { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+                    Behavior on border.color { ColorAnimation { duration: 150 } }
+
+                    Text {
+                        id: pillText
+                        anchors.centerIn: parent
+                        text: (root.activeIndex >= 0 && root.activeIndex < root.menuItems.length) ? root.menuItems[root.activeIndex].label : ""
+                        font.family: Root.Theme.fontFamily
+                        font.pixelSize: 13
+                        font.weight: Font.Medium
+                        color: (root.activeIndex >= 0 && root.menuItems[root.activeIndex].isDanger) ? Root.Theme.error : Root.Theme.textPrimary
+                    }
                 }
 
-                // Internal Content Column with comfortable padding
-                ColumnLayout {
-                    id: contentCol
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    anchors.verticalCenter: parent.verticalCenter
-                    anchors.leftMargin: 22
-                    anchors.rightMargin: 18
-                    spacing: 16
+                // Main floating rounded card
+                Rectangle {
+                    id: panelCard
+                    anchors.fill: parent
+                    radius: 28
+                    color: Qt.rgba(Root.Theme.panelBg.r,
+                                   Root.Theme.panelBg.g,
+                                   Root.Theme.panelBg.b, 0.88)
+                    border.color: Qt.rgba(Root.Theme.panelBorder.r,
+                                          Root.Theme.panelBorder.g,
+                                          Root.Theme.panelBorder.b, 0.60)
+                    border.width: 1.5
 
-                    // ── Material 3 Header ──
-                    RowLayout {
-                        Layout.fillWidth: true
-                        spacing: 14
-
-                        Rectangle {
-                            Layout.preferredWidth: 44
-                            Layout.preferredHeight: 44
-                            radius: 22
-                            color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.18)
-
-                            Text {
-                                anchors.centerIn: parent
-                                text: "power_settings_new"
-                                font.family: Root.Theme.iconFont
-                                font.pixelSize: 24
-                                color: Root.Theme.primary
-                            }
-                        }
-
-                        ColumnLayout {
-                            Layout.fillWidth: true
-                            spacing: 2
-
-                            Text {
-                                text: "Power & Session"
-                                font.family: Root.Theme.fontFamily
-                                font.pixelSize: 18
-                                font.weight: Font.Bold
-                                color: Root.Theme.textPrimary
-                            }
-
-                            Text {
-                                text: "Choose a system action"
-                                font.family: Root.Theme.fontFamily
-                                font.pixelSize: 12
-                                color: Root.Theme.textSecondary
-                            }
-                        }
+                    MouseArea {
+                        anchors.fill: parent
                     }
 
-                    // Divider line
-                    Rectangle {
-                        Layout.fillWidth: true
-                        height: 1
-                        color: Qt.rgba(255, 255, 255, 0.08)
-                    }
-
-                    // ── Action Buttons List ──
                     ColumnLayout {
-                        Layout.fillWidth: true
+                        id: contentCol
+                        anchors.centerIn: parent
                         spacing: 10
 
                         Repeater {
                             model: root.menuItems
 
-                            delegate: Rectangle {
-                                id: actionTile
-                                Layout.fillWidth: true
-                                Layout.preferredHeight: 60
-                                radius: 18
+                            delegate: Item {
+                                id: actionItem
+                                Layout.preferredWidth: 52
+                                Layout.preferredHeight: 52
+                                width: 52
+                                height: 52
 
                                 readonly property bool isSelected: root.activeIndex === index
                                 readonly property bool isHovered: tileMouse.containsMouse
                                 readonly property bool isDanger: modelData.isDanger
 
-                                color: isSelected
-                                    ? (isDanger ? Root.Theme.error : Root.Theme.primary)
-                                    : (isHovered
-                                        ? Qt.rgba(255, 255, 255, 0.12)
-                                        : Qt.rgba(255, 255, 255, 0.05))
+                                // ── Concentric Halo Glow Effect ──
+                                Rectangle {
+                                    id: haloGlow
+                                    anchors.centerIn: parent
+                                    width: parent.width + 12
+                                    height: parent.height + 12
+                                    radius: (actionItem.isSelected || actionItem.isHovered) ? (width / 2) : 23
+                                    color: actionItem.isSelected
+                                        ? (actionItem.isDanger
+                                            ? Qt.rgba(Root.Theme.error.r, Root.Theme.error.g, Root.Theme.error.b, 0.35)
+                                            : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35))
+                                        : (actionItem.isHovered
+                                            ? (actionItem.isDanger
+                                                ? Qt.rgba(Root.Theme.error.r, Root.Theme.error.g, Root.Theme.error.b, 0.22)
+                                                : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.20))
+                                            : "transparent")
+                                    border.width: 1
+                                    border.color: actionItem.isSelected
+                                        ? (actionItem.isDanger ? Root.Theme.error : Root.Theme.primary)
+                                        : (actionItem.isHovered
+                                            ? (actionItem.isDanger
+                                                ? Qt.rgba(Root.Theme.error.r, Root.Theme.error.g, Root.Theme.error.b, 0.40)
+                                                : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35))
+                                            : "transparent")
+                                    z: 0
+                                    scale: (actionItem.isSelected || actionItem.isHovered) ? 1.0 : 0.80
+                                    opacity: (actionItem.isSelected || actionItem.isHovered) ? 1.0 : 0.0
 
-                                border.width: 1
-                                border.color: isSelected
-                                    ? (isDanger ? Root.Theme.error : Root.Theme.primary)
-                                    : (isHovered ? Qt.rgba(255, 255, 255, 0.18) : Qt.rgba(255, 255, 255, 0.08))
-
-                                scale: tileMouse.pressed ? 0.98 : (isHovered || isSelected ? 1.02 : 1.0)
-                                Behavior on scale { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
-                                Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
-                                Behavior on border.color { ColorAnimation { duration: Root.Theme.animDurationFast } }
-
-                                RowLayout {
-                                    anchors.fill: parent
-                                    anchors.leftMargin: 14
-                                    anchors.rightMargin: 14
-                                    spacing: 14
-
-                                    // Leading icon badge
-                                    Rectangle {
-                                        Layout.preferredWidth: 40
-                                        Layout.preferredHeight: 40
-                                        radius: 20
-                                        color: actionTile.isSelected
-                                            ? Qt.rgba(0, 0, 0, 0.18)
-                                            : (actionTile.isDanger
-                                                ? Qt.rgba(Root.Theme.error.r, Root.Theme.error.g, Root.Theme.error.b, 0.18)
-                                                : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.15))
-
-                                        Text {
-                                            anchors.centerIn: parent
-                                            text: modelData.icon
-                                            font.family: Root.Theme.iconFont
-                                            font.pixelSize: 22
-                                            color: actionTile.isSelected
-                                                ? (actionTile.isDanger ? "#FFFFFF" : Root.Theme.tileActiveText)
-                                                : (actionTile.isDanger ? Root.Theme.error : Root.Theme.primary)
-                                        }
-                                    }
-
-                                    // Title + Subtitle
-                                    ColumnLayout {
-                                        Layout.fillWidth: true
-                                        spacing: 2
-
-                                        Text {
-                                            text: modelData.label
-                                            font.family: Root.Theme.fontFamily
-                                            font.pixelSize: 15
-                                            font.weight: Font.DemiBold
-                                            color: actionTile.isSelected
-                                                ? (actionTile.isDanger ? "#FFFFFF" : Root.Theme.tileActiveText)
-                                                : Root.Theme.textPrimary
-                                        }
-
-                                        Text {
-                                            text: modelData.desc
-                                            font.family: Root.Theme.fontFamily
-                                            font.pixelSize: 12
-                                            color: actionTile.isSelected
-                                                ? (actionTile.isDanger ? Qt.rgba(1, 1, 1, 0.85) : Qt.rgba(Root.Theme.tileActiveText.r, Root.Theme.tileActiveText.g, Root.Theme.tileActiveText.b, 0.80))
-                                                : Root.Theme.textSecondary
-                                        }
-                                    }
-
-                                    // Trailing keyboard hint
-                                    Rectangle {
-                                        Layout.preferredWidth: 26
-                                        Layout.preferredHeight: 26
-                                        radius: 8
-                                        color: actionTile.isSelected
-                                            ? Qt.rgba(0, 0, 0, 0.20)
-                                            : Qt.rgba(255, 255, 255, 0.08)
-
-                                        Text {
-                                            anchors.centerIn: parent
-                                            text: modelData.key
-                                            font.family: Root.Theme.fontFamily
-                                            font.pixelSize: 12
-                                            font.weight: Font.Bold
-                                            color: actionTile.isSelected
-                                                ? (actionTile.isDanger ? "#FFFFFF" : Root.Theme.tileActiveText)
-                                                : Root.Theme.textSecondary
-                                        }
-                                    }
+                                    Behavior on opacity { NumberAnimation { duration: 160 } }
+                                    Behavior on scale { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+                                    Behavior on radius { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+                                    Behavior on color { ColorAnimation { duration: 140 } }
+                                    Behavior on border.color { ColorAnimation { duration: 140 } }
                                 }
 
-                                MouseArea {
-                                    id: tileMouse
+                                // ── Main Morphing Action Tile ──
+                                Rectangle {
+                                    id: actionTile
                                     anchors.fill: parent
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onEntered: root.hoveredIndex = index
-                                    onExited: if (root.hoveredIndex === index) root.hoveredIndex = -1
-                                    onClicked: {
-                                        modelData.action();
-                                        menuWindow.closeMenu();
+                                    z: 1
+                                    radius: (actionItem.isSelected || actionItem.isHovered) ? (width / 2) : 18
+
+                                    color: actionItem.isSelected
+                                        ? (actionItem.isDanger ? Root.Theme.error : Root.Theme.primary)
+                                        : (actionItem.isHovered
+                                            ? (actionItem.isDanger
+                                                ? Qt.rgba(Root.Theme.error.r, Root.Theme.error.g, Root.Theme.error.b, 0.22)
+                                                : Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.20))
+                                            : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.75))
+
+                                    border.width: actionItem.isSelected || actionItem.isHovered ? 1.5 : 1
+                                    border.color: actionItem.isSelected
+                                        ? (actionItem.isDanger ? Root.Theme.error : Root.Theme.primary)
+                                        : (actionItem.isHovered
+                                            ? (actionItem.isDanger ? Root.Theme.error : Root.Theme.primary)
+                                            : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.45))
+
+                                    scale: tileMouse.pressed ? 0.92 : (actionItem.isHovered || actionItem.isSelected ? 1.05 : 1.0)
+                                    Behavior on scale { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+                                    Behavior on radius { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+                                    Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+                                    Behavior on border.color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+
+                                    Text {
+                                        anchors.centerIn: parent
+                                        text: modelData.icon
+                                        font.family: Root.Theme.iconFont
+                                        font.pixelSize: 24
+                                        color: actionItem.isSelected
+                                            ? (actionItem.isDanger ? "#38000A" : Root.Theme.tileActiveText)
+                                            : (actionItem.isDanger ? Root.Theme.error : (actionItem.isHovered ? Root.Theme.primary : Root.Theme.textPrimary))
+
+                                        scale: actionItem.isSelected || actionItem.isHovered ? 1.08 : 1.0
+                                        Behavior on scale { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
+                                        Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
+                                    }
+
+                                    MouseArea {
+                                        id: tileMouse
+                                        anchors.fill: parent
+                                        hoverEnabled: true
+                                        cursorShape: Qt.PointingHandCursor
+                                        onEntered: root.hoveredIndex = index
+                                        onExited: if (root.hoveredIndex === index) root.hoveredIndex = -1
+                                        onClicked: {
+                                            modelData.action();
+                                            menuWindow.closeMenu();
+                                        }
                                     }
                                 }
                             }
-                        }
-                    }
-
-                    // ── Subtle Footer Hint ──
-                    RowLayout {
-                        Layout.fillWidth: true
-                        Layout.alignment: Qt.AlignHCenter
-                        Layout.topMargin: 4
-                        spacing: 6
-
-                        Text {
-                            text: "keyboard"
-                            font.family: Root.Theme.iconFont
-                            font.pixelSize: 14
-                            color: Root.Theme.textSecondary
-                        }
-
-                        Text {
-                            text: "Press Esc to dismiss"
-                            font.family: Root.Theme.fontFamily
-                            font.pixelSize: 12
-                            color: Root.Theme.textSecondary
                         }
                     }
                 }
@@ -332,13 +415,21 @@ Scope {
                     if (event.key === Qt.Key_Escape) {
                         menuWindow.closeMenu();
                         event.accepted = true;
-                    } else if (event.key === Qt.Key_Up ||
+                    } else if (event.key === Qt.Key_Up || event.key === Qt.Key_Left ||
                                (event.key === Qt.Key_Tab && (event.modifiers & Qt.ShiftModifier))) {
-                        root.selectedIndex = (root.selectedIndex - 1 + root.buttonCount) % root.buttonCount;
+                        if (root.selectedIndex <= 0) {
+                            root.selectedIndex = root.buttonCount - 1;
+                        } else {
+                            root.selectedIndex = root.selectedIndex - 1;
+                        }
                         root.hoveredIndex = -1;
                         event.accepted = true;
-                    } else if (event.key === Qt.Key_Down || event.key === Qt.Key_Tab) {
-                        root.selectedIndex = (root.selectedIndex + 1) % root.buttonCount;
+                    } else if (event.key === Qt.Key_Down || event.key === Qt.Key_Right || event.key === Qt.Key_Tab) {
+                        if (root.selectedIndex < 0 || root.selectedIndex >= root.buttonCount - 1) {
+                            root.selectedIndex = 0;
+                        } else {
+                            root.selectedIndex = root.selectedIndex + 1;
+                        }
                         root.hoveredIndex = -1;
                         event.accepted = true;
                     } else if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter ||
@@ -346,26 +437,6 @@ Scope {
                         if (root.selectedIndex >= 0 && root.selectedIndex < root.menuItems.length) {
                             root.menuItems[root.selectedIndex].action();
                         }
-                        menuWindow.closeMenu();
-                        event.accepted = true;
-                    } else if (event.key === Qt.Key_S) {
-                        shutdownProc.startDetached();
-                        menuWindow.closeMenu();
-                        event.accepted = true;
-                    } else if (event.key === Qt.Key_R) {
-                        rebootProc.startDetached();
-                        menuWindow.closeMenu();
-                        event.accepted = true;
-                    } else if (event.key === Qt.Key_L) {
-                        lockProc.startDetached();
-                        menuWindow.closeMenu();
-                        event.accepted = true;
-                    } else if (event.key === Qt.Key_E) {
-                        logoutProc.startDetached();
-                        menuWindow.closeMenu();
-                        event.accepted = true;
-                    } else if (event.key === Qt.Key_O) {
-                        reloadProc.startDetached();
                         menuWindow.closeMenu();
                         event.accepted = true;
                     }

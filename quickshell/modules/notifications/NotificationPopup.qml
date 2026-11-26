@@ -23,29 +23,41 @@ Item {
 
     Component.onCompleted: appearAnim.start()
 
+    // dots-hyprland Expressive Spatial spring slide
     ParallelAnimation {
         id: appearAnim
         NumberAnimation {
             target: root; property: "_slideY"
             from: -Math.max(60, card.height)
-            to: 0; duration: 280; easing.type: Easing.OutCubic
+            to: 0; duration: Root.Theme.animDuration
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Root.Theme.curvePanelOpen
         }
         NumberAnimation {
             target: root; property: "_opacity"
             from: 0
-            to: 1; duration: 200; easing.type: Easing.OutQuad
+            to: 1; duration: 200
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Root.Theme.curveEmphasizedDecel
         }
     }
 
+    // dots-hyprland Emphasized Accel close
     ParallelAnimation {
         id: disappearAnim
         NumberAnimation {
             target: root; property: "_slideY"
-            to: -Math.max(60, card.height); duration: 200; easing.type: Easing.InQuad
+            to: -Math.max(60, card.height)
+            duration: Root.Theme.animDurationFast
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Root.Theme.curvePanelClose
         }
         NumberAnimation {
             target: root; property: "_opacity"
-            to: 0; duration: 160; easing.type: Easing.InQuad
+            to: 0
+            duration: 140
+            easing.type: Easing.BezierSpline
+            easing.bezierCurve: Root.Theme.curvePanelClose
         }
         onFinished: root.dismissed(root.notifId)
     }
@@ -59,11 +71,9 @@ Item {
 
     readonly property color currentBorderColor: (root.urgency === "CRITICAL")
         ? Root.Theme.error
-        : Root.Theme.primary
+        : Root.Theme.panelBorder
 
-    readonly property color cardBgColor: Qt.rgba(Root.Theme.panelBg.r,
-                                                 Root.Theme.panelBg.g,
-                                                 Root.Theme.panelBg.b, 0.98)
+    readonly property color cardBgColor: Root.Theme.panelBg
 
     Item {
         id: card
@@ -82,8 +92,6 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             width: parent.width + 56
             height: parent.height
-            layer.enabled: true
-            layer.samples: 4
 
             // 1. Relleno continuo sin costuras
             ShapePath {
@@ -133,7 +141,7 @@ Item {
 
             // 2. Borde perimetral estilo ventana (cubre hombros, laterales y base; abierto hacia Waybar)
             ShapePath {
-                strokeWidth: 2
+                strokeWidth: 1
                 strokeColor: root.currentBorderColor
                 fillColor: "transparent"
                 capStyle: ShapePath.FlatCap

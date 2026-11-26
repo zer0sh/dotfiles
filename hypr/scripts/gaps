@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+STEP=5
+
+# Leer valores actuales de gaps en Hyprland
+read -r _ _ current_in _ < <(hyprctl getoption general:gaps_in 2>/dev/null || echo "")
+read -r _ _ current_out _ < <(hyprctl getoption general:gaps_out 2>/dev/null || echo "")
+
+# Validar enteros
+[[ "${current_in:-}" =~ ^[0-9]+$ ]] || current_in=5
+[[ "${current_out:-}" =~ ^[0-9]+$ ]] || current_out=5
+
+action="${1:-up}"
+
+case "$action" in
+    up|inc|increase|+|=)
+        new_in=$((current_in + STEP))
+        new_out=$((current_out + STEP))
+        ;;
+    down|dec|decrease|-|minus)
+        new_in=$((current_in - STEP))
+        new_out=$((current_out - STEP))
+        (( new_in < 0 )) && new_in=0
+        (( new_out < 0 )) && new_out=0
+        ;;
+    reset)
+        new_in=5
+        new_out=5
+        ;;
+    *)
+        echo "Uso: $0 [up|down|reset]" >&2
+        exit 1
+        ;;
+esac
+
+hyprctl --batch "keyword general:gaps_in $new_in; keyword general:gaps_out $new_out" >/dev/null

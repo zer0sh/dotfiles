@@ -26,20 +26,25 @@ QtObject {
 
     function readPalette() {
         try {
-            var parsed = JSON.parse(fileReader.text());
+            var raw = fileReader.text();
+            if (!raw || raw.trim() === "") return;
+            var parsed = JSON.parse(raw);
             if (parsed && parsed.primary && parsed.background) {
                 data = parsed;
+                console.log("[MatugenPalette] Loaded palette background:", parsed.background, "primary:", parsed.primary);
             }
         } catch (error) {
             console.warn("Matugen palette is unavailable:", error);
         }
     }
 
+    Component.onCompleted: readPalette()
+
     property QtObject fileReader: FileView {
         path: "/home/zero/.config/themes/current/palette.json"
         blockLoading: true
         watchChanges: true
         onLoaded: palette.readPalette()
-        onFileChanged: reload()
+        onFileChanged: palette.readPalette()
     }
 }
