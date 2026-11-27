@@ -17,30 +17,30 @@ Item {
     height: 54
     width: parent ? parent.width : undefined
 
-    // ── Concentric Halo Glow Effect ──
+    // ── Concentric Halo Glow Effect (PowerMenu style) ──
     Rectangle {
         id: itemHalo
         anchors.centerIn: parent
-        width: parent.width + 4
-        height: parent.height + 2
-        radius: 18
+        width: parent.width + 10
+        height: parent.height + 8
+        radius: height / 2
         color: rootItem.isSelected
-            ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.22)
+            ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35)
             : (mouseArea.containsMouse
-                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.10)
+                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.20)
                 : "transparent")
         border.width: 1
         border.color: rootItem.isSelected
             ? Root.Theme.primary
             : (mouseArea.containsMouse
-                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35)
+                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.40)
                 : "transparent")
         z: 0
-        scale: rootItem.isSelected ? 1.0 : (mouseArea.containsMouse ? 0.99 : 0.96)
-        opacity: rootItem.isSelected ? 1.0 : (mouseArea.containsMouse ? 0.70 : 0.0)
+        scale: (rootItem.isSelected || mouseArea.containsMouse) ? 1.0 : 0.82
+        opacity: (rootItem.isSelected || mouseArea.containsMouse) ? 1.0 : 0.0
 
         Behavior on opacity { NumberAnimation { duration: 160 } }
-        Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+        Behavior on scale { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
         Behavior on color { ColorAnimation { duration: 140 } }
         Behavior on border.color { ColorAnimation { duration: 140 } }
     }
@@ -49,12 +49,12 @@ Item {
         id: bg
         anchors.fill: parent
         z: 1
-        radius: 16
+        radius: height / 2
 
         color: rootItem.isSelected
-            ? Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.90)
+            ? Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.95)
             : (mouseArea.containsMouse
-                ? Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.60)
+                ? Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.70)
                 : "transparent")
 
         border.width: rootItem.isSelected ? 1.5 : (mouseArea.containsMouse ? 1 : 0)
@@ -62,6 +62,8 @@ Item {
             ? Root.Theme.primary
             : (mouseArea.containsMouse ? Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.40) : "transparent")
 
+        scale: mouseArea.pressed ? 0.97 : (rootItem.isSelected || mouseArea.containsMouse ? 1.02 : 1.0)
+        Behavior on scale { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
         Behavior on color { ColorAnimation { duration: 120 } }
         Behavior on border.color { ColorAnimation { duration: 120 } }
 
@@ -75,9 +77,9 @@ Item {
             Rectangle {
                 Layout.preferredWidth: 36
                 Layout.preferredHeight: 36
-                radius: 18
+                radius: width / 2
                 color: rootItem.isSelected
-                    ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35)
+                    ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.25)
                     : Root.Theme.surfaceContainerHigh
                 border.width: 1
                 border.color: rootItem.isSelected
@@ -90,9 +92,9 @@ Item {
                 Text {
                     anchors.centerIn: parent
                     text: rootItem.actionIcon
-                    font.family: Root.Theme.fontFamily
+                    font.family: Root.Theme.iconFont
                     font.pixelSize: 19
-                    color: rootItem.isSelected ? Root.Theme.tileActiveText : Root.Theme.primary
+                    color: Root.Theme.primary
                 }
             }
 
