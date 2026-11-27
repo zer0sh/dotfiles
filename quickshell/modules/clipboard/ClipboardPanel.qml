@@ -7,7 +7,7 @@ import Quickshell.Io
 import Quickshell.Wayland
 import "../.." as Root
 
-// Clipboard history panel — bottom-sliding panel (ChromeOS / MD3 style).
+// Clipboard history panel — top-right Dynamic Island drawer
 // Shows copied text entries and image previews from cliphist, with instant search,
 // one-click re-copying, and individual or full history purging.
 Scope {
@@ -15,8 +15,7 @@ Scope {
 
     property bool panelVisible: false
     property bool _showing: false
-    property bool _panelOpen: false
-    property var _edgePanelRef: null
+    property var _drawerRef: null
 
     property var history: []
     property bool loading: false
@@ -28,11 +27,10 @@ Scope {
             searchQuery = ""
             refresh()
         } else {
-            if (_edgePanelRef) {
-                _edgePanelRef.close()
+            if (_drawerRef && _drawerRef.edgePanelRef) {
+                _drawerRef.edgePanelRef.close()
             } else {
                 _showing = false
-                _panelOpen = false
             }
         }
     }
@@ -108,316 +106,190 @@ Scope {
         }
     }
 
-    // ── Overlay window / panel ────────────────────────────────────
+    // ── Overlay window / drawer panel ────────────────────────────
     Loader {
         active: clipPanel._showing
 
-        sourceComponent: PanelWindow {
-            id: panelWindow
-            visible: true
+        sourceComponent: Root.BaseDrawerPanel {
+            id: drawer
+            windowNamespace: "quickshell:clipboard"
+            iconText: "󰅌"
+            titleText: "Clipboard"
+            countText: clipPanel.history.length + " items"
+            showClearAll: clipPanel.history.length > 0
+            contentWidth: Root.Theme.drawerWidth
 
-            anchors { top: true; bottom: true; left: true; right: true }
-
-            color: "transparent"
-            exclusionMode: ExclusionMode.Ignore
-
-            WlrLayershell.namespace: "quickshell:clipboard"
-            WlrLayershell.layer: WlrLayer.Overlay
-            WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
-
-            Shortcut {
-                sequence: "Escape"
-                onActivated: if (_edgePanelRef) _edgePanelRef.close(); else clipPanel.panelVisible = false
+            Component.onCompleted: clipPanel._drawerRef = drawer
+            onPanelClosed: {
+                clipPanel._drawerRef = null
+                clipPanel.panelVisible = false
+                clipPanel._showing = false
             }
+            onClearAllClicked: clipPanel.clearAll()
 
-            Root.EdgePanel {
-                id: edgePanelWrapper
-                edge: "top-right"
-                panelWidth: Math.round(Root.Theme.panelWidth * 0.7) + 28
-                panelHeight: Math.min(panelContent.implicitHeight + 16, panelWindow.height - Root.Theme.shelfHeight - 40)
-                shoulderRadius: 28
-                showDim: false
+            // ── Search Input (Header Extra) ────────────────────────
+            headerExtra: Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: 38
+                Layout.leftMargin: Root.Theme.paddingLarge
+                Layout.rightMargin: Root.Theme.paddingLarge
+                Layout.topMargin: 2
+                Layout.bottomMargin: 8
+                radius: 12
+                color: Root.Theme.surfaceContainer
+                border.width: searchInput.activeFocus ? 1.5 : 1
+                border.color: searchInput.activeFocus
+                    ? Root.Theme.primary
+                    : Qt.rgba(255, 255, 255, 0.08)
 
-                Component.onCompleted: clipPanel._edgePanelRef = edgePanelWrapper
-                onCloseRequested: edgePanelWrapper.close()
-                onClosed: {
-                    clipPanel._edgePanelRef = null
-                    clipPanel.panelVisible = false
-                    clipPanel._showing = false
-                    clipPanel._panelOpen = false
-                }
+                Behavior on border.color { ColorAnimation { duration: 150 } }
 
-                Item {
-                    id: panel
-                    width: Math.round(Root.Theme.panelWidth * 0.7)
-                    height: parent.height
-                    anchors.right: parent.right
+                RowLayout {
+                    anchors.fill: parent
+                    anchors.leftMargin: 12
+                    anchors.rightMargin: 10
+                    spacing: 8
 
-                    // Block click-through
-                    MouseArea {
-                        anchors.fill: parent
+                    Text {
+                        text: "󰍉"
+                        font.family: Root.Theme.fontFamily
+                        font.pixelSize: 16
+                        color: searchInput.activeFocus ? Root.Theme.primary : Root.Theme.textSecondary
                     }
 
-                    ColumnLayout {
-                        id: panelContent
-                        anchors.fill: parent
-                        spacing: 0
+                    TextInput {
+                        id: searchInput
+                        Layout.fillWidth: true
+                        font.family: Root.Theme.fontFamily
+                        font.pixelSize: Root.Theme.fontSizeSmall
+                        color: Root.Theme.textPrimary
+                        selectByMouse: true
+                        selectionColor: Root.Theme.primary
+                        selectedTextColor: Root.Theme.tileActiveText
+                        text: clipPanel.searchQuery
 
-                        // ── Header ────────────────────────────────
-                        RowLayout {
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: 52
-                            Layout.leftMargin: Root.Theme.paddingLarge
-                            Layout.rightMargin: Root.Theme.paddingLarge
-                            Layout.topMargin: 4
-                            spacing: 10
-
-                            Rectangle {
-                                width: 32; height: 32; radius: 9
-                                color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g,
-                                               Root.Theme.primary.b, 0.18)
-                                Layout.alignment: Qt.AlignVCenter
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: "󰅌"
-                                    color: Root.Theme.primary
-                                    font.family: Root.Theme.fontFamily
-                                    font.pixelSize: 16
-                                }
-                            }
-
-                            Text {
-                                text: "Clipboard"
-                                color: Root.Theme.textPrimary
-                                font.family: Root.Theme.fontFamily
-                                font.pixelSize: Root.Theme.fontSizeNormal
-                                font.weight: Font.DemiBold
-                                Layout.alignment: Qt.AlignVCenter
-                            }
-
-                            Item { Layout.fillWidth: true }
-
-                            Text {
-                                text: clipPanel.history.length + " items"
-                                color: Root.Theme.textSecondary
-                                font.family: Root.Theme.fontFamily
-                                font.pixelSize: Root.Theme.fontSizeXS
-                                opacity: 0.7
-                                Layout.alignment: Qt.AlignVCenter
-                            }
+                        onTextChanged: {
+                            clipPanel.searchQuery = text
+                            searchDebounceTimer.restart()
                         }
 
-                        // ── Search Input Field ────────────────────
-                        Rectangle {
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: 38
-                            Layout.leftMargin: Root.Theme.paddingLarge
-                            Layout.rightMargin: Root.Theme.paddingLarge
-                            Layout.topMargin: 2
-                            Layout.bottomMargin: 8
-                            radius: 12
-                            color: Root.Theme.surfaceContainer
-                            border.width: searchInput.activeFocus ? 1.5 : 1
-                            border.color: searchInput.activeFocus
-                                ? Root.Theme.primary
-                                : Qt.rgba(255, 255, 255, 0.08)
+                        Text {
+                            anchors.verticalCenter: parent.verticalCenter
+                            text: "Search history..."
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: Root.Theme.fontSizeSmall
+                            color: Root.Theme.textSecondary
+                            opacity: 0.6
+                            visible: searchInput.text === ""
+                        }
+                    }
 
-                            Behavior on border.color { ColorAnimation { duration: 150 } }
+                    Rectangle {
+                        visible: searchInput.text !== ""
+                        Layout.preferredWidth: 22
+                        Layout.preferredHeight: 22
+                        radius: 11
+                        color: clearSearchMA.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
 
-                            RowLayout {
-                                anchors.fill: parent
-                                anchors.leftMargin: 12
-                                anchors.rightMargin: 10
-                                spacing: 8
-
-                                Text {
-                                    text: "󰍉"
-                                    font.family: Root.Theme.fontFamily
-                                    font.pixelSize: 16
-                                    color: searchInput.activeFocus ? Root.Theme.primary : Root.Theme.textSecondary
-                                }
-
-                                TextInput {
-                                    id: searchInput
-                                    Layout.fillWidth: true
-                                    font.family: Root.Theme.fontFamily
-                                    font.pixelSize: Root.Theme.fontSizeSmall
-                                    color: Root.Theme.textPrimary
-                                    selectByMouse: true
-                                    selectionColor: Root.Theme.primary
-                                    selectedTextColor: Root.Theme.tileActiveText
-                                    text: clipPanel.searchQuery
-
-                                    onTextChanged: {
-                                        clipPanel.searchQuery = text
-                                        searchDebounceTimer.restart()
-                                    }
-
-                                    Text {
-                                        anchors.verticalCenter: parent.verticalCenter
-                                        text: "Search history..."
-                                        font.family: Root.Theme.fontFamily
-                                        font.pixelSize: Root.Theme.fontSizeSmall
-                                        color: Root.Theme.textSecondary
-                                        opacity: 0.6
-                                        visible: searchInput.text === ""
-                                    }
-                                }
-
-                                Rectangle {
-                                    visible: searchInput.text !== ""
-                                    Layout.preferredWidth: 22
-                                    Layout.preferredHeight: 22
-                                    radius: 11
-                                    color: clearSearchMA.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
-
-                                    Text {
-                                        anchors.centerIn: parent
-                                        text: "✕"
-                                        font.family: Root.Theme.fontFamily
-                                        font.pixelSize: 11
-                                        font.weight: Font.Bold
-                                        color: Root.Theme.textSecondary
-                                    }
-
-                                    MouseArea {
-                                        id: clearSearchMA
-                                        anchors.fill: parent
-                                        hoverEnabled: true
-                                        cursorShape: Qt.PointingHandCursor
-                                        onClicked: {
-                                            searchInput.text = ""
-                                            clipPanel.searchQuery = ""
-                                            clipPanel.refresh()
-                                        }
-                                    }
-                                }
-                            }
+                        Text {
+                            anchors.centerIn: parent
+                            text: "✕"
+                            font.family: Root.Theme.fontFamily
+                            font.pixelSize: 11
+                            font.weight: Font.Bold
+                            color: Root.Theme.textSecondary
                         }
 
-                        // ── Clipboard List ────────────────────────
-                        Item {
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: clipPanel.history.length > 0
-                                ? Math.min(clipListView.contentHeight + 24, 480)
-                                : 200
-
-                            // Empty state
-                            ColumnLayout {
-                                anchors.centerIn: parent
-                                spacing: 14
-                                visible: clipPanel.history.length === 0 && !clipPanel.loading
-
-                                Text {
-                                    text: "󰅌"
-                                    color: Root.Theme.textPrimary
-                                    font.family: Root.Theme.fontFamily
-                                    font.pixelSize: 60
-                                    opacity: 0.3
-                                    Layout.alignment: Qt.AlignHCenter
-                                }
-                                Text {
-                                    text: clipPanel.searchQuery !== ""
-                                        ? "No matching clips found"
-                                        : "Clipboard is empty"
-                                    color: Root.Theme.textPrimary
-                                    font.family: Root.Theme.fontFamily
-                                    font.pixelSize: Root.Theme.fontSizeNormal
-                                    opacity: 0.5
-                                    Layout.alignment: Qt.AlignHCenter
-                                }
-                            }
-
-                            // Loading spinner
-                            Text {
-                                anchors.centerIn: parent
-                                text: "Loading…"
-                                color: Root.Theme.textPrimary
-                                font.family: Root.Theme.fontFamily
-                                font.pixelSize: Root.Theme.fontSizeNormal
-                                opacity: 0.5
-                                visible: clipPanel.loading
-                            }
-
-                            ListView {
-                                id: clipListView
-                                anchors.fill: parent
-                                anchors.topMargin: 2
-                                anchors.bottomMargin: 8
-                                clip: true
-                                visible: clipPanel.history.length > 0
-                                spacing: 0
-                                boundsMovement: Flickable.StopAtBounds
-
-                                model: clipPanel.history
-
-                                delegate: ClipboardItem {
-                                    width: clipListView.width
-                                    clipId: modelData.id
-                                    preview: modelData.preview
-                                    isImage: modelData.is_image
-                                    thumb: modelData.thumb
-
-                                    onClickedItem: function(id) {
-                                        clipPanel.copyItem(id)
-                                    }
-
-                                    onDeleteItem: function(id) {
-                                        clipPanel.deleteItem(id)
-                                    }
-                                }
-
-                                ScrollBar.vertical: ScrollBar {
-                                    active: true
-                                    policy: ScrollBar.AsNeeded
-                                }
+                        MouseArea {
+                            id: clearSearchMA
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: {
+                                searchInput.text = ""
+                                clipPanel.searchQuery = ""
+                                clipPanel.refresh()
                             }
                         }
+                    }
+                }
+            }
 
-                        // ── Footer — Clear All ─────────────────────
-                        Item {
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: 52
-                            Layout.topMargin: 0
-                            Layout.bottomMargin: 10
-                            visible: clipPanel.history.length > 0
+            // ── Body ──────────────────────────────────────────────
+            Item {
+                Layout.fillWidth: true
+                Layout.preferredHeight: clipPanel.history.length > 0
+                    ? Math.min(clipListView.contentHeight + 24, 480)
+                    : 200
 
-                            Rectangle {
-                                anchors.right: parent.right
-                                anchors.rightMargin: Root.Theme.paddingLarge
-                                anchors.verticalCenter: parent.verticalCenter
-                                width: clearAllLabel.implicitWidth + 28
-                                height: 44
-                                radius: 22
-                                color: clearAllMA.containsMouse
-                                    ? Qt.rgba(Root.Theme.error.r, Root.Theme.error.g, Root.Theme.error.b, 0.15)
-                                    : Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.60)
-                                border.width: 1
-                                border.color: clearAllMA.containsMouse
-                                    ? Root.Theme.error
-                                    : Qt.rgba(Root.Theme.outline.r, Root.Theme.outline.g, Root.Theme.outline.b, 0.30)
-                                Behavior on color { ColorAnimation { duration: 120 } }
-                                Behavior on border.color { ColorAnimation { duration: 120 } }
+                // Empty state
+                ColumnLayout {
+                    anchors.centerIn: parent
+                    spacing: 14
+                    visible: clipPanel.history.length === 0 && !clipPanel.loading
 
-                                Text {
-                                    id: clearAllLabel
-                                    anchors.centerIn: parent
-                                    text: "Clear all"
-                                    color: clearAllMA.containsMouse ? Root.Theme.error : Root.Theme.textPrimary
-                                    font.family: Root.Theme.fontFamily
-                                    font.pixelSize: Root.Theme.fontSizeNormal
-                                    font.weight: Font.DemiBold
-                                }
+                    Text {
+                        text: "󰅌"
+                        color: Root.Theme.textPrimary
+                        font.family: Root.Theme.fontFamily
+                        font.pixelSize: 60
+                        opacity: 0.3
+                        Layout.alignment: Qt.AlignHCenter
+                    }
+                    Text {
+                        text: clipPanel.searchQuery !== ""
+                            ? "No matching clips found"
+                            : "Clipboard is empty"
+                        color: Root.Theme.textPrimary
+                        font.family: Root.Theme.fontFamily
+                        font.pixelSize: Root.Theme.fontSizeNormal
+                        opacity: 0.5
+                        Layout.alignment: Qt.AlignHCenter
+                    }
+                }
 
-                                MouseArea {
-                                    id: clearAllMA
-                                    anchors.fill: parent
-                                    hoverEnabled: true
-                                    cursorShape: Qt.PointingHandCursor
-                                    onClicked: clipPanel.clearAll()
-                                }
-                            }
+                // Loading spinner
+                Text {
+                    anchors.centerIn: parent
+                    text: "Loading…"
+                    color: Root.Theme.textPrimary
+                    font.family: Root.Theme.fontFamily
+                    font.pixelSize: Root.Theme.fontSizeNormal
+                    opacity: 0.5
+                    visible: clipPanel.loading
+                }
+
+                ListView {
+                    id: clipListView
+                    anchors.fill: parent
+                    anchors.topMargin: 2
+                    anchors.bottomMargin: 8
+                    clip: true
+                    visible: clipPanel.history.length > 0
+                    spacing: 0
+                    boundsMovement: Flickable.StopAtBounds
+
+                    model: clipPanel.history
+
+                    delegate: ClipboardItem {
+                        width: clipListView.width
+                        clipId: modelData.id
+                        preview: modelData.preview
+                        isImage: modelData.is_image
+                        thumb: modelData.thumb
+
+                        onClickedItem: function(id) {
+                            clipPanel.copyItem(id)
                         }
+
+                        onDeleteItem: function(id) {
+                            clipPanel.deleteItem(id)
+                        }
+                    }
+
+                    ScrollBar.vertical: ScrollBar {
+                        active: true
+                        policy: ScrollBar.AsNeeded
                     }
                 }
             }

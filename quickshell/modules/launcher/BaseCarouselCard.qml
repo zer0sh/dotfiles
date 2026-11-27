@@ -40,24 +40,53 @@ Item {
     Behavior on opacity { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
     Behavior on y { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
 
+    // ── Concentric Halo Glow Effect ──
+    Rectangle {
+        id: haloGlow
+        anchors.centerIn: parent
+        width: parent.width + 16
+        height: parent.height + 16
+        radius: root.cardRadius + 8
+        color: root.isSelected
+            ? Qt.rgba(root.accentColor.r, root.accentColor.g, root.accentColor.b, 0.28)
+            : (mouseArea.containsMouse
+                ? Qt.rgba(root.accentColor.r, root.accentColor.g, root.accentColor.b, 0.16)
+                : "transparent")
+        border.width: 1.5
+        border.color: root.isSelected
+            ? root.accentColor
+            : (mouseArea.containsMouse
+                ? Qt.rgba(root.accentColor.r, root.accentColor.g, root.accentColor.b, 0.40)
+                : "transparent")
+        z: 0
+        scale: root.isSelected ? 1.0 : (mouseArea.containsMouse ? 0.98 : 0.88)
+        opacity: root.isSelected ? 1.0 : (mouseArea.containsMouse ? 0.85 : 0.0)
+
+        Behavior on opacity { NumberAnimation { duration: 180 } }
+        Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+        Behavior on color { ColorAnimation { duration: 160 } }
+        Behavior on border.color { ColorAnimation { duration: 160 } }
+    }
+
     Rectangle {
         id: bgCard
         anchors.fill: parent
+        z: 1
         radius: root.cardRadius
 
         color: root.isSelected
             ? Root.Theme.surfaceContainerHigh
             : (mouseArea.containsMouse
                 ? Qt.rgba(Root.Theme.surfaceBright.r, Root.Theme.surfaceBright.g, Root.Theme.surfaceBright.b, 0.95)
-                : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.65))
+                : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.75))
 
-        // Borde único limpio (sin halo exterior flotante redundante)
+        // Borde continuo alineado con el tema
         border.width: root.isSelected ? 2 : (mouseArea.containsMouse ? 1.5 : 1)
         border.color: root.isSelected
             ? root.accentColor
             : (mouseArea.containsMouse
                 ? Qt.rgba(root.accentColor.r, root.accentColor.g, root.accentColor.b, 0.5)
-                : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.25))
+                : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.35))
 
         Behavior on color { ColorAnimation { duration: 180 } }
         Behavior on border.color { ColorAnimation { duration: 180 } }

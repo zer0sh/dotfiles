@@ -43,10 +43,10 @@ Item {
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: parent.top
-            anchors.leftMargin: 20
-            anchors.rightMargin: 20
-            anchors.topMargin: 18
-            anchors.bottomMargin: 18
+            anchors.leftMargin: 16
+            anchors.rightMargin: 16
+            anchors.topMargin: 12
+            anchors.bottomMargin: 12
             spacing: 6
 
             // ── Header: app name · time · dismiss ────────────

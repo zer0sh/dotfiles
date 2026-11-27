@@ -96,7 +96,7 @@ Scope {
             Root.EdgePanel {
                 id: edgePanelWrapper
                 edge: "top"
-                panelWidth: 360 + 56
+                panelWidth: Root.Theme.musicPanelWidth + 56
                 panelHeight: Math.min(panelContent.implicitHeight + 20, 460)
                 shoulderRadius: 28
                 showDim: false

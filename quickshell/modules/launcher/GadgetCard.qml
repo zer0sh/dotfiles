@@ -32,15 +32,50 @@ Item {
     Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
     Behavior on y { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
+    // ── Concentric Halo Glow Effect ──
+    Rectangle {
+        id: haloGlow
+        anchors.centerIn: parent
+        width: parent.width + 16
+        height: parent.height + 16
+        radius: 26
+        color: cardRoot.isSelected
+            ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.28)
+            : (mouseArea.containsMouse
+                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.16)
+                : "transparent")
+        border.width: 1.5
+        border.color: cardRoot.isSelected
+            ? Root.Theme.primary
+            : (mouseArea.containsMouse
+                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.40)
+                : "transparent")
+        z: 0
+        scale: cardRoot.isSelected ? 1.0 : (mouseArea.containsMouse ? 0.98 : 0.88)
+        opacity: cardRoot.isSelected ? 1.0 : (mouseArea.containsMouse ? 0.85 : 0.0)
+
+        Behavior on opacity { NumberAnimation { duration: 180 } }
+        Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
+        Behavior on color { ColorAnimation { duration: 160 } }
+        Behavior on border.color { ColorAnimation { duration: 160 } }
+    }
+
     Rectangle {
         id: bgCard
         anchors.fill: parent
+        z: 1
         radius: 18
         color: cardRoot.isSelected
             ? Root.Theme.surfaceContainerHigh
-            : (mouseArea.containsMouse ? Root.Theme.surfaceContainer : Root.Theme.surface)
-        border.color: Root.Theme.primary
-        border.width: 2
+            : (mouseArea.containsMouse
+                ? Qt.rgba(Root.Theme.surfaceBright.r, Root.Theme.surfaceBright.g, Root.Theme.surfaceBright.b, 0.95)
+                : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.75))
+        border.color: cardRoot.isSelected
+            ? Root.Theme.primary
+            : (mouseArea.containsMouse
+                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.50)
+                : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.35))
+        border.width: cardRoot.isSelected ? 2 : (mouseArea.containsMouse ? 1.5 : 1)
         clip: true
 
         Behavior on color { ColorAnimation { duration: 180 } }

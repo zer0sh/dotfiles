@@ -289,6 +289,8 @@ QtObject {
 
     // ── Layout constants ───────────────────────────────────────────
     readonly property int panelWidth: 880
+    readonly property int musicPanelWidth: 360
+    readonly property int drawerWidth: 360
     readonly property int panelRadius: 32
     readonly property int tileRadius: 22
     readonly property int tileHeight: 70

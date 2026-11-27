@@ -17,20 +17,50 @@ Item {
     height: 56
     width: parent ? parent.width : undefined
 
+    // ── Concentric Halo Glow Effect ──
+    Rectangle {
+        id: itemHalo
+        anchors.centerIn: parent
+        width: parent.width + 4
+        height: parent.height + 2
+        radius: 18
+        color: rootItem.isSelected
+            ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.22)
+            : (mouseArea.containsMouse
+                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.10)
+                : "transparent")
+        border.width: 1
+        border.color: rootItem.isSelected
+            ? Root.Theme.primary
+            : (mouseArea.containsMouse
+                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35)
+                : "transparent")
+        z: 0
+        scale: rootItem.isSelected ? 1.0 : (mouseArea.containsMouse ? 0.99 : 0.96)
+        opacity: rootItem.isSelected ? 1.0 : (mouseArea.containsMouse ? 0.70 : 0.0)
+
+        Behavior on opacity { NumberAnimation { duration: 160 } }
+        Behavior on scale { NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+        Behavior on color { ColorAnimation { duration: 140 } }
+        Behavior on border.color { ColorAnimation { duration: 140 } }
+    }
+
     Rectangle {
         id: bg
         anchors.fill: parent
-        radius: 12
+        z: 1
+        radius: 16
 
-        // Contraste elevado y distinguible: sombreado primario en selección
         color: rootItem.isSelected
-            ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.22)
-            : (mouseArea.containsMouse ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.08) : "transparent")
+            ? Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.90)
+            : (mouseArea.containsMouse
+                ? Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.60)
+                : "transparent")
 
         border.width: rootItem.isSelected ? 1.5 : (mouseArea.containsMouse ? 1 : 0)
         border.color: rootItem.isSelected
             ? Root.Theme.primary
-            : (mouseArea.containsMouse ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.4) : "transparent")
+            : (mouseArea.containsMouse ? Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.40) : "transparent")
 
         Behavior on color { ColorAnimation { duration: 120 } }
         Behavior on border.color { ColorAnimation { duration: 120 } }
@@ -41,12 +71,27 @@ Item {
             anchors.rightMargin: 12
             spacing: 12
 
-            // Icono de la aplicación
+            // Icono de la aplicación con halo sutil
             Item {
-                Layout.preferredWidth: 36
-                Layout.preferredHeight: 36
+                Layout.preferredWidth: 38
+                Layout.preferredHeight: 38
                 scale: rootItem.isSelected ? 1.08 : (mouseArea.containsMouse ? 1.04 : 1.0)
                 Behavior on scale { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
+
+                // Halo circular del icono
+                Rectangle {
+                    anchors.centerIn: parent
+                    width: parent.width + 6
+                    height: parent.height + 6
+                    radius: width / 2
+                    color: rootItem.isSelected
+                        ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.25)
+                        : "transparent"
+                    opacity: rootItem.isSelected ? 1.0 : 0.0
+                    scale: rootItem.isSelected ? 1.0 : 0.8
+                    Behavior on opacity { NumberAnimation { duration: 140 } }
+                    Behavior on scale { NumberAnimation { duration: 140 } }
+                }
 
                 // Imagen de icono si existe ruta
                 Image {
@@ -62,7 +107,7 @@ Item {
                 // Fallback: Círculo coloreado con inicial
                 Rectangle {
                     anchors.fill: parent
-                    radius: 18
+                    radius: width / 2
                     visible: rootItem.iconPath === "" || iconImg.status === Image.Error
                     color: {
                         var code = rootItem.appName.length > 0 ? rootItem.appName.charCodeAt(0) : 0;
@@ -113,12 +158,12 @@ Item {
                 }
             }
 
-            // Badge indicador al estar seleccionado: solo icono
+            // Badge indicador 1:1 circular al estar seleccionado
             Rectangle {
                 visible: rootItem.isSelected
-                Layout.preferredWidth: 26
-                Layout.preferredHeight: 26
-                radius: 7
+                Layout.preferredWidth: 28
+                Layout.preferredHeight: 28
+                radius: 14
                 color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.28)
                 border.width: 1
                 border.color: Root.Theme.primary

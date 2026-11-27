@@ -34,7 +34,7 @@ PanelWindow {
     property string clearAllText: "Clear all"
 
     signal clearAllClicked()
-    signal closed()
+    signal panelClosed()
 
     default property alias content: bodySlot.data
     property alias headerExtra: headerExtraSlot.data
@@ -55,7 +55,7 @@ PanelWindow {
 
         onCloseRequested: edgePanelWrapper.close()
         onClosed: {
-            panelWindow.closed()
+            panelWindow.panelClosed()
         }
 
         Item {

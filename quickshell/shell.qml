@@ -57,6 +57,10 @@ ShellRoot {
         id: notificationToasts
     }
 
+    Notifications.NotificationCenter {
+        id: notificationCenter
+    }
+
     Clipboard.ClipboardPanel {
         id: clipboardPanel
     }
@@ -145,6 +149,7 @@ ShellRoot {
                 controlCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
                 clipboardPanel.panelVisible = false;
+                notificationCenter.panelVisible = false;
                 desktopOverview.visible = false;
                 settingsWindow.visible = false;
             }
@@ -158,6 +163,7 @@ ShellRoot {
                 powerMenu.menuOpen = false;
                 appLauncher.panelVisible = false;
                 clipboardPanel.panelVisible = false;
+                notificationCenter.panelVisible = false;
                 desktopOverview.visible = false;
                 settingsWindow.visible = false;
             }
@@ -175,6 +181,7 @@ ShellRoot {
                 powerMenu.menuOpen = false;
                 controlCenter.panelVisible = false;
                 clipboardPanel.panelVisible = false;
+                notificationCenter.panelVisible = false;
                 desktopOverview.visible = false;
                 settingsWindow.visible = false;
             }
@@ -188,6 +195,21 @@ ShellRoot {
                 powerMenu.menuOpen = false;
                 controlCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
+                notificationCenter.panelVisible = false;
+                desktopOverview.visible = false;
+                settingsWindow.visible = false;
+            }
+        }
+    }
+
+    Connections {
+        target: notificationCenter
+        function onPanelVisibleChanged() {
+            if (notificationCenter.panelVisible) {
+                powerMenu.menuOpen = false;
+                controlCenter.panelVisible = false;
+                appLauncher.panelVisible = false;
+                clipboardPanel.panelVisible = false;
                 desktopOverview.visible = false;
                 settingsWindow.visible = false;
             }
@@ -202,6 +224,7 @@ ShellRoot {
                 controlCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
                 clipboardPanel.panelVisible = false;
+                notificationCenter.panelVisible = false;
                 settingsWindow.visible = false;
             }
         }
@@ -215,6 +238,7 @@ ShellRoot {
                 controlCenter.panelVisible = false;
                 appLauncher.panelVisible = false;
                 clipboardPanel.panelVisible = false;
+                notificationCenter.panelVisible = false;
                 desktopOverview.visible = false;
             }
         }

@@ -29,25 +29,35 @@ Item {
 
     Process {
         id: muteProc
+        command: ["wpctl", "set-mute", "@DEFAULT_AUDIO_SOURCE@", "toggle"]
+    }
+
+    Timer {
+        id: micVolThrottler
+        interval: 30
+        repeat: false
+        property real targetVol: 0
+        onTriggered: {
+            setVolProc.command = ["wpctl", "set-volume", "--limit", "1.0", "@DEFAULT_AUDIO_SOURCE@", targetVol.toFixed(2)];
+            setVolProc.running = true;
+        }
     }
 
     function setVolume(value) {
         var clamped = Math.min(Math.max(value, 0.0), 1.0);
         if (audio && audio.audio) {
             audio.audio.volume = clamped;
-        } else {
-            setVolProc.command = ["wpctl", "set-volume", "@DEFAULT_SOURCE@", clamped.toFixed(2)];
-            setVolProc.running = true;
         }
+        micVolThrottler.targetVol = clamped;
+        if (!micVolThrottler.running)
+            micVolThrottler.restart();
     }
 
     function toggleMute() {
         if (audio && audio.audio) {
             audio.audio.muted = !audio.audio.muted;
-        } else {
-            muteProc.command = ["wpctl", "set-mute", "@DEFAULT_SOURCE@", "toggle"];
-            muteProc.running = true;
         }
+        muteProc.running = true;
     }
 
     function micIcon(level, muted) {

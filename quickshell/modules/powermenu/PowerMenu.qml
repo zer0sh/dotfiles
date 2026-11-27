@@ -273,11 +273,11 @@ Scope {
                     }
                 }
 
-                // Main floating rounded card
+                // Main floating rounded card (capsule pill)
                 Rectangle {
                     id: panelCard
                     anchors.fill: parent
-                    radius: 28
+                    radius: width / 2
                     color: Qt.rgba(Root.Theme.panelBg.r,
                                    Root.Theme.panelBg.g,
                                    Root.Theme.panelBg.b, 0.88)
@@ -315,7 +315,7 @@ Scope {
                                     anchors.centerIn: parent
                                     width: parent.width + 12
                                     height: parent.height + 12
-                                    radius: (actionItem.isSelected || actionItem.isHovered) ? (width / 2) : 23
+                                    radius: width / 2
                                     color: actionItem.isSelected
                                         ? (actionItem.isDanger
                                             ? Qt.rgba(Root.Theme.error.r, Root.Theme.error.g, Root.Theme.error.b, 0.35)
@@ -339,17 +339,16 @@ Scope {
 
                                     Behavior on opacity { NumberAnimation { duration: 160 } }
                                     Behavior on scale { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
-                                    Behavior on radius { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
                                     Behavior on color { ColorAnimation { duration: 140 } }
                                     Behavior on border.color { ColorAnimation { duration: 140 } }
                                 }
 
-                                // ── Main Morphing Action Tile ──
+                                // ── Main Action Tile (Consistently Circular) ──
                                 Rectangle {
                                     id: actionTile
                                     anchors.fill: parent
                                     z: 1
-                                    radius: (actionItem.isSelected || actionItem.isHovered) ? (width / 2) : 18
+                                    radius: width / 2
 
                                     color: actionItem.isSelected
                                         ? (actionItem.isDanger ? Root.Theme.error : Root.Theme.primary)
@@ -368,7 +367,6 @@ Scope {
 
                                     scale: tileMouse.pressed ? 0.92 : (actionItem.isHovered || actionItem.isSelected ? 1.05 : 1.0)
                                     Behavior on scale { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
-                                    Behavior on radius { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
                                     Behavior on color { ColorAnimation { duration: Root.Theme.animDurationFast } }
                                     Behavior on border.color { ColorAnimation { duration: Root.Theme.animDurationFast } }
 
