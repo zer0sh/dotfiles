@@ -43,7 +43,7 @@ Rectangle {
     Timer {
         interval: 1000
         repeat: true
-        running: true
+        running: root.visible
         onTriggered: root.updateTime()
     }
 

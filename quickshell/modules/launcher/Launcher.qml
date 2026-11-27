@@ -2090,6 +2090,10 @@ Scope {
                         ListView {
                             id: actionsList
                             anchors.fill: parent
+                            anchors.topMargin: 4
+                            anchors.bottomMargin: 4
+                            anchors.leftMargin: 4
+                            anchors.rightMargin: 4
                             spacing: 4
                             clip: true
                             model: launcher.filteredActions
@@ -2511,6 +2515,10 @@ Scope {
                         ListView {
                             id: appsList
                             anchors.fill: parent
+                            anchors.topMargin: 4
+                            anchors.bottomMargin: 4
+                            anchors.leftMargin: 4
+                            anchors.rightMargin: 4
                             spacing: 4
                             clip: true
                             model: launcher.filteredApps

@@ -128,11 +128,11 @@ Scope {
         deskClock.refreshGreeting()
     }
 
-    // Actualización cada segundo (suficiente para hora y progreso suave).
+    // Actualización cada segundo (solo cuando el gadget está activo en pantalla).
     Timer {
         interval: 1000
         repeat: true
-        running: true
+        running: deskClock.panelVisible
         onTriggered: deskClock.updateClock()
     }
 

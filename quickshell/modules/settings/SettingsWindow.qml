@@ -84,8 +84,10 @@ Scope {
                 Item {
                     id: dialogBox
                     anchors.fill: parent
-                    anchors.leftMargin: 28
-                    anchors.rightMargin: 28
+                    anchors.leftMargin: 20
+                    anchors.rightMargin: 20
+                    anchors.topMargin: 16
+                    anchors.bottomMargin: 16
                     clip: true
 
                     // Prevenir cierre accidental al interactuar dentro

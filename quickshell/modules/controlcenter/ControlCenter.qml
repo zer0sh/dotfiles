@@ -503,50 +503,220 @@ Scope {
             WlrLayershell.layer: WlrLayer.Overlay
             WlrLayershell.keyboardFocus: WlrKeyboardFocus.Exclusive
 
+            readonly property real _maxSlide: 80.0
+            readonly property real _initialScalePrimary: 0.76
+            readonly property real _initialScaleSecondary: 0.86
+
+            property real _slideY: -_maxSlide
+            property real _scaleY: _initialScalePrimary
+            property real _scaleX: _initialScaleSecondary
+            property real _opacity: 0.0
+            property real _dimOpacity: 0.0
+            property real _contentScale: 0.92
+            property real _contentOpacity: 0.0
+
+            Component.onCompleted: {
+                controlCenter._edgePanelRef = panelWindow;
+                appearAnim.start();
+            }
+
+            function close(): void {
+                if (!dismissAnim.running) {
+                    appearAnim.stop();
+                    dismissAnim.start();
+                }
+            }
+
             Shortcut {
                 sequence: "Escape"
                 onActivated: {
                     if (controlCenter.currentPage !== "main")
                         controlCenter.currentPage = "main"
                     else
-                        controlCenter.close()
+                        panelWindow.close()
                 }
             }
 
-            Root.EdgePanel {
-                id: edgePanelWrapper
-                edge: "top"
-                panelWidth: Root.Theme.panelWidth + 56
-                panelHeight: pageContainer.height + 6
-                shoulderRadius: 28
-                showDim: true
-                dimMaxOpacity: 0.35
-                closeOnClickOutside: true
-                Component.onCompleted: controlCenter._edgePanelRef = edgePanelWrapper
-                onCloseRequested: {
-                    if (controlCenter.currentPage !== "main")
-                        controlCenter.currentPage = "main"
-                    else
-                        controlCenter.close()
+            // Expressive Spatial spring bounce
+            ParallelAnimation {
+                id: appearAnim
+
+                NumberAnimation {
+                    target: panelWindow; property: "_slideY"
+                    from: -panelWindow._maxSlide; to: 0.0
+                    duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelOpen
                 }
-                onClosed: {
-                    controlCenter._edgePanelRef = null
-                    controlCenter.panelVisible = false
-                    controlCenter._showing = false
-                    controlCenter._panelOpen = false
-                    controlCenter.currentPage = "main"
+
+                NumberAnimation {
+                    target: panelWindow; property: "_scaleY"
+                    from: panelWindow._initialScalePrimary; to: 1.0
+                    duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelOpen
+                }
+
+                NumberAnimation {
+                    target: panelWindow; property: "_scaleX"
+                    from: panelWindow._initialScaleSecondary; to: 1.0
+                    duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curvePanelOpen
+                }
+
+                NumberAnimation {
+                    target: panelWindow; property: "_opacity"
+                    from: 0.0; to: 1.0; duration: 220
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                }
+
+                NumberAnimation {
+                    target: panelWindow; property: "_dimOpacity"
+                    from: 0.0; to: 0.40; duration: Root.Theme.animDuration
+                    easing.type: Easing.BezierSpline
+                    easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                }
+
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: panelWindow; property: "_contentScale"
+                        from: 0.92; to: 1.0
+                        duration: Root.Theme.animDuration
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelOpen
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_contentOpacity"
+                        from: 0.0; to: 1.0; duration: 220
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curveEmphasizedDecel
+                    }
+                }
+            }
+
+            // Emphasized Accel close
+            SequentialAnimation {
+                id: dismissAnim
+                ParallelAnimation {
+                    NumberAnimation {
+                        target: panelWindow; property: "_contentScale"
+                        to: 0.92; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_contentOpacity"
+                        to: 0.0; duration: 140
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_slideY"
+                        to: -panelWindow._maxSlide; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_scaleY"
+                        to: panelWindow._initialScalePrimary; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_scaleX"
+                        to: panelWindow._initialScaleSecondary; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_opacity"
+                        to: 0.0; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                    NumberAnimation {
+                        target: panelWindow; property: "_dimOpacity"
+                        to: 0.0; duration: Root.Theme.animDurationFast
+                        easing.type: Easing.BezierSpline
+                        easing.bezierCurve: Root.Theme.curvePanelClose
+                    }
+                }
+                ScriptAction {
+                    script: {
+                        controlCenter._edgePanelRef = null
+                        controlCenter.panelVisible = false
+                        controlCenter._showing = false
+                        controlCenter._panelOpen = false
+                        controlCenter.currentPage = "main"
+                    }
+                }
+            }
+
+            // Fondo semitransparente oscuro con clic exterior para cerrar
+            Rectangle {
+                id: backgroundDimRect
+                anchors.fill: parent
+                color: Qt.rgba(0, 0, 0, panelWindow._dimOpacity)
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {
+                        if (controlCenter.currentPage !== "main")
+                            controlCenter.currentPage = "main"
+                        else
+                            panelWindow.close()
+                    }
+                }
+            }
+
+            // ── Contenedor Flotante Estilo Isla Superior ──
+            Item {
+                id: floatingCardWrapper
+                z: 10
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: Root.Theme.shelfHeight + 14
+                width: Root.Theme.panelWidth
+                height: pageContainer.height + 32
+                opacity: panelWindow._opacity
+
+                Behavior on height { NumberAnimation { duration: 240; easing.type: Easing.OutCubic } }
+
+                transformOrigin: Item.Top
+                transform: [
+                    Translate {
+                        y: (appearAnim.running || dismissAnim.running) ? panelWindow._slideY : 0.0
+                    },
+                    Scale {
+                        origin.x: floatingCardWrapper.width / 2
+                        origin.y: 0
+                        xScale: (appearAnim.running || dismissAnim.running) ? panelWindow._scaleX : 1.0
+                        yScale: (appearAnim.running || dismissAnim.running) ? panelWindow._scaleY : 1.0
+                    }
+                ]
+
+                // Fondo flotante unificado simétrico
+                Rectangle {
+                    id: floatingCardBg
+                    anchors.fill: parent
+                    radius: 28
+                    color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.90)
+                    border.width: 1.5
+                    border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.60)
                 }
 
                 Item {
                     id: panel
                     anchors.fill: parent
-                    anchors.leftMargin: 28
-                    anchors.rightMargin: 28
-                    anchors.topMargin: 4
-                    anchors.bottomMargin: 4
+                    anchors.leftMargin: 16
+                    anchors.rightMargin: 16
+                    anchors.topMargin: 16
+                    anchors.bottomMargin: 16
                     clip: true
 
-                    // block click-through to overlay close area
+                    // Bloquear clics para que no lleguen al fondo
                     MouseArea {
                         anchors.fill: parent
                     }
@@ -556,6 +726,8 @@ Scope {
                         width: panel.width
                         height: mainPage.height
                         anchors.top: parent.top
+                        scale: panelWindow._contentScale
+                        opacity: panelWindow._contentOpacity
 
                     // MAIN PAGE
                     Item {

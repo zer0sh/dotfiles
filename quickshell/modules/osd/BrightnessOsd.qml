@@ -50,15 +50,9 @@ Scope {
         }
     }
 
-    Timer {
-        interval: 3500
-        running: true
-        repeat: true
-        triggeredOnStart: true
-        onTriggered: {
-            if (!readProc.running) {
-                readProc.running = true;
-            }
+    Component.onCompleted: {
+        if (!readProc.running) {
+            readProc.running = true;
         }
     }
 
@@ -188,10 +182,10 @@ Scope {
         // ── Card container anchored directly to Waybar shelf ─────────
         Item {
             id: osdWrapper
-            width: 416
+            width: 360
             height: 64
             anchors.top: parent.top
-            anchors.topMargin: Root.Theme.shelfHeight - 4
+            anchors.topMargin: Root.Theme.shelfHeight + 14
             anchors.horizontalCenter: parent.horizontalCenter
 
             Item {
@@ -202,7 +196,7 @@ Scope {
                 property real _translateY: 0.0
 
                 width: 360
-                height: 64
+                height: 52
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 opacity: _opacity
@@ -220,105 +214,24 @@ Scope {
                     }
                 ]
 
-                // Unified Dynamic Island Shape with G1 continuous Bezier fillets
-                Shape {
-                    id: osdShape
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    width: parent.width + 56
-
-                    // 1. Unified glass surface fill — covers from y=0 (screen y=32) to fully obscure Waybar's 2px border
-                    ShapePath {
-                        strokeWidth: 0
-                        strokeColor: "transparent"
-                        fillColor: Root.Theme.panelBg
-
-                        startX: 0
-                        startY: 0
-
-                        PathLine { x: 0; y: 3 }
-
-                        // Left concave shoulder fillet with zero horizontal tangent at y=3 (screen y=35)
-                        PathCubic {
-                            control1X: 14; control1Y: 3
-                            control2X: 28; control2Y: 17
-                            x: 28; y: 31
-                        }
-                        // Left flank
-                        PathLine { x: 28; y: Math.max(31, osdShape.height - 28) }
-                        // Bottom-left rounded corner
-                        PathCubic {
-                            control1X: 28; control1Y: osdShape.height - 14
-                            control2X: 42; control2Y: osdShape.height
-                            x: 56; y: osdShape.height
-                        }
-                        // Bottom horizontal base
-                        PathLine { x: Math.max(56, osdShape.width - 56); y: osdShape.height }
-                        // Bottom-right rounded corner
-                        PathCubic {
-                            control1X: osdShape.width - 42; control1Y: osdShape.height
-                            control2X: osdShape.width - 28; control2Y: osdShape.height - 14
-                            x: osdShape.width - 28; y: Math.max(31, osdShape.height - 28)
-                        }
-                        // Right flank
-                        PathLine { x: osdShape.width - 28; y: 31 }
-                        // Right concave shoulder fillet with zero horizontal exit tangent at y=3 (screen y=35)
-                        PathCubic {
-                            control1X: osdShape.width - 28; control1Y: 17
-                            control2X: osdShape.width - 14; control2Y: 3
-                            x: osdShape.width; y: 3
-                        }
-                        // Top bridge over Waybar border
-                        PathLine { x: osdShape.width; y: 0 }
-                        PathLine { x: 0; y: 0 }
-                    }
-
-                    // 2. Subtle glass outline
-                    ShapePath {
-                        strokeWidth: 1
-                        strokeColor: Root.Theme.panelBorder
-                        fillColor: "transparent"
-                        capStyle: ShapePath.FlatCap
-                        joinStyle: ShapePath.RoundJoin
-
-                        startX: 0
-                        startY: 3
-
-                        PathCubic {
-                            control1X: 14; control1Y: 3
-                            control2X: 28; control2Y: 17
-                            x: 28; y: 31
-                        }
-                        PathLine { x: 28; y: Math.max(31, osdShape.height - 28) }
-                        PathCubic {
-                            control1X: 28; control1Y: osdShape.height - 14
-                            control2X: 42; control2Y: osdShape.height
-                            x: 56; y: osdShape.height
-                        }
-                        PathLine { x: Math.max(56, osdShape.width - 56); y: osdShape.height }
-                        PathCubic {
-                            control1X: osdShape.width - 42; control1Y: osdShape.height
-                            control2X: osdShape.width - 28; control2Y: osdShape.height - 14
-                            x: osdShape.width - 28; y: Math.max(31, osdShape.height - 28)
-                        }
-                        PathLine { x: osdShape.width - 28; y: 31 }
-                        PathCubic {
-                            control1X: osdShape.width - 28; control1Y: 17
-                            control2X: osdShape.width - 14; control2Y: 3
-                            x: osdShape.width; y: 3
-                        }
-                    }
+                // Fondo flotante unificado en píldora
+                Rectangle {
+                    id: osdCardBg
+                    anchors.fill: parent
+                    radius: height / 2
+                    color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.90)
+                    border.width: 1.5
+                    border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.60)
                 }
 
                 // Content layout
                 RowLayout {
                     id: cardContent
                     anchors.fill: parent
-                    anchors.topMargin: 8
-                    anchors.bottomMargin: 4
+                    anchors.topMargin: 0
+                    anchors.bottomMargin: 0
                     anchors.leftMargin: 16
-                    anchors.rightMargin: 16
+                    anchors.rightMargin: 18
                     spacing: 12
 
                         // Icon badge

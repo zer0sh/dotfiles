@@ -68,7 +68,7 @@ Rectangle {
     Timer {
         interval: 900000 // Refresh every 15 minutes
         repeat: true
-        running: true
+        running: weatherRoot.visible
         onTriggered: {
             if (!weatherProc.running) weatherProc.running = true;
         }

@@ -90,7 +90,7 @@ Scope {
     Timer {
         interval: 900000 // 15 mins
         repeat: true
-        running: true
+        running: weatherGadget.panelVisible
         onTriggered: {
             if (!weatherProc.running) weatherProc.running = true;
         }

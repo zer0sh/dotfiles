@@ -17,30 +17,29 @@ Item {
     height: 56
     width: parent ? parent.width : undefined
 
-    // ── Concentric Halo Glow Effect (PowerMenu style) ──
+    // ── Concentric Halo Glow Effect (PowerMenu style, perfectly concentric) ──
     Rectangle {
         id: itemHalo
-        anchors.centerIn: parent
-        width: parent.width + 10
-        height: parent.height + 8
+        anchors.centerIn: bg
+        width: bg.width + 8
+        height: bg.height + 8
         radius: height / 2
+
         color: rootItem.isSelected
-            ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35)
+            ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.28)
             : (mouseArea.containsMouse
-                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.20)
+                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.16)
                 : "transparent")
-        border.width: 1
+        border.width: 1.5
         border.color: rootItem.isSelected
             ? Root.Theme.primary
             : (mouseArea.containsMouse
                 ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.40)
                 : "transparent")
         z: 0
-        scale: (rootItem.isSelected || mouseArea.containsMouse) ? 1.0 : 0.82
         opacity: (rootItem.isSelected || mouseArea.containsMouse) ? 1.0 : 0.0
 
         Behavior on opacity { NumberAnimation { duration: 160 } }
-        Behavior on scale { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
         Behavior on color { ColorAnimation { duration: 140 } }
         Behavior on border.color { ColorAnimation { duration: 140 } }
     }
@@ -48,57 +47,43 @@ Item {
     Rectangle {
         id: bg
         anchors.fill: parent
+        anchors.leftMargin: 10
+        anchors.rightMargin: 10
+        anchors.topMargin: 4
+        anchors.bottomMargin: 4
         z: 1
         radius: height / 2
 
         color: rootItem.isSelected
-            ? Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.95)
-            : (mouseArea.containsMouse
-                ? Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.70)
-                : "transparent")
-
-        border.width: rootItem.isSelected ? 1.5 : (mouseArea.containsMouse ? 1 : 0)
-        border.color: rootItem.isSelected
             ? Root.Theme.primary
-            : (mouseArea.containsMouse ? Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.40) : "transparent")
+            : (mouseArea.containsMouse
+                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.16)
+                : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.65))
 
-        scale: mouseArea.pressed ? 0.97 : (rootItem.isSelected || mouseArea.containsMouse ? 1.02 : 1.0)
-        Behavior on scale { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
+        border.width: rootItem.isSelected ? 0 : (mouseArea.containsMouse ? 1 : 0)
+        border.color: mouseArea.containsMouse ? Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.40) : "transparent"
+
         Behavior on color { ColorAnimation { duration: 120 } }
         Behavior on border.color { ColorAnimation { duration: 120 } }
 
         RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 12
-            anchors.rightMargin: 12
+            anchors.leftMargin: 10
+            anchors.rightMargin: 10
             spacing: 12
 
-            // Icono de la aplicación con halo sutil
+            // Icono de la aplicación
             Item {
-                Layout.preferredWidth: 38
-                Layout.preferredHeight: 38
-                scale: rootItem.isSelected ? 1.08 : (mouseArea.containsMouse ? 1.04 : 1.0)
-                Behavior on scale { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
-
-                // Halo circular del icono
-                Rectangle {
-                    anchors.centerIn: parent
-                    width: parent.width + 6
-                    height: parent.height + 6
-                    radius: width / 2
-                    color: rootItem.isSelected
-                        ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.25)
-                        : "transparent"
-                    opacity: rootItem.isSelected ? 1.0 : 0.0
-                    scale: rootItem.isSelected ? 1.0 : 0.8
-                    Behavior on opacity { NumberAnimation { duration: 140 } }
-                    Behavior on scale { NumberAnimation { duration: 140 } }
-                }
+                Layout.preferredWidth: 36
+                Layout.preferredHeight: 36
+                Layout.alignment: Qt.AlignVCenter
 
                 // Imagen de icono si existe ruta
                 Image {
                     id: iconImg
-                    anchors.fill: parent
+                    anchors.centerIn: parent
+                    width: 32
+                    height: 32
                     source: rootItem.iconPath
                     fillMode: Image.PreserveAspectFit
                     smooth: true
@@ -126,7 +111,7 @@ Item {
                         anchors.centerIn: parent
                         text: rootItem.appName.length > 0 ? rootItem.appName.charAt(0).toUpperCase() : "?"
                         font.family: Root.Theme.fontFamily
-                        font.pixelSize: 17
+                        font.pixelSize: 16
                         font.weight: Font.Bold
                         color: "#ffffff"
                     }
@@ -136,6 +121,7 @@ Item {
             // Nombre y descripción
             ColumnLayout {
                 Layout.fillWidth: true
+                Layout.alignment: Qt.AlignVCenter
                 spacing: 2
 
                 Text {
@@ -143,7 +129,7 @@ Item {
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: 15
                     font.weight: rootItem.isSelected ? Font.Bold : Font.DemiBold
-                    color: rootItem.isSelected ? Root.Theme.primary : Root.Theme.textPrimary
+                    color: rootItem.isSelected ? Root.Theme.tileActiveText : Root.Theme.textPrimary
                     elide: Text.ElideRight
                     Layout.fillWidth: true
                 }
@@ -153,7 +139,7 @@ Item {
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: 13
                     color: rootItem.isSelected
-                        ? Qt.rgba(Root.Theme.textPrimary.r, Root.Theme.textPrimary.g, Root.Theme.textPrimary.b, 0.85)
+                        ? Qt.rgba(Root.Theme.tileActiveText.r, Root.Theme.tileActiveText.g, Root.Theme.tileActiveText.b, 0.82)
                         : Root.Theme.textSecondary
                     elide: Text.ElideRight
                     Layout.fillWidth: true
@@ -165,17 +151,18 @@ Item {
                 visible: rootItem.isSelected
                 Layout.preferredWidth: 28
                 Layout.preferredHeight: 28
+                Layout.alignment: Qt.AlignVCenter
                 radius: 14
-                color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.28)
+                color: Qt.rgba(Root.Theme.tileActiveText.r, Root.Theme.tileActiveText.g, Root.Theme.tileActiveText.b, 0.16)
                 border.width: 1
-                border.color: Root.Theme.primary
+                border.color: Qt.rgba(Root.Theme.tileActiveText.r, Root.Theme.tileActiveText.g, Root.Theme.tileActiveText.b, 0.28)
 
                 Text {
                     anchors.centerIn: parent
                     text: "󰌑"
                     font.family: Root.Theme.fontFamily
                     font.pixelSize: 14
-                    color: Root.Theme.primary
+                    color: Root.Theme.tileActiveText
                 }
             }
         }

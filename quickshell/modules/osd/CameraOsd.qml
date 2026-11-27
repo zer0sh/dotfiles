@@ -240,10 +240,10 @@ Scope {
 
         Item {
             id: osdWrapper
-            width: 436
-            height: osdCard.implicitHeight + 10
+            width: 380
+            height: osdCard.implicitHeight
             anchors.top: parent.top
-            anchors.topMargin: Root.Theme.shelfHeight - 4
+            anchors.topMargin: Root.Theme.shelfHeight + 14
             anchors.horizontalCenter: parent.horizontalCenter
 
             Item {
@@ -254,7 +254,7 @@ Scope {
                 property real _translateY: 0.0
 
                 width: 380
-                implicitHeight: cardContent.implicitHeight + 28
+                implicitHeight: cardContent.implicitHeight + 24
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 opacity: _opacity
@@ -272,86 +272,14 @@ Scope {
                     }
                 ]
 
-                Shape {
-                    id: osdShape
-                    anchors.top: parent.top
-                    anchors.bottom: parent.bottom
-                    anchors.horizontalCenter: parent.horizontalCenter
-                    width: parent.width + 56
-
-                    ShapePath {
-                        strokeWidth: 0
-                        strokeColor: "transparent"
-                        fillColor: Root.Theme.panelBg
-
-                        startX: 0
-                        startY: 0
-
-                        PathLine { x: 0; y: 3 }
-
-                        PathCubic {
-                            control1X: 14; control1Y: 3
-                            control2X: 28; control2Y: 17
-                            x: 28; y: 31
-                        }
-                        PathLine { x: 28; y: Math.max(31, osdShape.height - 28) }
-                        PathCubic {
-                            control1X: 28; control1Y: osdShape.height - 14
-                            control2X: 42; control2Y: osdShape.height
-                            x: 56; y: osdShape.height
-                        }
-                        PathLine { x: Math.max(56, osdShape.width - 56); y: osdShape.height }
-                        PathCubic {
-                            control1X: osdShape.width - 42; control1Y: osdShape.height
-                            control2X: osdShape.width - 28; control2Y: osdShape.height - 14
-                            x: osdShape.width - 28; y: Math.max(31, osdShape.height - 28)
-                        }
-                        PathLine { x: osdShape.width - 28; y: 31 }
-                        PathCubic {
-                            control1X: osdShape.width - 28; control1Y: 17
-                            control2X: osdShape.width - 14; control2Y: 3
-                            x: osdShape.width; y: 3
-                        }
-                        PathLine { x: osdShape.width; y: 0 }
-                        PathLine { x: 0; y: 0 }
-                    }
-
-                    ShapePath {
-                        strokeWidth: 1
-                        strokeColor: Root.Theme.panelBorder
-                        fillColor: "transparent"
-                        capStyle: ShapePath.FlatCap
-                        joinStyle: ShapePath.RoundJoin
-
-                        Behavior on strokeColor { ColorAnimation { duration: 180 } }
-
-                        startX: 0
-                        startY: 3
-
-                        PathCubic {
-                            control1X: 14; control1Y: 3
-                            control2X: 28; control2Y: 17
-                            x: 28; y: 31
-                        }
-                        PathLine { x: 28; y: Math.max(31, osdShape.height - 28) }
-                        PathCubic {
-                            control1X: 28; control1Y: osdShape.height - 14
-                            control2X: 42; control2Y: osdShape.height
-                            x: 56; y: osdShape.height
-                        }
-                        PathLine { x: Math.max(56, osdShape.width - 56); y: osdShape.height }
-                        PathCubic {
-                            control1X: osdShape.width - 42; control1Y: osdShape.height
-                            control2X: osdShape.width - 28; control2Y: osdShape.height - 14
-                            x: osdShape.width - 28; y: Math.max(31, osdShape.height - 28)
-                        }
-                        PathLine { x: osdShape.width - 28; y: 31 }
-                        PathCubic {
-                            control1X: osdShape.width - 28; control1Y: 17
-                            control2X: osdShape.width - 14; control2Y: 3
-                            x: osdShape.width; y: 3
-                        }
-                    }
+                // Fondo flotante unificado con esquinas redondeadas simétricas
+                Rectangle {
+                    id: osdCardBg
+                    anchors.fill: parent
+                    radius: 24
+                    color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.90)
+                    border.width: 1.5
+                    border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.60)
                 }
 
                 ColumnLayout {
@@ -359,8 +287,8 @@ Scope {
                     anchors.fill: parent
                     anchors.leftMargin: 16
                     anchors.rightMargin: 16
-                    anchors.topMargin: 10
-                    anchors.bottomMargin: 14
+                    anchors.topMargin: 12
+                    anchors.bottomMargin: 12
                     spacing: 10
 
                     RowLayout {

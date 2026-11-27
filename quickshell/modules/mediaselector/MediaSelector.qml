@@ -96,8 +96,8 @@ Scope {
             Root.EdgePanel {
                 id: edgePanelWrapper
                 edge: "top"
-                panelWidth: Root.Theme.musicPanelWidth + 56
-                panelHeight: Math.min(panelContent.implicitHeight + 20, 460)
+                panelWidth: Root.Theme.musicPanelWidth
+                panelHeight: Math.min(panelContent.implicitHeight + 32, 460)
                 shoulderRadius: 28
                 showDim: false
                 Component.onCompleted: mediaSelector._edgePanelRef = edgePanelWrapper
@@ -112,10 +112,10 @@ Scope {
                 Item {
                     id: panel
                     anchors.fill: parent
-                    anchors.leftMargin: 28
-                    anchors.rightMargin: 28
-                    anchors.topMargin: 4
-                    anchors.bottomMargin: 8
+                    anchors.leftMargin: 16
+                    anchors.rightMargin: 16
+                    anchors.topMargin: 16
+                    anchors.bottomMargin: 16
                     clip: true
 
                     // Block click-through

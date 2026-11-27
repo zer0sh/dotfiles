@@ -48,9 +48,9 @@ PanelWindow {
     Root.EdgePanel {
         id: edgePanelWrapper
         edge: "top-right"
-        panelWidth: panelWindow.contentWidth + 28
+        panelWidth: panelWindow.contentWidth
         panelHeight: Math.min(panelContent.implicitHeight + 16, panelWindow.height - Root.Theme.shelfHeight - 40)
-        shoulderRadius: 28
+        shoulderRadius: 24
         showDim: false
 
         onCloseRequested: edgePanelWrapper.close()
@@ -60,9 +60,8 @@ PanelWindow {
 
         Item {
             id: panel
-            width: panelWindow.contentWidth
-            height: parent.height
-            anchors.right: parent.right
+            anchors.fill: parent
+            clip: true
 
             // Block click-through to overlay close area
             MouseArea {

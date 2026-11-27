@@ -83,109 +83,13 @@ Item {
         opacity: root._opacity
         height:  cardContent.implicitHeight + 24
 
-        // ── Silueta unificada superior: cuerpo + hombros cóncavos con borde continuo ──
-        Shape {
-            id: topIslandShape
-            visible: root.isTop
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            anchors.horizontalCenter: parent.horizontalCenter
-            width: parent.width + 56
-            height: parent.height
-
-            // 1. Relleno continuo sin costuras
-            ShapePath {
-                strokeWidth: 0
-                strokeColor: "transparent"
-                fillColor: root.cardBgColor
-
-                startX: 0
-                startY: 0
-
-                PathLine { x: 0; y: 3 }
-
-                // Curva cóncava hombro izquierdo con tangente horizontal en y=3
-                PathCubic {
-                    control1X: 14; control1Y: 3
-                    control2X: 28; control2Y: 17
-                    x: 28; y: 31
-                }
-                // Lateral izquierdo
-                PathLine { x: 28; y: Math.max(31, topIslandShape.height - 28) }
-                // Esquina inferior izquierda
-                PathCubic {
-                    control1X: 28; control1Y: topIslandShape.height - 14
-                    control2X: 42; control2Y: topIslandShape.height
-                    x: 56; y: topIslandShape.height
-                }
-                // Base horizontal
-                PathLine { x: Math.max(56, topIslandShape.width - 56); y: topIslandShape.height }
-                // Esquina inferior derecha
-                PathCubic {
-                    control1X: topIslandShape.width - 42; control1Y: topIslandShape.height
-                    control2X: topIslandShape.width - 28; control2Y: topIslandShape.height - 14
-                    x: topIslandShape.width - 28; y: Math.max(31, topIslandShape.height - 28)
-                }
-                // Lateral derecho
-                PathLine { x: topIslandShape.width - 28; y: 31 }
-                // Curva cóncava hombro derecho con salida tangencial en y=3
-                PathCubic {
-                    control1X: topIslandShape.width - 28; control1Y: 17
-                    control2X: topIslandShape.width - 14; control2Y: 3
-                    x: topIslandShape.width; y: 3
-                }
-                // Cierre superior contra Waybar
-                PathLine { x: topIslandShape.width; y: 0 }
-                PathLine { x: 0; y: 0 }
-            }
-
-            // 2. Borde perimetral estilo ventana (cubre hombros, laterales y base; abierto hacia Waybar)
-            ShapePath {
-                strokeWidth: 1
-                strokeColor: root.currentBorderColor
-                fillColor: "transparent"
-                capStyle: ShapePath.FlatCap
-                joinStyle: ShapePath.RoundJoin
-
-                Behavior on strokeColor { ColorAnimation { duration: 150 } }
-
-                startX: 0
-                startY: 3
-
-                PathCubic {
-                    control1X: 14; control1Y: 3
-                    control2X: 28; control2Y: 17
-                    x: 28; y: 31
-                }
-                PathLine { x: 28; y: Math.max(31, topIslandShape.height - 28) }
-                PathCubic {
-                    control1X: 28; control1Y: topIslandShape.height - 14
-                    control2X: 42; control2Y: topIslandShape.height
-                    x: 56; y: topIslandShape.height
-                }
-                PathLine { x: Math.max(56, topIslandShape.width - 56); y: topIslandShape.height }
-                PathCubic {
-                    control1X: topIslandShape.width - 42; control1Y: topIslandShape.height
-                    control2X: topIslandShape.width - 28; control2Y: topIslandShape.height - 14
-                    x: topIslandShape.width - 28; y: Math.max(31, topIslandShape.height - 28)
-                }
-                PathLine { x: topIslandShape.width - 28; y: 31 }
-                PathCubic {
-                    control1X: topIslandShape.width - 28; control1Y: 17
-                    control2X: topIslandShape.width - 14; control2Y: 3
-                    x: topIslandShape.width; y: 3
-                }
-            }
-        }
-
-        // ── Notificación posterior (cápsula independiente redondeada con borde de ventana) ──
+        // ── Fondo flotante unificado independiente ──
         Rectangle {
-            id: bottomIslandRect
-            visible: !root.isTop
+            id: floatingCardBg
             anchors.fill: parent
-            radius: 28
+            radius: 24
             color: root.cardBgColor
-            border.width: 2
+            border.width: 1.5
             border.color: root.currentBorderColor
             Behavior on border.color { ColorAnimation { duration: 150 } }
         }
@@ -195,9 +99,9 @@ Item {
             anchors.left: parent.left
             anchors.top: parent.top
             anchors.bottom: parent.bottom
-            anchors.topMargin: root.isTop ? 0 : 6
+            anchors.topMargin: 6
             anchors.bottomMargin: 6
-            anchors.leftMargin: 2
+            anchors.leftMargin: 4
             width: 4
             radius: 2
             color: Root.Theme.error
@@ -208,7 +112,7 @@ Item {
             anchors.fill: parent
             anchors.leftMargin: 20
             anchors.rightMargin: 20
-            anchors.topMargin: root.isTop ? 10 : 14
+            anchors.topMargin: 14
             anchors.bottomMargin: 14
             spacing: 4
 

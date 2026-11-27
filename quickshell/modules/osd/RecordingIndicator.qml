@@ -18,6 +18,28 @@ Scope {
                (seconds < 10 ? "0" : "") + seconds
     }
 
+    IpcHandler {
+        target: "recording"
+
+        function start(startTime: string): void {
+            var val = parseInt(startTime)
+            if (isNaN(val) || val <= 0) val = Math.floor(Date.now() / 1000)
+            indicator.startedAt = val
+            indicator.recording = true
+            indicator.elapsedSeconds = Math.max(0, Math.floor(Date.now() / 1000) - val)
+        }
+
+        function stop(): void {
+            indicator.recording = false
+            indicator.startedAt = 0
+            indicator.elapsedSeconds = 0
+        }
+
+        function check(): void {
+            if (!statusProc.running) statusProc.running = true
+        }
+    }
+
     Process {
         id: statusProc
         command: ["sh", "-c",
@@ -43,16 +65,19 @@ Scope {
     }
 
     Timer {
-        interval: indicator.recording ? 1000 : 2500
-        running: true
+        interval: 1000
+        running: indicator.recording
         repeat: true
-        triggeredOnStart: true
         onTriggered: {
             if (!statusProc.running)
                 statusProc.running = true
             if (indicator.recording && indicator.startedAt > 0)
                 indicator.elapsedSeconds = Math.max(0, Math.floor(Date.now() / 1000) - indicator.startedAt)
         }
+    }
+
+    Component.onCompleted: {
+        statusProc.running = true
     }
 
     PanelWindow {

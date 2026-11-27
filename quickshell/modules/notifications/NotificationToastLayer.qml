@@ -60,13 +60,13 @@ Scope {
 
             Item {
                 id: toastWrapper
-                width: 436
+                width: 380
                 height: toastCol.implicitHeight
                 anchors.top: parent.top
-                anchors.topMargin: Root.Theme.shelfHeight - 4
+                anchors.topMargin: Root.Theme.shelfHeight + 14
                 anchors.horizontalCenter: parent.horizontalCenter
 
-                // Clipping container for emergence animation directly out of Waybar
+                // Clipping container for emergence animation
                 Item {
                     id: toastClip
                     anchors.fill: parent
@@ -74,7 +74,7 @@ Scope {
 
                     Column {
                         id: toastCol
-                        width: 380
+                        width: parent.width
                         anchors.horizontalCenter: parent.horizontalCenter
                         spacing: 8
 
