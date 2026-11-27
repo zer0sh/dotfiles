@@ -96,3 +96,6 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # Configuración privada / secretos locales (no versionados en git)
 [[ -f ~/.zshrc_private ]] && source ~/.zshrc_private
+
+# opencode
+export PATH=/home/zero/.opencode/bin:$PATH

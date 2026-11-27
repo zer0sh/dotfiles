@@ -21,6 +21,7 @@ if is_recording; then
     kill -INT "$pid"
     rm -f "$PID_FILE"
     rm -f "$START_FILE"
+    qs ipc call recording stop 2>/dev/null || quickshell ipc call recording stop 2>/dev/null || true
     notify-send "Screen Recording" "Recording stopped and saved"
     exit 0
 fi
@@ -36,9 +37,12 @@ sleep 0.2
 if ! kill -0 "$recorder_pid" 2>/dev/null; then
     rm -f "$PID_FILE"
     rm -f "$START_FILE"
+    qs ipc call recording stop 2>/dev/null || quickshell ipc call recording stop 2>/dev/null || true
     notify-send "Screen Recording" "Could not start recording"
     exit 1
 fi
 
-date +%s > "$START_FILE"
+start_ts=$(date +%s)
+echo "$start_ts" > "$START_FILE"
+qs ipc call recording start "$start_ts" 2>/dev/null || quickshell ipc call recording start "$start_ts" 2>/dev/null || true
 notify-send "Screen Recording" "Recording started"

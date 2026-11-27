@@ -65,16 +65,21 @@ fi
 notified_20=false
 notified_10=false
 
+QS_BIN=""
+if command -v qs >/dev/null 2>&1; then
+    QS_BIN="qs"
+elif command -v quickshell >/dev/null 2>&1; then
+    QS_BIN="quickshell"
+fi
+
 notify_native() {
     local icon="$1"
     local title="$2"
     local status="$3"
     local variant="$4"
 
-    if command -v qs >/dev/null 2>&1; then
-        qs ipc call osd notify "${icon}|${title}|${status}|${variant}" 2>/dev/null || true
-    elif command -v quickshell >/dev/null 2>&1; then
-        quickshell ipc call osd notify "${icon}|${title}|${status}|${variant}" 2>/dev/null || true
+    if [ -n "$QS_BIN" ]; then
+        "$QS_BIN" ipc call osd notify "${icon}|${title}|${status}|${variant}" 2>/dev/null || true
     fi
 }
 
@@ -94,14 +99,14 @@ while true; do
         prev_plugged=true
         notified_20=false
         notified_10=false
-        sleep 3
+        sleep 5
         continue
 
     # State transition: Charger disconnected
     elif [ "$prev_plugged" = true ] && [ "$curr_plugged" = false ]; then
         notify_native "󰂃" "CHARGER" "DISCONNECTED (${capacity}%)" "secondary"
         prev_plugged=false
-        sleep 3
+        sleep 5
         continue
     fi
 
@@ -129,5 +134,10 @@ while true; do
         fi
     fi
 
-    sleep 3
+    # Adaptive sleep: 10s if low discharging, 30s during normal operation
+    if [ "$curr_plugged" = false ] && [[ "$capacity" =~ ^[0-9]+$ ]] && [ "$capacity" -le 20 ]; then
+        sleep 10
+    else
+        sleep 30
+    fi
 done

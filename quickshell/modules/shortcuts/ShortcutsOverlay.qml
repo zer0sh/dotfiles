@@ -467,9 +467,9 @@ Scope {
                 scale: overlay._scale
                 opacity: overlay._opacity
 
-                color: Qt.rgba(Root.Theme.surface.r, Root.Theme.surface.g, Root.Theme.surface.b, 0.78)
+                color: Qt.rgba(Root.Theme.panelBg.r, Root.Theme.panelBg.g, Root.Theme.panelBg.b, 0.90)
                 border.width: 1.5
-                border.color: Qt.rgba(255, 255, 255, 0.16)
+                border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.60)
                 clip: true
 
                 // Detener propagación de clics
@@ -491,9 +491,9 @@ Scope {
                             Layout.preferredWidth: 44
                             Layout.preferredHeight: 44
                             radius: 22
-                            color: Root.Theme.surfaceContainerHigh
+                            color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.16)
                             border.width: 1
-                            border.color: Qt.rgba(255, 255, 255, 0.10)
+                            border.color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35)
 
                             Text {
                                 anchors.centerIn: parent
@@ -526,12 +526,21 @@ Scope {
 
                         // Botón de cierre
                         Rectangle {
-                            Layout.preferredWidth: 36
-                            Layout.preferredHeight: 36
-                            radius: 18
-                            color: closeBtnArea.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
+                            Layout.preferredWidth: 38
+                            Layout.preferredHeight: 38
+                            radius: 19
+                            color: closeBtnArea.containsMouse
+                                ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.18)
+                                : Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.60)
+                            border.width: 1
+                            border.color: closeBtnArea.containsMouse
+                                ? Root.Theme.primary
+                                : Qt.rgba(Root.Theme.outline.r, Root.Theme.outline.g, Root.Theme.outline.b, 0.30)
 
                             Behavior on color {
+                                ColorAnimation { duration: Root.Theme.animDurationFast }
+                            }
+                            Behavior on border.color {
                                 ColorAnimation { duration: Root.Theme.animDurationFast }
                             }
 
@@ -540,7 +549,7 @@ Scope {
                                 text: "close"
                                 font.family: Root.Theme.iconFont
                                 font.pixelSize: 20
-                                color: Root.Theme.textPrimary
+                                color: closeBtnArea.containsMouse ? Root.Theme.primary : Root.Theme.textPrimary
                             }
 
                             MouseArea {
@@ -558,16 +567,16 @@ Scope {
                         Layout.fillWidth: true
                         spacing: 12
 
-                        // Campo de búsqueda integrado
+                        // Campo de búsqueda integrado (geometría de cápsula circular)
                         Rectangle {
                             Layout.preferredWidth: 280
-                            Layout.preferredHeight: 40
-                            radius: 12
-                            color: Root.Theme.surfaceContainer
+                            Layout.preferredHeight: 42
+                            radius: height / 2
+                            color: Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.60)
                             border.width: searchInput.activeFocus ? 1.5 : 1
                             border.color: searchInput.activeFocus
                                 ? Root.Theme.primary
-                                : Qt.rgba(255, 255, 255, 0.08)
+                                : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.40)
 
                             Behavior on border.color {
                                 ColorAnimation { duration: Root.Theme.animDurationFast }
@@ -575,8 +584,8 @@ Scope {
 
                             RowLayout {
                                 anchors.fill: parent
-                                anchors.leftMargin: 12
-                                anchors.rightMargin: 10
+                                anchors.leftMargin: 14
+                                anchors.rightMargin: 12
                                 spacing: 8
 
                                 Text {
@@ -613,9 +622,9 @@ Scope {
 
                                 Rectangle {
                                     visible: searchInput.text !== ""
-                                    Layout.preferredWidth: 20
-                                    Layout.preferredHeight: 20
-                                    radius: 10
+                                    Layout.preferredWidth: 24
+                                    Layout.preferredHeight: 24
+                                    radius: 12
                                     color: clearHover.containsMouse ? Root.Theme.surfaceContainerHigh : "transparent"
 
                                     Text {
@@ -623,7 +632,7 @@ Scope {
                                         text: "close"
                                         font.family: Root.Theme.iconFont
                                         font.pixelSize: 14
-                                        color: Root.Theme.textSecondary
+                                        color: clearHover.containsMouse ? Root.Theme.primary : Root.Theme.textSecondary
                                     }
 
                                     MouseArea {
@@ -637,7 +646,7 @@ Scope {
                             }
                         }
 
-                        // Píldoras de Categorías
+                        // Píldoras de Categorías (geometría de cápsula circular)
                         RowLayout {
                             Layout.fillWidth: true
                             spacing: 8
@@ -647,20 +656,29 @@ Scope {
 
                                 Rectangle {
                                     id: catPill
-                                    Layout.preferredHeight: 40
-                                    Layout.preferredWidth: pillRow.implicitWidth + 24
-                                    radius: 12
+                                    Layout.preferredHeight: 42
+                                    Layout.preferredWidth: pillRow.implicitWidth + 28
+                                    radius: height / 2
 
                                     readonly property bool isSelected: shortcuts.currentCategory === modelData.id
 
                                     color: isSelected
-                                        ? Root.Theme.primary
-                                        : (pillArea.containsMouse ? Root.Theme.surfaceContainerHigh : Root.Theme.surfaceContainer)
+                                        ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.22)
+                                        : (pillArea.containsMouse
+                                            ? Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.70)
+                                            : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.50))
 
-                                    border.width: 1
-                                    border.color: isSelected ? "transparent" : Qt.rgba(255, 255, 255, 0.05)
+                                    border.width: isSelected ? 1.5 : 1
+                                    border.color: isSelected
+                                        ? Root.Theme.primary
+                                        : (pillArea.containsMouse
+                                            ? Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.40)
+                                            : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.30))
 
                                     Behavior on color {
+                                        ColorAnimation { duration: Root.Theme.animDurationFast }
+                                    }
+                                    Behavior on border.color {
                                         ColorAnimation { duration: Root.Theme.animDurationFast }
                                     }
 
@@ -673,7 +691,7 @@ Scope {
                                             text: modelData.icon
                                             font.family: Root.Theme.iconFont
                                             font.pixelSize: 16
-                                            color: catPill.isSelected ? Root.Theme.tileActiveText : Root.Theme.textSecondary
+                                            color: catPill.isSelected ? Root.Theme.primary : Root.Theme.textSecondary
                                         }
 
                                         Text {
@@ -681,7 +699,7 @@ Scope {
                                             font.family: Root.Theme.fontFamily
                                             font.pixelSize: Root.Theme.fontSizeSmall
                                             font.weight: catPill.isSelected ? Font.DemiBold : Font.Normal
-                                            color: catPill.isSelected ? Root.Theme.tileActiveText : Root.Theme.textPrimary
+                                            color: catPill.isSelected ? Root.Theme.primary : Root.Theme.textPrimary
                                         }
                                     }
 
@@ -773,32 +791,36 @@ Scope {
                                         id: card
                                         width: Math.floor((cardsGrid.width - 10) / 2)
                                         height: 48
-                                        radius: 14
+                                        radius: height / 2
 
                                         color: cardHover.containsMouse
-                                            ? Root.Theme.surfaceContainerHigh
-                                            : Root.Theme.surfaceContainer
+                                            ? Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.85)
+                                            : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.50)
 
-                                        border.width: 1
+                                        border.width: 1.5
                                         border.color: cardHover.containsMouse
-                                            ? Qt.rgba(255, 255, 255, 0.12)
-                                            : Qt.rgba(255, 255, 255, 0.04)
+                                            ? Root.Theme.primary
+                                            : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.30)
 
                                         Behavior on color {
+                                            ColorAnimation { duration: Root.Theme.animDurationFast }
+                                        }
+                                        Behavior on border.color {
                                             ColorAnimation { duration: Root.Theme.animDurationFast }
                                         }
 
                                         RowLayout {
                                             anchors.fill: parent
-                                            anchors.leftMargin: 14
-                                            anchors.rightMargin: 12
+                                            anchors.leftMargin: 16
+                                            anchors.rightMargin: 16
                                             spacing: 10
 
-                                            // Indicador de categoría
+                                            // Indicador de categoría (punto circular)
                                             Rectangle {
-                                                Layout.preferredWidth: 4
-                                                Layout.preferredHeight: 18
-                                                radius: 2
+                                                Layout.preferredWidth: 6
+                                                Layout.preferredHeight: 6
+                                                radius: 3
+                                                Layout.alignment: Qt.AlignVCenter
                                                 color: {
                                                     if (modelData.category === "apps") return Root.Theme.primary
                                                     if (modelData.category === "windows") return Root.Theme.connected
@@ -818,7 +840,7 @@ Scope {
                                                 elide: Text.ElideRight
                                             }
 
-                                            // Fila de teclas con estilo keycap
+                                            // Fila de teclas con estilo keycap en cápsula circular
                                             RowLayout {
                                                 spacing: 4
 
@@ -827,12 +849,12 @@ Scope {
 
                                                     Rectangle {
                                                         Layout.preferredHeight: 26
-                                                        Layout.preferredWidth: keyCapText.implicitWidth + 14
-                                                        radius: 7
+                                                        Layout.preferredWidth: keyCapText.implicitWidth + 16
+                                                        radius: height / 2
 
                                                         color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.14)
                                                         border.width: 1
-                                                        border.color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.32)
+                                                        border.color: Qt.rgba(Root.Theme.primary.r, Root.Theme.primary.g, Root.Theme.primary.b, 0.35)
 
                                                         Text {
                                                             id: keyCapText
@@ -852,6 +874,7 @@ Scope {
                                             id: cardHover
                                             anchors.fill: parent
                                             hoverEnabled: true
+                                            cursorShape: Qt.PointingHandCursor
                                         }
                                     }
                                 }
@@ -895,12 +918,12 @@ Scope {
                         }
 
                         Rectangle {
-                            Layout.preferredHeight: 22
-                            Layout.preferredWidth: hintText.implicitWidth + 14
-                            radius: 6
-                            color: Root.Theme.surfaceContainerHigh
+                            Layout.preferredHeight: 26
+                            Layout.preferredWidth: hintText.implicitWidth + 18
+                            radius: height / 2
+                            color: Qt.rgba(Root.Theme.surfaceContainerHigh.r, Root.Theme.surfaceContainerHigh.g, Root.Theme.surfaceContainerHigh.b, 0.70)
                             border.width: 1
-                            border.color: Qt.rgba(255, 255, 255, 0.08)
+                            border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.40)
 
                             Text {
                                 id: hintText
