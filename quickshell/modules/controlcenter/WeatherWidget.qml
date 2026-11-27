@@ -20,9 +20,9 @@ Rectangle {
     implicitWidth: 200
 
     radius: 24
-    color: Qt.rgba(255, 255, 255, 0.08)
+    color: Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.65)
     border.width: 1
-    border.color: Qt.rgba(255, 255, 255, 0.14)
+    border.color: Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.40)
     clip: true
 
     Connections {

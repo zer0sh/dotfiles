@@ -34,10 +34,12 @@ Item {
 
         color: control.active
             ? Root.Theme.primary
-            : Qt.rgba(255, 255, 255, 0.08)
+            : Qt.rgba(Root.Theme.surfaceContainer.r, Root.Theme.surfaceContainer.g, Root.Theme.surfaceContainer.b, 0.65)
 
-        border.width: control.active ? 0 : 1
-        border.color: Qt.rgba(255, 255, 255, 0.14)
+        border.width: control.active ? 1.5 : 1
+        border.color: control.active
+            ? Root.Theme.primary
+            : Qt.rgba(Root.Theme.panelBorder.r, Root.Theme.panelBorder.g, Root.Theme.panelBorder.b, 0.40)
 
         scale: btnMouse.pressed ? 0.93 : (btnMouse.containsMouse ? 1.04 : 1.0)
 
